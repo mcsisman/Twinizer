@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "507482022642",
+    "firebase_url": "https://twinizer-atc.firebaseio.com",
+    "project_id": "twinizer-atc",
+    "storage_bucket": "twinizer-atc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507482022642:android:0ff6cae6946e23781de66b",
+        "android_client_info": {
+          "package_name": "com.twinizer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "507482022642-j4e1mr23meseks2dodriva0vbh84bgsn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDC4ypCP9VVHKR_V_AXz4qoPJTXsmn32Os"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "507482022642-j4e1mr23meseks2dodriva0vbh84bgsn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
