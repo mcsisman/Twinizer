@@ -130,7 +130,7 @@ export default class CustomHeader extends Component {
         )
       }
       else{
-        if(this.props.whichScreen == "Profile" || this.props.whichScreen == "History" ){
+        if(this.props.whichScreen == "Settings" || this.props.whichScreen == "History" ){
           return(
             <View
             style = {{ backgroundColor: 'white', height: headerHeight,

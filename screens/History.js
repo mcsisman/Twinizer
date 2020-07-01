@@ -21,7 +21,7 @@ import {Image,
 
 import MessagesScreen from './Messages';
 import MainScreen from './Main';
-import ProfileScreen from './Profile';
+import SettingsScreen from './Settings';
 import BottomBar from './components/BottomBar'
 import CustomHeader from './components/CustomHeader'
 import ModifiedStatusBar from './components/ModifiedStatusBar'
@@ -255,10 +255,18 @@ async getHistoryDate(whichBox){
   return date;
 }
 renderHistoryBoxes(){
+    var scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight();
     var boxes = [];
     if(noOfSearch == 0){
       return(
-        <View style = {{width: "100%", height: "100%"}}>
+        <View style = {{flex: 1, flexDirection: "column", width: this.width, height: scrollViewHeight}}>
+
+        <View style = {{opacity: 0.7, alignItems: 'center', width: this.width, top: scrollViewHeight/4,  height: scrollViewHeight/4}}>
+        <Text
+          style = {{fontSize: 25, fontFamily: "Candara" }}>
+          No recent activity
+        </Text>
+        </View>
         </View>
       )
     }
@@ -310,7 +318,7 @@ render(){
       </View>
 
       <ScrollView
-        style = {{height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(), width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}>
+        style = {{backgroundColor: 'rgba(181,181,181,0.1)', height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(), width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}>
           {this.renderHistoryBoxes() }
       </ScrollView>
 
@@ -357,7 +365,7 @@ render(){
       </View>
 
       <ScrollView
-        style = {{height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(), width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}>
+        style = {{backgroundColor: 'rgba(181,181,181,0.1)', height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(), width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}>
           {this.renderHistoryBoxes() }
       </ScrollView>
 
@@ -376,7 +384,7 @@ render(){
       whichScreen = {"History"}
       msgOnPress = {()=> navigate("Messages")}
       homeOnPress = {()=> navigate("Main")}
-      profileOnPress = {()=> navigate("Profile")}/>
+      settingsOnPress = {()=> navigate("Settings")}/>
     </View>
 
     );

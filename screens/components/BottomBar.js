@@ -24,7 +24,7 @@ export default class BottomBar extends Component {
     homeOnPress: PropTypes.func,
     msgOnPress: PropTypes.func,
     historyOnPress: PropTypes.func,
-    profileOnPress: PropTypes.func,
+    settingsOnPress: PropTypes.func,
     whichScreen: PropTypes.string
   }
 
@@ -34,70 +34,70 @@ export default class BottomBar extends Component {
     var homeColor;
     var msgColor;
     var historyColor;
-    var profileColor;
+    var settingsColor;
     var homeDisabled;
     var msgDisabled;
     var historyDisabled;
-    var profileDisabled;
+    var settingsDisabled;
     var homeTextColor;
     var msgTextColor;
     var historyTextColor;
-    var profileTextColor;
+    var settingsTextColor;
     if(this.props.whichScreen == "Main"){
       homeColor = "homeorange";
       msgColor = "msggray";
       historyColor = "historygray";
-      profileColor = "profilegray";
+      settingsColor = "settingsgray";
       homeDisabled = true;
       msgDisabled = false;
       historyDisabled = false;
-      profileDisabled = false;
+      settingsDisabled = false;
       homeTextColor = 'rgba(211,126,63,1)';
       msgTextColor = 'rgba(128,128,128,1)';
       historyTextColor = 'rgba(128,128,128,1)';
-      profileTextColor = 'rgba(128,128,128,1)';
+      settingsTextColor = 'rgba(128,128,128,1)';
     }
     if(this.props.whichScreen == "Messages"){
       homeColor = "homegray";
       msgColor = "msgorange";
       historyColor = "historygray";
-      profileColor = "profilegray";
+      settingsColor = "settingsgray";
       homeDisabled = false;
       msgDisabled = true;
       historyDisabled = false;
-      profileDisabled = false;
+      settingsDisabled = false;
       homeTextColor = 'rgba(128,128,128,1)';
       msgTextColor = 'rgba(211,126,63,1)';
       historyTextColor = 'rgba(128,128,128,1)';
-      profileTextColor = 'rgba(128,128,128,1)';
+      settingsTextColor = 'rgba(128,128,128,1)';
     }
     if(this.props.whichScreen == "History"){
       homeColor = "homegray";
       msgColor = "msggray";
       historyColor = "historyorange";
-      profileColor = "profilegray";
+      settingsColor = "settingsgray";
       homeDisabled = false;
       msgDisabled = false;
       historyDisabled = true;
-      profileDisabled = false;
+      settingsDisabled = false;
       homeTextColor = 'rgba(128,128,128,1)';
       msgTextColor = 'rgba(128,128,128,1)';
       historyTextColor = 'rgba(211,126,63,1)';
-      profileTextColor = 'rgba(128,128,128,1)';
+      settingsTextColor = 'rgba(128,128,128,1)';
     }
-    if(this.props.whichScreen == "Profile"){
+    if(this.props.whichScreen == "Settings"){
       homeColor = "homegray";
       msgColor = "msggray";
       historyColor = "historygray";
-      profileColor = "profileorange";
+      settingsColor = "settingsorange";
       homeDisabled = false;
       msgDisabled = false;
       historyDisabled = false;
-      profileDisabled = true;
+      settingsDisabled = true;
       homeTextColor = 'rgba(128,128,128,1)';
       msgTextColor = 'rgba(128,128,128,1)';
       historyTextColor = 'rgba(128,128,128,1)';
-      profileTextColor = 'rgba(211,126,63,1)';
+      settingsTextColor = 'rgba(211,126,63,1)';
     }
 
     return(
@@ -153,15 +153,15 @@ export default class BottomBar extends Component {
         <TouchableOpacity
         style = {{alignItems: 'center', justifyContent: 'center', width: this.width/4, height: this.width/7}}
         activeOpacity = {1}
-        disabled = {profileDisabled}
-        onPress = {this.props.profileOnPress}>
+        disabled = {settingsDisabled}
+        onPress = {this.props.settingsOnPress}>
           <Image
-          style={{top: '5%', position: 'absolute', width: "36%", height: "63%"}}
-          source = {{uri: profileColor}}>
+          style={{top: '10%', position: 'absolute', width: "28%", height: "49%"}}
+          source = {{uri: settingsColor}}>
           </Image>
           <Text
-          style = {{bottom: '5%', position: 'absolute', color: profileTextColor, fontSize: 12*(this.width/360) }}>
-          Profile
+          style = {{bottom: '5%', position: 'absolute', color: settingsTextColor, fontSize: 12*(this.width/360) }}>
+          Settings
           </Text>
         </TouchableOpacity>
 

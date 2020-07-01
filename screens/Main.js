@@ -30,7 +30,7 @@ import {Image,
   } from 'react-native';
 import HistoryScreen from './History';
 import ChatScreen from './Chat';
-import ProfileScreen from './Profile';
+import SettingsScreen from './Settings';
 import MessagesScreen from './Messages';
 import CustomHeader from './components/CustomHeader'
 import countries from './Countries';
@@ -1421,7 +1421,7 @@ render(){
       whichScreen = {"Main"}
       msgOnPress = {()=> navigate("Messages")}
       historyOnPress = {()=> navigate("History")}
-      profileOnPress = {()=> navigate("Profile")}/>
+      settingsOnPress = {()=> navigate("Settings")}/>
 
     </View>
 

@@ -28,7 +28,7 @@ import MessageSwitchButton from './components/MessageSwitchButton'
 import ChatScreen from './Chat';
 import HistoryScreen from './History';
 import CustomHeader from './components/CustomHeader'
-import ProfileScreen from './Profile';
+import SettingsScreen from './Settings';
 import BottomBar from './components/BottomBar'
 import ModifiedStatusBar from './components/ModifiedStatusBar'
 
@@ -1060,7 +1060,7 @@ render(){
                   whichScreen = {"Messages"}
                   homeOnPress = {()=> navigate("Main")}
                   historyOnPress = {()=> navigate("History")}
-                  profileOnPress = {()=> navigate("Profile")}/>
+                  settingsOnPress = {()=> navigate("Settings")}/>
         </View>
         )
       }
@@ -1083,7 +1083,7 @@ render(){
                   whichScreen = {"Messages"}
                   homeOnPress = {()=> navigate("Main")}
                   historyOnPress = {()=> navigate("History")}
-                  profileOnPress = {()=> navigate("Profile")}/>
+                  settings = {()=> navigate("Settings")}/>
         </View>
         )
       }
@@ -1207,7 +1207,7 @@ render(){
                   whichScreen = {"Messages"}
                   homeOnPress = {()=> navigate("Main")}
                   historyOnPress = {()=> navigate("History")}
-                  profileOnPress = {()=> navigate("Profile")}/>
+                  settingsOnPress = {()=> navigate("Settings")}/>
         </View>
         )
       }
@@ -1230,7 +1230,7 @@ render(){
                   whichScreen = {"Messages"}
                   homeOnPress = {()=> navigate("Main")}
                   historyOnPress = {()=> navigate("History")}
-                  profileOnPress = {()=> navigate("Profile")}/>
+                  settingsOnPress = {()=> navigate("Settings")}/>
         </View>
         )
       }
@@ -1271,7 +1271,7 @@ render(){
                   whichScreen = {"Messages"}
                   homeOnPress = {()=> navigate("Main")}
                   historyOnPress = {()=> navigate("History")}
-                  profileOnPress = {()=> navigate("Profile")}/>
+                  settingsOnPress = {()=> navigate("Settings")}/>
         </View>
             )
       }
@@ -1308,7 +1308,7 @@ render(){
                   whichScreen = {"Messages"}
                   homeOnPress = {()=> navigate("Main")}
                   historyOnPress = {()=> navigate("History")}
-                  profileOnPress = {()=> navigate("Profile")}/>
+                  settingsOnPress = {()=> navigate("Settings")}/>
         </View>
         )
       }

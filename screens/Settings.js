@@ -19,7 +19,8 @@ import {Image,
    Easing,
    Button,
    Animated,
-   Platform
+   Platform,
+   ScrollView
   } from 'react-native';
 
 import MessagesScreen from './Messages';
@@ -28,6 +29,8 @@ import HistoryScreen from './History';
 import CustomHeader from './components/CustomHeader'
 import BottomBar from './components/BottomBar'
 import ModifiedStatusBar from './components/ModifiedStatusBar'
+import ProfileInfo from './components/ProfileInfo'
+import SettingsButton from './components/SettingsButton'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -36,9 +39,8 @@ if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
 
-var ourBlue = 'rgba(77,120,204,1)'
 
-export default class ProfileScreen extends Component<{}>{
+export default class SettingsScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.height = Math.round(Dimensions.get('screen').height);
@@ -57,15 +59,38 @@ export default class ProfileScreen extends Component<{}>{
       <ModifiedStatusBar/>
 
       <CustomHeader
-      whichScreen = {"Profile"}
+      whichScreen = {"Settings"}
       isFilterVisible = {this.state.showFilter}
-      title = {global.globalUsername}>
+      title = "Settings">
       </CustomHeader>
 
+      <ScrollView
+      style = {{height: this.height-this.width/7 - headerHeight - getStatusBarHeight(), width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}>
+      <View
+      style = {{height: this.width/9}}/>
+      <SettingsButton
+      text = {"Edit Profile"}/>
+
+      <View
+      style = {{height: this.width/9}}/>
+      <SettingsButton
+      text = {"Favorite Users"}/>
+      <SettingsButton
+      text = {"Blocked Users"}/>
+
+      <View
+      style = {{height: this.width/9}}/>
+      <SettingsButton
+      text = {"Theme Settings"}/>
+      <SettingsButton
+      text = {"Message Settings"}/>
+
+
+      </ScrollView>
 
 
       <BottomBar
-        whichScreen = {"Profile"}
+        whichScreen = {"Settings"}
         msgOnPress = {()=> navigate("Messages")}
         homeOnPress = {()=> navigate("Main")}
         historyOnPress = {()=> navigate("History")}/>

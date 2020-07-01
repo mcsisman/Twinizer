@@ -29,7 +29,7 @@ import BioScreen from './screens/Bio';
 import MessagesScreen from './screens/Messages';
 import ProfileUploadScreen from './screens/ProfileUpload';
 import HistoryScreen from './screens/History';
-import ProfileScreen from './screens/Profile';
+import SettingsScreen from './screens/Settings';
 
 if (!global.btoa) {  global.btoa = encode }
 
@@ -186,83 +186,6 @@ var firebaseConfig = {
 
   }
 
-  const handleCustomTransition = ({ scenes }) => {
-    const prevScene = scenes[scenes.length - 2];
-    const nextScene = scenes[scenes.length - 1];
-    {transitionSpec: { duration: 0 }}
-    // Custom transitions go there
-    if (prevScene
-      && prevScene.route.routeName === 'Splash'
-      && nextScene.route.routeName === 'NewAccount') {
-      return fromBottom();
-    } else if (prevScene
-      && prevScene.route.routeName === 'Splash'
-      && nextScene.route.routeName === 'ForgotPassword') {
-      return fromBottom();
-    }
-    if(prevScene
-      && prevScene.route.routeName === 'Main'
-      && nextScene.route.routeName === 'Messages') {
-      return fromBottom(0);
-    }
-    if(prevScene
-      && prevScene.route.routeName === 'Messages'
-      && nextScene.route.routeName === 'Main') {
-      return fromBottom(0);
-    }
-    if(prevScene
-      && prevScene.route.routeName === 'Main'
-      && nextScene.route.routeName === 'History') {
-      return fromBottom(0);
-    }
-    if(prevScene
-      && prevScene.route.routeName === 'History'
-      && nextScene.route.routeName === 'Main') {
-      return fromBottom(0);
-    }
-    if(prevScene
-      && prevScene.route.routeName === 'Messages'
-      && nextScene.route.routeName === 'History') {
-      return fromBottom(0);
-    }
-    if(prevScene
-      && prevScene.route.routeName === 'History'
-      && nextScene.route.routeName === 'Messages') {
-      return fromBottom(0);
-    }
-
-    if(prevScene
-      && prevScene.route.routeName === 'Main'
-      && nextScene.route.routeName === 'Profile') {
-      return fromBottom(0);
-    }
-    if(prevScene
-      && prevScene.route.routeName === 'Profile'
-      && nextScene.route.routeName === 'Main') {
-      return fromBottom(0);
-    }
-    if(prevScene
-      && prevScene.route.routeName === 'Profile'
-      && nextScene.route.routeName === 'History') {
-      return fromBottom(0);
-    }
-    if(prevScene
-      && prevScene.route.routeName === 'History'
-      && nextScene.route.routeName === 'Profile') {
-      return fromBottom(0);
-    }
-    if(prevScene
-      && prevScene.route.routeName === 'Messages'
-      && nextScene.route.routeName === 'Profile') {
-      return fromBottom(0);
-    }
-    if(prevScene
-      && prevScene.route.routeName === 'Profile'
-      && nextScene.route.routeName === 'Messages') {
-      return fromBottom(0);
-    }
-    return fromRight();
-  }
 
   const Stack = createStackNavigator();
 
@@ -368,7 +291,7 @@ var firebaseConfig = {
             close: config,
           },
         }}
-        name="Profile" component={ProfileScreen} />
+        name="Settings" component={SettingsScreen} />
       </Stack.Navigator>
       </NavigationContainer>
     );
