@@ -103,7 +103,7 @@ export default class HistoryBox extends Component {
         style = {{justifyContent: 'center', width: this.width/3, alignItems: 'center'}}>
         <Text
         style = {{textAlign: "center", fontSize: 18}}>
-        Date{"\n"}{this.props.searchDate}
+        {this.props.searchDate}
         </Text>
         </View>
 
