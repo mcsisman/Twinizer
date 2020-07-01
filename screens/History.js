@@ -92,7 +92,17 @@ async deleteHistory(indexArray){
   await AsyncStorage.setItem('historyArray', JSON.stringify(historyArray))
   this.setState({historyBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
 }
-onPressSearch(){
+async onPressSearch(){
+  var index = -1;
+  for( i = 0; i < noOfSearch; i++){
+    if( isSelectedArray[i] == true ){
+      index = noOfSearch-i-1
+    }
+  }
+  global.fromHistorySearch = true
+  const {navigate} = this.props.navigation;
+  global.historyPhotoUri = await this.getHistoryPhotoPath(index)
+  navigate("Main")
 }
 donePress(){
     var deleteCount = 0
@@ -226,14 +236,13 @@ async getHistoryImageArray(){
   if(historyArray == null){
     historyArray = []
   }
+  console.log("HISTORY ARRAY:", historyArray)
   return historyArray
 }
 async getHistoryPhotoPath(whichBox){
   var historyArray = []
   var photoName;
   historyArray = await this.getHistoryImageArray()
-  console.log("WHICH BOX: ", whichBox)
-  console.log("HISTORY ARRAY: ", historyArray)
   photoName = historyArray[whichBox]["lastSearch"]
   var path = "file://" + RNFS.DocumentDirectoryPath + "/search-photos/" + photoName.toString() +".jpg"
   return path
@@ -267,7 +276,6 @@ renderHistoryBoxes(){
           cancelPressed = {this.state.cancelPressed}
           photoSource = {uriArray[noOfSearch-temp-1]}
           searchDate = {dateArray[noOfSearch-temp-1]}
-          onPressSearch = {this.onPressSearch(temp)}
           key={i}/>
         )
       }
@@ -358,7 +366,7 @@ render(){
       borderTopLeftRadius: 555, borderBottomRightRadius: 555, right: this.width/20, backgroundColor: "white", flex: 1, alignItems:'center',
       justifyContent: 'center', position: 'absolute',}}>
       <SearchButton
-      onPress={()=>this.searchDone()}
+      onPress={()=>this.onPressSearch()}
       disabled = {this.state.disabled}
       width = {this.width/7}
       height ={this.width/7}

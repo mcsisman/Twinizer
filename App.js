@@ -48,7 +48,7 @@ var firebaseConfig = {
   firebase.initializeApp(firebaseConfig);
   var user = firebase.auth().currentUser;
 
-
+  global.fromHistorySearch = false
   global.flag1 = true;
   global.flag2 = true;
   global.flag3 = true;

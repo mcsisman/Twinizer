@@ -165,6 +165,14 @@ async componentDidMount(){
     global.fromMessages = false
     var localMessages = []
     var arr = []
+
+    this._subscribe = this.props.navigation.addListener('focus', async () => {
+      console.log("FROM HISTORY: ", global.fromHistorySearch)
+      if(global.fromHistorySearch){
+        await this.setSearchPhotoFromHistory(global.historyPhotoUri)
+      }
+    })
+
 /*
     await AsyncStorage.setItem("6kfzpWV8NLQuZTm6dXppPc5RF9q2" + "lY9GZ5Onq4WO9J50ismWm9417lN2" + '/messages',JSON.stringify(arr) )
     await AsyncStorage.setItem("7FM2ntE9FMUsnQ6QU5o8vXtNox23" + "lY9GZ5Onq4WO9J50ismWm9417lN2" + '/messages',JSON.stringify(arr) )
@@ -209,7 +217,17 @@ static navigationOptions = {
     header: null,
 }
 
-
+async setSearchPhotoFromHistory(uri){
+  this.setState({photoPath: uri,
+  photo: {uri: uri},
+  borderOpacity: 'rgba(66,66,255,0)',
+  opacity: 0,
+  isVisible1: false,
+  disabled: false,
+  buttonOpacity: 'rgba(244,92,66,1)',})
+  console.log("URI: ", uri)
+  global.fromHistorySearch = false
+}
 swipeStart(){
   if(!this.state.swipeableDisabled){
     this.widthAnimation.setValue(global.width*(5/10))
