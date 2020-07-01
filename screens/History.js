@@ -16,7 +16,10 @@ import {Image,
    StatusBar,
    Platform,
    ScrollView,
-   Alert
+   Alert,
+   FlatList,
+   Animated,
+   Easing
   } from 'react-native';
 
 import MessagesScreen from './Messages';
@@ -42,6 +45,7 @@ var isSelectedArray = []
 var noOfSearch = 0;
 var uriArray = []
 var dateArray = []
+var loadingDone = false
 export default class HistoryScreen extends Component<{}>{
   constructor(props){
     super(props);
@@ -57,19 +61,37 @@ export default class HistoryScreen extends Component<{}>{
       editText: "Edit",
       reRender: "ok"
     }
-
+    this.spinValue = new Animated.Value(0)
+    loadingDone = false
   }
 async componentDidMount(){
+  console.log("COMPONENT DID MOUNT")
+  this.spinAnimation()
   noOfSearch = await this.getNoOfSearch()
   await this.createUriArray()
   await this.createDateArray()
   isSelectedArray = []
   this.initializeIsSelectedArray()
+  loadingDone = true
+  this.setState({reRender: "ok"})
 }
   static navigationOptions = {
       header: null,
   };
-
+  spinAnimation(){
+    this.spinValue = new Animated.Value(0)
+    // First set up animation
+    Animated.loop(
+    Animated.timing(
+        this.spinValue,
+        {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true
+        }
+      )).start()
+  }
 async deleteHistory(indexArray){
   var historyArray;
   historyArray = await this.getHistoryImageArray()
@@ -292,8 +314,13 @@ renderHistoryBoxes(){
     return boxes;
   }
 render(){
+  const spin = this.spinValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg']
+  })
+  console.log("RENDER")
   const {navigate} = this.props.navigation;
-  if(this.state.editPressed){
+  if(!loadingDone){
     return(
       <View
       style={{width: this.width, height: this.height, flex:1, flexDirection: "column"}}>
@@ -304,89 +331,123 @@ render(){
       isFilterVisible = {this.state.showFilter}
       title = {"History"}>
       </CustomHeader>
-      <View style = {{backgroundColor: 'rgba(181,181,181,0.1)', borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
-      <TouchableOpacity
-        activeOpacity = {1}
-        style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-        onPress={()=>this.editButtonPressed()}
-        disabled = {false}>
 
-      <Text style = {{fontSize: 20, color: ourBlue}}>
-      {this.state.editText}
-      </Text>
-      </TouchableOpacity>
-      </View>
-
-      <ScrollView
-        style = {{backgroundColor: 'rgba(181,181,181,0.1)', height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(), width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}>
-          {this.renderHistoryBoxes() }
-      </ScrollView>
-
-      <View
-      style = {{ borderColor: 'rgba(188,188,188,0.6)', borderTopWidth: 1, backgroundColor: 'rgba(209,192,188,0.6)', height: this.width/7,
-      width: this.width, bottom: 0, left:0, position:"absolute", justifyContent: "center", alignItems:"center"}}>
-      <TouchableOpacity
-      style = {{justifyContent: 'center', position: 'absolute', backgroundColor: doneColor, height: this.width*(0.8/10), paddingLeft: 15, paddingRight: 15,
-      borderBottomLeftRadius: 24, borderTopRightRadius: 24, borderTopLeftRadius: 24, borderBottomRightRadius: 24}}
-      disabled = {this.state.doneDisabled}
-      onPress = {()=> this.donePress()}>
-      <Text style = {{fontSize: 21, fontFamily: 'Candara', color: "white"}}>
-      Done
-      </Text>
-      </TouchableOpacity>
-      </View>
-
-    </View>
-
-  );
-  }
-  else{
-    return(
-      <View
-      style={{width: this.width, height: this.height, flex:1, flexDirection: "column"}}>
-      <ModifiedStatusBar/>
-
-      <CustomHeader
-      whichScreen = {"History"}
-      isFilterVisible = {this.state.showFilter}
-      title = {"History"}>
-      </CustomHeader>
-      <View style = {{backgroundColor: 'rgba(181,181,181,0.1)', borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
-      <TouchableOpacity
-        activeOpacity = {1}
-        style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-        onPress={()=>this.editButtonPressed()}
-        disabled = {false}>
-
-      <Text style = {{fontSize: 20, color: ourBlue}}>
-      {this.state.editText}
-      </Text>
-      </TouchableOpacity>
-      </View>
-
-      <ScrollView
-        style = {{backgroundColor: 'rgba(181,181,181,0.1)', height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(), width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}>
-          {this.renderHistoryBoxes() }
-      </ScrollView>
-
-      <View
-      style= {{width: this.width/7, height:this.width/7, bottom: this.width/7 + this.width/20, borderBottomLeftRadius: 555, borderTopRightRadius: 555,
-      borderTopLeftRadius: 555, borderBottomRightRadius: 555, right: this.width/20, backgroundColor: "white", flex: 1, alignItems:'center',
-      justifyContent: 'center', position: 'absolute',}}>
-      <SearchButton
-      onPress={()=>this.onPressSearch()}
-      disabled = {this.state.disabled}
-      width = {this.width/7}
-      height ={this.width/7}
-      backgroundColor = {this.state.buttonOpacity}/>
-      </View>
+      <Animated.Image source={{uri: 'loading'}}
+        style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15),
+        position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
+      />
       <BottomBar
       whichScreen = {"History"}
       msgOnPress = {()=> navigate("Messages")}
       homeOnPress = {()=> navigate("Main")}
       settingsOnPress = {()=> navigate("Settings")}/>
-    </View>
+      </View>
+    )
+  }
+  else{
+    if(this.state.editPressed){
+      return(
+        <View
+        style={{width: this.width, height: this.height, flex:1, flexDirection: "column"}}>
+        <ModifiedStatusBar/>
+
+        <CustomHeader
+        whichScreen = {"History"}
+        isFilterVisible = {this.state.showFilter}
+        title = {"History"}>
+        </CustomHeader>
+        <View style = {{backgroundColor: 'rgba(181,181,181,0.1)', borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
+        <TouchableOpacity
+          activeOpacity = {1}
+          style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+          onPress={()=>this.editButtonPressed()}
+          disabled = {false}>
+
+        <Text style = {{fontSize: 20, color: ourBlue}}>
+        {this.state.editText}
+        </Text>
+        </TouchableOpacity>
+        </View>
+
+        <FlatList
+          style = {{backgroundColor: 'rgba(181,181,181,0.1)', height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
+          width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+          renderItem = {()=>this.renderHistoryBoxes()}
+          data = { [{bos:"boş", key: "key"}]}
+          refreshing = {true}>
+        </FlatList>
+
+        <View
+        style = {{ borderColor: 'rgba(188,188,188,0.6)', borderTopWidth: 1, backgroundColor: 'rgba(209,192,188,0.6)', height: this.width/7,
+        width: this.width, bottom: 0, left:0, position:"absolute", justifyContent: "center", alignItems:"center"}}>
+        <TouchableOpacity
+        style = {{justifyContent: 'center', position: 'absolute', backgroundColor: doneColor, height: this.width*(0.8/10), paddingLeft: 15, paddingRight: 15,
+        borderBottomLeftRadius: 24, borderTopRightRadius: 24, borderTopLeftRadius: 24, borderBottomRightRadius: 24}}
+        disabled = {this.state.doneDisabled}
+        onPress = {()=> this.donePress()}>
+        <Text style = {{fontSize: 21, fontFamily: 'Candara', color: "white"}}>
+        Done
+        </Text>
+        </TouchableOpacity>
+        </View>
+
+      </View>
 
     );
+    }
+    else{
+      return(
+        <View
+        style={{width: this.width, height: this.height, flex:1, flexDirection: "column"}}>
+        <ModifiedStatusBar/>
+
+        <CustomHeader
+        whichScreen = {"History"}
+        isFilterVisible = {this.state.showFilter}
+        title = {"History"}>
+        </CustomHeader>
+        <View style = {{backgroundColor: 'rgba(181,181,181,0.1)', borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
+        <TouchableOpacity
+          activeOpacity = {1}
+          style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+          onPress={()=>this.editButtonPressed()}
+          disabled = {false}>
+
+        <Text style = {{fontSize: 20, color: ourBlue}}>
+        {this.state.editText}
+        </Text>
+        </TouchableOpacity>
+        </View>
+
+        <FlatList
+          style = {{backgroundColor: 'rgba(181,181,181,0.1)', height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
+          width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+          renderItem = {()=>this.renderHistoryBoxes()}
+          data = { [{bos:"boş", key: "key"}]}
+          refreshing = {true}>
+        </FlatList>
+
+        <View
+        style= {{width: this.width/7, height:this.width/7, bottom: this.width/7 + this.width/20, borderBottomLeftRadius: 555, borderTopRightRadius: 555,
+        borderTopLeftRadius: 555, borderBottomRightRadius: 555, right: this.width/20, backgroundColor: "white", flex: 1, alignItems:'center',
+        justifyContent: 'center', position: 'absolute',}}>
+        <SearchButton
+        onPress={()=>this.onPressSearch()}
+        disabled = {this.state.disabled}
+        width = {this.width/7}
+        height ={this.width/7}
+        backgroundColor = {this.state.buttonOpacity}/>
+        </View>
+        <BottomBar
+        whichScreen = {"History"}
+        msgOnPress = {()=> navigate("Messages")}
+        homeOnPress = {()=> navigate("Main")}
+        settingsOnPress = {()=> navigate("Settings")}/>
+      </View>
+
+      );
+    }
   }
+
+
 }}

@@ -192,16 +192,16 @@ var firebaseConfig = {
   const config = {
   animation: 'timing',
   config: {
-    duration: 0,
-    stiffness: 1000,
-    damping: 500,
-    mass: 3,
-    overshootClamping: true,
-    restDisplacementThreshold: 0.01,
-    restSpeedThreshold: 0.01,
+    duration: 1000
   },
 };
-
+const MyTransition = {
+  gestureDirection: 'horizontal',
+  transitionSpec: {
+    open: config,
+    close: config,
+  },
+}
   function App() {
     return (
       <NavigationContainer>
@@ -209,87 +209,51 @@ var firebaseConfig = {
         headerMode = {"none"}>
 
         <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
+          ...MyTransition,
         }}
         name="Splash" component={SplashScreen} />
         <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
+          ...MyTransition,
         }}
         name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
+          ...MyTransition,
         }}
         name="NewAccount" component={NewAccountScreen} />
         <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
+          ...MyTransition,
         }}
         name="Bio" component={BioScreen} />
         <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
+          ...MyTransition,
         }}
         name="Gender" component={GenderScreen} />
         <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
+          ...MyTransition,
         }}
         name="ProfileUpload" component={ProfileUploadScreen} />
         <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
+          ...MyTransition,
         }}
         name="Messages" component={MessagesScreen} />
         <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
+          ...MyTransition,
         }}
         name="Chat" component={ChatScreen} />
         <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
+          ...MyTransition,
         }}
         name="Main" component={MainScreen} />
         <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
+          ...MyTransition,
         }}
         name="ImageUpload" component={ImageUploadScreen} />
         <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
+          ...MyTransition,
         }}
         name="History" component={HistoryScreen} />
         <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
+          ...MyTransition,
         }}
         name="Settings" component={SettingsScreen} />
       </Stack.Navigator>

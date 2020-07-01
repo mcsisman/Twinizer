@@ -126,10 +126,10 @@ export default class MessageBox extends Component {
         style = {{fontSize: 14, top: this.width*2/100, color: 'gray', position: 'absolute'}}>
           {this.props.lastMsgTime}
         </Text>
-        <Image
-        style={{width: this.width*(1/24), height: this.width*(1/24), opacity: this.props.isSeen}}
-        source = {{uri: 'lastseen'}}>
-        </Image>
+        <View
+        style={{backgroundColor: "rgba(77,120,204,1)", borderTopLeftRadius: 555, borderBottomLeftRadius: 555, borderTopRightRadius: 555, borderBottomRightRadius: 555,
+        width: this.width*(1/24), height: this.width*(1/24), opacity: this.props.isSeen}}>
+        </View>
       </View>
 
 

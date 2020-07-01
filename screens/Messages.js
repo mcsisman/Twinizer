@@ -21,7 +21,8 @@ import {Image,
    Animated,
    Easing,
    Platform,
-   Alert
+   Alert,
+   FlatList
   } from 'react-native';
 import MessageBox from './components/MessageBox'
 import MessageSwitchButton from './components/MessageSwitchButton'
@@ -1116,10 +1117,11 @@ render(){
                   </View>
 
 
-                  <ScrollView
-                    style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}>
-                      {this.renderMessageBoxes() }
-                  </ScrollView>
+                  <FlatList
+                    style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+                    renderItem = {()=>this.renderMessageBoxes()}
+                    data = { [{bos:"boş", key: "key"}]}>
+                  </FlatList>
 
                   <View
                   style = {{borderColor: 'rgba(188,188,188,0.6)', borderTopWidth: 1, backgroundColor: 'rgba(209,192,188,0.6)', height: this.width/7,
@@ -1164,10 +1166,11 @@ render(){
                   </TouchableOpacity>
                   </View>
 
-                  <ScrollView
-                  style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}>
-                    {this.renderRequestBoxes() }
-                  </ScrollView>
+                  <FlatList
+                  style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+                  renderItem = {()=>this.renderRequestBoxes()}
+                  data = { [{bos:"boş", key: "key"}]}>
+                  </FlatList>
 
                   <View
                   style = {{borderColor: 'rgba(188,188,188,0.6)', borderTopWidth: 1, backgroundColor: 'rgba(209,192,188,0.6)', height: this.width/7, width: this.width, bottom: 0, left:0, position:"absolute", justifyContent: "center", alignItems:"center"}}>
@@ -1262,10 +1265,11 @@ render(){
                   </TouchableOpacity>
                   </View>
 
-                  <ScrollView
-                  style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}>
-                      {this.renderMessageBoxes() }
-                  </ScrollView>
+                  <FlatList
+                  style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+                  renderItem = {()=> this.renderMessageBoxes()}
+                  data = { [{bos:"boş", key: "key"}]}>
+                  </FlatList>
 
                   <BottomBar
                   whichScreen = {"Messages"}
@@ -1299,10 +1303,11 @@ render(){
                   </TouchableOpacity>
                   </View>
 
-                  <ScrollView
-                  style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}>
-                    {this.renderRequestBoxes() }
-                  </ScrollView>
+                  <FlatList
+                  style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+                  renderItem = {()=>this.renderRequestBoxes()}
+                  data = { [{bos:"boş", key: "key"}]}>
+                  </FlatList>
 
                   <BottomBar
                   whichScreen = {"Messages"}
