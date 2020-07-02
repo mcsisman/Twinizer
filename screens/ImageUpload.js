@@ -19,7 +19,9 @@ import {Image,
    Alert,
    Button,
    StatusBar,
-   Platform
+   Platform,
+   Animated,
+   Easing
   } from 'react-native';
 import BioScreen from './Bio';
 import CustomHeader from './components/CustomHeader'
@@ -41,6 +43,7 @@ var uploadDone1 = false;
 var uploadDone2 = false;
 var uploadDone3 = false;
 var uploadDone4 = false;
+var loadingDone = false;
 export default class ImageUploadScreen extends React.Component {
   constructor(props){
     super(props);
@@ -74,10 +77,12 @@ export default class ImageUploadScreen extends React.Component {
       str4: "",
       selectedPhoto: null,
       isVisible2: true,
+      loadingOpacity: 0
     };
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.props.navigation.setParams({ otherParam: global.langCompleteYourProfile})
+    this.spinValue = new Animated.Value(0)
   }
   componentDidMount(){
     uploadDone1 = false;
@@ -89,7 +94,21 @@ export default class ImageUploadScreen extends React.Component {
   static navigationOptions = {
       header: null,
   };
-
+  spinAnimation(){
+    console.log("SPIN ANIMATION")
+    this.spinValue = new Animated.Value(0)
+    // First set up animation
+    Animated.loop(
+    Animated.timing(
+        this.spinValue,
+        {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true
+        }
+      )).start()
+  }
 updateFunction1= () => {
   const updateRef = firebase.firestore().collection('Users').doc('User1');
   updateRef.set({
@@ -97,6 +116,8 @@ updateFunction1= () => {
   })
 }
 uploadPhoto = async (uri1, uri2, uri3, uri4) => {
+    this.setState({loadingOpacity: 1})
+    this.spinAnimation()
     var metadata = {
       contentType: 'image/jpeg',
     };
@@ -135,7 +156,8 @@ uploadPhoto = async (uri1, uri2, uri3, uri4) => {
       }).catch(function(error) {
         Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
       });;;
-
+      this.spinValue = new Animated.Value(0)
+      this.setState({loadingOpacity: 0})
     if(uploadDone1 && uploadDone2 && uploadDone3 && uploadDone4){
       //this.updateFunction1();
       const {navigate} = this.props.navigation;
@@ -271,6 +293,10 @@ camera = (selectedPhoto) => {
 
   render() {
     const { photo } = this.state;
+    const spin = this.spinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '360deg']
+    })
     return (
       <View style={{width: this.width, height: this.height, top: 0, flex:1, flexDirection:'column', alignItems: 'center',}}>
 
@@ -323,6 +349,10 @@ camera = (selectedPhoto) => {
       textOpacity = {this.state.opacity4}
       fontSize = {12.5}
       photo = {this.state.photo4}/>
+
+      <Animated.Image source={{uri: 'loading'}}
+        style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
+        position: 'absolute', bottom: this.height*12/100 + headerHeight + getStatusBarHeight()-this.width*(1/10), left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 
       <TextBox
       text = {global.langImageUploadScreen}/>

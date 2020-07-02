@@ -345,24 +345,6 @@ export default class ChatScreen extends React.Component<Props> {
       number = localMessages.length - 20
     }
       for( i = number; i < localMessages.length; i++){
-        /*
-        var xd = localMessages[i]
-        var keyArr = Object.keys(localMessages[i])
-        var key = "" + keyArr[0]
-
-        const { c: numberStamp, i: isRequest, text, user } = xd[key]
-        var id  = key;
-        var _id = key; //needed for giftedchat
-        const createdAt = new Date(numberStamp);
-
-        const message = {
-          id,
-          _id,
-          createdAt,
-          isRequest,
-          text,
-          user,
-        };*/
         messageArray.push(localMessages[i])
       }
   }

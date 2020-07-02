@@ -132,14 +132,6 @@ componentWillUnmount(){
 static navigationOptions = {
     header: null,
 };
-
-async initializeMessageScreen(){
-
-  this.resetVariables()
-  this.spinAnimation()
-  await this.createConversationArrays()
-}
-
 resetVariables(){
   if(!newRequest){
     syncListener = [];
@@ -220,6 +212,128 @@ resetVariables(){
     })
   }
 }
+async initializeMessageScreen(){
+
+  this.resetVariables()
+  this.spinAnimation()
+  await this.createConversationArrays()
+}
+async createConversationArrays(){
+
+  if(!newRequest){
+    var db = firebase.firestore();
+    var docRef = db.collection(firebase.auth().currentUser.email).doc("MessageInformation");
+    await docRef.onSnapshot(async doc =>{
+      if(!afterDelete){
+        if(!newRequest){
+          if(doc.exists){
+            conversationUidArray = await doc.data()["UidArray"]
+            conversationGenderArray = await doc.data()["GenderArray"]
+            conversationCountryArray = await doc.data()["CountryArray"]
+            conversationUsernameArray = await doc.data()["UsernameArray"]
+            noOfConversations = conversationUidArray.length
+            uidArray = await this.createUidPhotoArrays()
+            await this.printMessagesData()
+            newRequest = true
+          }
+          else{
+              this.setState({loadingDone: true, loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
+          }
+        }
+        else{
+          await this.resetVariables()
+          await this.spinAnimation()
+          conversationUidArray = await doc.data()["UidArray"]
+          conversationGenderArray = await doc.data()["GenderArray"]
+          conversationCountryArray = await doc.data()["CountryArray"]
+          conversationUsernameArray = await doc.data()["UsernameArray"]
+          noOfConversations = conversationUidArray.length
+          uidArray = await this.createUidPhotoArrays()
+          await this.printMessagesData()
+        }
+      }
+    })
+  }
+}
+async createUidPhotoArrays(){
+
+  this.createGenderArray()
+  this.createCountryArray()
+  this.createUsernameArray()
+
+  // GET THE UIDS THAT ARE SAVED TO LOCAL
+  var localUids = []
+  localUids.splice(0, localUids.length)
+  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_uids')
+    .then(req => JSON.parse(req))
+    .then(json => localUids = json)
+
+    if(localUids != null && localUids.length != 0){
+
+      if(conversationUidArray.concat().sort().join(',') === localUids.concat().sort().join(',')){
+      }
+      else {
+        differenceArray = conversationUidArray.filter(x => !localUids.includes(x))
+        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
+
+        for(i = 0; i < conversationUidArray.length; i++){
+          for(j = 0; j < differenceArray.length; j++){
+            if( conversationUidArray[i] == differenceArray[j] ){
+              differenceArrayIndexes.push(i)
+            }
+          }
+        }
+        for(i = 0; i < differenceArray.length; i++){
+          var storageRef = firebase.storage().ref(conversationGenderArray[differenceArrayIndexes[i]] + "/" + conversationCountryArray[differenceArrayIndexes[i]] + "/" + conversationUidArray[differenceArrayIndexes[i]] + "/1.jpg")
+          await storageRef.getDownloadURL().then(data =>{
+            urlArray.push(data)
+          })
+          let dirs = RNFetchBlob.fs.dirs
+          await RNFetchBlob
+          .config({
+            fileCache : true,
+            appendExt : 'jpg',
+            path: dirs.DocumentDir + '/' + differenceArray[i] + "y" + '.jpg'
+          })
+          .fetch('GET', urlArray[i], {
+            //some headers ..
+          })
+        }
+      }
+    }
+    else{
+      differenceArray = conversationUidArray
+      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
+
+      for(i = 0; i < conversationUidArray.length; i++){
+        for(j = 0; j < differenceArray.length; j++){
+          if( conversationUidArray[i] == differenceArray[j] ){
+            differenceArrayIndexes.push(i)
+          }
+        }
+      }
+      for(i = 0; i < differenceArray.length; i++){
+        var storageRef = firebase.storage().ref(conversationGenderArray[i] + "/" + conversationCountryArray[i] + "/" + conversationUidArray[i] + "/1.jpg")
+        await storageRef.getDownloadURL().then(data =>{
+          urlArray.push(data)
+        })
+        let dirs = RNFetchBlob.fs.dirs
+        await RNFetchBlob
+        .config({
+          fileCache : true,
+          appendExt : 'jpg',
+          path: dirs.DocumentDir + '/' + differenceArray[i] + "y" + '.jpg'
+        })
+        .fetch('GET', urlArray[i], {
+          //some headers ..
+        })
+      }
+    }
+  for(i = 0; i < conversationUidArray.length; i++){
+      photoArray[i] = "file:///data/user/0/com.twinizer/files/" + conversationUidArray[i] + "y"+ ".jpg"
+  }
+  return conversationUidArray
+}
 async printMessagesData(){
   count = 0;
   while(count < noOfConversations){
@@ -235,8 +349,6 @@ getMessagesData = async callback =>{
   arr[1] = uidArray[count]
   arr.sort()
   var key = arr[0] + "" + arr[1];
-  //listener2 = firebase.database().ref('Messages/' + "" + key).limitToLast(1);
-  //await listener2.on('child_added', snapshot => this.createDataArray(snapshot));
 
   var listener23 = firebase.database().ref('Messages/' + "" + key).limitToLast(1);
   await listener23.once('child_added').then(async snapshot => {
@@ -269,6 +381,8 @@ getMessagesData = async callback =>{
         messageArray.sort(this.sortByProperty("c"));
         messageArray.reverse()
 
+        console.log("MESSAGE ARRAY: ", messageArray)
+        console.log("REQUEST ARRAY: ", requestArray)
         // CHECKING FOR LAST SEEN
         for( i = 0; i < requestArray.length; i++){
           requestColorArray[i] = "trashgray"
@@ -280,7 +394,6 @@ getMessagesData = async callback =>{
           else{
             key = firebase.auth().currentUser.uid + "" + requestArray[i].user._id
             time = await AsyncStorage.getItem(key + 'lastSeen')
-            console.log("REQ: ", requestArray[i])
             if(requestArray[i].c > time){
               requestLastSeenArray[i] = 1
             }
@@ -289,7 +402,6 @@ getMessagesData = async callback =>{
             }
           }
         }
-
         for( i = 0; i < messageArray.length; i++){
           messageColorArray[i] = "trashgray"
           var key;
@@ -300,7 +412,6 @@ getMessagesData = async callback =>{
           }
           else{
             key = firebase.auth().currentUser.uid + "" + messageArray[i].user._id
-            console.log("REQ: ", messageArray[i])
             time = await AsyncStorage.getItem(key + 'lastSeen')
             if(messageArray[i].c > time){
               messageLastSeenArray[i] = 1
@@ -343,6 +454,21 @@ getMessagesData = async callback =>{
   var uidCount = count;
   await syncListener[count].on('child_added', async snap => await this.syncLocalMessages(snap, uidCount));
 };
+async getLastLocalMessage(){
+
+  var lastLocalKey;
+  await AsyncStorage.getItem(firebase.auth().currentUser.uid + otherUserUid + '/messages')
+    .then(req => JSON.parse(req))
+    .then(json => localMessages[count] = json)
+    if(localMessages[count] != null && localMessages[count].length != 0){
+      var key = localMessages[count][localMessages[count].length - 1]._id
+      lastLocalKey = key + "z";
+    }else{
+      lastLocalKey = ""
+    }
+
+  return lastLocalKey
+}
 syncLocalMessages = async (snap, uidCount) => {
   if(snap.val() != null){
     var key = snap.key + ""
@@ -352,7 +478,7 @@ syncLocalMessages = async (snap, uidCount) => {
     const { key: id } = snap;
     const { key: _id } = snap; //needed for giftedchat
     const createdAt = new Date(numberStamp);
-
+    const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
     const msg = {
       id,
       _id,
@@ -360,6 +486,7 @@ syncLocalMessages = async (snap, uidCount) => {
       isRequest,
       text,
       user,
+      image
     };
     if(localMessages[uidCount] == null || localMessages[uidCount].length == 0){
       localMessages[uidCount] = [msg]
@@ -367,7 +494,6 @@ syncLocalMessages = async (snap, uidCount) => {
     else{
       localMessages[uidCount].push(msg)
     }
-    console.log("MESSAGES KAYDEDİLEN LOCAL MESAJLAR:", localMessages[uidCount])
     await AsyncStorage.setItem(firebase.auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
     lastMsgFlag = lastDBkey == snap.key
     if(lastMsgFlag || didSync){
@@ -413,7 +539,6 @@ syncLocalMessages = async (snap, uidCount) => {
             else{
               key = firebase.auth().currentUser.uid + "" + requestArray[i].user._id
               time = await AsyncStorage.getItem(key + 'lastSeen')
-              console.log("REQ: ", requestArray[i])
               if(requestArray[i].c > time){
                 requestLastSeenArray[i] = 1
               }
@@ -434,7 +559,6 @@ syncLocalMessages = async (snap, uidCount) => {
             else{
               key = firebase.auth().currentUser.uid + "" + messageArray[i].user._id
               time = await AsyncStorage.getItem(key + 'lastSeen')
-              console.log("REQ: ", messageArray[i])
               if(messageArray[i].c > time){
                 messageLastSeenArray[i] = 1
               }
@@ -469,57 +593,7 @@ syncLocalMessages = async (snap, uidCount) => {
   }
 };
 
-async createConversationArrays(){
 
-  if(!newRequest){
-    var db = firebase.firestore();
-    var docRef = db.collection(firebase.auth().currentUser.email).doc("MessageInformation");
-    await docRef.onSnapshot(async doc =>{
-      if(!afterDelete){
-        if(!newRequest){
-          if(doc.exists){
-            conversationUidArray = await doc.data()["UidArray"]
-            conversationGenderArray = await doc.data()["GenderArray"]
-            conversationCountryArray = await doc.data()["CountryArray"]
-            conversationUsernameArray = await doc.data()["UsernameArray"]
-            noOfConversations = conversationUidArray.length
-            uidArray = await this.createUidPhotoArrays()
-            await this.printMessagesData()
-            newRequest = true
-          }
-          else{
-              this.setState({loadingDone: true, loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
-          }
-        }
-        else{
-          await this.resetVariables()
-          await this.spinAnimation()
-          conversationUidArray = await doc.data()["UidArray"]
-          conversationGenderArray = await doc.data()["GenderArray"]
-          conversationCountryArray = await doc.data()["CountryArray"]
-          conversationUsernameArray = await doc.data()["UsernameArray"]
-          noOfConversations = conversationUidArray.length
-          uidArray = await this.createUidPhotoArrays()
-          await this.printMessagesData()
-        }
-      }
-    })
-  }
-}
-async getLastLocalMessage(){
-  var lastLocalKey;
-  await AsyncStorage.getItem(firebase.auth().currentUser.uid + otherUserUid + '/messages')
-    .then(req => JSON.parse(req))
-    .then(json => localMessages[count] = json)
-    if(localMessages[count] != null && localMessages[count].length != 0){
-      var key = localMessages[count][localMessages[count].length - 1]._id
-      lastLocalKey = key + "z";
-    }else{
-      lastLocalKey = ""
-    }
-
-  return lastLocalKey
-}
 createGenderArray(){
   for (i = 0; i < conversationGenderArray.length; i++) {
     if(conversationGenderArray[i].charAt(0) == "F"){
@@ -554,87 +628,7 @@ createUsernameArray(){
     conversationUsernameArray[i] = conversationUsernameArray[i].substring(0,usernameIndex)
   }
 }
-async createUidPhotoArrays(){
 
-  this.createGenderArray()
-  this.createCountryArray()
-  this.createUsernameArray()
-
-  // GET THE UIDS THAT ARE SAVED TO LOCAL
-  var localUids = []
-  localUids.splice(0, localUids.length)
-  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_uids')
-    .then(req => JSON.parse(req))
-    .then(json => localUids = json)
-
-    if(localUids != null && localUids.length != 0){
-
-      if(conversationUidArray.concat().sort().join(',') === localUids.concat().sort().join(',')){
-      }
-      else {
-        differenceArray = conversationUidArray.filter(x => !localUids.includes(x))
-        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
-
-        for(i = 0; i < conversationUidArray.length; i++){
-          for(j = 0; j < differenceArray.length; j++){
-            if( conversationUidArray[i] == differenceArray[j] ){
-              differenceArrayIndexes.push(i)
-            }
-          }
-        }
-        for(i = 0; i < differenceArray.length; i++){
-          var storageRef = firebase.storage().ref(conversationGenderArray[differenceArrayIndexes[i]] + "/" + conversationCountryArray[differenceArrayIndexes[i]] + "/" + conversationUidArray[differenceArrayIndexes[i]] + "/1.jpg")
-          await storageRef.getDownloadURL().then(data =>{
-            urlArray.push(data)
-          })
-          console.log("URL ARRAY:", urlArray[i])
-          let dirs = RNFetchBlob.fs.dirs
-          await RNFetchBlob
-          .config({
-            fileCache : true,
-            appendExt : 'jpg',
-            path: dirs.DocumentDir + '/' + differenceArray[i] + "y" + '.jpg'
-          })
-          .fetch('GET', urlArray[i], {
-            //some headers ..
-          })
-        }
-      }
-    }
-    else{
-      differenceArray = conversationUidArray
-      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
-
-      for(i = 0; i < conversationUidArray.length; i++){
-        for(j = 0; j < differenceArray.length; j++){
-          if( conversationUidArray[i] == differenceArray[j] ){
-            differenceArrayIndexes.push(i)
-          }
-        }
-      }
-      for(i = 0; i < differenceArray.length; i++){
-        var storageRef = firebase.storage().ref(conversationGenderArray[i] + "/" + conversationCountryArray[i] + "/" + conversationUidArray[i] + "/1.jpg")
-        await storageRef.getDownloadURL().then(data =>{
-          urlArray.push(data)
-        })
-        console.log("URL ARRAY:", urlArray[i])
-        let dirs = RNFetchBlob.fs.dirs
-        await RNFetchBlob
-        .config({
-          fileCache : true,
-          appendExt : 'jpg',
-          path: dirs.DocumentDir + '/' + differenceArray[i] + "y" + '.jpg'
-        })
-        .fetch('GET', urlArray[i], {
-          //some headers ..
-        })
-      }
-    }
-  for(i = 0; i < conversationUidArray.length; i++){
-      photoArray[i] = "file:///data/user/0/com.twinizer/files/" + conversationUidArray[i] + "y"+ ".jpg"
-  }
-  return conversationUidArray
-}
 
 sortByProperty(property){
    return function(a,b){
@@ -942,7 +936,6 @@ arrangeDoneColor(){
   }
 }
 requestDonePress(){
-
 }
 async deleteMessage(){
   var docRef = firebase.firestore().collection(firebase.auth().currentUser.email).doc("MessageInformation");

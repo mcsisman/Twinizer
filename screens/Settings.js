@@ -31,6 +31,7 @@ import BottomBar from './components/BottomBar'
 import ModifiedStatusBar from './components/ModifiedStatusBar'
 import ProfileInfo from './components/ProfileInfo'
 import SettingsButton from './components/SettingsButton'
+import LogoutButton from './components/LogoutButton'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -85,6 +86,11 @@ export default class SettingsScreen extends Component<{}>{
       <SettingsButton
       text = {"Message Settings"}/>
 
+      <View
+      style = {{height: this.width/9}}/>
+      <View
+      style = {{height: this.width/9}}/>
+      <LogoutButton/>
 
       </ScrollView>
 

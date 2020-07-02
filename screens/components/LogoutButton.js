@@ -23,13 +23,13 @@ if(Platform.OS === 'ios'){
 }
 var screenHeight = Math.round(Dimensions.get('screen').height);
 var screenWidth = Math.round(Dimensions.get('screen').width);
-export default class SendMsgButton extends Component {
+export default class LogoutButton extends Component {
 
 
   static propTypes = {
    onPress: PropTypes.func,
-   disabled: PropTypes.bool,
-   opacity: PropTypes.number
+   bottom: PropTypes.number,
+   text: PropTypes.string,
  }
  static defaultProps = {
  }
@@ -37,19 +37,17 @@ export default class SendMsgButton extends Component {
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     return(
-      <TouchableOpacity // SEND MESSAGE BUTONU
-        activeOpacity = {1}
-        style={{ opacity: this.props.opacity, justifyContent: 'center', alignItems: 'center', width: this.width/6, height: this.width/10, borderRightWidth: 0.7, borderColor: "white"}}
-        onPress={this.props.onPress}
-        disabled = {this.props.disabled}>
-
-        <Image source={{uri: "msgblue"}}
-          style={{ height: this.width/10*(7/10), width: this.width/10*(7/10) }}
-        />
-
+      <TouchableOpacity
+      activeOpacity = {1}
+      style={{ borderTopWidth:1, borderBottomWidth:1, borderColor: 'rgba(128,128,128,0.3)', backgroundColor: "white", justifyContent: 'center', width: this.width, height: this.width/8}}
+      onPress={this.props.onPress}>
+      <Text
+        style = {{color: 'red', fontSize: 18*this.width/360, textAlign: "center" }}>
+        Log Out
+      </Text>
       </TouchableOpacity>
     )
   }
 }
 
-export * from './SendMsgButton';
+export * from './LogoutButton';

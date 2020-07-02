@@ -17,7 +17,9 @@ import {Image,
    TextInput,
    Alert,
    StatusBar,
-   Platform
+   Platform,
+   Animated,
+   Easing
   } from 'react-native';
 import MainScreen from './Main';
 import CustomHeader from './components/CustomHeader'
@@ -48,20 +50,38 @@ export default class CountryScreen extends Component<{}>{
       buttonOpacity: 'rgba(241,51,18,1)',
       disabled: false,
       isVisible2: true,
-      bioLimit: 0
+      bioLimit: 0,
+      loadingOpacity: 0
     }
       global.globalBio = "";
       this.height = Math.round(Dimensions.get('screen').height);
       this.width = Math.round(Dimensions.get('screen').width);
       this.props.navigation.setParams({ otherParam: global.langCompleteYourProfile})
+      this.spinValue = new Animated.Value(0)
   }
 componentDidMount(){
 };
 static navigationOptions = {
     header: null,
 };
-
+spinAnimation(){
+  console.log("SPIN ANIMATION")
+  this.spinValue = new Animated.Value(0)
+  // First set up animation
+  Animated.loop(
+  Animated.timing(
+      this.spinValue,
+      {
+        toValue: 1,
+        duration: 1000,
+        easing: Easing.linear,
+        useNativeDriver: true
+      }
+    )).start()
+}
 async writeCountryToDatabase(){
+  this.setState({loadingOpacity: 1})
+  this.spinAnimation()
   if((global.globalBio).length < 101){
     if(global.globalBio == ""){
       global.globalBio = " ";
@@ -87,6 +107,8 @@ async writeCountryToDatabase(){
           updateDone = true;
       })
     }
+    this.setState({loadingOpacity: 0})
+    this.spinValue = new Animated.Value(0)
     if (writeDone && updateDone){
       const {navigate} = this.props.navigation;
       navigate("Main")
@@ -108,6 +130,11 @@ valueChange(value){
 }
 
   render(){
+    const spin = this.spinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '360deg']
+    })
+
     return(
       <View
       style={{flex:1, flexDirection: 'column', alignItems: 'center'}}>
@@ -142,6 +169,10 @@ valueChange(value){
       txtAlert = {global.langProfileAlert}
       txtGotIt = {global.langGotIt}
       onPressClose = {()=>this.setState({isVisible2:false}) }/>
+
+      <Animated.Image source={{uri: 'loading'}}
+        style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
+        position: 'absolute', bottom: this.height*12/100 + headerHeight + getStatusBarHeight()-this.width*(1/10), left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 
       <InfoButton
       onPress = {()=> this.setState({isVisible2: true})}

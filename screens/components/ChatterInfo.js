@@ -54,8 +54,8 @@ export default class ChatterInfo extends Component {
         deviceWidth = {this.width}
         hideModalContentWhileAnimating = {true}
         onBackdropPress = {this.props.onBackdropPress}
-        animationIn = "flipInY"
-        animationOut = "flipOutY"
+        animationIn = "zoomInDown"
+        animationOut = "zoomOutDown"
         animationInTiming = {750}
         animationOutTiming = {750}
         isVisible={this.props.isVisible}

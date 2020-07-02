@@ -19,7 +19,9 @@ import {Image,
    Alert,
    Button,
    StatusBar,
-   Platform
+   Platform,
+   Animated,
+   Easing
   } from 'react-native';
 import ImageUploadScreen from './ImageUpload';
 import CustomHeader from './components/CustomHeader'
@@ -56,11 +58,12 @@ export default class ProfileUploadScreen extends React.Component {
       opacity: 0.4,
       isVisible1: false,
       isVisible2: true,
+      loadingOpacity: 0
     };
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.props.navigation.setParams({ otherParam: global.langCompleteYourProfile })
-
+    this.spinValue = new Animated.Value(0)
   }
   componentDidMount(){
     uploadDone = false;
@@ -69,8 +72,24 @@ export default class ProfileUploadScreen extends React.Component {
   static navigationOptions = {
       header: null,
   };
-
+  spinAnimation(){
+    console.log("SPIN ANIMATION")
+    this.spinValue = new Animated.Value(0)
+    // First set up animation
+    Animated.loop(
+    Animated.timing(
+        this.spinValue,
+        {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true
+        }
+      )).start()
+  }
 uploadPhoto = async (uri) => {
+    this.setState({loadingOpacity: 1})
+    this.spinAnimation()
     var storage = firebase.storage();
     var storageRef = storage.ref();
     var metadata = {
@@ -83,6 +102,8 @@ uploadPhoto = async (uri) => {
       await ref1.put(blob).then(function(snapshot) {uploadDone = true}).catch(function(error) {
         Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
       });;
+      this.spinValue = new Animated.Value(0)
+      this.setState({loadingOpacity: 0})
     if (uploadDone){
       const {navigate} = this.props.navigation;
       navigate("ImageUpload")
@@ -129,6 +150,10 @@ camera = () => {
 };
 
   render() {
+    const spin = this.spinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '360deg']
+    })
     const { photo } = this.state;
     return (
       <View style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex:1, flexDirection: 'column'}}>
@@ -175,6 +200,10 @@ camera = () => {
       onPressCancel = {()=>this.setState({ isVisible1: false}) }
       onPressCamera = {this.camera}
       onPressLibrary = {this.library}/>
+
+      <Animated.Image source={{uri: 'loading'}}
+        style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
+        position: 'absolute', bottom: this.height*12/100 + headerHeight + getStatusBarHeight()-this.width*(1/10), left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 
       <InfoModal
       isVisible = {this.state.isVisible2}

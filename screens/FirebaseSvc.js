@@ -53,7 +53,7 @@ class FirebaseSvc {
       const { key: id } = snapshot;
       const { key: _id } = snapshot; //needed for giftedchat
       const createdAt = new Date(numberStamp);
-
+      const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
       const message = {
         id,
         _id,
@@ -61,6 +61,7 @@ class FirebaseSvc {
         isRequest,
         text,
         user,
+        image
       };
 
       if(localMessages == null || localMessages.length == 0){

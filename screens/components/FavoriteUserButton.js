@@ -23,7 +23,7 @@ if(Platform.OS === 'ios'){
 }
 var screenHeight = Math.round(Dimensions.get('screen').height);
 var screenWidth = Math.round(Dimensions.get('screen').width);
-export default class SendMsgButton extends Component {
+export default class FavoriteUserButton extends Component {
 
 
   static propTypes = {
@@ -43,7 +43,7 @@ export default class SendMsgButton extends Component {
         onPress={this.props.onPress}
         disabled = {this.props.disabled}>
 
-        <Image source={{uri: "msgblue"}}
+        <Image source={{uri: "stargreen"}}
           style={{ height: this.width/10*(7/10), width: this.width/10*(7/10) }}
         />
 
@@ -52,4 +52,4 @@ export default class SendMsgButton extends Component {
   }
 }
 
-export * from './SendMsgButton';
+export * from './FavoriteUserButton';

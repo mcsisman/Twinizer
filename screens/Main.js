@@ -45,6 +45,8 @@ import ImageUploadModal from './components/ImageUploadModal'
 import FilterModal from './components/FilterModal'
 import PhotoPopUpModal from './components/PhotoPopUpModal'
 import SendMsgButton from './components/SendMsgButton'
+import BlockUserButton from './components/BlockUserButton'
+import FavoriteUserButton from './components/FavoriteUserButton'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -133,7 +135,8 @@ constructor(props){
       swipeable: -global.width,
       openProfileIsVisible: false,
       messageButtonOpacity: 0,
-      messageButtonDisabled: true
+      messageButtonDisabled: true,
+      loadingOpacity: 0
     }
     global.swipeCount= 0,
     this.activationCount= 0,
@@ -158,6 +161,7 @@ constructor(props){
     this.widthAnimation = new Animated.Value(global.width*(5/10))
     this.heightAnimation = new Animated.Value(global.width*(5/10)*(7/6))
     this.topAnimation = new Animated.Value(0)
+    this.spinValue = new Animated.Value(0)
     var test = "xxx"
   }
 
@@ -216,7 +220,21 @@ async componentDidMount(){
 static navigationOptions = {
     header: null,
 }
-
+spinAnimation(){
+  console.log("SPIN ANIMATION")
+  this.spinValue = new Animated.Value(0)
+  // First set up animation
+  Animated.loop(
+  Animated.timing(
+      this.spinValue,
+      {
+        toValue: 1,
+        duration: 1000,
+        easing: Easing.linear,
+        useNativeDriver: true
+      }
+    )).start()
+}
 async setSearchPhotoFromHistory(uri){
   this.setState({photoPath: uri,
   photo: {uri: uri},
@@ -955,8 +973,10 @@ async checkFunction(){
             swipeableDisabled: false,
             messageButtonDisabled: false,
             messageButtonOpacity: 1,
-            showFilter: true
+            showFilter: true,
+            loadingOpacity: 0
           })
+          this.spinValue = new Animated.Value(0)
           console.log(photoArray)
           console.log(emailArray)
           console.log(genderArray)
@@ -1049,7 +1069,8 @@ async filterDone(){
 }
 
 async searchDone(value){
-  this.setState({showFilter: false})
+  this.setState({showFilter: false, loadingOpacity: 1})
+  this.spinAnimation()
   this.inSearchDone = true;
   emailArray = [];
   usernameArray = [];
@@ -1210,27 +1231,37 @@ uploadSearchPhoto = async (uri) => {
               uri2_country: "",
               uri2_bio: "",
               uri2_gender: "",
+
             });
             if (this.probabilityDoneCheck == false){
               this.checkFunction();
             }
           }).catch(function(error) {
+            this.setState({loadingOpacity: 0})
+            this.spinValue = new Animated.Value(0)
             console.log("User2 update olmadı")
             Alert.alert("Connection Failed", "Please try Again.." )
           });
         }).catch(function(error) {
+          this.setState({loadingOpacity: 0})
+          this.spinValue = new Animated.Value(0)
           console.log("startedboolean falan update olmadı")
           Alert.alert("Connection Failed", "Please try Again..")
         });
       }).catch(function(error) {
+        this.setState({loadingOpacity: 0})
+        this.spinValue = new Animated.Value(0)
         console.log("Search fotosu upload olmadı")
         Alert.alert("Connection Failed", "Please try Again.. 1")
       });
     }
   }).catch(function(error) {
+    this.setState({loadingOpacity: 0})
+    this.spinValue = new Animated.Value(0)
     console.log("started sayısını alamadık")
     Alert.alert("Connection Failed", "Please try Again..")
   });
+
 }
 search = () =>{
     this.setState({isVisible2: true})
@@ -1275,6 +1306,10 @@ camera = () => {
 
 render(){
     const {navigate} = this.props.navigation;
+    const spin = this.spinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '360deg']
+    })
     return(
       <View
       style={{width: this.width, height: this.height, flex:1, flexDirection: "column"}}>
@@ -1412,10 +1447,27 @@ render(){
       imgSource = {this.state.uri2}
       onPressSendMsg = {()=>this.sendFirstMessage()}/>
 
-      <SendMsgButton
-      disabled = {false}
+      <View
+      style = {{opacity: this.state.messageButtonOpacity, backgroundColor: "rgba(181,181,181,0.4)", flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
+      borderBottomLeftRadius: 16, borderBottomRightRadius: 16, borderTopLeftRadius: 16, borderTopRightRadius: 16,
+      position: "absolute", top: this.width*(5/10)*(7/6) + (this.height)*(20/100) + getStatusBarHeight()}}>
+      <FavoriteUserButton
+      disabled = {this.state.messageButtonDisabled}
       onPress = {()=>this.sendFirstMessage()}
-      opacity = {1}/>
+      opacity = {this.state.messageButtonOpacity}/>
+      <SendMsgButton
+      disabled = {this.state.messageButtonDisabled}
+      onPress = {()=>this.sendFirstMessage()}
+      opacity = {this.state.messageButtonOpacity}/>
+      <BlockUserButton
+      disabled = {this.state.messageButtonDisabled}
+      onPress = {()=>this.sendFirstMessage()}
+      opacity = {this.state.messageButtonOpacity}/>
+      </View>
+
+      <Animated.Image source={{uri: 'loading'}}
+        style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
+        position: 'absolute', bottom: (this.height)*(20/100) - (getStatusBarHeight()) + (this.width*3/10*(7/6)) + this.width/30, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 
       <BottomBar
       whichScreen = {"Main"}

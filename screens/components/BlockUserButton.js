@@ -23,7 +23,7 @@ if(Platform.OS === 'ios'){
 }
 var screenHeight = Math.round(Dimensions.get('screen').height);
 var screenWidth = Math.round(Dimensions.get('screen').width);
-export default class SendMsgButton extends Component {
+export default class BlockUserButton extends Component {
 
 
   static propTypes = {
@@ -39,11 +39,11 @@ export default class SendMsgButton extends Component {
     return(
       <TouchableOpacity // SEND MESSAGE BUTONU
         activeOpacity = {1}
-        style={{ opacity: this.props.opacity, justifyContent: 'center', alignItems: 'center', width: this.width/6, height: this.width/10, borderRightWidth: 0.7, borderColor: "white"}}
+        style={{ opacity: this.props.opacity, justifyContent: 'center', alignItems: 'center', width: this.width/6, height: this.width/10}}
         onPress={this.props.onPress}
         disabled = {this.props.disabled}>
 
-        <Image source={{uri: "msgblue"}}
+        <Image source={{uri: "block"}}
           style={{ height: this.width/10*(7/10), width: this.width/10*(7/10) }}
         />
 
@@ -52,4 +52,4 @@ export default class SendMsgButton extends Component {
   }
 }
 
-export * from './SendMsgButton';
+export * from './BlockUserButton';
