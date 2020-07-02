@@ -902,21 +902,16 @@ async downloadImages(imageIndex){
   if (imageIndex < emailArray.length){
     let dirs = RNFetchBlob.fs.dirs
     await RNFetchBlob
-    .fs.unlink("file:///data/user/0/com.twinizer/files" + '/' + global.searchNumForDownload + "/" + emailArray[imageIndex] + '.jpg') // photoArray[imageIndex]
-   .then(() => {console.log("FILE DELETED")})
-   .catch((err) => {console.log("unlink olmadi")})
-    await RNFetchBlob
     .config({
       fileCache : true,
       appendExt : 'jpg',
-      path: dirs.DocumentDir + '/' + global.searchNumForDownload + "/" + emailArray[imageIndex] + '.jpg'
+      path: dirs.DocumentDir + "/results/" + emailArray[imageIndex] + '.jpg'
     })
     .fetch('GET', this.downloadURL, {
       //some headers ..
     })
     .then((res) => {
       console.log('The file saved to ', res.path())
-      this.setState({imagePath:  "file://" + res.path()})
       while(this.doesExist){
         RNFetchBlob.fs.exists(res.path())
         .then((exist) => {
@@ -924,11 +919,12 @@ async downloadImages(imageIndex){
         })
         .catch(() => { })
       }
+      photoArray.push("file://" + res.path())
+      if (this.inSearchDone){
+        mainPhotoArray.push("file://" + res.path())
+      }
+      this.setState({imagePath:  "file://" + res.path()})
     })
-    photoArray.push(this.state.imagePath)
-    if (this.inSearchDone){
-      mainPhotoArray.push(this.state.imagePath)
-    }
   }
   console.log("photoArray.length: ", photoArray.length)
 }
@@ -1072,6 +1068,18 @@ async searchDone(value){
   this.setState({showFilter: false, loadingOpacity: 1})
   this.spinAnimation()
   this.inSearchDone = true;
+  photoArray.splice(0, photoArray.length)
+  emailArray.splice(0, emailArray.length)
+  usernameArray.splice(0, usernameArray.length)
+  countryArray.splice(0, countryArray.length)
+  genderArray.splice(0, genderArray.length)
+  distanceArray.splice(0, distanceArray.length)
+  mainDistanceArray.splice(0, mainDistanceArray.length)
+  mainUsernameArray.splice(0, mainUsernameArray.length)
+  mainEmailArray.splice(0, mainEmailArray.length)
+  mainGenderArray.splice(0, mainGenderArray.length)
+  mainCountryArray.splice(0, mainCountryArray.length)
+  mainPhotoArray.splice(0, mainPhotoArray.length)
   emailArray = [];
   usernameArray = [];
   countryArray = [];
@@ -1086,6 +1094,10 @@ async searchDone(value){
   mainPhotoArray = [];
   dict = {};
   bioDict = {};
+  await RNFS
+  .unlink(dirs.DocumentDir + "/results") // photoArray[imageIndex]
+ .then(() => {console.log("FILE DELETED")})
+ .catch((err) => {console.log("unlink olmadi")})
   console.log("EMAIL ARRAY LENGTH ", emailArray.length);
   this.doesExist = false;
   this.downloadURL = "";
