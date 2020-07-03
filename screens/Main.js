@@ -1094,6 +1094,7 @@ async searchDone(value){
   mainPhotoArray = [];
   dict = {};
   bioDict = {};
+  let dirs = RNFetchBlob.fs.dirs
   await RNFS
   .unlink(dirs.DocumentDir + "/results") // photoArray[imageIndex]
  .then(() => {console.log("FILE DELETED")})

@@ -23,18 +23,16 @@ if(Platform.OS === 'ios'){
 }
 var screenHeight = Math.round(Dimensions.get('screen').height);
 var screenWidth = Math.round(Dimensions.get('screen').width);
-export default class LogoutButton extends Component {
+export default class ProfileCountryGenderButton extends Component {
 
 
   static propTypes = {
    onPress: PropTypes.func,
-   top: PropTypes.string,
+   bottom: PropTypes.number,
    text: PropTypes.string,
-   position: PropTypes.string
+   disabled: PropTypes.bool
  }
  static defaultProps = {
-   text: "Log Out",
-   position: "relative"
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
@@ -42,15 +40,20 @@ export default class LogoutButton extends Component {
     return(
       <TouchableOpacity
       activeOpacity = {1}
-      style={{ top: this.props.top, position: this.props.position, borderTopWidth:1, borderBottomWidth:1, borderColor: 'rgba(128,128,128,0.3)', backgroundColor: "white", justifyContent: 'center', width: this.width, height: this.width/8}}
-      onPress={this.props.onPress}>
+      disabled = {this.props.disabled}
+      onPress = {this.props.onPress}
+      style={{opacity: this.props.opacity, backgroundColor:"white", borderWidth: 0.4, borderColor:"gray", width: this.width/2*(8/10),
+      height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center"}}>
+
       <Text
-        style = {{color: 'red', fontSize: 18*this.width/360, textAlign: "center" }}>
-        {this.props.text}
+      numberOfLines={1}
+      style={{paddingLeft: 12, paddingRight: 12, fontSize: 16*(this.width/360)}}>
+      {this.props.text}
       </Text>
+
       </TouchableOpacity>
     )
   }
 }
 
-export * from './LogoutButton';
+export * from './ProfileCountryGenderButton';

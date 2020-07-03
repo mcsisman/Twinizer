@@ -99,6 +99,20 @@ export default class BottomBar extends Component {
       historyTextColor = 'rgba(128,128,128,1)';
       settingsTextColor = 'rgba(211,126,63,1)';
     }
+    if(this.props.whichScreen == "Profile"){
+      homeColor = "homegray";
+      msgColor = "msggray";
+      historyColor = "historygray";
+      settingsColor = "settingsorange";
+      homeDisabled = false;
+      msgDisabled = false;
+      historyDisabled = false;
+      settingsDisabled = false;
+      homeTextColor = 'rgba(128,128,128,1)';
+      msgTextColor = 'rgba(128,128,128,1)';
+      historyTextColor = 'rgba(128,128,128,1)';
+      settingsTextColor = 'rgba(211,126,63,1)';
+    }
 
     return(
       <View

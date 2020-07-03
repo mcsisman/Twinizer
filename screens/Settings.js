@@ -26,6 +26,7 @@ import {Image,
 import MessagesScreen from './Messages';
 import MainScreen from './Main';
 import HistoryScreen from './History';
+import ProfileScreen from './Profile';
 import CustomHeader from './components/CustomHeader'
 import BottomBar from './components/BottomBar'
 import ModifiedStatusBar from './components/ModifiedStatusBar'
@@ -39,7 +40,6 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
-
 
 export default class SettingsScreen extends Component<{}>{
   constructor(props){
@@ -70,6 +70,7 @@ export default class SettingsScreen extends Component<{}>{
       <View
       style = {{height: this.width/9}}/>
       <SettingsButton
+      onPress = {()=> navigate("Profile")}
       text = {"Edit Profile"}/>
 
       <View

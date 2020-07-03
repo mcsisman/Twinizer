@@ -121,9 +121,17 @@ componentDidMount(){
     global.fromMessages = true
     scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight()
     newRequest = false
-    this.initializeMessageScreen()
+    console.log("FIRST TIME?: ", global.messagesFirstTime)
+    if(global.messagesFirstTime){
+      this.initializeMessageScreen()
+      global.messagesFirstTime = false
+    }
+    else{
+      this.resetVariables()
+      this.spinAnimation()
+      this.startFromLocal()
+    }
   })
-
 };
 componentWillUnmount(){
   this.resetVariables()
@@ -218,15 +226,58 @@ async initializeMessageScreen(){
   this.spinAnimation()
   await this.createConversationArrays()
 }
+async startFromLocal(){
+  await this.resetVariables()
+  await this.spinAnimation()
+
+  var localGenders = []
+  localGenders.splice(0, localGenders.length)
+  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_genders')
+    .then(req => JSON.parse(req))
+    .then(json => localGenders = json)
+  var localCountries = []
+  localCountries.splice(0, localCountries.length)
+  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_countries')
+    .then(req => JSON.parse(req))
+    .then(json => localCountries = json)
+  var localUsernames = []
+  localUsernames.splice(0, localUsernames.length)
+  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_usernames')
+    .then(req => JSON.parse(req))
+    .then(json => localUsernames = json)
+
+  var localUids = []
+  localUids.splice(0, localUids.length)
+  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_uids')
+    .then(req => JSON.parse(req))
+    .then(json => localUids = json)
+
+
+  console.log("LOCAL UIDLER: ", localUids)
+  conversationUidArray = localUids
+  conversationGenderArray = localGenders
+  conversationCountryArray = localCountries
+  conversationUsernameArray = localUsernames
+
+  console.log("GENDER ARRAY", conversationGenderArray)
+
+
+  noOfConversations = conversationUidArray.length
+  uidArray = await this.createUidPhotoArrays()
+  await this.printMessagesData()
+
+}
 async createConversationArrays(){
 
   if(!newRequest){
     var db = firebase.firestore();
     var docRef = db.collection(firebase.auth().currentUser.email).doc("MessageInformation");
     await docRef.onSnapshot(async doc =>{
+      console.log("READ FIRESTORE")
       if(!afterDelete){
         if(!newRequest){
           if(doc.exists){
+            console.log("READ FIRESTORE İÇ")
             conversationUidArray = await doc.data()["UidArray"]
             conversationGenderArray = await doc.data()["GenderArray"]
             conversationCountryArray = await doc.data()["CountryArray"]
@@ -260,6 +311,9 @@ async createUidPhotoArrays(){
   this.createGenderArray()
   this.createCountryArray()
   this.createUsernameArray()
+  console.log(conversationGenderArray)
+  console.log(conversationCountryArray)
+  console.log(conversationUsernameArray)
 
   // GET THE UIDS THAT ARE SAVED TO LOCAL
   var localUids = []
@@ -271,11 +325,16 @@ async createUidPhotoArrays(){
     if(localUids != null && localUids.length != 0){
 
       if(conversationUidArray.concat().sort().join(',') === localUids.concat().sort().join(',')){
+        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_genders', JSON.stringify(conversationGenderArray))
+        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_countries', JSON.stringify(conversationCountryArray))
+        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
       }
       else {
         differenceArray = conversationUidArray.filter(x => !localUids.includes(x))
         AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
-
+        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_genders', JSON.stringify(conversationGenderArray))
+        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_countries', JSON.stringify(conversationCountryArray))
+        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
         for(i = 0; i < conversationUidArray.length; i++){
           for(j = 0; j < differenceArray.length; j++){
             if( conversationUidArray[i] == differenceArray[j] ){
@@ -304,6 +363,9 @@ async createUidPhotoArrays(){
     else{
       differenceArray = conversationUidArray
       AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
+      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_genders', JSON.stringify(conversationGenderArray))
+      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_countries', JSON.stringify(conversationCountry))
+      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
 
       for(i = 0; i < conversationUidArray.length; i++){
         for(j = 0; j < differenceArray.length; j++){

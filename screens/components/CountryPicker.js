@@ -32,32 +32,64 @@ export default class CountryPicker extends Component {
    right: PropTypes.number,
    onValueChange: PropTypes.func,
    items: PropTypes.array,
-   label: PropTypes.string
+   label: PropTypes.string,
+   value: PropTypes.string,
+   disabled: PropTypes.bool,
+   opacity: PropTypes.number,
+   onOpen: PropTypes.func,
+   borderWidth: PropTypes.number,
+   borderBottomWidth: PropTypes.number,
+   placeHolder: PropTypes.bool,
+   backgroundColor: PropTypes.string
  }
  static defaultProps = {
-   width: screenWidth*(60/100),
-   height: screenWidth*(12/100),
-   right: screenWidth*(20/100),
-   bottom: screenHeight*(3.5/10)
+   borderBottomWidth: 2,
+   borderBottomColor: 'rgba(241,51,18,1)',
+   placeHolder: true,
+   backgroundColor: 'rgba(0,0,0,0)'
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
-    return(
-      <View style = {{justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0)',  width:this.props.width , height: this.props.height, position: 'absolute',
-      right: this.props.right, bottom: this.props.bottom, borderBottomColor: 'rgba(241,51,18,1)', borderBottomWidth: 2 }}>
-      <RNPickerSelect
+    console.log("PLACEHOLDER:", this.props.placeHolder)
+    if(this.props.placeHolder){
+      return(
+        <View style = {{paddingLeft: 5, opacity: this.props.opacity, justifyContent: 'center', backgroundColor: this.props.backgroundColor,  width:this.props.width ,
+        height: this.props.height, position: 'absolute', right: this.props.right, bottom: this.props.bottom, borderBottomColor: this.props.borderBottomColor, borderColor: this.props.borderColor,
+        borderBottomWidth: this.props.borderBottomWidth, borderTopWidth: this.props.borderWidth, borderRightWidth: this.props.borderWidth, borderLeftWidth: this.props.borderWidth }}>
+        <RNPickerSelect
         placeholder={{
-          label: this.props.label,
-          value: null,
-          color: 'white',
-        }}
-          placeholderTextColor='rgba(0,0,0,0.4)'
-          onValueChange={this.props.onValueChange}
-          items={this.props.items}
-        />
-      </View>
-    )
+            label: this.props.label,
+            value: null,
+            color: 'white',
+          }}
+        placeholderTextColor='rgba(0,0,0,0.4)'
+        fontSize = {18}
+        disabled = {this.props.disabled}
+        opacity = {this.props.opacity}
+        onOpen = {this.props.onOpen}
+        onValueChange = {this.props.onValueChange}
+        items = {this.props.items}  />
+        </View>
+      )
+    }
+    else{
+      return(
+        <View style = {{paddingLeft: 5, opacity: this.props.opacity, justifyContent: 'center', backgroundColor: 'white',  width:this.props.width ,
+        height: this.props.height, right: this.props.right, bottom: this.props.bottom, borderBottomColor: this.props.borderBottomColor, borderColor: this.props.borderColor,
+        borderBottomWidth: this.props.borderBottomWidth, borderTopWidth: this.props.borderWidth, borderRightWidth: this.props.borderWidth, borderLeftWidth: this.props.borderWidth }}>
+        <RNPickerSelect
+        fontSize = {18}
+        value = {this.props.value}
+        disabled = {this.props.disabled}
+        opacity = {this.props.opacity}
+        onOpen = {this.props.onOpen}
+        onValueChange = {this.props.onValueChange}
+        items = {this.props.items}  />
+        </View>
+      )
+    }
+
   }
 }
 

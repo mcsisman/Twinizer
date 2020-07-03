@@ -131,6 +131,10 @@ valueChange(value){
       text = {global.langSelectGender}/>
 
       <CountryPicker
+      width = {this.width*(60/100)}
+      height = {this.width*(12/100)}
+      right = {this.width*(20/100)}
+      bottom = {this.height*(3.5/10)}
       onValueChange = {(value) => this.valueChange(value)}
       items = {countries.genderItems}
       label = {global.langCountry}/>

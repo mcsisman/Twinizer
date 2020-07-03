@@ -30,6 +30,7 @@ import MessagesScreen from './screens/Messages';
 import ProfileUploadScreen from './screens/ProfileUpload';
 import HistoryScreen from './screens/History';
 import SettingsScreen from './screens/Settings';
+import ProfileScreen from './screens/Profile';
 
 if (!global.btoa) {  global.btoa = encode }
 
@@ -48,6 +49,7 @@ var firebaseConfig = {
   firebase.initializeApp(firebaseConfig);
   var user = firebase.auth().currentUser;
 
+  global.messagesFirstTime = true
   global.fromHistorySearch = false
   global.flag1 = true;
   global.flag2 = true;
@@ -292,6 +294,13 @@ var firebaseConfig = {
           },
         }}
         name="Settings" component={SettingsScreen} />
+        <Stack.Screen options={{
+          transitionSpec: {
+            open: config,
+            close: config,
+          },
+        }}
+        name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
       </NavigationContainer>
     );
