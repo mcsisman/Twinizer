@@ -57,19 +57,14 @@ Login = (email, password) => {
           firebase
            .auth()
            .signInWithEmailAndPassword(email, password)
-           .then(res => {
+           .then(async res => {
              if(firebase.auth().currentUser.emailVerified){
-               var docRef = firebase.firestore().collection(firebase.auth().currentUser.email).doc("Information");
-               docRef.get().then(function(doc) {
-                 if (doc.exists && doc.data()["country"] != null) {
-                   navigate("Main")
-                 } else {
-                   navigate("Gender")
-                 }
+               var storageRef = firebase.storage().ref("/embeddings2/" + firebase.auth().currentUser.uid + ".pickle");
+               await storageRef.getDownloadURL().then(data =>{
+                 navigate("Main")
                }).catch(function(error) {
-                 console.log("Error getting document:", error);
+                 navigate("Main")
                });
-
              user = firebase.auth().currentUser
 
              }

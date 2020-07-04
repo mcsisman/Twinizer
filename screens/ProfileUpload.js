@@ -50,7 +50,6 @@ export default class ProfileUploadScreen extends React.Component {
       profilePhoto: "",
       str: "",
       isim : firebase.auth().currentUser.displayName,
-      email: firebase.auth().currentUser.email,
       color: 'rgba(0,0,0,0.4)',
       borderOpacity: 'rgba(241,51,18,1)',
       buttonOpacity: 'rgba(241,51,18,0.4)',
@@ -98,7 +97,7 @@ uploadPhoto = async (uri) => {
       console.log(uploadDone)
       const response = await fetch(uri);
       const blob = await response.blob();
-      var ref1 = storageRef.child(global.globalGender + "/" + global.globalCountry + "/" + this.state.email + this.state.str);
+      var ref1 = storageRef.child("Photos/" + firebase.auth().currentUser.uid + this.state.str);
       await ref1.put(blob).then(function(snapshot) {uploadDone = true}).catch(function(error) {
         Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
       });;

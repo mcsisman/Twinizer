@@ -61,12 +61,14 @@ export default class ProfileScreen extends Component<{}>{
       bioLimit: 0,
       upperComponentsOpacity: 1,
       upperComponentsDisabled: false,
+      test: "TEST",
       text: 'Aemil Şişmannnnnnnnn',
         selection: {
             start: 0,
             end: 0
         }
     }
+
 
   }
 
@@ -125,6 +127,8 @@ export default class ProfileScreen extends Component<{}>{
   }
   onPressScreen(){
     Keyboard.dismiss()
+    countries.changeTest("değiştir")
+    console.log("SONUÇ: ", this.state.test)
   }
   library = () =>{
     ImagePicker.openPicker({

@@ -82,6 +82,10 @@ var dict = {};
 var bioDict = {};
 var hepsi = true;
 var flagIs20 = false;
+var currentUserGender;
+var currentUserCountry;
+var currentUserUsername;
+var currentUserBio;
 export default class MainScreen extends Component<{}>{
 constructor(props){
     super(props);
@@ -157,7 +161,6 @@ constructor(props){
     this.photoRes = 7/6
     this.inSearchDone = false
 
-    this.similarity_ref = firebase.firestore().collection(firebase.auth().currentUser.email).doc("Similarity")
     this.widthAnimation = new Animated.Value(global.width*(5/10))
     this.heightAnimation = new Animated.Value(global.width*(5/10)*(7/6))
     this.topAnimation = new Animated.Value(0)
@@ -169,9 +172,8 @@ async componentDidMount(){
     global.fromMessages = false
     var localMessages = []
     var arr = []
-
+    this.checkIfUserDataExistsInLocalAndSaveIfNot()
     this._subscribe = this.props.navigation.addListener('focus', async () => {
-      console.log("FROM HISTORY: ", global.fromHistorySearch)
       if(global.fromHistorySearch){
         await this.setSearchPhotoFromHistory(global.historyPhotoUri)
       }
@@ -201,24 +203,44 @@ async componentDidMount(){
     console.log("son: ", localMessages[localMessages.length-1])
     console.log("sondan 1 önceki: ", localMessages[localMessages.length-2])
 */
+
     global.swipeCount = 0
-    var started_check_ref = firebase.firestore().collection(firebase.auth().currentUser.email).doc("Information");
-     started_check_ref.get().then(doc => {
-      if (doc.exists) {
-        global.globalCountry = doc.data()["country"];
-        global.globalGender = doc.data()["gender"];
-        global.globalUsername = doc.data()["username"];
-        if(doc.data()["startedBoolean"]){
-          this.checkFunction();
-          this.setState({searchOnIsVisible: true});
-        }
-      }
-    });
+    this.checkIfAlreadySearching()
     this.welcome = {uri: 'twinizermain'}
   }
 
 static navigationOptions = {
     header: null,
+}
+async checkIfAlreadySearching(){
+  var listener23 = firebase.database().ref('Users/' + firebase.auth().currentUser.uid +"/s/sb");
+  await listener23.once('value').then(async snapshot => {
+    if(snapshot.val() == "t"){
+      this.checkFunction();
+      this.setState({searchOnIsVisible: true});
+    }
+  })
+}
+
+
+async checkIfUserDataExistsInLocalAndSaveIfNot(){
+  currentUserGender = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userGender')
+  currentUserCountry = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userCountry')
+  currentUserUsername = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userName')
+  currentUserBio = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userBio')
+  if(country == null || gender == null || username == null, bio){
+    var infoListener = firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/i");
+    await infoListener.once('value').then(async snapshot => {
+      currentUserGender = snapshot.val().g
+      currentUserCountry = snapshot.val().c
+      currentUserUsername = snapshot.val().u,
+      currentUserBio = snapshot.val().b
+      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userGender', currentUserGender)
+      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userCountry', currentUserCountry)
+      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userName', currentUserUsername)
+      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userBio', currentUserBio)
+    })
+ }
 }
 spinAnimation(){
   console.log("SPIN ANIMATION")
@@ -808,7 +830,7 @@ valueChangeGender(value){
 
 async createEmailDistanceArrays(gender, country, fn){
   if (fn == "searchDone"){
-    bioDict_ref = firebase.firestore().collection(firebase.auth().currentUser.email).doc("Bios")
+    bioDict_ref = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("Bios")
     bioDict_ref.get().then(doc => {
      if (doc.exists) {
        bioDict = doc.data();
@@ -930,10 +952,8 @@ async downloadImages(imageIndex){
 }
 
 async getImageURL(imageIndex){
-    var storageRef = firebase.storage().ref(genderArray[imageIndex] + "/" + countryArray[imageIndex] + "/" + emailArray[imageIndex] + "/1.jpg")
-    console.log(genderArray[imageIndex] + "/" + countryArray[imageIndex] + "/" + emailArray[imageIndex] + "/1.jpg");
+    var storageRef = firebase.storage().ref("Photos/" + emailArray[imageIndex] + "/1.jpg")
     await storageRef.getDownloadURL().then(data =>{
-      console.log("data: ", data)
       this.downloadURL = data
     }).catch(function(error) {
       // Handle any errors
@@ -941,7 +961,7 @@ async getImageURL(imageIndex){
 }
 
 async checkFunction(){
-    var docRef1 = firebase.firestore().collection(firebase.auth().currentUser.email).doc("Similarity").onSnapshot(async doc =>{
+    var docRef1 = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("Similarity").onSnapshot(async doc =>{
       if(doc.exists){
         if (this.probabilityDoneCheck) {
           // createEmailDistanceArrays KISMI ////////////////////////////////////////
@@ -1197,37 +1217,27 @@ async saveSearchPhotoLocally(photoPath){
   await RNFS.copyFile(photoPath, RNFS.DocumentDirectoryPath + "/search-photos/" + lastSearchNo.toString() + ".jpg");
 }
 uploadSearchPhoto = async (uri) => {
-  var searchRef = firebase.firestore().collection(firebase.auth().currentUser.email).doc("Information");
+  var listener23 = firebase.database().ref('Users/' + firebase.auth().currentUser.uid +"/s/s");
   var searchedNumber = 1;
-   searchRef.get().then(async doc => {
-    if (doc.exists) {
-      if(doc.data()["started"]){
-        searchedNumber = doc.data()["started"] + 1;
-      }
-        const response = await fetch(uri);
-        const blob = await response.blob();
-        var storage = firebase.storage();
-        var storageRef = storage.ref();
-        var metadata = {
-          contentType: 'image/jpeg',
-        };
-        var deletenumber = searchedNumber - 5;
-        var ref2 = storageRef.child(global.globalGender + "/" + global.globalCountry + "/" + firebase.auth().currentUser.email + "/SearchPhotos/" + deletenumber + ".jpg");
-        var ref1 = storageRef.child(global.globalGender + "/" + global.globalCountry + "/" + firebase.auth().currentUser.email + "/SearchPhotos/" + searchedNumber + ".jpg");
-        ref1.put(blob).then(snapshot => {
-          ref2.delete().then(function() {
-          // File deleted successfully
-          }).catch(function(error) {
-          // Uh-oh, an error occurred!
-          });
-          searchRef.update({
-            started: firebase.firestore.FieldValue.increment(1),
-            startedBoolean: true
-          }).then(() =>  {
-          const updateRef = firebase.firestore().collection('Users').doc('User2');
-          updateRef.set({
-            name: firebase.auth().currentUser.email
-          }).then(() => {
+  await listener23.once('value').then(async snapshot => {
+    searchedNumber = snapshot.val() + 1
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    var storage = firebase.storage();
+    var storageRef = storage.ref();
+    var metadata = {
+      contentType: 'image/jpeg',
+    };
+    var ref1 = storageRef.child("Photos/" + firebase.auth().currentUser.uid + "/SearchPhotos/" + "search-photo.jpg");
+    ref1.put(blob).then(snapshot => {
+    firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/s").update({
+      s: searchedNumber,
+      sb: true
+    }).then(() =>  {
+      const updateRef = firebase.firestore().collection('Users').doc('User2');
+      updateRef.set({
+      name: firebase.auth().currentUser.uid
+      }).then(() => {
             this.setState({
               messageButtonDisabled: true,
               messageButtonOpacity: 0,
@@ -1267,14 +1277,13 @@ uploadSearchPhoto = async (uri) => {
         console.log("Search fotosu upload olmadı")
         Alert.alert("Connection Failed", "Please try Again.. 1")
       });
-    }
+
   }).catch(function(error) {
     this.setState({loadingOpacity: 0})
     this.spinValue = new Animated.Value(0)
     console.log("started sayısını alamadık")
     Alert.alert("Connection Failed", "Please try Again..")
   });
-
 }
 search = () =>{
     this.setState({isVisible2: true})

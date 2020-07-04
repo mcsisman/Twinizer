@@ -271,7 +271,7 @@ async createConversationArrays(){
 
   if(!newRequest){
     var db = firebase.firestore();
-    var docRef = db.collection(firebase.auth().currentUser.email).doc("MessageInformation");
+    var docRef = db.collection(firebase.auth().currentUser.uid).doc("MessageInformation");
     await docRef.onSnapshot(async doc =>{
       console.log("READ FIRESTORE")
       if(!afterDelete){
@@ -343,7 +343,7 @@ async createUidPhotoArrays(){
           }
         }
         for(i = 0; i < differenceArray.length; i++){
-          var storageRef = firebase.storage().ref(conversationGenderArray[differenceArrayIndexes[i]] + "/" + conversationCountryArray[differenceArrayIndexes[i]] + "/" + conversationUidArray[differenceArrayIndexes[i]] + "/1.jpg")
+          var storageRef = firebase.storage().ref("Photos/" + conversationUidArray[differenceArrayIndexes[i]] + "/1.jpg")
           await storageRef.getDownloadURL().then(data =>{
             urlArray.push(data)
           })
@@ -375,7 +375,7 @@ async createUidPhotoArrays(){
         }
       }
       for(i = 0; i < differenceArray.length; i++){
-        var storageRef = firebase.storage().ref(conversationGenderArray[i] + "/" + conversationCountryArray[i] + "/" + conversationUidArray[i] + "/1.jpg")
+        var storageRef = firebase.storage().ref("Photos/" + conversationUidArray[i] + "/1.jpg")
         await storageRef.getDownloadURL().then(data =>{
           urlArray.push(data)
         })
@@ -1000,7 +1000,7 @@ arrangeDoneColor(){
 requestDonePress(){
 }
 async deleteMessage(){
-  var docRef = firebase.firestore().collection(firebase.auth().currentUser.email).doc("MessageInformation");
+  var docRef = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("MessageInformation");
   var uidarr = []
   var genderarr = []
   var countryarr = []
@@ -1035,7 +1035,7 @@ async deleteMessage(){
       messageCountryArray.splice(i,1)
     }
   }
-  var senderRef = firebase.firestore().collection(firebase.auth().currentUser.email).doc("MessageInformation");
+  var senderRef = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("MessageInformation");
   senderRef.set({
     UidArray: uidarr,
     GenderArray: genderarr,

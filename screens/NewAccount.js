@@ -75,15 +75,11 @@ writeUserData(userId, name, email, imageUrl) {
                .auth()
                .createUserWithEmailAndPassword(this.state.email, this.state.sifre)
                .then(user => {
-                      console.log(user);
-                      var docRef = firebase.firestore().collection(firebase.auth().currentUser.email).doc("Information");
-                      docRef.set({username: this.state.isim}).then(function() {
-                          console.log("Document successfully written!");
-                      })
-                      AsyncStorage.setItem(firebase.auth().currentUser.email + 'userName', this.state.isim)
-                      .catch(function(error) {
-                          console.error("Error writing document: ", error);
-                      });
+                      var database = firebase.database();
+                      firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/i").set({
+                      u: this.state.isim,
+                    });
+                    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userName', this.state.isim)
                       firebase.auth().onAuthStateChanged(function(user) {
                         user.sendEmailVerification();
                         navigate('Splash')

@@ -94,20 +94,13 @@ class FirebaseSvc {
     if(global.firstMessage){
       isRequest = "t"
       global.firstMessage = false
+
       var gender = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userGender')
-      var username = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userName')
       var country = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userCountry')
-      if(country == null || gender == null || username == null){
-        var informationRef = firebase.firestore().collection(firebase.auth().currentUser.email).doc("Information");
-        await informationRef.get().then(doc => {
-          gender = doc.data()["gender"]
-          country = doc.data()["country"]
-          username = doc.data()["username"]
-       }).catch(function(error) {
-         console.log("Error getting document:", error);
-       });
-     }
-      var senderRef = firebase.firestore().collection(firebase.auth().currentUser.email).doc("MessageInformation");
+      var username = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userName')
+      var bio = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userBio')
+      
+      var senderRef = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("MessageInformation");
       if(senderRef.exists){
         senderRef.update({
           UidArray: firebase.firestore.FieldValue.arrayUnion(global.receiverUid),
@@ -125,7 +118,7 @@ class FirebaseSvc {
         }, {merge: true})
       }
 
-      var receiverRef = firebase.firestore().collection(global.receiverMail).doc("MessageInformation");
+      var receiverRef = firebase.firestore().collection(global.receiverUid).doc("MessageInformation");
       if(receiverRef.exists){
         receiverRef.update({
           UidArray: firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid),

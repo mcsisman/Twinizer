@@ -35,7 +35,6 @@ var messageArray = [];
 var firstTime = true
 type Props = {
   name?: string,
-  email?: string,
   avatar?: string,
 };
 

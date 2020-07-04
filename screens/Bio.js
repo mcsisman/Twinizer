@@ -86,30 +86,32 @@ async writeCountryToDatabase(){
     if(global.globalBio == ""){
       global.globalBio = " ";
     }
-    for (let i = 0; i < 5 && !writeDone; i++){
-      console.log(writeDone)
-      const updateRef = firebase.firestore().collection(firebase.auth().currentUser.email).doc("Information")
-      await updateRef.set({
-        gender: global.globalGender,
-        country: global.globalCountry,
-        bio: global.globalBio,
-        startedBoolean: false
-      }, { merge: true }).then(function() {
-          writeDone = true;
-      });
-    }
-    for (let i = 0; i < 5 && !updateDone && writeDone; i++){
-      console.log(updateDone)
-      const updateRef = firebase.firestore().collection('Users').doc('User1');
-      await updateRef.set({
-        name: firebase.auth().currentUser.email
-      }).then(function() {
+    console.log(writeDone)
+    var database = firebase.database();
+    await firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/i").update({
+      g: global.globalGender,
+      c: global.globalCountry,
+      b: global.globalBio,
+    }).then(async function() {
+      await firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/s").update({
+        sb: false,
+        s: 0
+      }).then(async function() {
+        const updateRef = firebase.firestore().collection('Users').doc('User1');
+        await updateRef.set({
+          name: firebase.auth().currentUser.uid
+        }).then(function() {
           updateDone = true;
-      })
-    }
+          AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userGender', global.globalGender)
+          AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userCountry', global.globalCountry)
+          AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userBio', global.globalBio)
+        })
+      });
+    });
+
     this.setState({loadingOpacity: 0})
     this.spinValue = new Animated.Value(0)
-    if (writeDone && updateDone){
+    if (updateDone){
       const {navigate} = this.props.navigation;
       navigate("Main")
     }

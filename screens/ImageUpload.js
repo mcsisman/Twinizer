@@ -57,7 +57,6 @@ export default class ImageUploadScreen extends React.Component {
       buttonOpacity: 'rgba(241,51,18,0.4)',
       disabled: true,
       isim : firebase.auth().currentUser.displayName,
-      email: firebase.auth().currentUser.email,
       color: 'rgba(0,0,0,0.4)',
       borderOpacity1: 'rgba(241,51,18,1)',
       disabled1: true,
@@ -112,7 +111,7 @@ export default class ImageUploadScreen extends React.Component {
 updateFunction1= () => {
   const updateRef = firebase.firestore().collection('Users').doc('User1');
   updateRef.set({
-    name: this.state.email
+    name: this.state.uid
   })
 }
 uploadPhoto = async (uri1, uri2, uri3, uri4) => {
@@ -126,22 +125,22 @@ uploadPhoto = async (uri1, uri2, uri3, uri4) => {
 
       const response1 = await fetch(uri1);
       const blob1 = await response1.blob();
-      var ref1 = storageRef.child(global.globalGender + "/" + global.globalCountry + "/" + this.state.email + this.state.str1);
+      var ref1 = storageRef.child("Photos/" + firebase.auth().currentUser.uid + this.state.str1);
       await ref1.put(blob1).then(async snapshot => {
         uploadDone1 = true;
         const response2 = await fetch(uri2);
         const blob2 = await response2.blob();
-        var ref2 = storageRef.child(global.globalGender + "/" + global.globalCountry + "/" + this.state.email + this.state.str2);
+        var ref2 = storageRef.child("Photos/" + firebase.auth().currentUser.uid + this.state.str2);
         await ref2.put(blob2).then(async snapshot => {
           uploadDone2 = true;
           const response3 = await fetch(uri3);
           const blob3 = await response3.blob();
-          var ref3 = storageRef.child(global.globalGender + "/" + global.globalCountry + "/" + this.state.email + this.state.str3);
+          var ref3 = storageRef.child("Photos/" + firebase.auth().currentUser.uid + this.state.str3);
           await ref3.put(blob3).then(async snapshot => {
             uploadDone3 = true;
             const response4 = await fetch(uri4);
             const blob4 = await response4.blob();
-            var ref4 = storageRef.child(global.globalGender + "/" + global.globalCountry + "/" + this.state.email + this.state.str4);
+            var ref4 = storageRef.child("Photos/" + firebase.auth().currentUser.uid + this.state.str4);
             await ref4.put(blob4).then(async snapshot => {
               uploadDone4 = true;
             }).catch(function(error) {
@@ -162,8 +161,7 @@ uploadPhoto = async (uri1, uri2, uri3, uri4) => {
       //this.updateFunction1();
       const {navigate} = this.props.navigation;
       global.welcomeOpacity = 1;
-      AsyncStorage.setItem(firebase.auth().currentUser.email + 'userGender', global.globalGender)
-      AsyncStorage.setItem(firebase.auth().currentUser.email + 'userCountry', global.globalCountry)
+
       navigate("Bio")
     }
   }

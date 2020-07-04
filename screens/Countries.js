@@ -219,6 +219,9 @@ class Countries {
     }
     return items;
   }
+  changeTest(val){
+    this.setState({test: val})
+  }
 }
 
 const countries = new Countries();

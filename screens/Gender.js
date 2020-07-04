@@ -39,7 +39,6 @@ export default class GenderScreen extends Component<{}>{
     super(props);
     this.state = {
       splashOver : false,
-      email: "",
       color: 'rgba(0,0,0,0.4)',
       buttonOpacity: 'rgba(241,51,18,0.4)',
       disabled: true,
