@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import AsyncStorage from '@react-native-community/async-storage';
 import { createStackNavigator} from '@react-navigation/stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import { Header } from 'react-navigation-stack';

@@ -100,7 +100,6 @@ export default class MessagesScreen extends Component<{}>{
       leftButtonOpacity: 0.6,
       leftButtonDisabled: true,
 
-
       rightButtonSize: this.width/6,
       rightButtonRight: this.width/8*2-this.width/48,
 

@@ -228,7 +228,7 @@ async checkIfUserDataExistsInLocalAndSaveIfNot(){
   currentUserCountry = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userCountry')
   currentUserUsername = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userName')
   currentUserBio = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userBio')
-  if(country == null || gender == null || username == null, bio){
+  if(currentUserCountry == null || currentUserGender == null || currentUserUsername == null || currentUserBio == null){
     var infoListener = firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/i");
     await infoListener.once('value').then(async snapshot => {
       currentUserGender = snapshot.val().g

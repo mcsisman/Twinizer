@@ -63,7 +63,7 @@ Login = (email, password) => {
                await storageRef.getDownloadURL().then(data =>{
                  navigate("Main")
                }).catch(function(error) {
-                 navigate("Main")
+                 navigate("Gender")
                });
              user = firebase.auth().currentUser
 
