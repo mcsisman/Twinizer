@@ -71,14 +71,10 @@ var requestPhotoArray = []
 var messagePhotoArray = []
 var requestUsernameArray = []
 var messageUsernameArray = []
-var messageGenderArray = []
-var messageCountryArray = []
 var conversationUidArray = []
 var conversationUsernameArray = []
 var differenceArray = []
 var differenceArrayIndexes = []
-var conversationGenderArray = []
-var conversationCountryArray = []
 var urlArray = []
 var fromChat = false
 export default class MessagesScreen extends Component<{}>{
@@ -165,12 +161,8 @@ resetVariables(){
     messagePhotoArray = []
     requestUsernameArray = []
     messageUsernameArray = []
-    messageGenderArray = []
-    messageCountryArray = []
     conversationUidArray = []
     conversationUsernameArray = []
-    conversationGenderArray = []
-    conversationCountryArray = []
     differenceArray = []
     differenceArrayIndexes = []
     urlArray = []
@@ -197,11 +189,7 @@ resetVariables(){
     messagePhotoArray.splice(0, messagePhotoArray.length)
     requestUsernameArray.splice(0, requestUsernameArray.length)
     messageUsernameArray.splice(0, messageUsernameArray.length)
-    messageGenderArray.splice(0, messageGenderArray.length)
-    messageCountryArray.splice(0, messageCountryArray.length)
     conversationUidArray.splice(0, conversationUidArray.length)
-    conversationCountryArray.splice(0, conversationCountryArray.length)
-    conversationGenderArray.splice(0, conversationGenderArray.length)
     conversationUsernameArray.splice(0, conversationUsernameArray.length)
     differenceArray.splice(0, differenceArray.length)
     differenceArrayIndexes.splice(0, differenceArrayIndexes.length)
@@ -220,7 +208,6 @@ resetVariables(){
   }
 }
 async initializeMessageScreen(){
-
   this.resetVariables()
   this.spinAnimation()
   await this.createConversationArrays()
@@ -229,42 +216,23 @@ async startFromLocal(){
   await this.resetVariables()
   await this.spinAnimation()
 
-  var localGenders = []
-  localGenders.splice(0, localGenders.length)
-  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_genders')
-    .then(req => JSON.parse(req))
-    .then(json => localGenders = json)
-  var localCountries = []
-  localCountries.splice(0, localCountries.length)
-  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_countries')
-    .then(req => JSON.parse(req))
-    .then(json => localCountries = json)
   var localUsernames = []
   localUsernames.splice(0, localUsernames.length)
   await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_usernames')
     .then(req => JSON.parse(req))
     .then(json => localUsernames = json)
-
   var localUids = []
   localUids.splice(0, localUids.length)
   await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_uids')
     .then(req => JSON.parse(req))
     .then(json => localUids = json)
 
-
-  console.log("LOCAL UIDLER: ", localUids)
   conversationUidArray = localUids
-  conversationGenderArray = localGenders
-  conversationCountryArray = localCountries
   conversationUsernameArray = localUsernames
-
-  console.log("GENDER ARRAY", conversationGenderArray)
-
 
   noOfConversations = conversationUidArray.length
   uidArray = await this.createUidPhotoArrays()
   await this.printMessagesData()
-
 }
 async createConversationArrays(){
 
@@ -278,8 +246,6 @@ async createConversationArrays(){
           if(doc.exists){
             console.log("READ FIRESTORE İÇ")
             conversationUidArray = await doc.data()["UidArray"]
-            conversationGenderArray = await doc.data()["GenderArray"]
-            conversationCountryArray = await doc.data()["CountryArray"]
             conversationUsernameArray = await doc.data()["UsernameArray"]
             noOfConversations = conversationUidArray.length
             uidArray = await this.createUidPhotoArrays()
@@ -294,8 +260,6 @@ async createConversationArrays(){
           await this.resetVariables()
           await this.spinAnimation()
           conversationUidArray = await doc.data()["UidArray"]
-          conversationGenderArray = await doc.data()["GenderArray"]
-          conversationCountryArray = await doc.data()["CountryArray"]
           conversationUsernameArray = await doc.data()["UsernameArray"]
           noOfConversations = conversationUidArray.length
           uidArray = await this.createUidPhotoArrays()
@@ -307,12 +271,9 @@ async createConversationArrays(){
 }
 async createUidPhotoArrays(){
 
-  this.createGenderArray()
-  this.createCountryArray()
-  this.createUsernameArray()
-  console.log(conversationGenderArray)
-  console.log(conversationCountryArray)
-  console.log(conversationUsernameArray)
+  console.log("GİRMEDEN ÖNCE:", conversationUsernameArray)
+  await this.createUsernameArray()
+  console.log("GİRDİKTEN SONRA:", conversationUsernameArray)
 
   // GET THE UIDS THAT ARE SAVED TO LOCAL
   var localUids = []
@@ -324,15 +285,11 @@ async createUidPhotoArrays(){
     if(localUids != null && localUids.length != 0){
 
       if(conversationUidArray.concat().sort().join(',') === localUids.concat().sort().join(',')){
-        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_genders', JSON.stringify(conversationGenderArray))
-        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_countries', JSON.stringify(conversationCountryArray))
         AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
       }
       else {
         differenceArray = conversationUidArray.filter(x => !localUids.includes(x))
         AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
-        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_genders', JSON.stringify(conversationGenderArray))
-        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_countries', JSON.stringify(conversationCountryArray))
         AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
         for(i = 0; i < conversationUidArray.length; i++){
           for(j = 0; j < differenceArray.length; j++){
@@ -362,8 +319,6 @@ async createUidPhotoArrays(){
     else{
       differenceArray = conversationUidArray
       AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
-      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_genders', JSON.stringify(conversationGenderArray))
-      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_countries', JSON.stringify(conversationCountry))
       AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
 
       for(i = 0; i < conversationUidArray.length; i++){
@@ -496,8 +451,6 @@ getMessagesData = async callback =>{
             if(messageArray[i].user._id == conversationUidArray[j] || messageArray[i].user.r == conversationUidArray[j]){
               messagePhotoArray[i] = photoArray[j]
               messageUsernameArray[i] = conversationUsernameArray[j]
-              messageGenderArray[i] = conversationGenderArray[j]
-              messageCountryArray[i] = conversationCountryArray[j]
             }
           }
         }
@@ -642,8 +595,6 @@ syncLocalMessages = async (snap, uidCount) => {
               if(messageArray[i].user._id == conversationUidArray[j] || messageArray[i].user.r == conversationUidArray[j]){
                 messagePhotoArray[i] = photoArray[j]
                 messageUsernameArray[i] = conversationUsernameArray[j]
-                messageGenderArray[i] = conversationGenderArray[j]
-                messageCountryArray[i] = conversationCountryArray[j]
               }
             }
           }
@@ -654,31 +605,8 @@ syncLocalMessages = async (snap, uidCount) => {
   }
 };
 
-
-createGenderArray(){
-  for (i = 0; i < conversationGenderArray.length; i++) {
-    if(conversationGenderArray[i].charAt(0) == "F"){
-      conversationGenderArray[i] = "Female"
-    }
-    else{
-      conversationGenderArray[i] = "Male"
-    }
-  }
-}
-createCountryArray(){
-  var countryIndex = 0;
-  for (i = 0; i < conversationCountryArray.length; i++) {
-    for(j = 0; j < conversationCountryArray[i].length; j++){
-      if(conversationCountryArray[i].charAt(j) == "_"){
-        countryIndex = j
-        break
-      }
-    }
-    conversationCountryArray[i] = conversationCountryArray[i].substring(0,countryIndex)
-  }
-}
 createUsernameArray(){
-  var usernameIndex = 0;
+  var usernameIndex = -1;
   for (i = 0; i < conversationUsernameArray.length; i++) {
     for(j = 0; j < conversationUsernameArray[i].length; j++){
       if(conversationUsernameArray[i].charAt(j) == "_"){
@@ -686,7 +614,10 @@ createUsernameArray(){
         break
       }
     }
-    conversationUsernameArray[i] = conversationUsernameArray[i].substring(0,usernameIndex)
+    if(usernameIndex != - 1){
+      conversationUsernameArray[i] = conversationUsernameArray[i].substring(0,usernameIndex)
+    }
+
   }
 }
 
@@ -1001,13 +932,9 @@ requestDonePress(){
 async deleteMessage(){
   var docRef = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("MessageInformation");
   var uidarr = []
-  var genderarr = []
-  var countryarr = []
   var usernamearr = []
   await docRef.get().then(async doc =>{
     uidarr = await doc.data()["UidArray"]
-    genderarr = await doc.data()["GenderArray"]
-    countryarr = await doc.data()["CountryArray"]
     usernamearr = await doc.data()["UsernameArray"]
   })
   afterDelete = true
@@ -1022,23 +949,17 @@ async deleteMessage(){
     }
     if(messageColorArray[i] == "trashblue"){
       uidarr.splice(i,1)
-      genderarr.splice(i,1)
-      countryarr.splice(i,1)
       usernamearr.splice(i,1)
       messageColorArray.splice(i,1)
       messageLastSeenArray.splice(i,1)
       messageArray.splice(i,1)
       messagePhotoArray.splice(i,1)
       messageUsernameArray.splice(i,1)
-      messageGenderArray.splice(i,1)
-      messageCountryArray.splice(i,1)
     }
   }
   var senderRef = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("MessageInformation");
   senderRef.set({
     UidArray: uidarr,
-    GenderArray: genderarr,
-    CountryArray: countryarr,
     UsernameArray: usernamearr
   }, {merge: true})
 

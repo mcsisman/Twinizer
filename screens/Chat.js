@@ -337,15 +337,18 @@ export default class ChatScreen extends React.Component<Props> {
       .then(req => JSON.parse(req))
       .then(json => localMessages = json)
     var number;
-    if(localMessages.length < 20){
-      number = 0
-    }
-    else{
-      number = localMessages.length - 20
-    }
+    if(localMessages != null){
+      if(localMessages.length < 20){
+        number = 0
+      }
+      else{
+        number = localMessages.length - 20
+      }
       for( i = number; i < localMessages.length; i++){
         messageArray.push(localMessages[i])
       }
+    }
+
   }
   resetVariables(){
     isRequest = "t"

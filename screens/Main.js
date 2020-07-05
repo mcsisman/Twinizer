@@ -180,19 +180,16 @@ async componentDidMount(){
     })
 
 /*
-    await AsyncStorage.setItem("6kfzpWV8NLQuZTm6dXppPc5RF9q2" + "lY9GZ5Onq4WO9J50ismWm9417lN2" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("7FM2ntE9FMUsnQ6QU5o8vXtNox23" + "lY9GZ5Onq4WO9J50ismWm9417lN2" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("KajFrO2H9WYhF1YqgCdA1qqN8E62" + "lY9GZ5Onq4WO9J50ismWm9417lN2" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("nEQPMnvfyVZO8GRiFOLPAsVTBiD3" + "lY9GZ5Onq4WO9J50ismWm9417lN2" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("qy6BAeOG4Pf8os9b7wYYo0zpx0v2" + "lY9GZ5Onq4WO9J50ismWm9417lN2" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("wgujzFalJXVfJKUvQ5nkDISoRF62" + "lY9GZ5Onq4WO9J50ismWm9417lN2" + '/messages',JSON.stringify(arr) )
+    await AsyncStorage.setItem("AMhJse1OpcTdPOMr5TW4Fj50uS53" + "rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + '/messages',JSON.stringify(arr) )
+    await AsyncStorage.setItem("JtfxB5eiDvSzOM4dbhgGeU7PXVC2" + "rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + '/messages',JSON.stringify(arr) )
+    await AsyncStorage.setItem("pg7bdvxZS0XvAzL4YcU7Tzc3Xpk2" + "rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + '/messages',JSON.stringify(arr) )
+    await AsyncStorage.setItem("k209WPn6gmfHP3f2PphxyXeb84p1" + "rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + '/messages',JSON.stringify(arr) )
 
-    await AsyncStorage.setItem("lY9GZ5Onq4WO9J50ismWm9417lN2" + "6kfzpWV8NLQuZTm6dXppPc5RF9q2" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("lY9GZ5Onq4WO9J50ismWm9417lN2" + "7FM2ntE9FMUsnQ6QU5o8vXtNox23" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("lY9GZ5Onq4WO9J50ismWm9417lN2" + "KajFrO2H9WYhF1YqgCdA1qqN8E62" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("lY9GZ5Onq4WO9J50ismWm9417lN2" + "nEQPMnvfyVZO8GRiFOLPAsVTBiD3" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("lY9GZ5Onq4WO9J50ismWm9417lN2" + "qy6BAeOG4Pf8os9b7wYYo0zpx0v2" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("lY9GZ5Onq4WO9J50ismWm9417lN2" + "wgujzFalJXVfJKUvQ5nkDISoRF62" + '/messages',JSON.stringify(arr) )
+    await AsyncStorage.setItem("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + "6kfzpWV8NLQuZTm6dXppPc5RF9q2" + '/messages',JSON.stringify(arr) )
+    await AsyncStorage.setItem("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + "7FM2ntE9FMUsnQ6QU5o8vXtNox23" + '/messages',JSON.stringify(arr) )
+    await AsyncStorage.setItem("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + "KajFrO2H9WYhF1YqgCdA1qqN8E62" + '/messages',JSON.stringify(arr) )
+    await AsyncStorage.setItem("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + "k209WPn6gmfHP3f2PphxyXeb84p1" + '/messages',JSON.stringify(arr) )
+
 
 
 /*
@@ -774,11 +771,11 @@ async sendFirstMessage(){
   //global.receiverGender = genderArray[global.swipeCount]
   //global.receiverCountry = countryArray[global.swipeCount]
   //global.receiverUsername = usernameArray[global.swipeCount]
-  global.receiverUid = "lY9GZ5Onq4WO9J50ismWm9417lN2"
-  global.receiverMail = "m.cemil.sisman@gmail.com"
-  global.receiverGender = "Female"
-  global.receiverCountry = "Afghanistan"
-  global.receiverUsername = "cemilGmail"
+  global.receiverUid = "pg7bdvxZS0XvAzL4YcU7Tzc3Xpk2"
+  global.receiverMail = "cemil.sisman@ug.bilkent.edu.tr"
+  global.receiverGender = "Male"
+  global.receiverCountry = "Azerbaijan"
+  global.receiverUsername = "cemil ug"
   //global.firstMessage = true
   this.props.navigation.navigate("Chat")
 }
@@ -1470,21 +1467,21 @@ render(){
       onPressSendMsg = {()=>this.sendFirstMessage()}/>
 
       <View
-      style = {{opacity: this.state.messageButtonOpacity, backgroundColor: "rgba(181,181,181,0.4)", flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
+      style = {{opacity: 1, backgroundColor: "rgba(181,181,181,0.4)", flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
       borderBottomLeftRadius: 16, borderBottomRightRadius: 16, borderTopLeftRadius: 16, borderTopRightRadius: 16,
       position: "absolute", top: this.width*(5/10)*(7/6) + (this.height)*(20/100) + getStatusBarHeight()}}>
       <FavoriteUserButton
-      disabled = {this.state.messageButtonDisabled}
+      disabled = {false}
       onPress = {()=>this.sendFirstMessage()}
-      opacity = {this.state.messageButtonOpacity}/>
+      opacity = {1}/>
       <SendMsgButton
-      disabled = {this.state.messageButtonDisabled}
+      disabled = {false}
       onPress = {()=>this.sendFirstMessage()}
-      opacity = {this.state.messageButtonOpacity}/>
+      opacity = {1}/>
       <BlockUserButton
-      disabled = {this.state.messageButtonDisabled}
+      disabled = {false}
       onPress = {()=>this.sendFirstMessage()}
-      opacity = {this.state.messageButtonOpacity}/>
+      opacity = {1}/>
       </View>
 
       <Animated.Image source={{uri: 'loading'}}
