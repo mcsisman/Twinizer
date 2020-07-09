@@ -44,8 +44,8 @@ export default class ImageUploadModal extends Component {
  }
  static defaultProps = {
    fontSize: 17,
-   animationInTiming: 500,
-   animationOutTiming: 500,
+   animationInTiming: 350,
+   animationOutTiming: 350,
    animationIn: "bounce",
    backdropOpacity: 0.4,
  }

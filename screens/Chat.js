@@ -41,6 +41,7 @@ var firstTime = true
 var images = []
 var keyboardHeight;
 var keyboardYcord;
+
 type Props = {
   name?: string,
   avatar?: string,
@@ -56,7 +57,12 @@ export default class ChatScreen extends React.Component<Props> {
 
   constructor(props) {
     super(props);
+    this.height = Math.round(Dimensions.get('screen').height);
+    this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
+      enableSwipeDown: false,
+      bigViewerOpacity: 1,
+      smallViewerOpacity:0,
       isVisible1: false,
       reRender: "ok",
       renderImageChatScreen: false,
@@ -64,9 +70,9 @@ export default class ChatScreen extends React.Component<Props> {
       photoPopUpIsVisible: false,
       keyboardOpen: false,
     }
+
     this.statusBarHeaderTotalHeight = getStatusBarHeight() + headerHeight
-    this.height = Math.round(Dimensions.get('screen').height);
-    this.width = Math.round(Dimensions.get('screen').width);
+
     this.windowHeight = Math.round(Dimensions.get('window').height);
     this.navbarHeight = this.height - this.windowHeight
     this.spinValue = new Animated.Value(0)
@@ -121,14 +127,14 @@ _keyboardDidShow = (e) => {
   const { height, screenX, screenY, width } = e.endCoordinates
   keyboardYcord = screenY
   keyboardHeight = height
-  console.log(keyboardHeight)
+  console.log("keyboardHeight:", keyboardHeight)
   console.log("y:", keyboardYcord)
   console.log("KEYBOARD DID SHOW")
-  this.setState({keyboardOpen: true})
+  this.setState({keyboardOpen: true, bigViewerOpacity: 0, smallViewerOpacity:1, enableSwipeDown: false,})
 };
 _keyboardDidHide = () => {
   console.log("KEYBOARD DID HIDE")
-  this.setState({keyboardOpen: false})
+  this.setState({keyboardOpen: false, bigViewerOpacity: 1, smallViewerOpacity:0, enableSwipeDown: false, })
 };
 
 onPressCamera(){
@@ -240,6 +246,7 @@ get user() {
 }
 
 render() {
+  var renderKeyboardHeight;
     isRequest = "t"
     // IF THERE IS AT LEAST ONE isRequest = false, the conversation is a message
     if(this.state.messages != undefined){
@@ -269,24 +276,34 @@ render() {
       outputRange: ['0deg', '360deg']
     })
     //this.state.renderImageChatScreen
+    if(keyboardHeight == undefined){
+      keyboardHeight = 0
+    }
     if(this.state.renderImageChatScreen){
-      return(
-        <View
-        style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, flexDirection:"column"}}>
+        return(
+          <View
+          style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, flexDirection:"column"}}>
 
-        <ModifiedStatusBar/>
+          <ModifiedStatusBar/>
 
-        <ImageViewer
-        imageUrls={images}
-        enableSwipeDown = {true}
-        swipeDownThreshold = {5}/>
+          <View
+          style={{width: this.width, height: this.height*7/8-getStatusBarHeight(), top: getStatusBarHeight(), position:"absolute", opacity: this.state.bigViewerOpacity}}>
+          <ImageViewer
+          imageUrls={images}/>
+          </View>
 
-        <ChatSendImgBottomBar
-          keyboardOpen = {this.state.keyboardOpen}
-          keyboardHeight = {keyboardHeight}/>
-        </View>
-      )
+          <View
+          style={{backgroundColor:"blue", width: this.width, height: this.height*7/8-getStatusBarHeight()-keyboardHeight, top: getStatusBarHeight(), position:"absolute", opacity: this.state.smallViewerOpacity}}>
+          <ImageViewer
+          enableSwipeDown = {this.state.enableSwipeDown}
+          imageUrls={images}/>
+          </View>
 
+          <ChatSendImgBottomBar
+            keyboardOpen = {this.state.keyboardOpen}
+            keyboardHeight = {keyboardHeight}/>
+          </View>
+        )
     }
     else{
       if(global.firstMessage){

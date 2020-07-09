@@ -312,7 +312,6 @@ async createUidPhotoArrays(){
     if(localUids != null && localUids.length != 0){
 
       if(conversationUidArray.concat().sort().join(',') === localUids.concat().sort().join(',')){
-        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
       }
       else {
         differenceArray = conversationUidArray.filter(x => !localUids.includes(x))

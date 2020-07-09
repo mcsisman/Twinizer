@@ -39,7 +39,7 @@ export default class ChatSendImgBottomBar extends Component {
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.windowHeight = Math.round(Dimensions.get('window').height);
-    this.navbarHeight = this.height - this.windowHeight 
+    this.navbarHeight = this.height - this.windowHeight
     var bottom = 0;
     if(this.props.keyboardOpen){
       console.log("navbar: ", this.navbarHeight)
@@ -52,7 +52,7 @@ export default class ChatSendImgBottomBar extends Component {
     console.log("BOTTOM: ", bottom)
     return(
       <View
-      style={{backgroundColor: "black", width: this.width, height: this.height/8, justifyContent: "center", bottom: bottom,  alignItems:"center"}}>
+      style={{backgroundColor: "black", width: this.width, height: this.height/8, justifyContent: "center", bottom: bottom, position:"absolute", alignItems:"center"}}>
 
       <View
       style={{width: this.width*9.5/10, left: this.width/20, paddingTop: 5, paddingBottom: 5, bottom: "25%",
