@@ -99,21 +99,17 @@ class FirebaseSvc {
       var country = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userCountry')
       var username = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userName')
       var bio = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userBio')
-      
+
       var senderRef = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("MessageInformation");
       if(senderRef.exists){
         senderRef.update({
           UidArray: firebase.firestore.FieldValue.arrayUnion(global.receiverUid),
-          GenderArray: firebase.firestore.FieldValue.arrayUnion(global.receiverGender + "_" + global.receiverUid),
-          CountryArray: firebase.firestore.FieldValue.arrayUnion(global.receiverCountry + "_" + global.receiverUid),
           UsernameArray: firebase.firestore.FieldValue.arrayUnion(global.receiverUsername + "_" + global.receiverUid)
         })
       }
       else{
         senderRef.set({
           UidArray: firebase.firestore.FieldValue.arrayUnion(global.receiverUid),
-          GenderArray: firebase.firestore.FieldValue.arrayUnion(global.receiverGender + "_" + global.receiverUid),
-          CountryArray: firebase.firestore.FieldValue.arrayUnion(global.receiverCountry + "_" + global.receiverUid),
           UsernameArray: firebase.firestore.FieldValue.arrayUnion(global.receiverUsername + "_" + global.receiverUid)
         }, {merge: true})
       }
@@ -122,16 +118,12 @@ class FirebaseSvc {
       if(receiverRef.exists){
         receiverRef.update({
           UidArray: firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid),
-          GenderArray: firebase.firestore.FieldValue.arrayUnion(gender + "_" + firebase.auth().currentUser.uid),
-          CountryArray: firebase.firestore.FieldValue.arrayUnion(country + "_" + firebase.auth().currentUser.uid),
           UsernameArray: firebase.firestore.FieldValue.arrayUnion(username + "_" + firebase.auth().currentUser.uid)
         })
       }
       else{
         receiverRef.set({
           UidArray: firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid),
-          GenderArray: firebase.firestore.FieldValue.arrayUnion(gender + "_" + firebase.auth().currentUser.uid),
-          CountryArray: firebase.firestore.FieldValue.arrayUnion(country + "_" + firebase.auth().currentUser.uid),
           UsernameArray: firebase.firestore.FieldValue.arrayUnion(username + "_" + firebase.auth().currentUser.uid)
         }, {merge: true})
       }

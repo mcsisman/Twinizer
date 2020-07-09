@@ -29,6 +29,7 @@ export default class ChatHeader extends Component {
   static propTypes = {
    onPressBack: PropTypes.func,
    onPressInfo: PropTypes.func,
+   onPressCamera: PropTypes.func,
  }
  static defaultProps = {
  }
@@ -54,12 +55,16 @@ export default class ChatHeader extends Component {
 
       <TouchableOpacity
       activeOpacity = {0.8}
-      style={{position: 'absolute', width: this.width*6/10, height: this.width*(1/10)*(7/6), justifyContent: 'center', alignItems: 'center', }}
+      style={{position: 'absolute', left: this.width*2/10, position:"absolute", width: this.width*5.5/10, height: this.width*(1/10)*(7/6), justifyContent: 'center', alignItems: 'center', }}
       onPress = {this.props.onPressInfo}>
-      <Text style = {{ fontSize: 22,  fontFamily: "Candara",}}>
+
+      <View
+      style={{right: 0, position:"absolute", width: this.width*(4/10), height: this.width*(1/10)*(7/6), justifyContent: 'center', }}>
+      <Text style = {{ fontSize: 22, position:"absolute"}}
+      numberOfLines={1}>
       {global.receiverUsername}
       </Text>
-
+      </View>
       <Image
       style={{position: 'absolute', width: this.width*(1/10), height: this.width*(1/10)*(7/6), left: 0,
       borderBottomLeftRadius: 8, borderTopRightRadius: 8, borderTopLeftRadius: 8, borderBottomRightRadius: 8}}
@@ -67,6 +72,19 @@ export default class ChatHeader extends Component {
       </Image>
       </TouchableOpacity>
 
+      <TouchableOpacity
+      activeOpacity = {0.8}
+      style={{position: 'absolute', width: this.width*2/10, right:0, position:"absolute", height: this.width*(1/10)*(7/6), justifyContent: 'center', alignItems: 'center', }}
+      onPress = {this.props.onPressCamera}>
+      <View
+      style={{borderColor: "rgba(241,51,18,1)", borderWidth: 2, width: this.width*(1/10)*(7/6), height: this.width*(1/10)*(7/6),
+      justifyContent: 'center', alignItems: 'center', borderBottomLeftRadius: 555, borderTopRightRadius: 555, borderTopLeftRadius: 555, borderBottomRightRadius: 555}}>
+      <Image
+      style={{width: "60%", height: "60%"}}
+      source={{uri: "camerared"}}>
+      </Image>
+      </View>
+      </TouchableOpacity>
 
 
       </View>

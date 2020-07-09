@@ -9,7 +9,11 @@ import { Header } from 'react-navigation-stack';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import ModifiedStatusBar from './components/ModifiedStatusBar'
 import ChatHeader from './components/ChatHeader'
+import ImageUploadModal from './components/ImageUploadModal'
 import ChatterInfo from './components/ChatterInfo'
+import ImagePicker from 'react-native-image-crop-picker';
+import ChatSendImgBottomBar from './components/ChatSendImgBottomBar'
+import ImageViewer from 'react-native-image-zoom-viewer';
 import {Image,
    Text,
    View,
@@ -25,7 +29,8 @@ import {Image,
    Animated,
    Easing,
    AppState,
-   Platform
+   Platform,
+   Keyboard
   } from 'react-native';
 var isRequest = "t"
 var lastMsg = ""
@@ -33,6 +38,9 @@ var lastSeenInterval;
 var localMessages = [];
 var messageArray = [];
 var firstTime = true
+var images = []
+var keyboardHeight;
+var keyboardYcord;
 type Props = {
   name?: string,
   avatar?: string,
@@ -49,25 +57,119 @@ export default class ChatScreen extends React.Component<Props> {
   constructor(props) {
     super(props);
     this.state = {
+      isVisible1: false,
+      reRender: "ok",
+      renderImageChatScreen: false,
       test: "",
       photoPopUpIsVisible: false,
+      keyboardOpen: false,
     }
     this.statusBarHeaderTotalHeight = getStatusBarHeight() + headerHeight
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
+    this.windowHeight = Math.round(Dimensions.get('window').height);
+    this.navbarHeight = this.height - this.windowHeight
     this.spinValue = new Animated.Value(0)
     firstTime = true
   }
+  componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener("keyboardDidHide", this._keyboardDidHide);
+    this.keyboardDidHideListener = Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
+      this._subscribe = this.props.navigation.addListener('focus', async () => {
+
+        this.resetVariables()
+        this.spinAnimation()
+        await this.getLastLocalMessages()
+        messageArray.reverse()
+          this.setState({
+              messages: messageArray,
+              loadingOpacity: 0
+          })
+        lastSeenInterval = setInterval(()=> this.updateLastSeenFile(), 100)
+      });
+
+      firebaseSvc.refOn(async message =>{
+        if(!firstTime){
+          this.setState(previousState => ({
+            messages: GiftedChat.append(previousState.messages, message),
+          }))
+        }
+        else{
+          await this.getLastLocalMessages()
+          messageArray.reverse()
+          this.setState({
+              messages: messageArray,
+              loadingOpacity: 0
+          })
+        }
+        firstTime = false
+      })
+    }
+
+componentWillUnmount() {
+  clearInterval(lastSeenInterval)
+  firebaseSvc.refOff();
+  this.keyboardDidShowListener.remove();
+  this.keyboardDidHideListener.remove();
+}
 
   static navigationOptions = {
       header: null,
   };
+_keyboardDidShow = (e) => {
+  console.log("KEYBOARD DID SHOW")
+  const { height, screenX, screenY, width } = e.endCoordinates
+  keyboardYcord = screenY
+  keyboardHeight = height
+  console.log(keyboardHeight)
+  console.log("y:", keyboardYcord)
+  console.log("KEYBOARD DID SHOW")
+  this.setState({keyboardOpen: true})
+};
+_keyboardDidHide = () => {
+  console.log("KEYBOARD DID HIDE")
+  this.setState({keyboardOpen: false})
+};
 
-  state = {
-    messages: [],
-  };
+onPressCamera(){
+  this.setState({isVisible1: true})
+}
+library = () =>{
+  ImagePicker.openPicker({
+    cropping: true
+  }).then(image1 => {
+    this.setState({
+      photoPath: image1.path,
+      photo: {uri: image1.path},
+      isVisible1: false,
+    });
+    this.imageSelected()
+  });
+};
+camera = () => {
+  ImagePicker.openCamera({
+    cropping: true
+  }).then(image1 => {
+    this.setState({
+      photoPath: image1.path,
+      photo: {uri: image1.path},
+      isVisible1: false,
+    });
+    this.imageSelected()
+});
+};
+imageSelected(){
+  var image = {
+    url: this.state.photoPath,
+    props: {
+    }
+  }
+  images.push(image)
+  this.setState({renderImageChatScreen: true})
 
-  spinAnimation(){
+}
+
+spinAnimation(){
     this.setState({test: "1"})
     this.spinValue = new Animated.Value(0)
     // First set up animation
@@ -82,12 +184,12 @@ export default class ChatScreen extends React.Component<Props> {
         }
       )).start()
   }
-  goBackOnPress(){
+goBackOnPress(){
 
     this.props.navigation.goBack()
   }
 
-  renderTime(props) {
+renderTime(props) {
       return (
         <Time
           {...props}
@@ -102,7 +204,7 @@ export default class ChatScreen extends React.Component<Props> {
         />
       );
     }
-  renderBubble (props) {
+renderBubble (props) {
     return (
       <Bubble
         {...props}
@@ -130,17 +232,16 @@ export default class ChatScreen extends React.Component<Props> {
       />
     )
   }
-  get user() {
-    return {
-      _id: firebaseSvc.uid,
-      r: global.receiverUid,
-    };
-  }
+get user() {
+  return {
+    _id: firebaseSvc.uid,
+    r: global.receiverUid,
+  };
+}
 
-  render() {
+render() {
     isRequest = "t"
     // IF THERE IS AT LEAST ONE isRequest = false, the conversation is a message
-
     if(this.state.messages != undefined){
       var msgs = this.state.messages
       if(msgs.length != 0 ){
@@ -167,161 +268,228 @@ export default class ChatScreen extends React.Component<Props> {
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg']
     })
-    if(global.firstMessage){
-      if(Platform.OS === 'ios'){
-        return(
-          <View
-          style={{backgroundColor: "white", width: this.width, height: this.height, top: 0}}>
+    //this.state.renderImageChatScreen
+    if(this.state.renderImageChatScreen){
+      return(
+        <View
+        style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, flexDirection:"column"}}>
 
-          <ModifiedStatusBar/>
+        <ModifiedStatusBar/>
 
-          <View
-            style = {{ position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
-            width: this.width, bottom: 0, right: 0}}>
-            <GiftedChat
-              scrollToBottom = {true}
-              messages={this.state.messages}
-              onSend={firebaseSvc.send}
-              user={this.user}
-              loadEarlier = {true}
-              renderTime = {this.renderTime}
-              renderBubble={this.renderBubble}
-              renderAvatar={null}
-            />
-          </View>
+        <ImageViewer
+        imageUrls={images}
+        enableSwipeDown = {true}
+        swipeDownThreshold = {5}/>
 
-          <ChatHeader
-          onPressBack = {()=> this.goBackOnPress()}
-          onPressInfo = {()=> this.setState({photoPopUpIsVisible: true})}/>
+        <ChatSendImgBottomBar
+          keyboardOpen = {this.state.keyboardOpen}
+          keyboardHeight = {keyboardHeight}/>
+        </View>
+      )
 
-          <ChatterInfo
-          isVisible = {this.state.photoPopUpIsVisible}
-          onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
-          username = {global.receiverUsername}
-          bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
-          onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
-          imgSource = {global.receiverPhoto}/>
-
-          </View>
-        )
-      }
-      else{
-        return(
-          <View
-          style={{backgroundColor: "white", width: this.width, height: this.height, top: 0}}>
-
-          <ModifiedStatusBar/>
-
-          <KeyboardAvoidingView  behavior="padding"
-            style = {{  position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
-            width: this.width, bottom: 0, right: 0}}>
-            <GiftedChat
-              scrollToBottom = {true}
-              messages={this.state.messages}
-              onSend={firebaseSvc.send}
-              user={this.user}
-              loadEarlier = {true}
-              renderTime = {this.renderTime}
-              renderBubble={this.renderBubble}
-              renderAvatar={null}
-            />
-          </KeyboardAvoidingView>
-
-          <ChatHeader
-          onPressBack = {()=> this.goBackOnPress()}
-          onPressInfo = {()=> this.setState({photoPopUpIsVisible: true})}/>
-
-          <ChatterInfo
-          isVisible = {this.state.photoPopUpIsVisible}
-          onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
-          username = {global.receiverUsername}
-          bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
-          onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
-          imgSource = {global.receiverPhoto}/>
-          </View>
-        )
-      }
     }
     else{
-      if(Platform.OS === 'ios'){
-        return(
-          <View
-          style={{backgroundColor: "white", width: this.width, height: this.height, top: 0}}>
+      if(global.firstMessage){
+        if(Platform.OS === 'ios'){
+          return(
+            <View
+            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0}}>
 
-          <ModifiedStatusBar/>
+            <ModifiedStatusBar/>
 
-          <View
-            style = {{ position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
-            width: this.width, bottom: 0, right: 0}}>
-            <GiftedChat
-              scrollToBottom = {true}
-              messages={this.state.messages}
-              onSend={firebaseSvc.send}
-              user={this.user}
-              loadEarlier = {true}
-              renderTime = {this.renderTime}
-              renderBubble={this.renderBubble}
-              renderAvatar={null}
-            />
-          </View>
-          <Animated.Image source={{uri: 'loading'}}
-            style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', bottom: this.height/2, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
-          />
+            <View
+              style = {{ position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
+              width: this.width, bottom: 0, right: 0}}>
+              <GiftedChat
+                scrollToBottom = {true}
+                messages={this.state.messages}
+                onSend={firebaseSvc.send}
+                user={this.user}
+                loadEarlier = {true}
+                renderTime = {this.renderTime}
+                renderBubble={this.renderBubble}
+                renderAvatar={null}
+              />
+            </View>
 
-          <ChatHeader
-          onPressBack = {()=> this.goBackOnPress()}
-          onPressInfo = {()=> this.setState({photoPopUpIsVisible: true})}/>
+            <ChatHeader
+            onPressBack = {()=> this.goBackOnPress()}
+            onPressInfo = {()=> this.setState({photoPopUpIsVisible: true})}
+            onPressCamera = {()=> this.onPressCamera()}/>
 
-          <ChatterInfo
-          isVisible = {this.state.photoPopUpIsVisible}
-          onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
-          username = {global.receiverUsername}
-          bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
-          onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
-          imgSource = {global.receiverPhoto}/>
-          </View>
-        )
+            <ImageUploadModal
+            isVisible={this.state.isVisible1}
+            txtUploadPhoto = {global.langUploadPhoto}
+            txtCancel = {global.langCancel}
+            txtTakePhoto = {global.langTakePhoto}
+            txtOpenLibrary = {global.langLibrary}
+            onPressCancel = {()=>this.setState({ isVisible1: false}) }
+            onPressCamera = {this.camera}
+            onPressLibrary = {this.library}/>
+
+            <ChatterInfo
+            isVisible = {this.state.photoPopUpIsVisible}
+            onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
+            username = {global.receiverUsername}
+            bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
+            onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
+            imgSource = {global.receiverPhoto}/>
+
+            </View>
+          )
+        }
+        else{
+          return(
+            <View
+            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0}}>
+
+            <ModifiedStatusBar/>
+
+            <KeyboardAvoidingView  behavior="padding"
+              style = {{  position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
+              width: this.width, bottom: 0, right: 0}}>
+              <GiftedChat
+                scrollToBottom = {true}
+                messages={this.state.messages}
+                onSend={firebaseSvc.send}
+                user={this.user}
+                loadEarlier = {true}
+                renderTime = {this.renderTime}
+                renderBubble={this.renderBubble}
+                renderAvatar={null}
+              />
+            </KeyboardAvoidingView>
+
+            <ChatHeader
+            onPressBack = {()=> this.goBackOnPress()}
+            onPressInfo = {()=> this.setState({photoPopUpIsVisible: true})}
+            onPressCamera = {()=> this.onPressCamera()}/>
+
+            <ImageUploadModal
+            isVisible={this.state.isVisible1}
+            txtUploadPhoto = {global.langUploadPhoto}
+            txtCancel = {global.langCancel}
+            txtTakePhoto = {global.langTakePhoto}
+            txtOpenLibrary = {global.langLibrary}
+            onPressCancel = {()=>this.setState({ isVisible1: false}) }
+            onPressCamera = {this.camera}
+            onPressLibrary = {this.library}/>
+
+            <ChatterInfo
+            isVisible = {this.state.photoPopUpIsVisible}
+            onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
+            username = {global.receiverUsername}
+            bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
+            onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
+            imgSource = {global.receiverPhoto}/>
+            </View>
+          )
+        }
       }
       else{
-        return(
-          <View
-          style={{backgroundColor: "white", width: this.width, height: this.height, top: 0}}>
+        if(Platform.OS === 'ios'){
+          return(
+            <View
+            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0}}>
 
-          <ModifiedStatusBar/>
+            <ModifiedStatusBar/>
 
-          <KeyboardAvoidingView  behavior="padding"
-            style = {{  position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
-            width: this.width, bottom: 0, right: 0}}>
-            <GiftedChat
-              scrollToBottom = {true}
-              messages={this.state.messages}
-              onSend={firebaseSvc.send}
-              user={this.user}
-              loadEarlier = {true}
-              renderTime = {this.renderTime}
-              renderBubble={this.renderBubble}
-              renderAvatar={null}
+            <View
+              style = {{ position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
+              width: this.width, bottom: 0, right: 0}}>
+              <GiftedChat
+                scrollToBottom = {true}
+                messages={this.state.messages}
+                onSend={firebaseSvc.send}
+                user={this.user}
+                loadEarlier = {true}
+                renderTime = {this.renderTime}
+                renderBubble={this.renderBubble}
+                renderAvatar={null}
+              />
+            </View>
+            <Animated.Image source={{uri: 'loading'}}
+              style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', bottom: this.height/2, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
             />
-          </KeyboardAvoidingView>
-          <Animated.Image source={{uri: 'loading'}}
-            style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', bottom: this.height/2, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
-          />
 
-          <ChatHeader
-          onPressBack = {()=> this.goBackOnPress()}
-          onPressInfo = {()=> this.setState({photoPopUpIsVisible: true})}/>
+            <ChatHeader
+            onPressBack = {()=> this.goBackOnPress()}
+            onPressInfo = {()=> this.setState({photoPopUpIsVisible: true})}
+            onPressCamera = {()=> this.onPressCamera()}/>
 
-          <ChatterInfo
-          isVisible = {this.state.photoPopUpIsVisible}
-          onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
-          username = {global.receiverUsername}
-          bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
-          onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
-          imgSource = {global.receiverPhoto}/>
-          </View>
-        )
+            <ImageUploadModal
+            isVisible={this.state.isVisible1}
+            txtUploadPhoto = {global.langUploadPhoto}
+            txtCancel = {global.langCancel}
+            txtTakePhoto = {global.langTakePhoto}
+            txtOpenLibrary = {global.langLibrary}
+            onPressCancel = {()=>this.setState({ isVisible1: false}) }
+            onPressCamera = {this.camera}
+            onPressLibrary = {this.library}/>
+
+            <ChatterInfo
+            isVisible = {this.state.photoPopUpIsVisible}
+            onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
+            username = {global.receiverUsername}
+            bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
+            onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
+            imgSource = {global.receiverPhoto}/>
+            </View>
+          )
+        }
+        else{
+          return(
+            <View
+            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0}}>
+
+            <ModifiedStatusBar/>
+
+            <KeyboardAvoidingView  behavior="padding"
+              style = {{  position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
+              width: this.width, bottom: 0, right: 0}}>
+              <GiftedChat
+                scrollToBottom = {true}
+                messages={this.state.messages}
+                onSend={firebaseSvc.send}
+                user={this.user}
+                loadEarlier = {true}
+                renderTime = {this.renderTime}
+                renderBubble={this.renderBubble}
+                renderAvatar={null}
+              />
+            </KeyboardAvoidingView>
+            <Animated.Image source={{uri: 'loading'}}
+              style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', bottom: this.height/2, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
+            />
+
+            <ChatHeader
+            onPressBack = {()=> this.goBackOnPress()}
+            onPressInfo = {()=> this.setState({photoPopUpIsVisible: true})}
+            onPressCamera = {()=> this.onPressCamera()}/>
+
+            <ImageUploadModal
+            isVisible={this.state.isVisible1}
+            txtUploadPhoto = {global.langUploadPhoto}
+            txtCancel = {global.langCancel}
+            txtTakePhoto = {global.langTakePhoto}
+            txtOpenLibrary = {global.langLibrary}
+            onPressCancel = {()=>this.setState({ isVisible1: false}) }
+            onPressCamera = {this.camera}
+            onPressLibrary = {this.library}/>
+
+            <ChatterInfo
+            isVisible = {this.state.photoPopUpIsVisible}
+            onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
+            username = {global.receiverUsername}
+            bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
+            onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
+            imgSource = {global.receiverPhoto}/>
+            </View>
+          )
+        }
       }
     }
+
   }
 
   async updateLastSeenFile(){
@@ -330,7 +498,7 @@ export default class ChatScreen extends React.Component<Props> {
     AsyncStorage.setItem(key + 'lastSeen', currentTime )
 
   }
-  async getLastLocalMessages(){
+async getLastLocalMessages(){
     messageArray = []
     messageArray.splice(0, messageArray.length)
     await AsyncStorage.getItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages')
@@ -350,7 +518,7 @@ export default class ChatScreen extends React.Component<Props> {
     }
 
   }
-  resetVariables(){
+resetVariables(){
     isRequest = "t"
     lastMsg = ""
     lastSeenInterval;
@@ -359,41 +527,5 @@ export default class ChatScreen extends React.Component<Props> {
     localMessages.splice(0, localMessages.length)
     messageArray.splice(0, messageArray.length)
     firstTime = true
-  }
-  componentDidMount() {
-
-    this._subscribe = this.props.navigation.addListener('focus', async () => {
-      this.resetVariables()
-      this.spinAnimation()
-      await this.getLastLocalMessages()
-      messageArray.reverse()
-        this.setState({
-            messages: messageArray,
-            loadingOpacity: 0
-        })
-      lastSeenInterval = setInterval(()=> this.updateLastSeenFile(), 100)
-    });
-
-    firebaseSvc.refOn(async message =>{
-      if(!firstTime){
-        this.setState(previousState => ({
-          messages: GiftedChat.append(previousState.messages, message),
-        }))
-      }
-      else{
-        await this.getLastLocalMessages()
-        messageArray.reverse()
-        this.setState({
-            messages: messageArray,
-            loadingOpacity: 0
-        })
-      }
-      firstTime = false
-    })
-  }
-
-  componentWillUnmount() {
-    clearInterval(lastSeenInterval)
-    firebaseSvc.refOff();
   }
 }

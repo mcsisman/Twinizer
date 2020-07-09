@@ -77,12 +77,14 @@ var differenceArray = []
 var differenceArrayIndexes = []
 var urlArray = []
 var fromChat = false
+var usernameListener = []
 export default class MessagesScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
+      reRender: "ok",
       messageDoneDisabled: true,
       requestDoneDisabled: true,
       messageBoxDisabled: false,
@@ -116,14 +118,10 @@ componentDidMount(){
     global.fromMessages = true
     scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight()
     newRequest = false
-    console.log("FIRST TIME?: ", global.messagesFirstTime)
     if(global.messagesFirstTime){
       this.initializeMessageScreen()
-      global.messagesFirstTime = false
     }
     else{
-      this.resetVariables()
-      this.spinAnimation()
       this.startFromLocal()
     }
   })
@@ -216,11 +214,6 @@ async startFromLocal(){
   await this.resetVariables()
   await this.spinAnimation()
 
-  var localUsernames = []
-  localUsernames.splice(0, localUsernames.length)
-  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_usernames')
-    .then(req => JSON.parse(req))
-    .then(json => localUsernames = json)
   var localUids = []
   localUids.splice(0, localUids.length)
   await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_uids')
@@ -228,11 +221,49 @@ async startFromLocal(){
     .then(json => localUids = json)
 
   conversationUidArray = localUids
-  conversationUsernameArray = localUsernames
-
   noOfConversations = conversationUidArray.length
+
+  await this.getUsernameOfTheUid()
+  console.log("USERNAME ARRAY LOCAL: ", conversationUsernameArray)
+
   uidArray = await this.createUidPhotoArrays()
   await this.printMessagesData()
+}
+async getUsernameOfTheUid(){
+
+  if(global.messagesFirstTime){
+    console.log("tekrar girdi mi")
+    for( i = 0; i < noOfConversations; i++){
+      var usernameOnceListener = firebase.database().ref('Users/' + conversationUidArray[i] + "/i");
+      await usernameOnceListener.once('value').then(async snapshot => {
+        conversationUsernameArray[i] = snapshot.val()
+      })
+      const index = i
+      usernameListener[i] = firebase.database().ref('Users/' + conversationUidArray[i]);
+      await usernameListener[i].on('child_changed', async snap => await this.createUsernameArray(snap, index, conversationUidArray[index]));
+    }
+  }
+  else{
+    console.log("İKİNCİYE  GİRDİ:")
+    var localUsernames = []
+    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_usernames')
+      .then(req => JSON.parse(req))
+      .then(json => localUsernames = json)
+    conversationUsernameArray = localUsernames
+  }
+}
+createUsernameArray = async (snap, i, conversationUid) => {
+
+  var localUsernames = []
+  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_usernames')
+    .then(req => JSON.parse(req))
+    .then(json => localUsernames = json)
+  conversationUsernameArray = localUsernames
+
+  conversationUsernameArray[i] = snap.val()
+
+  AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
+  this.startFromLocal()
 }
 async createConversationArrays(){
 
@@ -240,17 +271,16 @@ async createConversationArrays(){
     var db = firebase.firestore();
     var docRef = db.collection(firebase.auth().currentUser.uid).doc("MessageInformation");
     await docRef.onSnapshot(async doc =>{
-      console.log("READ FIRESTORE")
       if(!afterDelete){
         if(!newRequest){
           if(doc.exists){
-            console.log("READ FIRESTORE İÇ")
             conversationUidArray = await doc.data()["UidArray"]
-            conversationUsernameArray = await doc.data()["UsernameArray"]
             noOfConversations = conversationUidArray.length
+            await this.getUsernameOfTheUid()
             uidArray = await this.createUidPhotoArrays()
             await this.printMessagesData()
             newRequest = true
+            global.messagesFirstTime = false
           }
           else{
               this.setState({loadingDone: true, loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
@@ -260,20 +290,17 @@ async createConversationArrays(){
           await this.resetVariables()
           await this.spinAnimation()
           conversationUidArray = await doc.data()["UidArray"]
-          conversationUsernameArray = await doc.data()["UsernameArray"]
           noOfConversations = conversationUidArray.length
+          await this.getUsernameOfTheUid()
           uidArray = await this.createUidPhotoArrays()
           await this.printMessagesData()
+          global.messagesFirstTime = false
         }
       }
     })
   }
 }
 async createUidPhotoArrays(){
-
-  console.log("GİRMEDEN ÖNCE:", conversationUsernameArray)
-  await this.createUsernameArray()
-  console.log("GİRDİKTEN SONRA:", conversationUsernameArray)
 
   // GET THE UIDS THAT ARE SAVED TO LOCAL
   var localUids = []
@@ -358,6 +385,7 @@ async printMessagesData(){
     count++;
   }
 }
+
 getMessagesData = async callback =>{
   var arr = []
   arr.splice(0, arr.length)
@@ -397,8 +425,6 @@ getMessagesData = async callback =>{
         messageArray.sort(this.sortByProperty("c"));
         messageArray.reverse()
 
-        console.log("MESSAGE ARRAY: ", messageArray)
-        console.log("REQUEST ARRAY: ", requestArray)
         // CHECKING FOR LAST SEEN
         for( i = 0; i < requestArray.length; i++){
           requestColorArray[i] = "trashgray"
@@ -454,11 +480,11 @@ getMessagesData = async callback =>{
             }
           }
         }
+        console.log("REQUEST USERNAME ARRAY:", requestUsernameArray)
         this.setState({loadingDone: true, test: "1", loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
       }
     }
   })
-
   var lastLocalKey = await this.getLastLocalMessage()
   if(lastLocalKey == lastDBkey + "z"){
     didSync = true
@@ -605,21 +631,7 @@ syncLocalMessages = async (snap, uidCount) => {
   }
 };
 
-createUsernameArray(){
-  var usernameIndex = -1;
-  for (i = 0; i < conversationUsernameArray.length; i++) {
-    for(j = 0; j < conversationUsernameArray[i].length; j++){
-      if(conversationUsernameArray[i].charAt(j) == "_"){
-        usernameIndex = j
-        break
-      }
-    }
-    if(usernameIndex != - 1){
-      conversationUsernameArray[i] = conversationUsernameArray[i].substring(0,usernameIndex)
-    }
 
-  }
-}
 
 
 sortByProperty(property){
@@ -658,7 +670,10 @@ navigateToChat(receiverUid, receiverPhoto, receiverUsername){
   global.localMessages = localMessages[count]
   global.receiverUid = receiverUid
   global.receiverPhoto = receiverPhoto
-  global.receiverUsername = receiverUsername
+  global.receiverUsername = receiverUsername.u
+  global.receiverGender = receiverUsername.g
+  global.receiverCountry = receiverUsername.c
+  global.receiverBio = receiverUsername.b
   global.firstMessage = false
   for( i = 0; i < syncListener.length; i++){
     if(global.receiverUid == whoseListener[i]){
@@ -769,7 +784,7 @@ renderMessageBoxes(){
           cancelPressed = {this.state.cancelPressed}
           trashOnPress = {()=> this.messageTrashButtonPressed(temp)}
           onPress = {()=>this.navigateToChat(receiverArray[temp], messagePhotoArray[temp], messageUsernameArray[temp])}
-          senderName = {messageUsernameArray[count]}
+          senderName = {messageUsernameArray[count].u}
           lastMsg = {messageArray[count].text}
           lastMsgTime = {timeArray[count]}
           avatarSource = {messagePhotoArray[count]}
@@ -832,7 +847,7 @@ renderRequestBoxes(){
           cancelPressed = {this.state.cancelPressed}
           trashOnPress = {()=> this.requestTrashButtonPressed(temp)}
           onPress = {()=>this.navigateToChat(receiverArray[temp], requestPhotoArray[temp], requestUsernameArray[temp])}
-          senderName = {requestUsernameArray[count]}
+          senderName = {requestUsernameArray[count].u}
           lastMsg = {requestArray[count].text}
           lastMsgTime = {timeArray[count]}
           avatarSource = {requestPhotoArray[count]}
@@ -932,10 +947,8 @@ requestDonePress(){
 async deleteMessage(){
   var docRef = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("MessageInformation");
   var uidarr = []
-  var usernamearr = []
   await docRef.get().then(async doc =>{
     uidarr = await doc.data()["UidArray"]
-    usernamearr = await doc.data()["UsernameArray"]
   })
   afterDelete = true
   var messageLength = messageColorArray.length
@@ -949,7 +962,6 @@ async deleteMessage(){
     }
     if(messageColorArray[i] == "trashblue"){
       uidarr.splice(i,1)
-      usernamearr.splice(i,1)
       messageColorArray.splice(i,1)
       messageLastSeenArray.splice(i,1)
       messageArray.splice(i,1)
@@ -960,7 +972,6 @@ async deleteMessage(){
   var senderRef = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("MessageInformation");
   senderRef.set({
     UidArray: uidarr,
-    UsernameArray: usernamearr
   }, {merge: true})
 
   this.arrangeDoneColor()

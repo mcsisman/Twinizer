@@ -49,8 +49,6 @@ var ourBlue = 'rgba(77,120,204,1)'
 export default class ProfileScreen extends Component<{}>{
   constructor(props){
     super(props);
-    this.height = Math.round(Dimensions.get('screen').height);
-    this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
       isVisible: false,
       photo: {uri: "defaultavatar"},
@@ -68,8 +66,8 @@ export default class ProfileScreen extends Component<{}>{
             end: 0
         }
     }
-
-
+    this.height = Math.round(Dimensions.get('screen').height);
+    this.width = Math.round(Dimensions.get('screen').width);  
   }
 
   componentDidMount(){
@@ -78,8 +76,11 @@ export default class ProfileScreen extends Component<{}>{
     this.setState({defaultText: "lkfdslk lsfdk sşldfk sşldfk lşwekf şlwkef şlwekf şwlekf şwelk fşwle kfwşlek fqşlk qşlek qlşek feeqq", bioLimit:this.state.defaultText.length})
   }
 
-
-  static navigationOptions = {
+componentWillUnmount(){
+  Keyboard.removeListener("keyboardDidShow", _keyboardDidShow);
+  Keyboard.removeListener("keyboardDidHide", _keyboardDidHide);
+}
+static navigationOptions = {
       header: null,
   };
   _keyboardDidHide = () => {
@@ -90,7 +91,10 @@ export default class ProfileScreen extends Component<{}>{
       this.setState({bioOpacity: 1})
     }
   };
-  _keyboardDidShow = () => {
+  _keyboardDidShow = (e) => {
+    const { height, screenX, screenY, width } = e.endCoordinates
+    console.log(height)
+    console.log("y:", screenY)
     if(this.state.bioOpacity == 1){
       this.setState({upperComponentsOpacity: 0, upperComponentsDisabled: true})
     }
@@ -127,8 +131,6 @@ export default class ProfileScreen extends Component<{}>{
   }
   onPressScreen(){
     Keyboard.dismiss()
-    countries.changeTest("değiştir")
-    console.log("SONUÇ: ", this.state.test)
   }
   library = () =>{
     ImagePicker.openPicker({

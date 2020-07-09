@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
-import {createAppContainer,navigation} from 'react-navigation';
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, navigation } from '@react-navigation/native';
 import * as firebase from "firebase";
 import 'firebase/firestore';
 import { fromRight, zoomIn, zoomOut, flipX, flipY, fromBottom } from 'react-navigation-transitions'
@@ -189,7 +188,7 @@ var firebaseConfig = {
   }
 
 
-  const Stack = createStackNavigator();
+
 
   const config = {
   animation: 'timing',
@@ -203,8 +202,16 @@ var firebaseConfig = {
     restSpeedThreshold: 0.01,
   },
 };
+  const Stack = createStackNavigator();
+  Stack.navigationOptions = ({ navigation }) => {
+    let tabBarVisible;
+    tabBarVisible = false
+    return {
+      tabBarVisible
+    };
+  };
+ function App({navigation}) {
 
-  function App() {
     return (
       <NavigationContainer>
       <Stack.Navigator
