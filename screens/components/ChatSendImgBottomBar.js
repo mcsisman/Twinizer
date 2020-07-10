@@ -52,14 +52,27 @@ export default class ChatSendImgBottomBar extends Component {
     console.log("BOTTOM: ", bottom)
     return(
       <View
-      style={{backgroundColor: "black", width: this.width, height: this.height/8, justifyContent: "center", bottom: bottom, position:"absolute", alignItems:"center"}}>
+      style={{width: this.width, height: this.height/8, justifyContent: "center", bottom: bottom, position:"absolute", alignItems:"center"}}>
 
       <View
-      style={{width: this.width*9.5/10, left: this.width/20, paddingTop: 5, paddingBottom: 5, bottom: "25%",
-      position: "absolute", justifyContent:"center", alignItems:"flex-start", flexDirection: "row"}}>
+      style={{  width: this.width, left: 0, height: this.width/10, bottom: "25%",
+      position: "absolute", justifyContent:"flex-start", alignItems:"flex-end", flexDirection: "row"}}>
 
       <View
-        style={{backgroundColor: "white", width: this.width*7/10, borderTopLeftRadius: 24,
+      style={{left: this.width *0.2/10, width: this.width*1/10, height: "100%", justifyContent:"flex-end", alignItems: "flex-end"}}>
+      <TouchableOpacity
+      activeOpacity = {1}
+      style={{justifyContent:"flex-end", alignItems: "center", width: "100%", height: "100%"}}>
+
+      <Image source={{uri: "otherplus"}}
+        style={{width: this.width*8/100, height: this.width*8/100}}
+      />
+
+      </TouchableOpacity>
+      </View>
+
+      <View
+        style={{backgroundColor:"white", width: this.width*6.5/10, borderTopLeftRadius: 24, position:"absolute", right: this.width*2.125/10,
         borderTopRightRadius: 24, borderBottomLeftRadius: 24, paddingTop: 0, paddingBottom: 0, borderBottomRightRadius: 24,}}>
       <TextInput
         style={{paddingLeft: 10, paddingRight: 10,  fontSize: 15*(this.width/360) , paddingTop: 3.5, paddingBottom: 3.5}}
@@ -72,10 +85,10 @@ export default class ChatSendImgBottomBar extends Component {
       </View>
 
       <View
-      style={{width: this.width*2.5/10, height: "100%", justifyContent:"center", alignItems: "center"}}>
+      style={{width: this.width*2/10, height: "100%", justifyContent:"flex-end", alignItems: "center",  right: 0, position: "absolute" }}>
       <TouchableOpacity
       activeOpacity = {1}
-      style={{paddingLeft: 12, paddingRight: 12, paddingTop: 5, paddingBottom: 5, borderBottomRightRadius: 36, borderBottomLeftRadius:36,
+      style={{paddingLeft: 12, paddingRight: 12, borderBottomRightRadius: 36, borderBottomLeftRadius:36, height: "87%",
         borderTopLeftRadius:36, borderTopRightRadius:36, justifyContent:"center", alignItems: "center", backgroundColor: "rgba(241,51,18,1)",
         borderColor: "rgba(241,51,18,1)", borderWidth: 1}}>
       <Text

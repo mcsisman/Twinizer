@@ -11,6 +11,7 @@ import ModifiedStatusBar from './components/ModifiedStatusBar'
 import ChatHeader from './components/ChatHeader'
 import ImageUploadModal from './components/ImageUploadModal'
 import ChatterInfo from './components/ChatterInfo'
+import MessagesScreen from './Messages'
 import ImagePicker from 'react-native-image-crop-picker';
 import ChatSendImgBottomBar from './components/ChatSendImgBottomBar'
 import ImageViewer from 'react-native-image-zoom-viewer';
@@ -191,8 +192,8 @@ spinAnimation(){
       )).start()
   }
 goBackOnPress(){
-
-    this.props.navigation.goBack()
+    global.fromChatOfUid = global.receiverUid
+    this.props.navigation.navigate("Messages")
   }
 
 renderTime(props) {
@@ -286,18 +287,8 @@ render() {
 
           <ModifiedStatusBar/>
 
-          <View
-          style={{width: this.width, height: this.height*7/8-getStatusBarHeight(), top: getStatusBarHeight(), position:"absolute", opacity: this.state.bigViewerOpacity}}>
           <ImageViewer
           imageUrls={images}/>
-          </View>
-
-          <View
-          style={{backgroundColor:"blue", width: this.width, height: this.height*7/8-getStatusBarHeight()-keyboardHeight, top: getStatusBarHeight(), position:"absolute", opacity: this.state.smallViewerOpacity}}>
-          <ImageViewer
-          enableSwipeDown = {this.state.enableSwipeDown}
-          imageUrls={images}/>
-          </View>
 
           <ChatSendImgBottomBar
             keyboardOpen = {this.state.keyboardOpen}
