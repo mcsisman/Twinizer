@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import React from 'react';
-import { Bubble, Time, GiftedChat } from 'react-native-gifted-chat';
+import { Send, Bubble, Time, GiftedChat } from 'react-native-gifted-chat';
 import firebaseSvc from './FirebaseSvc';
 import AsyncStorage from '@react-native-community/async-storage';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -14,6 +14,7 @@ import ChatterInfo from './components/ChatterInfo'
 import MessagesScreen from './Messages'
 import ImagePicker from 'react-native-image-crop-picker';
 import ChatSendImgBottomBar from './components/ChatSendImgBottomBar'
+import ChatSendImgTopBar from './components/ChatSendImgTopBar'
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {Image,
    Text,
@@ -88,6 +89,7 @@ export default class ChatScreen extends React.Component<Props> {
         this.spinAnimation()
         await this.getLastLocalMessages()
         messageArray.reverse()
+        console.log("SET STATE 1", messageArray)
           this.setState({
               messages: messageArray,
               loadingOpacity: 0
@@ -97,6 +99,7 @@ export default class ChatScreen extends React.Component<Props> {
 
       firebaseSvc.refOn(async message =>{
         if(!firstTime){
+          console.log("SET STATE 2: ", message)
           this.setState(previousState => ({
             messages: GiftedChat.append(previousState.messages, message),
           }))
@@ -104,6 +107,7 @@ export default class ChatScreen extends React.Component<Props> {
         else{
           await this.getLastLocalMessages()
           messageArray.reverse()
+          console.log("SET STATE 3:", messageArray)
           this.setState({
               messages: messageArray,
               loadingOpacity: 0
@@ -239,6 +243,18 @@ renderBubble (props) {
       />
     )
   }
+renderSend(props) {
+      return (
+          <Send
+              {...props}
+              textStyle={{
+                color:"rgba(241,51,18,1)"
+              }}
+          >
+          
+          </Send>
+      );
+  }
 get user() {
   return {
     _id: firebaseSvc.uid,
@@ -254,6 +270,7 @@ render() {
       var msgs = this.state.messages
       if(msgs.length != 0 ){
         this.state.messages.forEach(message=>{
+          console.log("mesajjjjj:", message)
           if(message.isRequest == "f"){
             isRequest = "f"
           }
@@ -288,7 +305,10 @@ render() {
           <ModifiedStatusBar/>
 
           <ImageViewer
-          imageUrls={images}/>
+          imageUrls={images}
+          onClick = {()=> Keyboard.dismiss()}/>
+
+          <ChatSendImgTopBar/>
 
           <ChatSendImgBottomBar
             keyboardOpen = {this.state.keyboardOpen}
@@ -316,6 +336,7 @@ render() {
                 loadEarlier = {true}
                 renderTime = {this.renderTime}
                 renderBubble={this.renderBubble}
+                renderSend = {this.renderSend}
                 renderAvatar={null}
               />
             </View>
@@ -364,6 +385,7 @@ render() {
                 loadEarlier = {true}
                 renderTime = {this.renderTime}
                 renderBubble={this.renderBubble}
+                renderSend = {this.renderSend}
                 renderAvatar={null}
               />
             </KeyboardAvoidingView>
@@ -413,6 +435,7 @@ render() {
                 loadEarlier = {true}
                 renderTime = {this.renderTime}
                 renderBubble={this.renderBubble}
+                renderSend = {this.renderSend}
                 renderAvatar={null}
               />
             </View>
@@ -463,6 +486,7 @@ render() {
                 loadEarlier = {true}
                 renderTime = {this.renderTime}
                 renderBubble={this.renderBubble}
+                renderSend = {this.renderSend}
                 renderAvatar={null}
               />
             </KeyboardAvoidingView>

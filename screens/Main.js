@@ -178,28 +178,6 @@ async componentDidMount(){
       }
     })
 
-/*
-    await AsyncStorage.setItem("AMhJse1OpcTdPOMr5TW4Fj50uS53" + "rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("JtfxB5eiDvSzOM4dbhgGeU7PXVC2" + "rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("pg7bdvxZS0XvAzL4YcU7Tzc3Xpk2" + "rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("k209WPn6gmfHP3f2PphxyXeb84p1" + "rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + '/messages',JSON.stringify(arr) )
-
-    await AsyncStorage.setItem("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + "6kfzpWV8NLQuZTm6dXppPc5RF9q2" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + "7FM2ntE9FMUsnQ6QU5o8vXtNox23" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + "KajFrO2H9WYhF1YqgCdA1qqN8E62" + '/messages',JSON.stringify(arr) )
-    await AsyncStorage.setItem("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1" + "k209WPn6gmfHP3f2PphxyXeb84p1" + '/messages',JSON.stringify(arr) )
-
-
-
-/*
-    await AsyncStorage.getItem(firebase.auth().currentUser.uid + "P13vQ97IWfRfBkVO9FMfBcdgg6y2" + '/messages')
-      .then(req => JSON.parse(req))
-      .then(json => localMessages = json)
-    console.log("ilk:", localMessages)
-    console.log("son: ", localMessages[localMessages.length-1])
-    console.log("sondan 1 önceki: ", localMessages[localMessages.length-2])
-*/
-
     global.swipeCount = 0
     // this.checkIfAlreadySearching()
     this.welcome = {uri: 'twinizermain'}
@@ -273,19 +251,22 @@ swipeStart(){
         Animated.timing(this.widthAnimation, {
           duration: 200,
           toValue: global.width*(2/10),
-          easing: Easing.elastic(0.5)
+          easing: Easing.elastic(0.5),
+          useNativeDriver: false
         }
       ),
         Animated.timing(this.heightAnimation, {
           duration: 200,
           toValue: global.width*(2/10)*(7/6),
-          easing: Easing.elastic(0.5)
+          easing: Easing.elastic(0.5),
+          useNativeDriver: false
         }
       ),
         Animated.timing(this.topAnimation, {
           duration: 200,
           toValue: global.width*(7/40),
-          easing: Easing.elastic(0.5)
+          easing: Easing.elastic(0.5),
+          useNativeDriver: false
       }
     )
 
@@ -323,19 +304,22 @@ swipeRelease(){
               Animated.timing(this.widthAnimation, {
                 duration: 300,
                 toValue: global.width*(5/10),
-                easing: Easing.elastic(0.5)
+                easing: Easing.elastic(0.5),
+                useNativeDriver: false
               }
             ),
               Animated.timing(this.heightAnimation, {
                 duration: 300,
                 toValue: global.width*(5/10)*(7/6),
-                easing: Easing.elastic(0.5)
+                easing: Easing.elastic(0.5),
+                useNativeDriver: false
               }
             ),
               Animated.timing(this.topAnimation, {
                 duration: 300,
                 toValue: 0,
-                easing: Easing.elastic(0.5)
+                easing: Easing.elastic(0.5),
+                useNativeDriver: false
             }
           )
 
@@ -439,19 +423,22 @@ leftActionComplete(){
       Animated.timing(this.widthAnimation, {
         duration: 200,
         toValue: global.width*(5/10),
-        easing: Easing.elastic(0.5)
+        easing: Easing.elastic(0.5),
+        useNativeDriver: false
       }
     ),
       Animated.timing(this.heightAnimation, {
         duration: 200,
         toValue: global.width*(5/10)*(7/6),
-        easing: Easing.elastic(0.5)
+        easing: Easing.elastic(0.5),
+        useNativeDriver: false
       }
     ),
       Animated.timing(this.topAnimation, {
         duration: 200,
         toValue: 0,
-        easing: Easing.elastic(0.5)
+        easing: Easing.elastic(0.5),
+        useNativeDriver: false
     }
   )
 
@@ -540,19 +527,22 @@ async rightActionComplete(){
       Animated.timing(this.widthAnimation, {
         duration: 200,
         toValue: global.width*(5/10),
-        easing: Easing.elastic(0.5)
+        easing: Easing.elastic(0.5),
+        useNativeDriver: false
       }
     ),
       Animated.timing(this.heightAnimation, {
         duration: 200,
         toValue: global.width*(5/10)*(7/6),
-        easing: Easing.elastic(0.5)
+        easing: Easing.elastic(0.5),
+        useNativeDriver: false
       }
     ),
       Animated.timing(this.topAnimation, {
         duration: 200,
         toValue: 0,
-        easing: Easing.elastic(0.5)
+        easing: Easing.elastic(0.5),
+        useNativeDriver: false
     }
   )
 
@@ -649,19 +639,22 @@ leftActionIncomplete(){
         Animated.timing(this.widthAnimation, {
           duration: 200,
           toValue: global.width*(5/10),
-          easing: Easing.elastic(0.5)
+          easing: Easing.elastic(0.5),
+          useNativeDriver: false
         }
       ),
         Animated.timing(this.heightAnimation, {
           duration: 200,
           toValue: global.width*(5/10)*(7/6),
-          easing: Easing.elastic(0.5)
+          easing: Easing.elastic(0.5),
+          useNativeDriver: false
         }
       ),
         Animated.timing(this.topAnimation, {
           duration: 200,
           toValue: 0,
-          easing: Easing.elastic(0.5)
+          easing: Easing.elastic(0.5),
+          useNativeDriver: false
       }
     )
 
@@ -715,19 +708,22 @@ rightActionIncomplete(){
         Animated.timing(this.widthAnimation, {
           duration: 200,
           toValue: global.width*(5/10),
-          easing: Easing.elastic(0.5)
+          easing: Easing.elastic(0.5),
+          useNativeDriver: false
         }
       ),
         Animated.timing(this.heightAnimation, {
           duration: 200,
           toValue: global.width*(5/10)*(7/6),
-          easing: Easing.elastic(0.5)
+          easing: Easing.elastic(0.5),
+          useNativeDriver: false
         }
       ),
         Animated.timing(this.topAnimation, {
           duration: 200,
           toValue: 0,
-          easing: Easing.elastic(0.5)
+          easing: Easing.elastic(0.5),
+          useNativeDriver: false
       }
     )
 

@@ -227,6 +227,7 @@ async startFromLocal(){
 
   uidArray = await this.createUidPhotoArrays()
   await this.printMessagesData()
+  newRequest = true
 }
 async getUsernameOfTheUid(){
 
@@ -252,11 +253,14 @@ async getUsernameOfTheUid(){
         .then(json => localUsernames = json)
       conversationUsernameArray = localUsernames
 
+      if(conversationUsernameArray == null){
+        conversationUsernameArray = []
+      }
       usernameListener[noOfConversations-1] = firebase.database().ref('Users/' + conversationUidArray[noOfConversations-1]);
       await usernameListener[noOfConversations-1].on('child_changed', async snap => await this.createUsernameArray(snap, noOfConversations-1, conversationUidArray[noOfConversations-1]));
       var usernameOnceListener = firebase.database().ref('Users/' + conversationUidArray[noOfConversations-1] + "/i");
       await usernameOnceListener.once('value').then(async snapshot => {
-        if(conversationUsernameArray.length == 0 || conversationUsernameArray == null){
+        if(conversationUsernameArray.length == 0){
           conversationUsernameArray[0] = snapshot.val()
         }
         else{
@@ -292,7 +296,6 @@ createUsernameArray = async (snap, i, conversationUid) => {
 }
 async createConversationArrays(){
 
-  if(!newRequest){
     var db = firebase.firestore();
     var docRef = db.collection(firebase.auth().currentUser.uid).doc("MessageInformation");
     await docRef.onSnapshot(async doc =>{
@@ -308,6 +311,8 @@ async createConversationArrays(){
             global.messagesFirstTime = false
           }
           else{
+              newRequest = true
+              global.messagesFirstTime = false
               this.setState({loadingDone: true, loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
           }
         }
@@ -323,7 +328,6 @@ async createConversationArrays(){
         }
       }
     })
-  }
 }
 async createUidPhotoArrays(){
   // GET THE UIDS THAT ARE SAVED TO LOCAL
@@ -418,7 +422,6 @@ getMessagesData = async callback =>{
   var key = arr[0] + "" + arr[1];
 
 
-  console.log("DATA OF:", uidArray[count])
   var listener23 = firebase.database().ref('Messages/' + "" + key).limitToLast(1);
   await listener23.once('child_added').then(async snapshot => {
     lastDBkey = snapshot.key
@@ -427,17 +430,13 @@ getMessagesData = async callback =>{
 
     if(!fromChat){
       const data = snapshot.val()
-      console.log("GELEN DATA:", data)
       if(dataArray.length < noOfConversations){
-        console.log("DATAARRAYİN LENGTHİ NOOF CONVERSATIONDAN KISA")
         dataArray[count] = data
 
       }
-      console.log("NO OF CONV:", noOfConversations)
-      console.log("DATA ARRAY:", dataArray)
       if(dataArray.length == noOfConversations){
         for(i = 0; i < noOfConversations; i++){
-          if( (data.user.r == dataArray[i].user.r && data.user._id == dataArray[i].user._id) || (data.user.r == dataArray[i].user._id && data.user._id == dataArray[i].user._r) ){
+          if( (data.user.r == dataArray[i].user.r && data.user._id == dataArray[i].user._id) || (data.user.r == dataArray[i].user._id && data.user._id == dataArray[i].user.r) ){
             dataArray[i] = data
             break;
           }
@@ -452,7 +451,6 @@ getMessagesData = async callback =>{
 
           }
         }
-        console.log("REQUEST ARRAY:", requestArray)
         requestArray.sort(this.sortByProperty("c"));
         requestArray.reverse()
         messageArray.sort(this.sortByProperty("c"));
@@ -513,8 +511,6 @@ getMessagesData = async callback =>{
             }
           }
         }
-        console.log("CONVERSATION USERNAME ARRAY REQUESTTEN ÖNCE: ", conversationUsernameArray)
-        console.log("REQUEST USERNAME ARRAY:", requestUsernameArray)
 
         this.setState({loadingDone: true, test: "1", loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
       }
@@ -528,6 +524,7 @@ getMessagesData = async callback =>{
   whoseListener[count] = uidArray[count]
   var uidCount = count;
   if(whoseListener[count] == global.fromChatOfUid || global.fromChatOfUid == ""){
+    console.log("CREATED LISTENER FOR: ", whoseListener[count])
     await syncListener[count].on('child_added', async snap => await this.syncLocalMessages(snap, uidCount));
   }
 };
@@ -584,11 +581,11 @@ syncLocalMessages = async (snap, uidCount) => {
       if(!fromChat){
         const data = snap.val()
         if(dataArray.length < noOfConversations){
-          dataArray.push(data)
+          dataArray[count] = data
         }
         if(dataArray.length == noOfConversations){
           for(i = 0; i < noOfConversations; i++){
-            if( (data.user.r == dataArray[i].user.r && data.user._id == dataArray[i].user._id) || (data.user.r == dataArray[i].user._id && data.user._id == dataArray[i].user._r) ){
+            if( (data.user.r == dataArray[i].user.r && data.user._id == dataArray[i].user._id) || (data.user.r == dataArray[i].user._id && data.user._id == dataArray[i].user.r) ){
               dataArray[i] = data
               break;
             }
@@ -663,6 +660,7 @@ syncLocalMessages = async (snap, uidCount) => {
               }
             }
           }
+          console.log("MESSAGE ARRAY: ", messageArray)
           newRequest = true
           this.setState({loadingDone: true, test: "1", loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
         }
@@ -714,6 +712,7 @@ navigateToChat(receiverUid, receiverPhoto, receiverUsername){
   global.firstMessage = false
   for( i = 0; i < syncListener.length; i++){
     if(global.receiverUid == whoseListener[i]){
+      console.log("REMOVED LISTENER FOR: ", whoseListener[i])
       var x = syncListener[i]
       x.off()
     }

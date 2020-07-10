@@ -84,10 +84,11 @@ export default class ImageUploadModal extends Component {
       </Text>
       </View>
       <TouchableOpacity
-      style={{opacity: 0.3, width: screenWidth*(1/10) , height: screenWidth*(1/10), right: 0, position:'absolute', top:0}}
+      activeOpacity = {0.4}
+      style={{opacity: 0.4, width: screenWidth*(1/10) , height: screenWidth*(1/10), right: 0, position:'absolute', top:0}}
        onPress={this.props.onPressCancel}>
        <Image source={{uri: 'cross'}}
-         style={{width: '50%', height: '50%', right:'25%', bottom: '25%', position: 'absolute' }}
+         style={{width: '45%', height: '45%', right:'27.5%', bottom: '27.5%', position: 'absolute' }}
        />
       </TouchableOpacity>
       </View>

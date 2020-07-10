@@ -52,20 +52,21 @@ export default class ChatSendImgBottomBar extends Component {
     console.log("BOTTOM: ", bottom)
     return(
       <View
-      style={{width: this.width, height: this.height/8, justifyContent: "center", bottom: bottom, position:"absolute", alignItems:"center"}}>
+      style={{ width: this.width, height: this.height/8, justifyContent: "center", bottom: bottom, position:"absolute", alignItems:"center"}}>
 
       <View
-      style={{  width: this.width, left: 0, height: this.width/10, bottom: "25%",
+      style={{ width: this.width, left: 0, height: this.width/10, bottom: "25%",
       position: "absolute", justifyContent:"flex-start", alignItems:"flex-end", flexDirection: "row"}}>
 
       <View
-      style={{left: this.width *0.2/10, width: this.width*1/10, height: "100%", justifyContent:"flex-end", alignItems: "flex-end"}}>
+      style={{left: this.width *0.25/10, width: this.width*0.87/10, height: this.width*0.87/10, justifyContent:"flex-end", alignItems: "flex-end"}}>
       <TouchableOpacity
       activeOpacity = {1}
-      style={{justifyContent:"flex-end", alignItems: "center", width: "100%", height: "100%"}}>
+      style={{borderTopLeftRadius:555, borderTopRightRadius: 555, borderBottomLeftRadius: 555, borderBottomRightRadius: 555,
+         backgroundColor:"rgba(255,255,255,0.8)", justifyContent:"center", alignItems: "center", width: "100%", height: "100%"}}>
 
-      <Image source={{uri: "otherplus"}}
-        style={{width: this.width*8/100, height: this.width*8/100}}
+      <Image source={{uri: "plus"}}
+        style={{width: this.width*5/100, height: this.width*5/100}}
       />
 
       </TouchableOpacity>

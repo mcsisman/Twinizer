@@ -75,6 +75,9 @@ class FirebaseSvc {
       firstTime = false
       return message;
     }
+    else{
+      return localMessages[localMessages.length - 1]
+    }
 
   };
 
@@ -104,13 +107,11 @@ class FirebaseSvc {
       if(senderRef.exists){
         senderRef.update({
           UidArray: firebase.firestore.FieldValue.arrayUnion(global.receiverUid),
-          UsernameArray: firebase.firestore.FieldValue.arrayUnion(global.receiverUsername + "_" + global.receiverUid)
         })
       }
       else{
         senderRef.set({
           UidArray: firebase.firestore.FieldValue.arrayUnion(global.receiverUid),
-          UsernameArray: firebase.firestore.FieldValue.arrayUnion(global.receiverUsername + "_" + global.receiverUid)
         }, {merge: true})
       }
 
@@ -118,13 +119,11 @@ class FirebaseSvc {
       if(receiverRef.exists){
         receiverRef.update({
           UidArray: firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid),
-          UsernameArray: firebase.firestore.FieldValue.arrayUnion(username + "_" + firebase.auth().currentUser.uid)
         })
       }
       else{
         receiverRef.set({
           UidArray: firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid),
-          UsernameArray: firebase.firestore.FieldValue.arrayUnion(username + "_" + firebase.auth().currentUser.uid)
         }, {merge: true})
       }
 
