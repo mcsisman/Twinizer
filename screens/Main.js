@@ -151,7 +151,6 @@ constructor(props){
     this.rightActionCount= 0,
     this.leftActionCount= 0,
     this.doesExist = false,
-    global.searchNumForDownload = 0;
     this.probabilityDoneCheck = false;
     this.downloadURL = "";
     this.url = "",
@@ -202,7 +201,7 @@ async componentDidMount(){
 */
 
     global.swipeCount = 0
-    this.checkIfAlreadySearching()
+    // this.checkIfAlreadySearching()
     this.welcome = {uri: 'twinizermain'}
   }
 
@@ -838,7 +837,7 @@ async createEmailDistanceArrays(gender, country, fn){
      });
      // Sort the array based on the second element
      items.sort(function(first, second) {
-       return second[1] - first[1];
+       return first[1] - second[1];
      });
      var length = Object.keys(dict).length;
      console.log(length);
@@ -965,7 +964,6 @@ async checkFunction(){
           dict = doc.data();
           await this.createEmailDistanceArrays("All Genders","All Countries","searchDone");
           ////////////////////////////////////////////////////////////////////////////////
-          global.searchNumForDownload = global.searchNumForDownload + 1;
           for(let i = 0; i < 10; i++){
             // resim indirme KISMI /////////////////////////////////////////////////
             await this.getImageURL(i);
@@ -1214,10 +1212,6 @@ async saveSearchPhotoLocally(photoPath){
   await RNFS.copyFile(photoPath, RNFS.DocumentDirectoryPath + "/search-photos/" + lastSearchNo.toString() + ".jpg");
 }
 uploadSearchPhoto = async (uri) => {
-  var listener23 = firebase.database().ref('Users/' + firebase.auth().currentUser.uid +"/s/s");
-  var searchedNumber = 1;
-  await listener23.once('value').then(async snapshot => {
-    searchedNumber = snapshot.val() + 1
     const response = await fetch(uri);
     const blob = await response.blob();
     var storage = firebase.storage();
@@ -1227,11 +1221,7 @@ uploadSearchPhoto = async (uri) => {
     };
     var ref1 = storageRef.child("Photos/" + firebase.auth().currentUser.uid + "/SearchPhotos/" + "search-photo.jpg");
     ref1.put(blob).then(snapshot => {
-    firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/s").update({
-      s: searchedNumber,
-      sb: true
-    }).then(() =>  {
-      const updateRef = firebase.firestore().collection('Users').doc('User2');
+      const updateRef = firebase.firestore().collection('Users').doc('embedder');
       updateRef.set({
       name: firebase.auth().currentUser.uid
       }).then(() => {
@@ -1262,25 +1252,12 @@ uploadSearchPhoto = async (uri) => {
             console.log("User2 update olmadı")
             Alert.alert("Connection Failed", "Please try Again.." )
           });
-        }).catch(function(error) {
-          this.setState({loadingOpacity: 0})
-          this.spinValue = new Animated.Value(0)
-          console.log("startedboolean falan update olmadı")
-          Alert.alert("Connection Failed", "Please try Again..")
-        });
       }).catch(function(error) {
         this.setState({loadingOpacity: 0})
         this.spinValue = new Animated.Value(0)
         console.log("Search fotosu upload olmadı")
         Alert.alert("Connection Failed", "Please try Again.. 1")
       });
-
-  }).catch(function(error) {
-    this.setState({loadingOpacity: 0})
-    this.spinValue = new Animated.Value(0)
-    console.log("started sayısını alamadık")
-    Alert.alert("Connection Failed", "Please try Again..")
-  });
 }
 search = () =>{
     this.setState({isVisible2: true})
