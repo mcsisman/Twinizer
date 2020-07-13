@@ -97,21 +97,22 @@ export default class ChatScreen extends React.Component<Props> {
       });
 
       firebaseSvc.refOn(async message =>{
-        console.log("PARSE RETURNED:", message)
-        if(!firstTime){
-          this.setState(previousState => ({
-            messages: GiftedChat.append(previousState.messages, message),
-          }))
+        if(message != null){
+          if(!firstTime){
+            this.setState(previousState => ({
+              messages: GiftedChat.append(previousState.messages, message),
+            }))
+          }
+          else{
+            await this.getLastLocalMessages()
+            messageArray.reverse()
+            this.setState({
+                messages: messageArray,
+                loadingOpacity: 0
+            })
+          }
+          firstTime = false
         }
-        else{
-          await this.getLastLocalMessages()
-          messageArray.reverse()
-          this.setState({
-              messages: messageArray,
-              loadingOpacity: 0
-          })
-        }
-        firstTime = false
       })
     }
 
@@ -127,7 +128,6 @@ sendMsg = (messages) => {
   this.setState(previousState => ({
     messages: GiftedChat.append(previousState.messages, messages[0]),
   }))
-  console.log("SEND MSG")
 }
   static navigationOptions = {
       header: null,
@@ -270,8 +270,6 @@ render() {
     if(this.state.messages != undefined){
       var msgs = this.state.messages
       if(msgs.length != 0 ){
-        console.log("MSGS LENGTH: ", msgs.length)
-        console.log("statem essages:Ç ", msgs)
         this.state.messages.forEach(message=>{
           if(message.isRequest == "f"){
             isRequest = "f"

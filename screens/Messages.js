@@ -428,34 +428,33 @@ getMessagesData = async callback =>{
   var key = arr[0] + "" + arr[1];
 
 
-  var listener23 = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count]).limitToLast(2);
+  var listener23 = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-").limitToLast(1);
   await listener23.once('value').then(async snapshot => {
-    if(snapshot.val() != null){
-      console.log("ONCE A GİRDİ NULL DEGİL")
-      // remove k from snapshot data
-      var snapVal = snapshot.val()
-      delete snapVal["k"]
-
-      var messageKey = Object.keys(snapVal)[0]
-      var localMsgs = []
-      await AsyncStorage.getItem(firebase.auth().currentUser.uid + uidArray[count] + '/messages')
-        .then(req => JSON.parse(req))
-        .then(json => localMsgs = json)
-
-
-        var data;
-      if(messageKey == undefined){
+      console.log("ONCE A GİRDİ:", snapshot.val())
+      var data;
+      if(snapshot.val() == null || snapshot.val() == undefined ){
+        var localMsgs = []
+        await AsyncStorage.getItem(firebase.auth().currentUser.uid + uidArray[count] + '/messages')
+          .then(req => JSON.parse(req))
+          .then(json => localMsgs = json)
+        if(localMsgs == null){
+          
+        }
         data = localMsgs[localMsgs.length - 1]
         lastDBkey = localMsgs[localMsgs.length - 1]._id
       }
       else{
+        var snapVal = snapshot.val()
+        var messageKey = Object.keys(snapVal)[0]
         const user = { _id: uidArray[count], r: firebase.auth().currentUser.uid}
         const { c: numberStamp, i: isRequest, text} = snapVal[messageKey];
         const id = messageKey;
         const _id = messageKey; //needed for giftedchat
+        const c = numberStamp
         const createdAt = new Date(numberStamp);
         const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
         const message = {
+          c,
           id,
           _id,
           createdAt,
@@ -483,7 +482,7 @@ getMessagesData = async callback =>{
             }
           }
           for( i = 0; i < noOfConversations; i++){
-            if(dataArray[i].i == "f" || dataArray[i].user._id == firebase.auth().currentUser.uid){
+            if(dataArray[i].isRequest == "f" || dataArray[i].user._id == firebase.auth().currentUser.uid){
               messageArray.push(dataArray[i])
               noOfNonRequests++;
             }
@@ -556,14 +555,14 @@ getMessagesData = async callback =>{
           this.setState({loadingDone: true, test: "1", loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
         }
       }
-    }
+
 
   })
   var lastLocalKey = await this.getLastLocalMessage()
   if(lastLocalKey == lastDBkey + "z"){
     didSync = true
   }
-  syncListener[count] = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count]);
+  syncListener[count] = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-");
   whoseListener[count] = uidArray[count]
   var uidCount = count;
   if(whoseListener[count] == global.fromChatOfUid || global.messagesFirstTime){
@@ -597,16 +596,18 @@ syncLocalMessages = async (snapshot, uidCount) => {
     if(noOfNewMsgs != 0){
       console.log("YENİ MESAJ YOKKEN İÇERİ GİRDİ")
       for(i = 0; i < noOfNewMsgs; i++){
-        messageKey = Object.keys(snapshot.val())[0]
+        messageKey = Object.keys(snapshot.val())[i]
         console.log("SNAP VAL: ", snapVal)
 
         const user = { _id: uidArray[uidCount], r: firebase.auth().currentUser.uid}
         const { c: numberStamp, i: isRequest, text} = snapVal[messageKey];
         const id = messageKey;
         const _id = messageKey; //needed for giftedchat
+        const c = numberStamp
         const createdAt = new Date(numberStamp);
         const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
         const msg = {
+          c,
           id,
           _id,
           createdAt,
@@ -615,8 +616,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
           user,
           image
         };
-        console.log("REMOVE MESSAGE KEY: ", messageKey)
-        firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count] + "/" + messageKey).remove();
+
           if(localMessages[uidCount] == null || localMessages[uidCount].length == 0){
             localMessages[uidCount] = [msg]
             console.log("Locale kaydedilen mesaj on if: ", msg)
@@ -626,6 +626,10 @@ syncLocalMessages = async (snapshot, uidCount) => {
             console.log("Locale kaydedilen mesaj on else: ", msg)
           }
       }
+      firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
+      firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[uidCount]).update({
+        k:1
+      })
 
         await AsyncStorage.setItem(firebase.auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
         lastMsgFlag = lastDBkey == localMessages[uidCount][localMessages[uidCount].length - 1]._id
@@ -648,7 +652,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
                 }
               }
               for( i = 0; i < noOfConversations; i++){
-                if(dataArray[i].i == "f" || dataArray[i].user._id == firebase.auth().currentUser.uid){
+                if(dataArray[i].isRequest == "f" || dataArray[i].user._id == firebase.auth().currentUser.uid){
                   messageArray.push(dataArray[i])
                   noOfNonRequests++;
                 }
@@ -859,6 +863,7 @@ renderMessageBoxes(){
     var count = 0;
     while( count < messageArray.length){
 
+      console.log("messageArray[count]", messageArray[count] )
       timeArray[count] = this.getMsgTime(messageArray[count].c)
 
       if( messageArray[count].user.r == firebase.auth().currentUser.uid){
@@ -922,7 +927,7 @@ renderRequestBoxes(){
     messages.splice(0, messages.length)
     var count = 0;
     while( count < requestArray.length){
-
+      console.log("requestArray[count]:", requestArray[count] )
       timeArray[count] = this.getMsgTime(requestArray[count].c)
 
       if( requestArray[count].user.r == firebase.auth().currentUser.uid){

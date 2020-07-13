@@ -30,11 +30,12 @@ class FirebaseSvc {
   }
 
   parse = async snapshot => {
-    console.log("PARSE A GİRDİ")
+    console.log("PARSE A GİRDİ:", snapshot.val())
     if(snapshot.val() != null){
       // remove k from snapshot data
       var snapVal = snapshot.val()
       delete snapVal["k"]
+      console.log("KEYS LENGTH: ", Object.keys(snapVal).length)
       if(Object.keys(snapVal).length != 0){
         var messageKey = Object.keys(snapVal)[0]
         console.log("SNAP VAL: ", snapVal)
@@ -47,8 +48,10 @@ class FirebaseSvc {
           const id = messageKey;
           const _id = messageKey; //needed for giftedchat
           const createdAt = new Date(numberStamp);
+          const c = numberStamp
           const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
           const message = {
+            c,
             id,
             _id,
             createdAt,
@@ -65,15 +68,22 @@ class FirebaseSvc {
             localMessages.push(message)
           }
           firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
+
           AsyncStorage.setItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
           firstTime = false
           return message;
       }
+      else{
+        return null
+      }
+    }
+    else{
+      return null
     }
   };
 
   refOn = async callback => {
-    firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + global.receiverUid)
+    firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + global.receiverUid).orderByKey().endAt("A").startAt("-")
       .on('value', async snapshot => await callback(await this.parse(snapshot)));
   }
 
@@ -151,15 +161,16 @@ class FirebaseSvc {
       var pushedKey;
       pushedKey = this.ref.push(message).key;
 
-      console.log("PUSHED KEY: ", pushedKey)
       const user = { _id: firebase.auth().currentUser.uid, r: global.receiverUid}
       const id = pushedKey;
       const _id = pushedKey; //needed for giftedchat
-      const createdAt = this.timestamp;
+      var createdAt = new Date();
+      var c = createdAt.getTime()
       const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
       const msg = {
         id,
         _id,
+        c,
         createdAt,
         isRequest,
         text,
