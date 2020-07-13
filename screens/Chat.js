@@ -197,7 +197,7 @@ spinAnimation(){
   }
 goBackOnPress(){
     global.comingFromChat = true
-    global.fromChatOfUid = global.receiverUid
+
     this.props.navigation.navigate("Messages")
   }
 

@@ -39,8 +39,6 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
-var firstRequest = false;
-var whoseListener = []
 var syncRef;
 var didSync = false
 var lastDBkey;
@@ -53,7 +51,6 @@ var doneRequestColor = 'rgba(128,128,128,1)'
 var messageColorArray = []
 var requestColorArray = []
 var localMessages = [];
-var syncListener = [];
 var messageLastSeenArray = []
 var requestLastSeenArray = []
 var newRequest = false
@@ -114,6 +111,7 @@ export default class MessagesScreen extends Component<{}>{
   }
 componentDidMount(){
   console.log("COMPONENT DID MOUNT")
+  global.newMsgListenerArray = []
   this._subscribe = this.props.navigation.addListener('focus', async () => {
     global.fromMessages = true
     scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight()
@@ -135,8 +133,6 @@ static navigationOptions = {
 };
 resetVariables(){
   if(!newRequest){
-    syncListener = [];
-    whoseListener = []
     didSync = false
     lastDBkey;
     lastMsgFlag = false
@@ -171,8 +167,6 @@ resetVariables(){
     count = 0
     this.doesExist = false
     fromChat = false
-    whoseListener.splice(0, whoseListener.length)
-    syncListener.splice(0, syncListener.length)
     messageColorArray.splice(0, messageColorArray.length)
     requestColorArray.splice(0, requestColorArray.length)
     messageLastSeenArray.splice(0, messageLastSeenArray.length)
@@ -310,14 +304,19 @@ async createConversationArrays(){
           if(doc.exists){
             conversationUidArray = await doc.data()["UidArray"]
             noOfConversations = conversationUidArray.length
+            for( i = 0; i < noOfConversations; i++){
+              global.newMsgListenerArray[i].isOpen = false
+              global.newMsgListenerArray[i].uid = conversationUidArray[i]
+              global.newMsgListenerArray[i].listenerID = ""
+            }
             await this.getUsernameOfTheUid()
             uidArray = await this.createUidPhotoArrays()
             await this.printMessagesData()
             newRequest = true
             global.messagesFirstTime = false
+
           }
           else{
-              firstRequest = true
               newRequest = true
               global.messagesFirstTime = false
               this.setState({loadingDone: true, loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
@@ -328,6 +327,11 @@ async createConversationArrays(){
           await this.spinAnimation()
           conversationUidArray = await doc.data()["UidArray"]
           noOfConversations = conversationUidArray.length,
+
+          global.newMsgListenerArray[noOfConversations-1].isOpen = false
+          global.newMsgListenerArray[noOfConversations-1].uid = conversationUidArray[noOfConversations-1]
+          global.newMsgListenerArray[noOfConversations-1].listenerID = ""
+
           await this.getUsernameOfTheUid()
           uidArray = await this.createUidPhotoArrays()
           await this.printMessagesData()
@@ -563,14 +567,13 @@ getMessagesData = async callback =>{
   if(lastLocalKey == lastDBkey + "z"){
     didSync = true
   }
-  syncListener[count] = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-");
-  whoseListener[count] = uidArray[count]
+
   var uidCount = count;
-  console.log("WHOSE LISTENER COUNT:", )
-  if(whoseListener[count] == global.fromChatOfUid || global.messagesFirstTime || firstRequest){
-    firstRequest = false
-    console.log("CREATED LISTENER FOR: ", whoseListener[count])
-    await syncListener[count].on('value', async snapshot => await this.syncLocalMessages(snapshot, uidCount));
+
+  if(!global.newMsgListenerArray[count].isOpen && global.fromChatOfUid != global.newMsgListenerArray[count].uid){
+    global.newMsgListenerArray[count].isOpen = true
+    global.newMsgListenerArray[count].listenerID = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-");
+    await global.newMsgListenerArray[count].listenerID.on('value', async snapshot => await this.syncLocalMessages(snapshot, uidCount));
   }
 };
 async getLastLocalMessage(){
@@ -777,15 +780,16 @@ navigateToChat(receiverUid, receiverPhoto, receiverUsername){
   global.receiverCountry = receiverUsername.c
   global.receiverBio = receiverUsername.b
   global.firstMessage = false
-  for( i = 0; i < syncListener.length; i++){
-    if(global.receiverUid == whoseListener[i]){
-      var x = syncListener[i]
+  for( i = 0; i < global.newMsgListenerArray.length; i++){
+    if(global.receiverUid == global.newMsgListenerArray[i].uid){
+      var x = global.newMsgListenerArray[i].listenerID
       x.off()
-      console.log("LISTENER CLOSED FOR:", whoseListener[i])
+      console.log("LISTENER CLOSED FOR:",global.newMsgListenerArray[i].uid)
     }
   }
   fromChat = true
   this.setState({loadingDone: false, loadingOpacity: 1, editPressed: false, cancelPressed: false, editText: "Edit", messageBoxDisabled: false,})
+  global.fromChatOfUid = global.receiverUid
   this.props.navigation.navigate("Chat")
 }
 getMsgTime(timestamp){
