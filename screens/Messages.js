@@ -39,7 +39,7 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
-
+var firstRequest = false;
 var whoseListener = []
 var syncRef;
 var didSync = false
@@ -317,6 +317,7 @@ async createConversationArrays(){
             global.messagesFirstTime = false
           }
           else{
+              firstRequest = true
               newRequest = true
               global.messagesFirstTime = false
               this.setState({loadingDone: true, loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
@@ -438,7 +439,7 @@ getMessagesData = async callback =>{
           .then(req => JSON.parse(req))
           .then(json => localMsgs = json)
         if(localMsgs == null){
-          
+
         }
         data = localMsgs[localMsgs.length - 1]
         lastDBkey = localMsgs[localMsgs.length - 1]._id
@@ -565,7 +566,9 @@ getMessagesData = async callback =>{
   syncListener[count] = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-");
   whoseListener[count] = uidArray[count]
   var uidCount = count;
-  if(whoseListener[count] == global.fromChatOfUid || global.messagesFirstTime){
+  console.log("WHOSE LISTENER COUNT:", )
+  if(whoseListener[count] == global.fromChatOfUid || global.messagesFirstTime || firstRequest){
+    firstRequest = false
     console.log("CREATED LISTENER FOR: ", whoseListener[count])
     await syncListener[count].on('value', async snapshot => await this.syncLocalMessages(snapshot, uidCount));
   }
@@ -586,15 +589,13 @@ async getLastLocalMessage(){
   return lastLocalKey
 }
 syncLocalMessages = async (snapshot, uidCount) => {
-  console.log("LİSTENER HEHE")
   // remove k from snapshot data
   if(snapshot.val() != null){
     var snapVal = snapshot.val()
-    delete snapVal["k"]
+    console.log("MESAJ GELDİ:", snapshot.val())
     var messageKey;
     var noOfNewMsgs = Object.keys(snapVal).length
     if(noOfNewMsgs != 0){
-      console.log("YENİ MESAJ YOKKEN İÇERİ GİRDİ")
       for(i = 0; i < noOfNewMsgs; i++){
         messageKey = Object.keys(snapshot.val())[i]
         console.log("SNAP VAL: ", snapVal)
@@ -722,6 +723,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
                 }
               }
               console.log("MESSAGE ARRAY: ", messageArray)
+              console.log("REQUEST ARRAY: ", requestArray)
               newRequest = true
 
               this.setState({loadingDone: true, test: "1", loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false, reRender:"oke"})
@@ -862,8 +864,6 @@ renderMessageBoxes(){
     messages.splice(0, messages.length)
     var count = 0;
     while( count < messageArray.length){
-
-      console.log("messageArray[count]", messageArray[count] )
       timeArray[count] = this.getMsgTime(messageArray[count].c)
 
       if( messageArray[count].user.r == firebase.auth().currentUser.uid){
@@ -927,7 +927,6 @@ renderRequestBoxes(){
     messages.splice(0, messages.length)
     var count = 0;
     while( count < requestArray.length){
-      console.log("requestArray[count]:", requestArray[count] )
       timeArray[count] = this.getMsgTime(requestArray[count].c)
 
       if( requestArray[count].user.r == firebase.auth().currentUser.uid){
