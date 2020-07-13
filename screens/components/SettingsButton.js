@@ -51,7 +51,7 @@ export default class SettingsButton extends Component {
 
       <View
       style={{justifyContent: 'center', alignItems: "center", position: 'absolute', width: this.width/8, height: this.width/8, bottom: 0, right: 0}}>
-      <Image source={{uri: 'settingsarrowblue'}}
+      <Image source={{uri: 'settingsarrowred'}}
       style={{opacity: 0.5, width: this.width/8*(4/10)*(61/110), height: this.width/8*(4/10)}}/>
       </View>
       </TouchableOpacity>

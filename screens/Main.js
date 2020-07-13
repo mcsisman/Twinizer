@@ -1374,7 +1374,7 @@ render(){
 
       <ImageUploader
       width = {this.width*3/10}
-      bottom = {(this.height)*(20/100) - (getStatusBarHeight())}
+      bottom = {(this.height)*(20/100) - (getStatusBarHeight()) - this.width/7}
       right = {this.width*(3.5/10)}
       borderRadius = {16}
       borderOpacity = {this.state.borderOpacity}
@@ -1386,7 +1386,7 @@ render(){
       <SearchButton
       onPress={()=>this.searchDone()}
       disabled = {this.state.disabled}
-      bottom = {((this.height)*(20/100) - (getStatusBarHeight()) + this.width/7 )/2 - this.width*(0.5/10)}
+      bottom = {((this.height)*(20/100) - (getStatusBarHeight()) + this.width/7 )/2 - this.width/7 - this.width*(0.5/10)}
       right = {this.width*(4.5/10)}
       backgroundColor = {this.state.buttonOpacity}/>
 
@@ -1459,14 +1459,7 @@ render(){
 
       <Animated.Image source={{uri: 'loading'}}
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
-        position: 'absolute', bottom: (this.height)*(20/100) - (getStatusBarHeight()) + (this.width*3/10*(7/6)) + this.width/30, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
-
-      <BottomBar
-      whichScreen = {"Main"}
-      msgOnPress = {()=> navigate("Messages")}
-      historyOnPress = {()=> navigate("History")}
-      settingsOnPress = {()=> navigate("Settings")}/>
-
+        position: 'absolute', bottom: (this.height)*(20/100) - (getStatusBarHeight()) + (this.width*3/10*(7/6)) + this.width/30 - this.width/7, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
     </View>
 
         );

@@ -89,6 +89,7 @@ export default class ChatScreen extends React.Component<Props> {
         this.spinAnimation()
         await this.getLastLocalMessages()
         messageArray.reverse()
+        console.log("SET STATE 1", messageArray)
           this.setState({
               messages: messageArray,
               loadingOpacity: 0
@@ -97,8 +98,8 @@ export default class ChatScreen extends React.Component<Props> {
       });
 
       firebaseSvc.refOn(async message =>{
-        console.log("PARSE RETURNED:", message)
         if(!firstTime){
+          console.log("SET STATE 2: ", message)
           this.setState(previousState => ({
             messages: GiftedChat.append(previousState.messages, message),
           }))
@@ -106,6 +107,7 @@ export default class ChatScreen extends React.Component<Props> {
         else{
           await this.getLastLocalMessages()
           messageArray.reverse()
+          console.log("SET STATE 3:", messageArray)
           this.setState({
               messages: messageArray,
               loadingOpacity: 0
@@ -122,23 +124,21 @@ componentWillUnmount() {
   this.keyboardDidHideListener.remove();
 }
 
-sendMsg = (messages) => {
-  firebaseSvc.send(messages)
-  this.setState(previousState => ({
-    messages: GiftedChat.append(previousState.messages, messages[0]),
-  }))
-  console.log("SEND MSG")
-}
   static navigationOptions = {
       header: null,
   };
 _keyboardDidShow = (e) => {
+  console.log("KEYBOARD DID SHOW")
   const { height, screenX, screenY, width } = e.endCoordinates
   keyboardYcord = screenY
   keyboardHeight = height
+  console.log("keyboardHeight:", keyboardHeight)
+  console.log("y:", keyboardYcord)
+  console.log("KEYBOARD DID SHOW")
   this.setState({keyboardOpen: true, bigViewerOpacity: 0, smallViewerOpacity:1, enableSwipeDown: false,})
 };
 _keyboardDidHide = () => {
+  console.log("KEYBOARD DID HIDE")
   this.setState({keyboardOpen: false, bigViewerOpacity: 1, smallViewerOpacity:0, enableSwipeDown: false, })
 };
 
@@ -270,8 +270,6 @@ render() {
     if(this.state.messages != undefined){
       var msgs = this.state.messages
       if(msgs.length != 0 ){
-        console.log("MSGS LENGTH: ", msgs.length)
-        console.log("statem essages:Ç ", msgs)
         this.state.messages.forEach(message=>{
           if(message.isRequest == "f"){
             isRequest = "f"
@@ -333,7 +331,7 @@ render() {
               <GiftedChat
                 scrollToBottom = {true}
                 messages={this.state.messages}
-                onSend={this.sendMsg}
+                onSend={firebaseSvc.send}
                 user={this.user}
                 loadEarlier = {true}
                 renderTime = {this.renderTime}
@@ -382,7 +380,7 @@ render() {
               <GiftedChat
                 scrollToBottom = {true}
                 messages={this.state.messages}
-                onSend={this.sendMsg}
+                onSend={firebaseSvc.send}
                 user={this.user}
                 loadEarlier = {true}
                 renderTime = {this.renderTime}
@@ -432,7 +430,7 @@ render() {
               <GiftedChat
                 scrollToBottom = {true}
                 messages={this.state.messages}
-                onSend={this.sendMsg}
+                onSend={firebaseSvc.send}
                 user={this.user}
                 loadEarlier = {true}
                 renderTime = {this.renderTime}
@@ -483,7 +481,7 @@ render() {
               <GiftedChat
                 scrollToBottom = {true}
                 messages={this.state.messages}
-                onSend={this.sendMsg}
+                onSend={firebaseSvc.send}
                 user={this.user}
                 loadEarlier = {true}
                 renderTime = {this.renderTime}

@@ -59,7 +59,7 @@ export default class CustomHeader extends Component {
         return(
           <View
           style = {{ backgroundColor: 'white', height: headerHeight,
-          width: this.width, right: 0, borderBottomWidth: 3, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
+          width: this.width, right: 0, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
           <Text style = {{fontSize: 24,color: 'rgba(242,73,19,1)'}}>
           {this.props.title}
           </Text>
@@ -134,7 +134,7 @@ export default class CustomHeader extends Component {
           return(
             <View
             style = {{ backgroundColor: 'white', height: headerHeight,
-            width: this.width, right: 0, borderBottomWidth: 3, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
+            width: this.width, right: 0, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
             <Text style = {{fontSize: 24,color: 'rgba(242,73,19,1)'}}>
             {this.props.title}
             </Text>
@@ -145,7 +145,7 @@ export default class CustomHeader extends Component {
           return(
             <View
             style = {{ backgroundColor: 'white', height: headerHeight,
-            width: this.width, right: 0, borderBottomWidth: 3, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
+            width: this.width, right: 0, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
             <TouchableOpacity
             activeOpacity = {0.3}
             onPress = {this.props.onPress}

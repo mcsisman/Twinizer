@@ -130,7 +130,7 @@ donePress(){
     var deleteCount = 0
     var indexArray = []
     for( i = 0; i < colorArray.length; i++){
-      if(colorArray[i] == "trashblue"){
+      if(colorArray[i] == "trashred"){
         indexArray[deleteCount] = i
         deleteCount++;
       }
@@ -179,7 +179,7 @@ editButtonPressed(){
 arrangeDoneColor(){
     var flag1 = false
     for( i = 0; i < colorArray.length; i++){
-      if( colorArray[i] == "trashblue"){
+      if( colorArray[i] == "trashred"){
         flag1 = true
         doneColor = ourBlue
         this.setState({doneDisabled: false})
@@ -193,7 +193,7 @@ arrangeDoneColor(){
   }
 async trashButtonPressed(i){
   if(colorArray[i] == "trashgray"){
-    colorArray[i] = "trashblue"
+    colorArray[i] = "trashred"
   }
   else{
     colorArray[i] = "trashgray"
@@ -336,11 +336,6 @@ render(){
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15),
         position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
       />
-      <BottomBar
-      whichScreen = {"History"}
-      msgOnPress = {()=> navigate("Messages")}
-      homeOnPress = {()=> navigate("Main")}
-      settingsOnPress = {()=> navigate("Settings")}/>
       </View>
     )
   }
@@ -356,40 +351,38 @@ render(){
         isFilterVisible = {this.state.showFilter}
         title = {"History"}>
         </CustomHeader>
-        <View style = {{backgroundColor: 'rgba(181,181,181,0.1)', borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
+        <View style = {{borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
         <TouchableOpacity
           activeOpacity = {1}
           style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
           onPress={()=>this.editButtonPressed()}
           disabled = {false}>
 
-        <Text style = {{fontSize: 20, color: ourBlue}}>
+        <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
         {this.state.editText}
         </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          activeOpacity = {1}
+          disabled = {this.state.doneDisabled}
+          style={{opacity: this.state.doneDisabled ? 0 : 1, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+          onPress = {()=> this.donePress()}>
+        <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
+        Done
+        </Text>
+        </TouchableOpacity>
+
         </View>
 
         <FlatList
           style = {{backgroundColor: 'rgba(181,181,181,0.1)', height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
-          width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+          width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
           renderItem = {()=>this.renderHistoryBoxes()}
           data = { [{bos:"boş", key: "key"}]}
           refreshing = {true}>
         </FlatList>
 
-        <View
-        style = {{ borderColor: 'rgba(188,188,188,0.6)', borderTopWidth: 1, backgroundColor: 'rgba(209,192,188,0.6)', height: this.width/7,
-        width: this.width, bottom: 0, left:0, position:"absolute", justifyContent: "center", alignItems:"center"}}>
-        <TouchableOpacity
-        style = {{justifyContent: 'center', position: 'absolute', backgroundColor: doneColor, height: this.width*(0.8/10), paddingLeft: 15, paddingRight: 15,
-        borderBottomLeftRadius: 24, borderTopRightRadius: 24, borderTopLeftRadius: 24, borderBottomRightRadius: 24}}
-        disabled = {this.state.doneDisabled}
-        onPress = {()=> this.donePress()}>
-        <Text style = {{fontSize: 21, fontFamily: 'Candara', color: "white"}}>
-        Done
-        </Text>
-        </TouchableOpacity>
-        </View>
 
       </View>
 
@@ -406,14 +399,14 @@ render(){
         isFilterVisible = {this.state.showFilter}
         title = {"History"}>
         </CustomHeader>
-        <View style = {{backgroundColor: 'rgba(181,181,181,0.1)', borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
+        <View style = {{borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
         <TouchableOpacity
           activeOpacity = {1}
           style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
           onPress={()=>this.editButtonPressed()}
           disabled = {false}>
 
-        <Text style = {{fontSize: 20, color: ourBlue}}>
+        <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
         {this.state.editText}
         </Text>
         </TouchableOpacity>
@@ -421,14 +414,14 @@ render(){
 
         <FlatList
           style = {{backgroundColor: 'rgba(181,181,181,0.1)', height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
-          width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+          width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
           renderItem = {()=>this.renderHistoryBoxes()}
           data = { [{bos:"boş", key: "key"}]}
           refreshing = {true}>
         </FlatList>
 
         <View
-        style= {{width: this.width/7, height:this.width/7, bottom: this.width/7 + this.width/20, borderBottomLeftRadius: 555, borderTopRightRadius: 555,
+        style= {{width: this.width/7, height:this.width/7, bottom: this.width/20, borderBottomLeftRadius: 555, borderTopRightRadius: 555,
         borderTopLeftRadius: 555, borderBottomRightRadius: 555, right: this.width/20, backgroundColor: "white", flex: 1, alignItems:'center',
         justifyContent: 'center', position: 'absolute',}}>
         <SearchButton
@@ -438,11 +431,7 @@ render(){
         height ={this.width/7}
         backgroundColor = {this.state.buttonOpacity}/>
         </View>
-        <BottomBar
-        whichScreen = {"History"}
-        msgOnPress = {()=> navigate("Messages")}
-        homeOnPress = {()=> navigate("Main")}
-        settingsOnPress = {()=> navigate("Settings")}/>
+
       </View>
 
       );

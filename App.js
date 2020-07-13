@@ -6,6 +6,8 @@ import 'firebase/firestore';
 import { fromRight, zoomIn, zoomOut, flipX, flipY, fromBottom } from 'react-navigation-transitions'
 import {decode, encode} from 'base-64'
 import * as RNLocalize from "react-native-localize";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,7 +17,9 @@ import {
   Text,
   StatusBar,
   Platform,
-  NativeModules
+  NativeModules,
+  TouchableOpacity,
+  Image
 } from 'react-native';
 import SplashScreen from './screens/Splash';
 import MainScreen from './screens/Main';
@@ -27,11 +31,12 @@ import GenderScreen from './screens/Gender';
 import BioScreen from './screens/Bio';
 import MessagesScreen from './screens/Messages';
 import ProfileUploadScreen from './screens/ProfileUpload';
+import BottomBar from './screens/components/BottomBar';
 import HistoryScreen from './screens/History';
 import SettingsScreen from './screens/Settings';
 import ProfileScreen from './screens/Profile';
 
-if (!global.btoa) {  global.btoa = encode }
+if (!global.btoa) { global.btoa = encode }
 
 if (!global.atob) { global.atob = decode }
 
@@ -202,6 +207,118 @@ var firebaseConfig = {
     restSpeedThreshold: 0.01,
   },
 };
+function MyTabBar({ state, descriptors, navigation }) {
+  const focusedOptions = descriptors[state.routes[state.index].key].options;
+
+  if (focusedOptions.tabBarVisible === false) {
+    return null;
+  }
+
+  return (
+    <View style={{ flexDirection: 'row', backgroundColor: 'rgba(188,192,204,0.5)' }}>
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key];
+        const label =
+          options.tabBarLabel !== undefined
+            ? options.tabBarLabel
+            : options.title !== undefined
+            ? options.title
+            : route.name;
+
+        const isFocused = state.index === index;
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        const onLongPress = () => {
+          navigation.emit({
+            type: 'tabLongPress',
+            target: route.key,
+          });
+        };
+        const imgArray1 = ["homeorange", "msgorange", "historyorange", "settingsorange" ]
+        const imgArray2 = ["homegray", "msggray", "historygray", "settingsgray" ]
+
+        var widthArray = ["40%", "32%", "40%", "28%" ]
+        var heightArray = ["70%", "56%", "56%", "49%" ]
+        return (
+          <TouchableOpacity
+            disabled = {isFocused ? true : false}
+            activeOpacity = {0.8}
+            accessibilityRole="button"
+            accessibilityStates={isFocused ? ['selected'] : []}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            testID={options.tabBarTestID}
+            onPress={onPress}
+            onLongPress={onLongPress}
+            style = {{opacity: 0.8, alignItems: 'center', justifyContent: 'center', width: this.width/4, height: this.width/7}}
+          >
+            <Image
+              style={{top: index == 3 ? '10%': '5%', position: 'absolute', width: widthArray[index], height: heightArray[index]}}
+              source = {{uri: isFocused ? imgArray1[index] : imgArray2[index]}}>
+            </Image>
+
+            <Text style = {{bottom: '5%', position: 'absolute', color: isFocused ? 'rgba(241,51,18,1)' : 'rgba(128,128,128,1)' , fontSize: 12*(this.width/360) }}>
+              {label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+}
+const Tab = createBottomTabNavigator();
+
+function MyTabs() {
+  return (
+    <Tab.Navigator tabBar={props => <MyTabBar {...props} />}
+      headerMode = {"none"}
+      initialRouteName="Main"
+      tabBarOptions={{
+        activeTintColor: '#e91e63',
+      }}
+    >
+      <Tab.Screen
+        name="Main"
+        component={MainScreen}
+        options={{
+          tabBarLabel: 'Home',
+        }}
+      />
+      <Tab.Screen
+        name="Messages"
+        component={MessagesScreen}
+        options={{
+          tabBarLabel: 'Messages',
+        }}
+      />
+      <Tab.Screen
+        name="History"
+        component={HistoryScreen}
+        options={{
+          tabBarLabel: 'History',
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          tabBarLabel: 'Settings',
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
+
   const Stack = createStackNavigator();
   Stack.navigationOptions = ({ navigation }) => {
     let tabBarVisible;
@@ -237,7 +354,21 @@ var firebaseConfig = {
             close: config,
           },
         }}
+        name="Tabs" component={MyTabs} />
+        <Stack.Screen options={{
+          transitionSpec: {
+            open: config,
+            close: config,
+          },
+        }}
         name="NewAccount" component={NewAccountScreen} />
+        <Stack.Screen options={{
+          transitionSpec: {
+            open: config,
+            close: config,
+          },
+        }}
+        name="Profile" component={ProfileScreen} />
         <Stack.Screen options={{
           transitionSpec: {
             open: config,
@@ -258,20 +389,6 @@ var firebaseConfig = {
             close: config,
           },
         }}
-        name="ProfileUpload" component={ProfileUploadScreen} />
-        <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
-        }}
-        name="Messages" component={MessagesScreen} />
-        <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
-        }}
         name="Chat" component={ChatScreen} />
         <Stack.Screen options={{
           transitionSpec: {
@@ -279,7 +396,7 @@ var firebaseConfig = {
             close: config,
           },
         }}
-        name="Main" component={MainScreen} />
+        name="ProfileUpload" component={ProfileUploadScreen} />
         <Stack.Screen options={{
           transitionSpec: {
             open: config,
@@ -287,27 +404,6 @@ var firebaseConfig = {
           },
         }}
         name="ImageUpload" component={ImageUploadScreen} />
-        <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
-        }}
-        name="History" component={HistoryScreen} />
-        <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
-        }}
-        name="Settings" component={SettingsScreen} />
-        <Stack.Screen options={{
-          transitionSpec: {
-            open: config,
-            close: config,
-          },
-        }}
-        name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
       </NavigationContainer>
     );

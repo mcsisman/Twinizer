@@ -113,6 +113,7 @@ export default class MessagesScreen extends Component<{}>{
     scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight()
   }
 componentDidMount(){
+  console.log("COMPONENT DID MOUNT")
   this._subscribe = this.props.navigation.addListener('focus', async () => {
     global.fromMessages = true
     scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight()
@@ -200,7 +201,8 @@ resetVariables(){
       test: "",
       loadingOpacity: 1,
       backgroundColor: 'rgba(181,181,181,1)',
-      loadingDone: false
+      loadingDone: false,
+      editText: "Edit"
     })
   }
 }
@@ -272,6 +274,10 @@ async getUsernameOfTheUid(){
     }
     else{
       console.log("BAŞKA SAYFADAN GELDİ; İLK DEĞİL")
+      if(!global.comingFromChat){
+        global.fromChatOfUid = ""
+      }
+      global.comingFromChat = false
       var localUsernames = []
       await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_usernames')
         .then(req => JSON.parse(req))
@@ -422,164 +428,50 @@ getMessagesData = async callback =>{
   var key = arr[0] + "" + arr[1];
 
 
-  var listener23 = firebase.database().ref('Messages/' + "" + key).limitToLast(1);
-  await listener23.once('child_added').then(async snapshot => {
-    lastDBkey = snapshot.key
-    messageArray.splice(0, messageArray.length)
-    requestArray.splice(0, requestArray.length)
+  var listener23 = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count]).limitToLast(2);
+  await listener23.once('value').then(async snapshot => {
+    if(snapshot.val() != null){
+      console.log("ONCE A GİRDİ NULL DEGİL")
+      // remove k from snapshot data
+      var snapVal = snapshot.val()
+      delete snapVal["k"]
 
-    if(!fromChat){
-      const data = snapshot.val()
-      if(dataArray.length < noOfConversations){
-        dataArray[count] = data
+      var messageKey = Object.keys(snapVal)[0]
+      var localMsgs = []
+      await AsyncStorage.getItem(firebase.auth().currentUser.uid + uidArray[count] + '/messages')
+        .then(req => JSON.parse(req))
+        .then(json => localMsgs = json)
 
+
+        var data;
+      if(messageKey == undefined){
+        data = localMsgs[localMsgs.length - 1]
+        lastDBkey = localMsgs[localMsgs.length - 1]._id
       }
-      if(dataArray.length == noOfConversations){
-        for(i = 0; i < noOfConversations; i++){
-          if( (data.user.r == dataArray[i].user.r && data.user._id == dataArray[i].user._id) || (data.user.r == dataArray[i].user._id && data.user._id == dataArray[i].user.r) ){
-            dataArray[i] = data
-            break;
-          }
-        }
-        for( i = 0; i < noOfConversations; i++){
-          if(dataArray[i].i == "f" || dataArray[i].user._id == firebase.auth().currentUser.uid){
-            messageArray.push(dataArray[i])
-            noOfNonRequests++;
-          }
-          else{
-            requestArray.push(dataArray[i])
-
-          }
-        }
-        requestArray.sort(this.sortByProperty("c"));
-        requestArray.reverse()
-        messageArray.sort(this.sortByProperty("c"));
-        messageArray.reverse()
-
-        // CHECKING FOR LAST SEEN
-        for( i = 0; i < requestArray.length; i++){
-          requestColorArray[i] = "trashgray"
-          var key;
-          var time;
-          if(requestArray[i].user._id == firebase.auth().currentUser.uid){
-            requestLastSeenArray[i] = 0
-          }
-          else{
-            key = firebase.auth().currentUser.uid + "" + requestArray[i].user._id
-            time = await AsyncStorage.getItem(key + 'lastSeen')
-            if(requestArray[i].c > time){
-              requestLastSeenArray[i] = 1
-            }
-            else{
-              requestLastSeenArray[i] = 0
-            }
-          }
-        }
-        for( i = 0; i < messageArray.length; i++){
-          messageColorArray[i] = "trashgray"
-          var key;
-          var time;
-
-          if(messageArray[i].user._id == firebase.auth().currentUser.uid){
-            messageLastSeenArray[i] = 0
-          }
-          else{
-            key = firebase.auth().currentUser.uid + "" + messageArray[i].user._id
-            time = await AsyncStorage.getItem(key + 'lastSeen')
-            if(messageArray[i].c > time){
-              messageLastSeenArray[i] = 1
-            }
-            else{
-              messageLastSeenArray[i] = 0
-            }
-          }
-        }
-
-        for( i = 0; i < requestArray.length; i++){
-          for( j = 0; j < photoArray.length; j++){
-            if(requestArray[i].user._id == conversationUidArray[j]){
-              requestPhotoArray[i] = photoArray[j]
-              requestUsernameArray[i] = conversationUsernameArray[j]
-            }
-          }
-        }
-        for( i = 0; i < messageArray.length; i++){
-          for( j = 0; j < photoArray.length; j++){
-            if(messageArray[i].user._id == conversationUidArray[j] || messageArray[i].user.r == conversationUidArray[j]){
-              messagePhotoArray[i] = photoArray[j]
-              messageUsernameArray[i] = conversationUsernameArray[j]
-            }
-          }
-        }
-
-        this.setState({loadingDone: true, test: "1", loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
+      else{
+        const user = { _id: uidArray[count], r: firebase.auth().currentUser.uid}
+        const { c: numberStamp, i: isRequest, text} = snapVal[messageKey];
+        const id = messageKey;
+        const _id = messageKey; //needed for giftedchat
+        const createdAt = new Date(numberStamp);
+        const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
+        const message = {
+          id,
+          _id,
+          createdAt,
+          isRequest,
+          text,
+          user,
+          image
+        };
+        data = message
+        lastDBkey = messageKey
       }
-    }
-  })
-  var lastLocalKey = await this.getLastLocalMessage()
-  if(lastLocalKey == lastDBkey + "z"){
-    didSync = true
-  }
-  syncListener[count] = firebase.database().ref('Messages/' + "" + key).orderByKey().startAt(lastLocalKey);
-  whoseListener[count] = uidArray[count]
-  var uidCount = count;
-  if(whoseListener[count] == global.fromChatOfUid || global.fromChatOfUid == ""){
-    console.log("CREATED LISTENER FOR: ", whoseListener[count])
-    await syncListener[count].on('child_added', async snap => await this.syncLocalMessages(snap, uidCount));
-  }
-};
-async getLastLocalMessage(){
 
-  var lastLocalKey;
-  await AsyncStorage.getItem(firebase.auth().currentUser.uid + otherUserUid + '/messages')
-    .then(req => JSON.parse(req))
-    .then(json => localMessages[count] = json)
-    if(localMessages[count] != null && localMessages[count].length != 0){
-      var key = localMessages[count][localMessages[count].length - 1]._id
-      lastLocalKey = key + "z";
-    }else{
-      lastLocalKey = ""
-    }
-
-  return lastLocalKey
-}
-syncLocalMessages = async (snap, uidCount) => {
-
-  if(snap.val() != null){
-    console.log("DENEME: ", snap.val())
-    var key = snap.key + ""
-    var val = snap.val()
-
-    const { c: numberStamp, i: isRequest, text, user } = snap.val();
-    const { key: id } = snap;
-    const { key: _id } = snap; //needed for giftedchat
-    const createdAt = new Date(numberStamp);
-    const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
-    const msg = {
-      id,
-      _id,
-      createdAt,
-      isRequest,
-      text,
-      user,
-      image
-    };
-    if(localMessages[uidCount] == null || localMessages[uidCount].length == 0){
-      localMessages[uidCount] = [msg]
-    }
-    else{
-      localMessages[uidCount].push(msg)
-    }
-    await AsyncStorage.setItem(firebase.auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
-    lastMsgFlag = lastDBkey == snap.key
-    if(lastMsgFlag || didSync){
-      didSync = true
-
-      // CREATE DATA ARRAY PART
       messageArray.splice(0, messageArray.length)
       requestArray.splice(0, requestArray.length)
+
       if(!fromChat){
-        const data = snap.val()
         if(dataArray.length < noOfConversations){
           dataArray[count] = data
         }
@@ -597,6 +489,7 @@ syncLocalMessages = async (snap, uidCount) => {
             }
             else{
               requestArray.push(dataArray[i])
+
             }
           }
           requestArray.sort(this.sortByProperty("c"));
@@ -623,7 +516,6 @@ syncLocalMessages = async (snap, uidCount) => {
               }
             }
           }
-
           for( i = 0; i < messageArray.length; i++){
             messageColorArray[i] = "trashgray"
             var key;
@@ -660,13 +552,182 @@ syncLocalMessages = async (snap, uidCount) => {
               }
             }
           }
-          console.log("MESSAGE ARRAY: ", messageArray)
-          newRequest = true
+
           this.setState({loadingDone: true, test: "1", loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
         }
       }
     }
+
+  })
+  var lastLocalKey = await this.getLastLocalMessage()
+  if(lastLocalKey == lastDBkey + "z"){
+    didSync = true
   }
+  syncListener[count] = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count]);
+  whoseListener[count] = uidArray[count]
+  var uidCount = count;
+  if(whoseListener[count] == global.fromChatOfUid || global.messagesFirstTime){
+    console.log("CREATED LISTENER FOR: ", whoseListener[count])
+    await syncListener[count].on('value', async snapshot => await this.syncLocalMessages(snapshot, uidCount));
+  }
+};
+async getLastLocalMessage(){
+
+  var lastLocalKey;
+  await AsyncStorage.getItem(firebase.auth().currentUser.uid + otherUserUid + '/messages')
+    .then(req => JSON.parse(req))
+    .then(json => localMessages[count] = json)
+    if(localMessages[count] != null && localMessages[count].length != 0){
+      var key = localMessages[count][localMessages[count].length - 1]._id
+      lastLocalKey = key + "z";
+    }else{
+      lastLocalKey = ""
+    }
+
+  return lastLocalKey
+}
+syncLocalMessages = async (snapshot, uidCount) => {
+  console.log("LİSTENER HEHE")
+  // remove k from snapshot data
+  if(snapshot.val() != null){
+    var snapVal = snapshot.val()
+    delete snapVal["k"]
+    var messageKey;
+    var noOfNewMsgs = Object.keys(snapVal).length
+    if(noOfNewMsgs != 0){
+      console.log("YENİ MESAJ YOKKEN İÇERİ GİRDİ")
+      for(i = 0; i < noOfNewMsgs; i++){
+        messageKey = Object.keys(snapshot.val())[0]
+        console.log("SNAP VAL: ", snapVal)
+
+        const user = { _id: uidArray[uidCount], r: firebase.auth().currentUser.uid}
+        const { c: numberStamp, i: isRequest, text} = snapVal[messageKey];
+        const id = messageKey;
+        const _id = messageKey; //needed for giftedchat
+        const createdAt = new Date(numberStamp);
+        const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
+        const msg = {
+          id,
+          _id,
+          createdAt,
+          isRequest,
+          text,
+          user,
+          image
+        };
+        console.log("REMOVE MESSAGE KEY: ", messageKey)
+        firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count] + "/" + messageKey).remove();
+          if(localMessages[uidCount] == null || localMessages[uidCount].length == 0){
+            localMessages[uidCount] = [msg]
+            console.log("Locale kaydedilen mesaj on if: ", msg)
+          }
+          else{
+            localMessages[uidCount].push(msg)
+            console.log("Locale kaydedilen mesaj on else: ", msg)
+          }
+      }
+
+        await AsyncStorage.setItem(firebase.auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
+        lastMsgFlag = lastDBkey == localMessages[uidCount][localMessages[uidCount].length - 1]._id
+        if(lastMsgFlag || didSync){
+          didSync = true
+
+          // CREATE DATA ARRAY PART
+          messageArray.splice(0, messageArray.length)
+          requestArray.splice(0, requestArray.length)
+          if(!fromChat){
+            const data = localMessages[uidCount][localMessages[uidCount].length - 1]
+            if(dataArray.length < noOfConversations){
+              dataArray[count] = data
+            }
+            if(dataArray.length == noOfConversations){
+              for(i = 0; i < noOfConversations; i++){
+                if( (data.user.r == dataArray[i].user.r && data.user._id == dataArray[i].user._id) || (data.user.r == dataArray[i].user._id && data.user._id == dataArray[i].user.r) ){
+                  dataArray[i] = data
+                  break;
+                }
+              }
+              for( i = 0; i < noOfConversations; i++){
+                if(dataArray[i].i == "f" || dataArray[i].user._id == firebase.auth().currentUser.uid){
+                  messageArray.push(dataArray[i])
+                  noOfNonRequests++;
+                }
+                else{
+                  requestArray.push(dataArray[i])
+                }
+              }
+              requestArray.sort(this.sortByProperty("c"));
+              requestArray.reverse()
+              messageArray.sort(this.sortByProperty("c"));
+              messageArray.reverse()
+
+              // CHECKING FOR LAST SEEN
+              for( i = 0; i < requestArray.length; i++){
+                requestColorArray[i] = "trashgray"
+                var key;
+                var time;
+                if(requestArray[i].user._id == firebase.auth().currentUser.uid){
+                  requestLastSeenArray[i] = 0
+                }
+                else{
+                  key = firebase.auth().currentUser.uid + "" + requestArray[i].user._id
+                  time = await AsyncStorage.getItem(key + 'lastSeen')
+                  if(requestArray[i].c > time){
+                    requestLastSeenArray[i] = 1
+                  }
+                  else{
+                    requestLastSeenArray[i] = 0
+                  }
+                }
+              }
+
+              for( i = 0; i < messageArray.length; i++){
+                messageColorArray[i] = "trashgray"
+                var key;
+                var time;
+
+                if(messageArray[i].user._id == firebase.auth().currentUser.uid){
+                  messageLastSeenArray[i] = 0
+                }
+                else{
+                  key = firebase.auth().currentUser.uid + "" + messageArray[i].user._id
+                  time = await AsyncStorage.getItem(key + 'lastSeen')
+                  if(messageArray[i].c > time){
+                    messageLastSeenArray[i] = 1
+                  }
+                  else{
+                    messageLastSeenArray[i] = 0
+                  }
+                }
+              }
+
+              for( i = 0; i < requestArray.length; i++){
+                for( j = 0; j < photoArray.length; j++){
+                  if(requestArray[i].user._id == conversationUidArray[j]){
+                    requestPhotoArray[i] = photoArray[j]
+                    requestUsernameArray[i] = conversationUsernameArray[j]
+                  }
+                }
+              }
+              for( i = 0; i < messageArray.length; i++){
+                for( j = 0; j < photoArray.length; j++){
+                  if(messageArray[i].user._id == conversationUidArray[j] || messageArray[i].user.r == conversationUidArray[j]){
+                    messagePhotoArray[i] = photoArray[j]
+                    messageUsernameArray[i] = conversationUsernameArray[j]
+                  }
+                }
+              }
+              console.log("MESSAGE ARRAY: ", messageArray)
+              newRequest = true
+
+              this.setState({loadingDone: true, test: "1", loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false, reRender:"oke"})
+            }
+          }
+        }
+    }
+  }
+
+
 };
 
 sortByProperty(property){
@@ -712,9 +773,9 @@ navigateToChat(receiverUid, receiverPhoto, receiverUsername){
   global.firstMessage = false
   for( i = 0; i < syncListener.length; i++){
     if(global.receiverUid == whoseListener[i]){
-      console.log("REMOVED LISTENER FOR: ", whoseListener[i])
       var x = syncListener[i]
       x.off()
+      console.log("LISTENER CLOSED FOR:", whoseListener[i])
     }
   }
   fromChat = true
@@ -835,6 +896,7 @@ renderMessageBoxes(){
 }
 renderRequestBoxes(){
   if(requestArray.length == 0){
+
     return(
       <View style = {{flex: 1, flexDirection: "column", width: this.width, height: scrollViewHeight}}>
       <View style = {{ alignItems: 'center', justifyContent: 'center', width: this.width, height: scrollViewHeight/2}}>
@@ -914,7 +976,7 @@ editButtonPressed(){
 }
 requestTrashButtonPressed(count){
   if(requestColorArray[count] == "trashgray"){
-    requestColorArray[count] = "trashblue"
+    requestColorArray[count] = "trashred"
   }
   else{
     requestColorArray[count] = "trashgray"
@@ -924,7 +986,7 @@ requestTrashButtonPressed(count){
 
 messageTrashButtonPressed(count){
   if(messageColorArray[count] == "trashgray"){
-    messageColorArray[count] = "trashblue"
+    messageColorArray[count] = "trashred"
   }
   else{
     messageColorArray[count] = "trashgray"
@@ -954,7 +1016,7 @@ arrangeDoneColor(){
   var flag1 = false
   var flag2 = false
   for( i = 0; i < messageColorArray.length; i++){
-    if( messageColorArray[i] == "trashblue"){
+    if( messageColorArray[i] == "trashred"){
       flag1 = true
       doneMessageColor = ourBlue
       this.setState({messageDoneDisabled: false})
@@ -966,7 +1028,7 @@ arrangeDoneColor(){
     this.setState({messageDoneDisabled: true})
   }
   for( i = 0; i < requestColorArray.length; i++){
-    if( requestColorArray[i] == "trashblue"){
+    if( requestColorArray[i] == "trashred"){
       flag2 = true
       doneRequestColor = ourBlue
       this.setState({requestDoneDisabled: false})
@@ -996,7 +1058,7 @@ async deleteMessage(){
     else{
       receiverUid = messageArray[i].user._id
     }
-    if(messageColorArray[i] == "trashblue"){
+    if(messageColorArray[i] == "trashred"){
       uidarr.splice(i,1)
       messageColorArray.splice(i,1)
       messageLastSeenArray.splice(i,1)
@@ -1016,7 +1078,7 @@ async deleteMessage(){
 messageDonePress(){
   var deleteCount = 0
   for( i = 0; i < messageColorArray.length; i++){
-    if(messageColorArray[i] == "trashblue"){
+    if(messageColorArray[i] == "trashred"){
       deleteCount++;
     }
   }
@@ -1079,11 +1141,6 @@ render(){
                   <Animated.Image source={{uri: 'loading'}}
                     style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
                   />
-                  <BottomBar
-                  whichScreen = {"Messages"}
-                  homeOnPress = {()=> navigate("Main")}
-                  historyOnPress = {()=> navigate("History")}
-                  settingsOnPress = {()=> navigate("Settings")}/>
         </View>
         )
       }
@@ -1102,11 +1159,6 @@ render(){
                   <Animated.Image source={{uri: 'loading'}}
                     style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
                   />
-                  <BottomBar
-                  whichScreen = {"Messages"}
-                  homeOnPress = {()=> navigate("Main")}
-                  historyOnPress = {()=> navigate("History")}
-                  settings = {()=> navigate("Settings")}/>
         </View>
         )
       }
@@ -1125,40 +1177,35 @@ render(){
                   editText = {this.state.editText}
                   title = {"Messages"}/>
 
-                  <View style = {{backgroundColor: 'rgba(181,181,181,0.1)', borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
+                  <View style = {{borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
                   <TouchableOpacity
                     activeOpacity = {1}
                     style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
                     onPress={()=>this.editButtonPressed()}
                     disabled = {false}>
 
-                  <Text style = {{fontSize: 20, color: ourBlue}}>
+                  <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
                   {this.state.editText}
+                  </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    activeOpacity = {1}
+                    disabled = {this.state.messageDoneDisabled}
+                    style={{opacity: this.state.messageDoneDisabled ? 0 : 1, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+                    onPress = {()=> this.messageDonePress()}>
+                  <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
+                  Done
                   </Text>
                   </TouchableOpacity>
                   </View>
 
 
                   <FlatList
-                    style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+                    style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
                     renderItem = {()=>this.renderMessageBoxes()}
                     data = { [{bos:"boş", key: "key"}]}>
                   </FlatList>
-
-                  <View
-                  style = {{borderColor: 'rgba(188,188,188,0.6)', borderTopWidth: 1, backgroundColor: 'rgba(209,192,188,0.6)', height: this.width/7,
-                   width: this.width, bottom: 0, left:0, position:"absolute", justifyContent: "center", alignItems:"center"}}>
-                  <TouchableOpacity
-                  style = {{justifyContent: 'center', position: 'absolute', backgroundColor: doneMessageColor, height: this.width*(0.8/10), paddingLeft: 15, paddingRight: 15,
-                  borderBottomLeftRadius: 24, borderTopRightRadius: 24, borderTopLeftRadius: 24, borderBottomRightRadius: 24}}
-                  disabled = {this.state.messageDoneDisabled}
-                  onPress = {()=> this.messageDonePress()}>
-                  <Text style = {{fontSize: 21, fontFamily: 'Candara', color: "white"}}>
-                  Done
-                  </Text>
-                  </TouchableOpacity>
-                  </View>
-
         </View>
             )
       }
@@ -1175,37 +1222,34 @@ render(){
                   title = {"Requests"}
                   />
 
-                  <View style = {{backgroundColor: 'rgba(181,181,181,0.1)', borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
+                  <View style = {{borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
                   <TouchableOpacity
                     activeOpacity = {1}
                     style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
                     onPress={()=>this.editButtonPressed()}
                     disabled = {false}>
 
-                  <Text style = {{fontSize: 20, color: ourBlue}}>
+                  <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
                   {this.state.editText}
                   </Text>
                   </TouchableOpacity>
-                  </View>
 
-                  <FlatList
-                  style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}
-                  renderItem = {()=>this.renderRequestBoxes()}
-                  data = { [{bos:"boş", key: "key"}]}>
-                  </FlatList>
-
-                  <View
-                  style = {{borderColor: 'rgba(188,188,188,0.6)', borderTopWidth: 1, backgroundColor: 'rgba(209,192,188,0.6)', height: this.width/7, width: this.width, bottom: 0, left:0, position:"absolute", justifyContent: "center", alignItems:"center"}}>
                   <TouchableOpacity
-                  style = {{justifyContent: 'center', position: 'absolute', backgroundColor: doneRequestColor, height: this.width*(0.8/10), paddingLeft: 15, paddingRight: 15,
-                  borderBottomLeftRadius: 24, borderTopRightRadius: 24, borderTopLeftRadius: 24, borderBottomRightRadius: 24}}
-                  disabled = {this.state.requestDoneDisabled}
-                  onPress = {()=> this.requestDonePress()}>
-                  <Text style = {{fontSize: 21, fontFamily: 'Candara', color: 'white'}}>
+                    disabled = {this.state.requestDoneDisabled}
+                    style={{opacity: this.state.requestDoneDisabled ? 0 : 1, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+                    onPress = {()=> this.requestDonePress()}>
+                  <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
                   Done
                   </Text>
                   </TouchableOpacity>
+
                   </View>
+
+                  <FlatList
+                  style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+                  renderItem = {()=>this.renderRequestBoxes()}
+                  data = { [{bos:"boş", key: "key"}]}>
+                  </FlatList>
         </View>
         )
       }
@@ -1228,11 +1272,6 @@ render(){
                   <Animated.Image source={{uri: 'loading'}}
                     style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
                   />
-                  <BottomBar
-                  whichScreen = {"Messages"}
-                  homeOnPress = {()=> navigate("Main")}
-                  historyOnPress = {()=> navigate("History")}
-                  settingsOnPress = {()=> navigate("Settings")}/>
         </View>
         )
       }
@@ -1251,11 +1290,6 @@ render(){
                   <Animated.Image source={{uri: 'loading'}}
                     style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
                   />
-                  <BottomBar
-                  whichScreen = {"Messages"}
-                  homeOnPress = {()=> navigate("Main")}
-                  historyOnPress = {()=> navigate("History")}
-                  settingsOnPress = {()=> navigate("Settings")}/>
         </View>
         )
       }
@@ -1274,30 +1308,25 @@ render(){
                   title = {"Messages"}
                   />
 
-                  <View style = {{backgroundColor: 'rgba(181,181,181,0.1)', borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
+                  <View style = {{opacity: messageArray.length == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
                   <TouchableOpacity
                     activeOpacity = {1}
                     style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
                     onPress={()=>this.editButtonPressed()}
-                    disabled = {false}>
+                    disabled = {messageArray.length == 0 ? true : false}>
 
-                  <Text style = {{fontSize: 20, color: ourBlue}}>
+                  <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
                   {this.state.editText}
                   </Text>
                   </TouchableOpacity>
                   </View>
 
                   <FlatList
-                  style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+                  style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
                   renderItem = {()=> this.renderMessageBoxes()}
                   data = { [{bos:"boş", key: "key"}]}>
                   </FlatList>
 
-                  <BottomBar
-                  whichScreen = {"Messages"}
-                  homeOnPress = {()=> navigate("Main")}
-                  historyOnPress = {()=> navigate("History")}
-                  settingsOnPress = {()=> navigate("Settings")}/>
         </View>
             )
       }
@@ -1312,30 +1341,26 @@ render(){
                   editPressed = {this.state.editText}
                   title = {"Requests"}/>
 
-                  <View style = {{backgroundColor: 'rgba(181,181,181,0.1)', borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
+                  <View style = {{opacity: requestArray.length == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
                   <TouchableOpacity
                     activeOpacity = {1}
                     style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
                     onPress={()=>this.editButtonPressed()}
-                    disabled = {false}>
+                    disabled = {requestArray.length == 0 ? true : false}>
 
-                  <Text style = {{fontSize: 20, color: ourBlue}}>
+                  <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
                   {this.state.editText}
                   </Text>
                   </TouchableOpacity>
                   </View>
 
                   <FlatList
-                  style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+                  style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
                   renderItem = {()=>this.renderRequestBoxes()}
                   data = { [{bos:"boş", key: "key"}]}>
                   </FlatList>
 
-                  <BottomBar
-                  whichScreen = {"Messages"}
-                  homeOnPress = {()=> navigate("Main")}
-                  historyOnPress = {()=> navigate("History")}
-                  settingsOnPress = {()=> navigate("Settings")}/>
+
         </View>
         )
       }

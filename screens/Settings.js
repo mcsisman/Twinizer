@@ -66,7 +66,7 @@ export default class SettingsScreen extends Component<{}>{
       </CustomHeader>
 
       <ScrollView
-      style = {{height: this.height-this.width/7 - headerHeight - getStatusBarHeight(), width: this.width, right: 0, bottom: this.width/7,  position: 'absolute', flex: 1, flexDirection: 'column'}}>
+      style = {{height: this.height-this.width/7 - headerHeight - getStatusBarHeight(), width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}>
       <View
       style = {{height: this.width/9}}/>
       <SettingsButton
@@ -95,12 +95,6 @@ export default class SettingsScreen extends Component<{}>{
 
       </ScrollView>
 
-
-      <BottomBar
-        whichScreen = {"Settings"}
-        msgOnPress = {()=> navigate("Messages")}
-        homeOnPress = {()=> navigate("Main")}
-        historyOnPress = {()=> navigate("History")}/>
     </View>
 
         );

@@ -67,18 +67,20 @@ export default class ProfileScreen extends Component<{}>{
         }
     }
     this.height = Math.round(Dimensions.get('screen').height);
-    this.width = Math.round(Dimensions.get('screen').width);  
+    this.width = Math.round(Dimensions.get('screen').width);
   }
 
   componentDidMount(){
+    console.log("PROFİL COMP")
     Keyboard.addListener("keyboardDidHide", this._keyboardDidHide);
     Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
     this.setState({defaultText: "lkfdslk lsfdk sşldfk sşldfk lşwekf şlwkef şlwekf şwlekf şwelk fşwle kfwşlek fqşlk qşlek qlşek feeqq", bioLimit:this.state.defaultText.length})
   }
 
 componentWillUnmount(){
-  Keyboard.removeListener("keyboardDidShow", _keyboardDidShow);
-  Keyboard.removeListener("keyboardDidHide", _keyboardDidHide);
+  console.log("PROFİL COMP UN")
+  Keyboard.removeListener("keyboardDidShow", this._keyboardDidShow);
+  Keyboard.removeListener("keyboardDidHide", this._keyboardDidHide);
 }
 static navigationOptions = {
       header: null,
@@ -309,12 +311,6 @@ static navigationOptions = {
       onPressCamera = {this.camera}
       onPressLibrary = {this.library}/>
 
-      <BottomBar
-        whichScreen = {"Profile"}
-        settingsOnPress = {()=> this.props.navigation.goBack()}
-        msgOnPress = {()=> navigate("Messages")}
-        homeOnPress = {()=> navigate("Main")}
-        historyOnPress = {()=> navigate("History")}/>
     </TouchableOpacity>
 
         );

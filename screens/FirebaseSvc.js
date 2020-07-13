@@ -26,65 +26,55 @@ class FirebaseSvc {
   }
 
   get ref() {
-    var keyArray = []
-    keyArray[0] = firebase.auth().currentUser.uid
-    keyArray[1] = global.receiverUid
-    keyArray.sort()
-    var key = keyArray[0] + "" + keyArray[1]
-    return firebase.database().ref('Messages/' + "" + key);
+    return firebase.database().ref('Messages/' + global.receiverUid + "/" + firebase.auth().currentUser.uid);
   }
 
   parse = async snapshot => {
-    await AsyncStorage.getItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages')
-      .then(req => JSON.parse(req))
-      .then(json => localMessages = json)
-    if(localMessages != null && localMessages.length != 0){
-      var keyObj = localMessages[localMessages.length - 1]._id;
-      console.log("LAST:", keyObj);
-      console.log("SNAPSHOT KEY:", snapshot.key + "")
-      var lastMsgKey = keyObj + ""
-    }
-    else{
-      lastMsgKey = ""
-    }
-    if(lastMsgKey != (snapshot.key + "")){
-      console.log("İÇERİ GİRDİ")
-      const { c: numberStamp, i: isRequest, text, user } = snapshot.val();
-      const { key: id } = snapshot;
-      const { key: _id } = snapshot; //needed for giftedchat
-      const createdAt = new Date(numberStamp);
-      const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
-      const message = {
-        id,
-        _id,
-        createdAt,
-        isRequest,
-        text,
-        user,
-        image
-      };
+    console.log("PARSE A GİRDİ")
+    if(snapshot.val() != null){
+      // remove k from snapshot data
+      var snapVal = snapshot.val()
+      delete snapVal["k"]
+      if(Object.keys(snapVal).length != 0){
+        var messageKey = Object.keys(snapVal)[0]
+        console.log("SNAP VAL: ", snapVal)
+        await AsyncStorage.getItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages')
+          .then(req => JSON.parse(req))
+          .then(json => localMessages = json)
 
-      if(localMessages == null || localMessages.length == 0){
-        localMessages = [message]
-      }
-      else{
-        localMessages.push(message)
-      }
-      console.log("KAYDEDİLEN LOCAL MESAJLAR:", localMessages)
-      AsyncStorage.setItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
-      firstTime = false
-      return message;
-    }
-    else{
-      return localMessages[localMessages.length - 1]
-    }
+          const user = { _id: global.receiverUid, r: firebase.auth().currentUser.uid}
+          const { c: numberStamp, i: isRequest, text} = snapVal[messageKey];
+          const id = messageKey;
+          const _id = messageKey; //needed for giftedchat
+          const createdAt = new Date(numberStamp);
+          const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
+          const message = {
+            id,
+            _id,
+            createdAt,
+            isRequest,
+            text,
+            user,
+            image
+          };
 
+          if(localMessages == null || localMessages.length == 0){
+            localMessages = [message]
+          }
+          else{
+            localMessages.push(message)
+          }
+          firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
+          AsyncStorage.setItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
+          firstTime = false
+          return message;
+      }
+    }
   };
 
   refOn = async callback => {
-    this.ref
-      .limitToLast(1)
-      .on('child_added', async snapshot => await callback(await this.parse(snapshot)));
+    firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + global.receiverUid)
+      .on('value', async snapshot => await callback(await this.parse(snapshot)));
   }
 
   get timestamp() {
@@ -93,9 +83,17 @@ class FirebaseSvc {
 
   // send the message to the Backend
   send = async messages => {
+    console.log("SEND IN FIREBASE SVC")
     var isRequest;
     if(global.firstMessage){
       isRequest = "t"
+      console.log("GİRDİ GİRDİ")
+      firebase.database().ref('Messages/' + global.receiverUid + "/" + firebase.auth().currentUser.uid).update({
+        k:1
+      })
+      firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + global.receiverUid).update({
+        k:1
+      })
       global.firstMessage = false
 
       var gender = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userGender')
@@ -143,14 +141,45 @@ class FirebaseSvc {
     }
 
     for (let i = 0; i < messages.length; i++) {
-      const { text, user } = messages[i];
+      const { text, user1 } = messages[i];
       const message = {
         text,
-        user,
         c: this.timestamp,
         i: isRequest
       };
-      this.ref.push(message);
+
+      var pushedKey;
+      pushedKey = this.ref.push(message).key;
+
+      console.log("PUSHED KEY: ", pushedKey)
+      const user = { _id: firebase.auth().currentUser.uid, r: global.receiverUid}
+      const id = pushedKey;
+      const _id = pushedKey; //needed for giftedchat
+      const createdAt = this.timestamp;
+      const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
+      const msg = {
+        id,
+        _id,
+        createdAt,
+        isRequest,
+        text,
+        user,
+        image
+      };
+
+      var localMsgs = []
+      await AsyncStorage.getItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages')
+        .then(req => JSON.parse(req))
+        .then(json => localMsgs = json)
+        if(localMsgs == null || localMsgs.length == 0){
+          localMsgs = [msg]
+        }
+        else{
+          localMsgs.push(msg)
+        }
+        AsyncStorage.setItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMsgs))
+
+
     }
   };
 

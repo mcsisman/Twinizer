@@ -61,9 +61,9 @@ Login = (email, password) => {
              if(firebase.auth().currentUser.emailVerified){
                var storageRef = firebase.storage().ref("/embeddings2/" + firebase.auth().currentUser.uid + ".pickle");
                await storageRef.getDownloadURL().then(data =>{
-                 navigate("Main")
+                 navigate("Tabs")
                }).catch(function(error) {
-                 navigate("Main")
+                 navigate("Tabs")
                });
              user = firebase.auth().currentUser
 
