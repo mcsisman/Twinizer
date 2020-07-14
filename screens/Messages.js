@@ -210,21 +210,26 @@ async startFromLocal(){
   newRequest = false
   await this.resetVariables()
   await this.spinAnimation()
-
   var localUids = []
   localUids.splice(0, localUids.length)
   await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_uids')
     .then(req => JSON.parse(req))
     .then(json => localUids = json)
 
-  conversationUidArray = localUids
-  noOfConversations = conversationUidArray.length
+  if(localUids != undefined && localUids != null){
+    conversationUidArray = localUids
+    noOfConversations = conversationUidArray.length
 
-  await this.getUsernameOfTheUid()
+    await this.getUsernameOfTheUid()
 
-  uidArray = await this.createUidPhotoArrays()
-  await this.printMessagesData()
-  newRequest = true
+    uidArray = await this.createUidPhotoArrays()
+    await this.printMessagesData()
+    newRequest = true
+  }
+  else{
+    this.setState({loadingDone: true, loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
+  }
+
 }
 async getUsernameOfTheUid(){
 
@@ -338,6 +343,10 @@ async createConversationArrays(){
     })
 }
 async createUidPhotoArrays(){
+  differenceArrayIndexes = []
+  differenceArrayIndexes.splice(0, differenceArrayIndexes.length)
+  urlArray = []
+  urlArray.splice(0, urlArray.length)
   // GET THE UIDS THAT ARE SAVED TO LOCAL
   var localUids = []
   localUids.splice(0, localUids.length)
@@ -350,7 +359,11 @@ async createUidPhotoArrays(){
       if(conversationUidArray.concat().sort().join(',') === localUids.concat().sort().join(',')){
       }
       else {
+        console.log("ÜST TARAF")
+        console.log("LOCAL UIDLER:", localUids)
+        console.log("CONVERSATION UIDLER:", conversationUidArray)
         differenceArray = conversationUidArray.filter(x => !localUids.includes(x))
+        console.log("DIFFERENCE ARRAY:", differenceArray)
         AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
         AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
         for(i = 0; i < conversationUidArray.length; i++){
@@ -360,6 +373,7 @@ async createUidPhotoArrays(){
             }
           }
         }
+        console.log("DIFFERENCE ARRAY INDEXES:", differenceArrayIndexes)
         for(i = 0; i < differenceArray.length; i++){
           var storageRef = firebase.storage().ref("Photos/" + conversationUidArray[differenceArrayIndexes[i]] + "/1.jpg")
           await storageRef.getDownloadURL().then(data =>{
@@ -379,10 +393,13 @@ async createUidPhotoArrays(){
       }
     }
     else{
+      console.log("ALT TARAF")
+      console.log("LOCAL UIDLER:", localUids)
+      console.log("CONVERSATION UIDLER:", conversationUidArray)
       differenceArray = conversationUidArray
       AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
       AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
-
+      console.log("DIFFERENCE ARRAY:", differenceArray)
       for(i = 0; i < conversationUidArray.length; i++){
         for(j = 0; j < differenceArray.length; j++){
           if( conversationUidArray[i] == differenceArray[j] ){
@@ -390,6 +407,7 @@ async createUidPhotoArrays(){
           }
         }
       }
+      console.log("DIFFERENCE ARRAY INDEXES:", differenceArrayIndexes)
       for(i = 0; i < differenceArray.length; i++){
         var storageRef = firebase.storage().ref("Photos/" + conversationUidArray[i] + "/1.jpg")
         await storageRef.getDownloadURL().then(data =>{
@@ -688,7 +706,6 @@ syncLocalMessages = async (snapshot, uidCount) => {
                 }
               }
 
-              console.log("MESSAGE ARRAY LENGTH:", messageArray.length)
               for( i = 0; i < messageArray.length; i++){
                 messageColorArray[i] = "trashgray"
                 var key;
@@ -700,7 +717,6 @@ syncLocalMessages = async (snapshot, uidCount) => {
                 else{
                   key = firebase.auth().currentUser.uid + "" + messageArray[i].user._id
                   time = await AsyncStorage.getItem(key + 'lastSeen')
-                  console.log("MESSAGE ARRAY:", messageArray[i])
                   if(messageArray[i].c > time){
                     messageLastSeenArray[i] = 1
                   }
@@ -848,7 +864,7 @@ renderMessageBoxes(){
     return(
       <View style = {{flex: 1, flexDirection: "column", width: this.width, height: scrollViewHeight}}>
       <View style = {{ alignItems: 'center', justifyContent: 'center', width: this.width, height: scrollViewHeight/2}}>
-      <Image source={{uri: 'sadface'}}
+      <Image source={{uri: 'sadfacered'}}
         style={{width: scrollViewHeight/4, height: scrollViewHeight/4, opacity: 0.4}}/>
       </View>
 
@@ -911,7 +927,7 @@ renderRequestBoxes(){
     return(
       <View style = {{flex: 1, flexDirection: "column", width: this.width, height: scrollViewHeight}}>
       <View style = {{ alignItems: 'center', justifyContent: 'center', width: this.width, height: scrollViewHeight/2}}>
-      <Image source={{uri: 'sadface'}}
+      <Image source={{uri: 'sadfacered'}}
         style={{width: scrollViewHeight/4, height: scrollViewHeight/4, opacity: 0.4}}/>
       </View>
 
@@ -1148,7 +1164,7 @@ render(){
                   whichScreen = {"Messages"}
                   title = {"Requests"}/>
 
-                  <Animated.Image source={{uri: 'loading'}}
+                  <Animated.Image source={{uri: 'loadingred'}}
                     style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
                   />
         </View>
@@ -1166,7 +1182,7 @@ render(){
                   editText = {this.state.editText}
                   title = {"Requests"}/>
 
-                  <Animated.Image source={{uri: 'loading'}}
+                  <Animated.Image source={{uri: 'loadingred'}}
                     style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
                   />
         </View>
@@ -1279,7 +1295,7 @@ render(){
                   title = {"Messages"}
                   />
 
-                  <Animated.Image source={{uri: 'loading'}}
+                  <Animated.Image source={{uri: 'loadingred'}}
                     style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
                   />
         </View>
@@ -1297,7 +1313,7 @@ render(){
                   title = {"Requests"}
                   />
 
-                  <Animated.Image source={{uri: 'loading'}}
+                  <Animated.Image source={{uri: 'loadingred'}}
                     style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
                   />
         </View>

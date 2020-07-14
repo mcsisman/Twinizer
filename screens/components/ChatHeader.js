@@ -49,7 +49,7 @@ export default class ChatHeader extends Component {
       <Image
       style={{position: 'absolute', width: '60%', height: '60%',
       borderBottomLeftRadius: 64, borderTopRightRadius: 64, borderTopLeftRadius: 64, borderBottomRightRadius: 64}}
-      source={{uri: 'backarrow'}}>
+      source={{uri: 'backarrowred'}}>
       </Image>
       </TouchableOpacity>
 

@@ -34,6 +34,7 @@ import ProfileUploadScreen from './screens/ProfileUpload';
 import BottomBar from './screens/components/BottomBar';
 import HistoryScreen from './screens/History';
 import SettingsScreen from './screens/Settings';
+import ThemeSettingsScreen from './screens/ThemeSettings';
 import ProfileScreen from './screens/Profile';
 
 if (!global.btoa) { global.btoa = encode }
@@ -245,7 +246,7 @@ function MyTabBar({ state, descriptors, navigation }) {
             target: route.key,
           });
         };
-        const imgArray1 = ["homeorange", "msgorange", "historyorange", "settingsorange" ]
+        const imgArray1 = ["homered", "msgred", "historyred", "settingsred" ]
         const imgArray2 = ["homegray", "msggray", "historygray", "settingsgray" ]
 
         var widthArray = ["40%", "32%", "40%", "28%" ]
@@ -355,6 +356,13 @@ function MyTabs() {
           },
         }}
         name="Tabs" component={MyTabs} />
+        <Stack.Screen options={{
+          transitionSpec: {
+            open: config,
+            close: config,
+          },
+        }}
+        name="ThemeSettings" component={ThemeSettingsScreen} />
         <Stack.Screen options={{
           transitionSpec: {
             open: config,

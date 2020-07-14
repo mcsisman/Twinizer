@@ -1519,7 +1519,7 @@ render(){
       opacity = {1}/>
       </View>
 
-      <Animated.Image source={{uri: 'loading'}}
+      <Animated.Image source={{uri: 'loadingred'}}
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
         position: 'absolute', bottom: (this.height)*(20/100) - (getStatusBarHeight()) + (this.width*3/10*(7/6)) + this.width/30 - this.width/7, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
     </View>

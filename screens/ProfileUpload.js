@@ -200,7 +200,7 @@ camera = () => {
       onPressCamera = {this.camera}
       onPressLibrary = {this.library}/>
 
-      <Animated.Image source={{uri: 'loading'}}
+      <Animated.Image source={{uri: 'loadingred'}}
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
         position: 'absolute', bottom: this.height*12/100 + headerHeight + getStatusBarHeight()-this.width*(1/10), left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 

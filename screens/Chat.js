@@ -223,7 +223,8 @@ renderBubble (props) {
         {...props}
         wrapperStyle={{
           right: {
-            backgroundColor: 'rgba(115,201,144,1)'
+            opacity: 1,
+            backgroundColor: 'rgba(241,51,18,1)'
           },
           left: {
             backgroundColor: 'rgba(40,44,52,0.5)',
@@ -440,7 +441,7 @@ render() {
                 renderAvatar={null}
               />
             </View>
-            <Animated.Image source={{uri: 'loading'}}
+            <Animated.Image source={{uri: 'loadingred'}}
               style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', bottom: this.height/2, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
             />
 
@@ -491,7 +492,7 @@ render() {
                 renderAvatar={null}
               />
             </KeyboardAvoidingView>
-            <Animated.Image source={{uri: 'loading'}}
+            <Animated.Image source={{uri: 'loadingred'}}
               style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', bottom: this.height/2, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
             />
 

@@ -83,6 +83,7 @@ export default class SettingsScreen extends Component<{}>{
       <View
       style = {{height: this.width/9}}/>
       <SettingsButton
+      onPress = {()=> navigate("ThemeSettings")}
       text = {"Theme Settings"}/>
       <SettingsButton
       text = {"Message Settings"}/>

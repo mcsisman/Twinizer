@@ -44,7 +44,7 @@ export default class BottomBar extends Component {
     var historyTextColor;
     var settingsTextColor;
     if(this.props.whichScreen == "Main"){
-      homeColor = "homeorange";
+      homeColor = "homered";
       msgColor = "msggray";
       historyColor = "historygray";
       settingsColor = "settingsgray";
@@ -59,7 +59,7 @@ export default class BottomBar extends Component {
     }
     if(this.props.whichScreen == "Messages"){
       homeColor = "homegray";
-      msgColor = "msgorange";
+      msgColor = "msgred";
       historyColor = "historygray";
       settingsColor = "settingsgray";
       homeDisabled = false;
@@ -74,7 +74,7 @@ export default class BottomBar extends Component {
     if(this.props.whichScreen == "History"){
       homeColor = "homegray";
       msgColor = "msggray";
-      historyColor = "historyorange";
+      historyColor = "historyred";
       settingsColor = "settingsgray";
       homeDisabled = false;
       msgDisabled = false;
@@ -89,7 +89,7 @@ export default class BottomBar extends Component {
       homeColor = "homegray";
       msgColor = "msggray";
       historyColor = "historygray";
-      settingsColor = "settingsorange";
+      settingsColor = "settingsred";
       homeDisabled = false;
       msgDisabled = false;
       historyDisabled = false;
@@ -103,7 +103,7 @@ export default class BottomBar extends Component {
       homeColor = "homegray";
       msgColor = "msggray";
       historyColor = "historygray";
-      settingsColor = "settingsorange";
+      settingsColor = "settingsred";
       homeDisabled = false;
       msgDisabled = false;
       historyDisabled = false;
