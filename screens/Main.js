@@ -857,16 +857,18 @@ async createEmailDistanceArrays(gender, country, fn){
      var length = Object.keys(dict).length;
      console.log(length);
      for(let i = 0; i < length; i++){
-       countryArray.push(((items[i][0]).split("_"))[1]);
-       genderArray.push(((items[i][0]).split("_"))[0]);
-       emailArray.push(((items[i][0]).split("_"))[2]);
-       usernameArray.push(((items[i][0]).split("_"))[3]);
-       distanceArray.push(items[i][1]);
-       mainCountryArray.push(((items[i][0]).split("_"))[1]);
-       mainGenderArray.push(((items[i][0]).split("_"))[0]);
-       mainEmailArray.push(((items[i][0]).split("_"))[2]);
-       mainUsernameArray.push(((items[i][0]).split("_"))[3]);
-       mainDistanceArray.push(items[i][1]);
+       if (blockedUsers.includes(((items[i][0]).split("_"))[2]) == false){
+         countryArray.push(((items[i][0]).split("_"))[1]);
+         genderArray.push(((items[i][0]).split("_"))[0]);
+         emailArray.push(((items[i][0]).split("_"))[2]);
+         usernameArray.push(((items[i][0]).split("_"))[3]);
+         distanceArray.push(items[i][1]);
+         mainCountryArray.push(((items[i][0]).split("_"))[1]);
+         mainGenderArray.push(((items[i][0]).split("_"))[0]);
+         mainEmailArray.push(((items[i][0]).split("_"))[2]);
+         mainUsernameArray.push(((items[i][0]).split("_"))[3]);
+         mainDistanceArray.push(items[i][1]);
+       }
      }
      console.log(items);
      console.log(emailArray);
