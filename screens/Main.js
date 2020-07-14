@@ -41,6 +41,7 @@ import ImageUploader from './components/ImageUploader'
 import SearchButton from './components/SearchButton'
 import BigImgInfo from './components/BigImgInfo'
 import InfoModal from './components/InfoModal'
+import FavBlockModal from './components/FavBlockModal'
 import ImageUploadModal from './components/ImageUploadModal'
 import FilterModal from './components/FilterModal'
 import PhotoPopUpModal from './components/PhotoPopUpModal'
@@ -86,6 +87,8 @@ var currentUserGender;
 var currentUserCountry;
 var currentUserUsername;
 var currentUserBio;
+var isFav = false;
+var addingToWhichList = "";
 var favoriteUsers = []
 var blockedUsers = []
 export default class MainScreen extends Component<{}>{
@@ -111,6 +114,7 @@ constructor(props){
       notifIsVisible: false,
       isVisible1: false,
       isVisible2: false,
+      addToFavBlockVisible: false,
       country: null,
       gender: null,
       disabledSearch: true,
@@ -785,13 +789,37 @@ async sendFirstMessage(){
   this.props.navigation.navigate("Chat")
 }
 
+addToListButtonClicked(list){
+  if (list == "Favorites"){
+    addingToWhichList = "Favorite Users"
+  }
+  else{
+    addingToWhichList = "Blocked Users"
+  }
+  this.setState({addToFavBlockVisible:true})
+}
+
+favBlockModalButtonClicked(uid){
+  if (list == "Favorites"){
+    this.addToFavoriteUsers(uid)
+  }
+  else{
+    this.addToBlockedUsers(uid)
+  }
+  this.setState({addToFavBlockVisible:false})
+}
+
 addToFavoriteUsers(uid){
-  favoriteUsers.push(uid)
-  AsyncStorage.setItem(firebase.auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
+  if (favoriteUsers == null || favoriteUsers.length == 0 || !favoriteUsers.includes(uid)){
+    favoriteUsers.push(uid)
+    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
+  }
 }
 addToBlockedUsers(uid){
-  blockedUsers.push(uid)
-  AsyncStorage.setItem(firebase.auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+  if (blockedUsers == null || blockedUsers.length == 0 || !blockedUsers.includes(uid)){
+    blockedUsers.push(uid)
+    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+  }
 }
 
 noLeft(){
@@ -857,7 +885,7 @@ async createEmailDistanceArrays(gender, country, fn){
      var length = Object.keys(dict).length;
      console.log(length);
      for(let i = 0; i < length; i++){
-       if (blockedUsers.includes(((items[i][0]).split("_"))[2]) == false){
+       if (blockedUsers == null || blockedUsers.length == 0 || blockedUsers.includes(((items[i][0]).split("_"))[2]) == false){
          countryArray.push(((items[i][0]).split("_"))[1]);
          genderArray.push(((items[i][0]).split("_"))[0]);
          emailArray.push(((items[i][0]).split("_"))[2]);
@@ -1323,6 +1351,12 @@ render(){
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg']
     })
+    if (favoriteUsers != null && favoriteUsers.length != 0 && favoriteUsers.includes(emailArray[global.swipeCount])){
+      isFav = true
+    }
+    else{
+      isFav = false
+    }
     return(
       <View
       style={{width: this.width, height: this.height, flex:1, flexDirection: "column"}}>
@@ -1373,6 +1407,7 @@ render(){
       backgroundOpacity = {this.state.backgroundOpacity}/>
 
       <SwipeableBigImg
+      isFavorite = { isFav ? 1 : 0}
       imgSource = {this.state.uri2}
       width = {this.widthAnimation}
       height = {this.heightAnimation}
@@ -1428,6 +1463,12 @@ render(){
       txtGotIt = {global.langGotIt}
       onPressClose = {()=>this.setState({notifIsVisible:false})}/>
 
+      <FavBlockModal
+      isVisible = {this.state.addToFavBlockVisible}
+      txtAlert= {"You are adding" +this.state.uri2_username+ " to " +addingToWhichList+ ". Are you sure?"}
+      onPressAdd= {()=>this.addToFavoriteUsers(emailArray[global.swipeCount])}
+      onPressClose = {()=>this.setState({addToFavBlockVisible:false})}/>
+
       <ImageUploadModal
       isVisible={this.state.isVisible1}
       txtUploadPhoto = {global.langUploadPhoto}
@@ -1461,12 +1502,12 @@ render(){
       onPressSendMsg = {()=>this.sendFirstMessage()}/>
 
       <View
-      style = {{opacity: 1, backgroundColor: "rgba(181,181,181,0.4)", flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
+      style = {{opacity: 1, backgroundColor: "rgba(181,181,181,0.6)", flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
       borderBottomLeftRadius: 16, borderBottomRightRadius: 16, borderTopLeftRadius: 16, borderTopRightRadius: 16,
       position: "absolute", top: this.width*(5/10)*(7/6) + (this.height)*(20/100) + getStatusBarHeight()}}>
       <FavoriteUserButton
       disabled = {false}
-      onPress = {()=>this.addToFavoriteUsers(emailArray[global.swipeCount])}
+      onPress = {()=>this.addToListButtonClicked("Favorites")}
       opacity = {1}/>
       <SendMsgButton
       disabled = {false}
@@ -1474,7 +1515,7 @@ render(){
       opacity = {1}/>
       <BlockUserButton
       disabled = {false}
-      onPress = {()=>this.addToBlockedUsers(emailArray[global.swipeCount])}
+      onPress = {()=>this.addToListButtonClicked("Blocked")}
       opacity = {1}/>
       </View>
 

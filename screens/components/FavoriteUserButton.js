@@ -43,7 +43,7 @@ export default class FavoriteUserButton extends Component {
         onPress={this.props.onPress}
         disabled = {this.props.disabled}>
 
-        <Image source={{uri: "stargreen"}}
+        <Image source={{uri: "star"}}
           style={{ height: this.width/10*(7/10), width: this.width/10*(7/10) }}
         />
 
