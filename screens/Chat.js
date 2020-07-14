@@ -118,6 +118,7 @@ export default class ChatScreen extends React.Component<Props> {
 
 componentWillUnmount() {
   clearInterval(lastSeenInterval)
+  console.log("CLOSE LISTENER FOR:", global.receiverUid)
   firebaseSvc.refOff();
   this.keyboardDidShowListener.remove();
   this.keyboardDidHideListener.remove();

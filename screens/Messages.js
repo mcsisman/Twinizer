@@ -113,6 +113,7 @@ componentDidMount(){
   console.log("COMPONENT DID MOUNT")
   global.newMsgListenerArray = []
   this._subscribe = this.props.navigation.addListener('focus', async () => {
+    global.fromChatOfUid = ""
     global.fromMessages = true
     scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight()
     newRequest = false
@@ -305,9 +306,7 @@ async createConversationArrays(){
             conversationUidArray = await doc.data()["UidArray"]
             noOfConversations = conversationUidArray.length
             for( i = 0; i < noOfConversations; i++){
-              global.newMsgListenerArray[i].isOpen = false
-              global.newMsgListenerArray[i].uid = conversationUidArray[i]
-              global.newMsgListenerArray[i].listenerID = ""
+              global.newMsgListenerArray[i] = {isOpen: false, uid: conversationUidArray[i], listenerID: "" }
             }
             await this.getUsernameOfTheUid()
             uidArray = await this.createUidPhotoArrays()
@@ -328,9 +327,7 @@ async createConversationArrays(){
           conversationUidArray = await doc.data()["UidArray"]
           noOfConversations = conversationUidArray.length,
 
-          global.newMsgListenerArray[noOfConversations-1].isOpen = false
-          global.newMsgListenerArray[noOfConversations-1].uid = conversationUidArray[noOfConversations-1]
-          global.newMsgListenerArray[noOfConversations-1].listenerID = ""
+          global.newMsgListenerArray[noOfConversations-1] = {isOpen: false, uid: conversationUidArray[noOfConversations-1], listenerID: "" }
 
           await this.getUsernameOfTheUid()
           uidArray = await this.createUidPhotoArrays()
@@ -520,6 +517,7 @@ getMessagesData = async callback =>{
               }
             }
           }
+          console.log("MESSAGE ARRAY ONCE:", messageArray)
           for( i = 0; i < messageArray.length; i++){
             messageColorArray[i] = "trashgray"
             var key;
@@ -569,11 +567,12 @@ getMessagesData = async callback =>{
   }
 
   var uidCount = count;
-
   if(!global.newMsgListenerArray[count].isOpen && global.fromChatOfUid != global.newMsgListenerArray[count].uid){
+    console.log("CREATED LISTENER FOR:", global.newMsgListenerArray[count].uid)
     global.newMsgListenerArray[count].isOpen = true
     global.newMsgListenerArray[count].listenerID = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-");
     await global.newMsgListenerArray[count].listenerID.on('value', async snapshot => await this.syncLocalMessages(snapshot, uidCount));
+
   }
 };
 async getLastLocalMessage(){
@@ -689,6 +688,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
                 }
               }
 
+              console.log("MESSAGE ARRAY LENGTH:", messageArray.length)
               for( i = 0; i < messageArray.length; i++){
                 messageColorArray[i] = "trashgray"
                 var key;
@@ -700,6 +700,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
                 else{
                   key = firebase.auth().currentUser.uid + "" + messageArray[i].user._id
                   time = await AsyncStorage.getItem(key + 'lastSeen')
+                  console.log("MESSAGE ARRAY:", messageArray[i])
                   if(messageArray[i].c > time){
                     messageLastSeenArray[i] = 1
                   }
@@ -782,6 +783,7 @@ navigateToChat(receiverUid, receiverPhoto, receiverUsername){
   global.firstMessage = false
   for( i = 0; i < global.newMsgListenerArray.length; i++){
     if(global.receiverUid == global.newMsgListenerArray[i].uid){
+      global.newMsgListenerArray[i].isOpen = false
       var x = global.newMsgListenerArray[i].listenerID
       x.off()
       console.log("LISTENER CLOSED FOR:",global.newMsgListenerArray[i].uid)

@@ -195,7 +195,7 @@ class FirebaseSvc {
   };
 
   refOff() {
-    this.ref.off();
+    firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + global.receiverUid).orderByKey().endAt("A").startAt("-").off();
   }
 }
 
