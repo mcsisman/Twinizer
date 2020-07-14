@@ -86,6 +86,8 @@ var currentUserGender;
 var currentUserCountry;
 var currentUserUsername;
 var currentUserBio;
+var favoriteUsers = []
+var blockedUsers = []
 export default class MainScreen extends Component<{}>{
 constructor(props){
     super(props);
@@ -198,10 +200,18 @@ async checkIfAlreadySearching(){
 
 
 async checkIfUserDataExistsInLocalAndSaveIfNot(){
+  // from asyncstorage part
   currentUserGender = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userGender')
   currentUserCountry = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userCountry')
   currentUserUsername = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userName')
   currentUserBio = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userBio')
+  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'favoriteUsers')
+    .then(req => JSON.parse(req))
+    .then(json => favoriteUsers = json)
+  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'blockedUsers')
+    .then(req => JSON.parse(req))
+    .then(json => blockedUsers = json)
+    // from firestore part
   if(currentUserCountry == null || currentUserGender == null || currentUserUsername == null || currentUserBio == null){
     var infoListener = firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/i");
     await infoListener.once('value').then(async snapshot => {
@@ -773,6 +783,15 @@ async sendFirstMessage(){
   global.receiverUsername = "cemil ug"
   //global.firstMessage = true
   this.props.navigation.navigate("Chat")
+}
+
+addToFavoriteUsers(uid){
+  favoriteUsers.push(uid)
+  AsyncStorage.setItem(firebase.auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
+}
+addToBlockedUsers(uid){
+  blockedUsers.push(uid)
+  AsyncStorage.setItem(firebase.auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
 }
 
 noLeft(){
@@ -1445,7 +1464,7 @@ render(){
       position: "absolute", top: this.width*(5/10)*(7/6) + (this.height)*(20/100) + getStatusBarHeight()}}>
       <FavoriteUserButton
       disabled = {false}
-      onPress = {()=>this.sendFirstMessage()}
+      onPress = {()=>this.addToFavoriteUsers(emailArray[global.swipeCount])}
       opacity = {1}/>
       <SendMsgButton
       disabled = {false}
@@ -1453,7 +1472,7 @@ render(){
       opacity = {1}/>
       <BlockUserButton
       disabled = {false}
-      onPress = {()=>this.sendFirstMessage()}
+      onPress = {()=>this.addToBlockedUsers(emailArray[global.swipeCount])}
       opacity = {1}/>
       </View>
 
