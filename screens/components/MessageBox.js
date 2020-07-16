@@ -72,7 +72,7 @@ export default class MessageBox extends Component {
     return(
       <Animated.View
         style = {{left: leftAnim, alignItems: 'center', height: this.msgBoxHeight, width: this.width + this.width*(3/16),
-        borderBottomWidth: 1 ,borderBottomColor: 'rgba(181,181,181,0.7)', backgroundColor: 'white', flexDirection: "row", flex: 1}}>
+        borderBottomWidth: 1 ,borderBottomColor: 'rgba(181,181,181,0.7)', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", flexDirection: "row", flex: 1}}>
 
         <TouchableOpacity
         activeOpacity = {1}
@@ -105,7 +105,7 @@ export default class MessageBox extends Component {
         <View
         style = {{ height: this.msgBoxHeight*2/6, justifyContent: 'center', width: this.width*45/80,}}>
         <Text
-        style = {{fontSize: 18, }}>
+        style = {{fontSize: 18, color: global.isDarkMode ? global.themeColor : "rgba(0,0,0,1)"}}>
           {this.props.senderName}
         </Text>
         </View>
@@ -113,7 +113,7 @@ export default class MessageBox extends Component {
         style = {{ height: this.msgBoxHeight/2,  justifyContent: 'center', width: this.width*45/80,}}>
           <Text
           numberOfLines={2}
-          style = {{fontSize: 16, color: 'gray', width: this.width*45/80}}>
+          style = {{fontSize: 16, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(128,128,128,1)", width: this.width*45/80}}>
             {this.props.lastMsg}
           </Text>
         </View>
@@ -123,11 +123,11 @@ export default class MessageBox extends Component {
       <View
         style = {{ alignItems: 'center', justifyContent: 'center', width: this.width*(3/16), height: this.msgBoxHeight}}>
         <Text
-        style = {{fontSize: 14, top: this.width*2/100, color: 'gray', position: 'absolute'}}>
+        style = {{fontSize: 14, top: this.width*2/100, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(128,128,128,1)", position: 'absolute'}}>
           {this.props.lastMsgTime}
         </Text>
         <View
-        style={{backgroundColor: "rgba(241,51,18,0.8)", borderTopLeftRadius: 555, borderBottomLeftRadius: 555, borderTopRightRadius: 555, borderBottomRightRadius: 555,
+        style={{backgroundColor: global.themeColor, borderTopLeftRadius: 555, borderBottomLeftRadius: 555, borderTopRightRadius: 555, borderBottomRightRadius: 555,
         width: this.width*(1/24), height: this.width*(1/24), opacity: this.props.isSeen}}>
         </View>
       </View>

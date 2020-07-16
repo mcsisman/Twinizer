@@ -9,7 +9,6 @@ import * as firebase from "firebase";
 import Modal from "react-native-modal";
 import ImagePicker from 'react-native-image-crop-picker';
 import Swipeable from 'react-native-swipeable';
-import BottomBar from './components/BottomBar'
 import RNFetchBlob from 'rn-fetch-blob'
 import AsyncStorage from '@react-native-community/async-storage';
 import {Image,
@@ -101,13 +100,14 @@ constructor(props){
     global.activationDistanceRight = this.width*(2.5/10)
     global.deactivationDistanceRight = this.width*(2.5/10)
     this.state = {
+      tickVisible: false,
       showFilter: false,
       photoPath: "",
       splashOver : false,
       email: "",
       color: 'rgba(0,0,0,0.4)',
-      buttonOpacity: 'rgba(244,92,66,0.4)',
-      borderOpacity: 'rgba(241,51,18,1)',
+      btnOpacity: 0.4,
+      borderOpacity: 1,
       disabled: true,
       opacity: 0.4,
       searchOnIsVisible: false,
@@ -118,7 +118,7 @@ constructor(props){
       country: null,
       gender: null,
       disabledSearch: true,
-      searchButtonOpacity: 'rgba(241,51,18,0.4)',
+      filterButtonOpacity: 0.4,
       placeHolder1: global.langCountry,
       placeHolder2: global.langGender,
       imagePath: null,
@@ -174,11 +174,13 @@ constructor(props){
   }
 
 async componentDidMount(){
+
     global.fromMessages = false
     var localMessages = []
     var arr = []
     this.checkIfUserDataExistsInLocalAndSaveIfNot()
     this._subscribe = this.props.navigation.addListener('focus', async () => {
+      this.setState({reRender: "ok"})
       if(global.fromHistorySearch){
         await this.setSearchPhotoFromHistory(global.historyPhotoUri)
       }
@@ -192,6 +194,13 @@ async componentDidMount(){
 static navigationOptions = {
     header: null,
 }
+
+updateState = () =>{
+  console.log("LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG")
+  this.setState({reRender: "ok"})
+  return "TESTTTT"
+}
+
 async checkIfAlreadySearching(){
   var listener23 = firebase.database().ref('Users/' + firebase.auth().currentUser.uid +"/s/sb");
   await listener23.once('value').then(async snapshot => {
@@ -248,11 +257,11 @@ spinAnimation(){
 async setSearchPhotoFromHistory(uri){
   this.setState({photoPath: uri,
   photo: {uri: uri},
-  borderOpacity: 'rgba(66,66,255,0)',
+  borderOpacity: 0,
   opacity: 0,
   isVisible1: false,
   disabled: false,
-  buttonOpacity: 'rgba(244,92,66,1)',})
+  btnOpacity: 1,})
   console.log("URI: ", uri)
   global.fromHistorySearch = false
 }
@@ -844,7 +853,7 @@ noRight(){
 valueChangeCountry(value){
   this.setState({country: value, placeHolder1: value})
   if(this.state.gender != null && value != null ){
-    this.setState({ disabledSearch: false, searchButtonOpacity: 'rgba(241,51,18,1)'})
+    this.setState({ disabledSearch: false, filterButtonOpacity: 1})
   }
 }
 valueChangeGender(value){
@@ -863,7 +872,7 @@ valueChangeGender(value){
   }
   this.setState({gender: value})
   if(this.state.country != null && value != null ){
-    this.setState({disabledSearch: false, searchButtonOpacity: 'rgba(241,51,18,1)'})
+    this.setState({disabledSearch: false, filterButtonOpacity: 1})
   }
 }
 
@@ -1317,11 +1326,11 @@ library = () =>{
     this.setState({
       photoPath: image.path,
       photo: {uri: image.path},
-      borderOpacity: 'rgba(66,66,255,0)',
+      borderOpacity: 0,
       opacity: 0,
       isVisible1: false,
       disabled: false,
-      buttonOpacity: 'rgba(244,92,66,1)',
+      btnOpacity: 1,
     });
   });
 };
@@ -1336,11 +1345,11 @@ camera = () => {
     this.setState({
       photoPath: image.path,
       photo: {uri: image.path},
-      borderOpacity: 'rgba(66,66,255,0)',
+      borderOpacity: 0,
       opacity: 0,
       isVisible1: false,
       disabled: false,
-      buttonOpacity: 'rgba(244,92,66,1)',
+      btnOpacity: 1,
     });
 });
 };
@@ -1359,13 +1368,13 @@ render(){
     }
     return(
       <View
-      style={{width: this.width, height: this.height, flex:1, flexDirection: "column"}}>
+      style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
       <ModifiedStatusBar/>
 
       <CustomHeader
       whichScreen = {"Main"}
       onPress = {()=> this.setState({isVisible2: true})}
-      isFilterVisible = {this.state.showFilter}
+      isFilterVisible = {true}
       title = {"Twinizer"}>
       </CustomHeader>
 
@@ -1444,7 +1453,7 @@ render(){
       disabled = {this.state.disabled}
       bottom = {((this.height)*(20/100) - (getStatusBarHeight()) + this.width/7 )/2 - this.width/7 - this.width*(0.5/10)}
       right = {this.width*(4.5/10)}
-      backgroundColor = {this.state.buttonOpacity}/>
+      opacity = {this.state.btnOpacity}/>
 
       <BigImgInfo
       opacity = {this.state.messageButtonOpacity}
@@ -1464,6 +1473,8 @@ render(){
       onPressClose = {()=>this.setState({notifIsVisible:false})}/>
 
       <FavBlockModal
+      tickIsVisible = {this.state.tickVisible}
+      onPressTick = {()=> this.setState({tickVisible: this.state.tickVisible ? 0 : 1})}
       isVisible = {this.state.addToFavBlockVisible}
       txtAlert= {"You are adding" +this.state.uri2_username+ " to " +addingToWhichList+ ". Are you sure?"}
       onPressAdd= {()=>this.addToFavoriteUsers(emailArray[global.swipeCount])}
@@ -1488,7 +1499,7 @@ render(){
       placeHolder2 = {this.state.placeHolder2}
       onPressSearch = {()=>this.filterDone()}
       textSearch = {global.langSearch}
-      searchButtonOpacity = {this.state.searchButtonOpacity}
+      opacity = {this.state.filterButtonOpacity}
       searchDisabled = {this.state.disabledSearch}
       textFilters = {global.langFilters}/>
 
@@ -1502,7 +1513,7 @@ render(){
       onPressSendMsg = {()=>this.sendFirstMessage()}/>
 
       <View
-      style = {{opacity: 1, backgroundColor: "rgba(181,181,181,0.6)", flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
+      style = {{opacity: 1, backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
       borderBottomLeftRadius: 16, borderBottomRightRadius: 16, borderTopLeftRadius: 16, borderTopRightRadius: 16,
       position: "absolute", top: this.width*(5/10)*(7/6) + (this.height)*(20/100) + getStatusBarHeight()}}>
       <FavoriteUserButton
@@ -1519,7 +1530,7 @@ render(){
       opacity = {1}/>
       </View>
 
-      <Animated.Image source={{uri: 'loadingred'}}
+      <Animated.Image source={{uri: 'loading' + global.themeForImages}}
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
         position: 'absolute', bottom: (this.height)*(20/100) - (getStatusBarHeight()) + (this.width*3/10*(7/6)) + this.width/30 - this.width/7, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
     </View>

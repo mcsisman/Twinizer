@@ -1,6 +1,6 @@
 class Themes {
 
-  get theme(themeColor){
+  getTheme(themeColor){
     if(themeColor == "Yellow"){
       return "rgba(228,186,51,1)"
     }
@@ -10,13 +10,26 @@ class Themes {
     if(themeColor == "Original"){
       return "rgba(241,51,18,1)"
     }
-    if(themeColor == "Original"){
+    if(themeColor == "Green"){
       return "rgba(115,201,144,1)"
     }
   }
-  get isDarkmode(){
 
+  getThemeForImages(themeColor){
+    if(themeColor == "Yellow"){
+      return "yellow"
+    }
+    if(themeColor == "Blue"){
+      return "blue"
+    }
+    if(themeColor == "Original"){
+      return "red"
+    }
+    if(themeColor == "Green"){
+      return "green"
+    }
   }
+
 }
 
 const themes = new Themes();

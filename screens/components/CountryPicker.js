@@ -44,7 +44,7 @@ export default class CountryPicker extends Component {
  }
  static defaultProps = {
    borderBottomWidth: 2,
-   borderBottomColor: 'rgba(241,51,18,1)',
+   borderBottomColor: global.themeColor,
    placeHolder: true,
    backgroundColor: 'rgba(0,0,0,0)'
  }
@@ -75,7 +75,7 @@ export default class CountryPicker extends Component {
     }
     else{
       return(
-        <View style = {{paddingLeft: 5, opacity: this.props.opacity, justifyContent: 'center', backgroundColor: 'white',  width:this.props.width ,
+        <View style = {{paddingLeft: 5, opacity: this.props.opacity, justifyContent: 'center', backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)",  width:this.props.width ,
         height: this.props.height, right: this.props.right, bottom: this.props.bottom, borderBottomColor: this.props.borderBottomColor, borderColor: this.props.borderColor,
         borderBottomWidth: this.props.borderBottomWidth, borderTopWidth: this.props.borderWidth, borderRightWidth: this.props.borderWidth, borderLeftWidth: this.props.borderWidth }}>
         <RNPickerSelect

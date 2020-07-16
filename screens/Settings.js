@@ -3,6 +3,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
+import {navigate, route} from './RootNavigation'
 import * as firebase from "firebase";
 
 import {Image,
@@ -28,11 +29,11 @@ import MainScreen from './Main';
 import HistoryScreen from './History';
 import ProfileScreen from './Profile';
 import CustomHeader from './components/CustomHeader'
-import BottomBar from './components/BottomBar'
 import ModifiedStatusBar from './components/ModifiedStatusBar'
 import ProfileInfo from './components/ProfileInfo'
 import SettingsButton from './components/SettingsButton'
 import LogoutButton from './components/LogoutButton'
+import ThemeSettingsScreen from './ThemeSettings';
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -47,16 +48,30 @@ export default class SettingsScreen extends Component<{}>{
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
+      reRender: "o"
     }
   }
   static navigationOptions = {
       header: null,
   };
+  componentDidMount(){
+    console.log("SETTINGS COMPONENT DID MOUNT")
+    this._subscribe = this.props.navigation.addListener('focus', () => {
+      console.log("subscribe")
+      this.setState({reRender: "ok"})
+    })
+  }
+  updateState = () =>{
+    console.log("LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG")
+    this.setState({reRender: "ok"})
+    return "TESTTTT"
+  }
   render(){
+    console.log("settings render")
     const {navigate} = this.props.navigation;
     return(
       <View
-      style={{width: this.width, height: this.height, flex:1, flexDirection: "column"}}>
+      style={{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)" ,width: this.width, height: this.height, flex:1, flexDirection: "column"}}>
       <ModifiedStatusBar/>
 
       <CustomHeader
@@ -76,6 +91,7 @@ export default class SettingsScreen extends Component<{}>{
       <View
       style = {{height: this.width/9}}/>
       <SettingsButton
+      onPress = {()=> navigate("Messages")}
       text = {"Favorite Users"}/>
       <SettingsButton
       text = {"Blocked Users"}/>
@@ -83,7 +99,7 @@ export default class SettingsScreen extends Component<{}>{
       <View
       style = {{height: this.width/9}}/>
       <SettingsButton
-      onPress = {()=> navigate("ThemeSettings")}
+      onPress = {()=> this.props.navigation.navigate("ThemeSettings", {update: this.updateState})}
       text = {"Theme Settings"}/>
       <SettingsButton
       text = {"Message Settings"}/>

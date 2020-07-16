@@ -72,7 +72,7 @@ export default class PhotoPopUpModal extends Component {
           paddingBottom: 0
           }}>
 
-          <View style={{backgroundColor: 'rgba(77,120,204,1)',justifyContent: 'center',
+          <View style={{backgroundColor: global.themeColor,justifyContent: 'center',
           alignItems: 'center',width: this.width*(8/10), height: this.width*(8/10)*(1/6),
           borderTopLeftRadius: 12, borderTopRightRadius: 12}}>
 
@@ -89,7 +89,7 @@ export default class PhotoPopUpModal extends Component {
 
           </View>
 
-          <View style={{ paddingTop: 5, paddingBottom: 5, paddingLeft:10, paddingRight: 10, backgroundColor: 'rgba(77,120,204,1)'}}>
+          <View style={{ paddingTop: 5, paddingBottom: 5, paddingLeft:10, paddingRight: 10, backgroundColor: global.themeColor}}>
           <Text style={{ textAlign: 'left', color: 'white', fontSize: (this.width*(1/25))}}>
             {this.props.bio}
           </Text>
@@ -104,7 +104,7 @@ export default class PhotoPopUpModal extends Component {
           <TouchableOpacity
             activeOpacity = {1}
             style={{justifyContent: 'center', alignItems: 'center', width: this.width*(8/10), height: this.width*(8/10)*(1/6),
-            borderBottomLeftRadius: 12, borderBottomRightRadius: 12, backgroundColor: 'rgba(77,120,204,1)'}}
+            borderBottomLeftRadius: 12, borderBottomRightRadius: 12, backgroundColor: global.themeColor}}
             onPress={this.props.onPressSendMsg}>
 
             <Image source={{uri: "sendmessage"}}

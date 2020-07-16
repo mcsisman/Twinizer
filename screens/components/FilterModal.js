@@ -29,6 +29,7 @@ export default class FilterModal extends Component {
 
 
   static propTypes = {
+   opacity: PropTypes.number,
    isVisible: PropTypes.bool,
    onBackdropPress: PropTypes.func,
    onValueChangeCountry: PropTypes.func,
@@ -37,7 +38,6 @@ export default class FilterModal extends Component {
    placeHolder2: PropTypes.string,
    onPressSearch: PropTypes.func,
    textSearch: PropTypes.string,
-   searchButtonOpacity: PropTypes.string,
    searchDisabled: PropTypes.bool,
    textFilters: PropTypes.string,
 
@@ -60,7 +60,7 @@ export default class FilterModal extends Component {
         isVisible={this.props.isVisible}
         >
         <View style={{
-          backgroundColor: 'white',
+          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
           width: this.width,
           height: this.height*(22/100),
           justifyContent: 'center',
@@ -68,12 +68,13 @@ export default class FilterModal extends Component {
           position:'absolute',
           bottom: -getStatusBarHeight()}}>
 
-          <Text style={{height: this.width*(1/10), width: this.width*(6/10), textAlign: 'center', color: 'black' ,
+          <Text style={{height: this.width*(1/10), width: this.width*(6/10), textAlign: 'center', color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)",
           fontSize: 14*(this.width/360), top: '7%', position: 'absolute'}}>
             {this.props.textFilters}
           </Text>
 
           <CountryPicker
+          borderBottomColor = {global.themeColor}
           onValueChange = {this.props.onValueChangeCountry}
           items = {countries.mainItems}
           label = {this.props.placeHolder1}
@@ -83,6 +84,7 @@ export default class FilterModal extends Component {
           width = {this.width*(45/100)}/>
 
           <CountryPicker
+          borderBottomColor = {global.themeColor}
           onValueChange = {this.props.onValueChangeGender}
           items = {[{label: global.langAllGenders, color: 'red', value: global.langAllGenders},
                       {label: global.langFilterMale, color: 'black', value: global.langFilterMale},
@@ -95,13 +97,13 @@ export default class FilterModal extends Component {
 
           <TouchableOpacity
           activeOpacity = {1}
-          style={{ justifyContent: 'center', position: 'absolute', backgroundColor: 'white',
+          style={{ opacity: this.props.opacity, justifyContent: 'center', position: 'absolute', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
            width: this.width*(2.5/10), height: this.width*(8/100),   bottom: this.height*(2/100), right: this.width*(3.75/10), borderBottomLeftRadius: 24, borderTopRightRadius: 24,
-           borderTopLeftRadius: 24, borderBottomRightRadius: 24, borderColor: this.props.searchButtonOpacity, borderWidth: 1.5}}
+           borderTopLeftRadius: 24, borderBottomRightRadius: 24, borderColor: global.themeColor, borderWidth: 1.5}}
            disabled={this.props.searchDisabled}
            onPress={this.props.onPressSearch}>
 
-          <Text style={{textAlign: 'center', color: this.props.searchButtonOpacity, fontSize: 17*(this.width/360)}}>
+          <Text style={{textAlign: 'center', color: global.themeColor, fontSize: 17*(this.width/360)}}>
             {this.props.textSearch}
           </Text>
           </TouchableOpacity>

@@ -33,7 +33,7 @@ export default class SearchButton extends Component {
     bottom: PropTypes.number,
     right: PropTypes.number,
     disabled: PropTypes.bool,
-    backgroundColor: PropTypes.string
+    opacity: PropTypes.number
  }
  static defaultProps = {
    width: screenWidth/10,
@@ -42,16 +42,30 @@ export default class SearchButton extends Component {
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
+
+    var backgroundColor = global.themeColor
+    var commaIndex;
+    for( i = backgroundColor.length -1; i >= 0; i--){
+      if(backgroundColor[i] == ","){
+        commaIndex = i
+        break
+      }
+      backgroundColor
+    }
+    backgroundColor = backgroundColor.substring(0, commaIndex + 1)
+    var opacityStr = (this.props.opacity).toString() + ")"
+    backgroundColor = backgroundColor + opacityStr
+
     return(
       <TouchableOpacity
-      activeOpacity = {1}
-      style={{ flex: 1, alignItems:'center', justifyContent: 'center', position: 'absolute', backgroundColor: this.props.backgroundColor,
+      activeOpacity = {this.props.opacity}
+      style={{ flex: 1, alignItems:'center', justifyContent: 'center', position: 'absolute', backgroundColor: backgroundColor,
        width: this.props.width, height: this.props.height, bottom: this.props.bottom, right: this.props.right, borderBottomLeftRadius: 65, borderTopRightRadius: 65,
        borderTopLeftRadius: 65, borderBottomRightRadius: 65}}
        disabled = {this.props.disabled}
        onPress={this.props.onPress}>
        <Image source={{uri: 'search'}}
-       style={{width: '50%', height: '50%',  position: 'absolute', flex:1 }}/>
+       style={{opacity: 1, width: '50%', height: '50%',  position: 'absolute', flex:1 }}/>
       </TouchableOpacity>
     )
   }

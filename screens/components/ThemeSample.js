@@ -44,11 +44,17 @@ export default class ThemeSample extends Component {
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
-
+    var backgroundColor;
+    if(this.props.selected){
+      backgroundColor = global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(144,144,144,1)"
+    }
+    else{
+      backgroundColor = null
+    }
     return(
       <TouchableOpacity
       activeOpacity = {1}
-      style={{backgroundColor: this.props.selected ? "rgba(144,144,144,1)" : null, justifyContent: 'flex-start', alignItems: 'center', position: 'absolute',
+      style={{backgroundColor: backgroundColor, justifyContent: 'flex-start', alignItems: 'center', position: 'absolute',
        width: 0.4*this.width, height: 0.4*this.width, bottom: this.props.bottom, right: this.props.right, borderBottomWidth: this.props.borderBottomWidth,
        borderTopWidth: this.props.borderTopWidth, borderRightWidth: this.props.borderRightWidth, borderLeftWidth: this.props.borderLeftWidth, borderTopRightRadius: this.props.borderTopRightRadius,
        borderTopLeftRadius: this.props.borderTopLeftRadius, borderBottomRightRadius: this.props.borderBottomRightRadius, borderBottomLeftRadius: this.props.borderBottomLeftRadius, borderColor: "gray" }}

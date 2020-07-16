@@ -50,7 +50,21 @@ export default class InfoModal extends Component {
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
+    var backgroundColor = global.themeColor
+    var commaIndex;
+    for( i = backgroundColor.length -1; i >= 0; i--){
+      if(backgroundColor[i] == ","){
+        commaIndex = i
+        break
+      }
+      backgroundColor
+    }
+    backgroundColor = backgroundColor.substring(0, commaIndex + 1)
+    var opacityStr = (0.2).toString() + ")"
+    backgroundColor = backgroundColor + opacityStr
+
     return(
+
       <Modal /*BİLGİLENDİRME MODALI*/
       style = {{alignItems: 'center'}}
       onBackdropPress = {this.props.onPressClose}
@@ -66,7 +80,7 @@ export default class InfoModal extends Component {
       <View style={{
       borderBottomLeftRadius: 8, borderTopRightRadius: 8,
       borderTopLeftRadius: 8, borderBottomRightRadius: 8  ,
-      backgroundColor: 'white',
+      backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
       width: screenWidth*(6.5/10),
       paddingTop: 10,
       paddingBottom: 15,
@@ -77,7 +91,7 @@ export default class InfoModal extends Component {
 
       <View style={{paddingTop: 10, paddingBottom: 10, width: screenWidth*(5.5/10), flex:1}}>
 
-      <Text style={{ color: 'black' ,fontFamily: "Candara", fontSize: this.props.alertFontSize*(screenWidth/360)}}>
+      <Text style={{ color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" ,fontFamily: "Candara", fontSize: this.props.alertFontSize*(screenWidth/360)}}>
       {this.props.txtAlert}
       </Text>
       </View>
@@ -86,10 +100,10 @@ export default class InfoModal extends Component {
       <TouchableOpacity
       activeOpacity = {1}
       style={{ borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,
-      justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(43,120,228,0.2)', paddingLeft: 15, paddingRight: 15, paddingTop: 5, paddingBottom:5}}
+      justifyContent: 'center', alignItems: 'center', backgroundColor: backgroundColor, paddingLeft: 15, paddingRight: 15, paddingTop: 5, paddingBottom:5}}
       onPress={this.props.onPressClose}>
 
-      <Text style={{color: 'rgba(43,120,228,1)' ,fontFamily: "Candara", fontSize: this.props.gotItFontSize*(screenWidth/360)}}>
+      <Text style={{color: global.themeColor ,fontFamily: "Candara", fontSize: this.props.gotItFontSize*(screenWidth/360)}}>
       {this.props.txtGotIt}
       </Text>
       </TouchableOpacity>

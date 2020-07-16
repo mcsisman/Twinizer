@@ -37,18 +37,18 @@ export default class ImageUploader extends Component {
       activeOpacity = {1}
       style={{ justifyContent: 'center', alignItems: 'center', position: 'absolute', backgroundColor: 'rgba(241,51,18,0)',
        width: this.props.width, height: this.props.width*(7/6), bottom: this.props.bottom, right: this.props.right, borderBottomLeftRadius: this.props.borderRadius, borderTopRightRadius: this.props.borderRadius,
-       borderTopLeftRadius: this.props.borderRadius, borderBottomRightRadius: this.props.borderRadius, borderColor: this.props.borderOpacity, borderWidth: 2}}
+       borderTopLeftRadius: this.props.borderRadius, borderBottomRightRadius: this.props.borderRadius, borderOpacity: this.props.borderOpacity, borderColor: global.themeColor, borderWidth: 2}}
 
        onPress={this.props.onPress}>
        <Image source={this.props.photo}
          style={{  width: '100%', height: '100%', borderBottomLeftRadius: this.props.borderRadius, borderTopRightRadius: this.props.borderRadius,
          borderTopLeftRadius: this.props.borderRadius, borderBottomRightRadius: this.props.borderRadius }}
        />
-       <Text style={{bottom: '60%',opacity: this.props.textOpacity, position: 'absolute',textAlign: 'center', color: 'rgba(0,0,0,1)', fontSize: this.props.fontSize*(screenWidth/360)}}>
+       <Text style={{color: global.themeColor, bottom: '60%', opacity: this.props.textOpacity, position: 'absolute', textAlign: 'center', fontSize: this.props.fontSize*(screenWidth/360)}}>
          {global.langTapHere}
        </Text>
-       <Image source={{uri: 'camera'}}
-         style={{bottom: '30%', width: this.props.width*(20/100)*1.1875, height: this.props.width*(20/100),  position: 'absolute',  opacity: this.props.textOpacity, flex:1 }}
+       <Image source={{uri: 'camera' + global.themeForImages}}
+         style={{bottom: '30%', width: this.props.width*(23/100), height: this.props.width*(23/100),  position: 'absolute',  opacity: this.props.textOpacity, flex:1 }}
        />
       </TouchableOpacity>
     )

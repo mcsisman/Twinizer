@@ -32,12 +32,13 @@ export default class ImgModalOvalButton extends Component {
    borderRadius: PropTypes.number,
    paddingTop: PropTypes.number,
    paddingBottom: PropTypes.number,
-   borderWidth: PropTypes.number
+   borderWidth: PropTypes.number,
+   activeOpacity: PropTypes.number
  }
  static defaultProps = {
-   borderColor: 'rgba(241,51,18,1)',
+   borderColor: global.themeColor,
    backgroundColor: 'white',
-   textColor: 'rgba(241,51,18,1)',
+   textColor: global.themeColor,
    textFontSize: 20*(screenWidth/360),
    title: "TITLE",
    disabled: false,
@@ -45,6 +46,7 @@ export default class ImgModalOvalButton extends Component {
    paddingTop: 5,
    paddingBottom: 5,
    borderWidth: 2,
+   activeOpacity: 1,
  }
   render(){
 
@@ -55,8 +57,8 @@ export default class ImgModalOvalButton extends Component {
     return(
 
       <TouchableOpacity
-      activeOpacity = {1}
-      style={{ justifyContent: 'center', alignItems: 'center', position: 'absolute', backgroundColor: this.props.backgroundColor, paddingLeft: 15, paddingRight: 15,
+      activeOpacity = {this.props.activeOpacity}
+      style={{ justifyContent: 'center', alignItems: 'center', position: 'absolute', backgroundColor: global.isDarkMode ? global.darkModeColors[0] : "rgba(255,255,255,1)", paddingLeft: 15, paddingRight: 15,
       paddingTop: this.props.paddingTop, paddingBottom: this.props.paddingBottom, bottom: this.props.bottom, right: this.props.right, borderBottomLeftRadius: this.props.borderRadius, borderTopRightRadius: this.props.borderRadius,
       borderTopLeftRadius: this.props.borderRadius, borderBottomRightRadius: this.props.borderRadius, borderColor: this.props.borderColor, borderWidth: this.props.borderWidth}}
       onPress={this.props.onPress }

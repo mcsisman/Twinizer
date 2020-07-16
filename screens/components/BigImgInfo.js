@@ -41,13 +41,13 @@ export default class BigImgInfo extends Component {
       width: this.width, height: this.height*(20/100) - headerHeight, top: headerHeight + getStatusBarHeight(), left: 0}}>
 
       <View style={{alignItems: 'center', width: this.width, height: (this.height*(20/100) - headerHeight)/2, justifyContent: 'center'}}>
-      <Text style={{ color: 'rgba(77,120,204,1)', fontSize: 22*(this.width/360)}}>
+      <Text style={{ color: global.themeColor, fontSize: 22*(this.width/360)}}>
         {this.props.username}
         </Text>
       </View>
 
       <View style={{alignItems: 'center', width: this.width, height: (this.height*(20/100) - headerHeight)/2, justifyContent: 'center'}}>
-      <Text style={{ color: 'rgba(77,120,204,1)', fontSize: 22*(this.width/360)}}>
+      <Text style={{ color: global.themeColor, fontSize: 22*(this.width/360)}}>
         {this.props.country}
         </Text>
       </View>

@@ -42,10 +42,11 @@ export default class LogoutButton extends Component {
     return(
       <TouchableOpacity
       activeOpacity = {1}
-      style={{ top: this.props.top, position: this.props.position, borderTopWidth:1, borderBottomWidth:1, borderColor: 'rgba(128,128,128,0.3)', backgroundColor: "white", justifyContent: 'center', width: this.width, height: this.width/8}}
+      style={{ top: this.props.top, position: this.props.position, borderTopWidth:1, borderBottomWidth:1, borderColor: global.isDarkMode ? global.darkModeColors[2] : 'rgba(128,128,128,0.3)',
+      backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : 'rgba(255,255,255,1)', justifyContent: 'center', width: this.width, height: this.width/8}}
       onPress={this.props.onPress}>
       <Text
-        style = {{color: 'red', fontSize: 18*this.width/360, textAlign: "center" }}>
+        style = {{color: global.themeColor, fontSize: 18*this.width/360, textAlign: "center" }}>
         {this.props.text}
       </Text>
       </TouchableOpacity>

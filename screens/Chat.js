@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import React from 'react';
-import { Send, Bubble, Time, GiftedChat } from 'react-native-gifted-chat';
+import { InputToolbar, Send, Bubble, Time, GiftedChat } from 'react-native-gifted-chat';
 import firebaseSvc from './FirebaseSvc';
 import AsyncStorage from '@react-native-community/async-storage';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -15,6 +15,7 @@ import MessagesScreen from './Messages'
 import ImagePicker from 'react-native-image-crop-picker';
 import ChatSendImgBottomBar from './components/ChatSendImgBottomBar'
 import ChatSendImgTopBar from './components/ChatSendImgTopBar'
+import CustomInputToolbar  from './components/CustomInputToolbar'
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {Image,
    Text,
@@ -224,10 +225,10 @@ renderBubble (props) {
         wrapperStyle={{
           right: {
             opacity: 1,
-            backgroundColor: 'rgba(241,51,18,1)'
+            backgroundColor: global.themeColor
           },
           left: {
-            backgroundColor: 'rgba(40,44,52,0.5)',
+            backgroundColor: 'rgba(40,44,52,0.8)',
           }
         }}
         textProps={{
@@ -251,13 +252,24 @@ renderSend(props) {
           <Send
               {...props}
               textStyle={{
-                color:"rgba(241,51,18,1)"
+                color: global.themeColor
               }}
           >
 
           </Send>
       );
   }
+
+  messengerBarContainer(props){
+    return (
+      <InputToolbar
+        {...props}
+        containerStyle={{
+          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
+          borderTopColor: "rgba(177,177,177,1)"}}>
+      </InputToolbar>
+    );
+  };
 get user() {
   return {
     _id: firebaseSvc.uid,
@@ -302,7 +314,7 @@ render() {
     if(this.state.renderImageChatScreen){
         return(
           <View
-          style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, flexDirection:"column"}}>
+          style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, flexDirection:"column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
 
           <ModifiedStatusBar/>
 
@@ -323,7 +335,7 @@ render() {
         if(Platform.OS === 'ios'){
           return(
             <View
-            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0}}>
+            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
 
             <ModifiedStatusBar/>
 
@@ -331,6 +343,8 @@ render() {
               style = {{ position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
               width: this.width, bottom: 0, right: 0}}>
               <GiftedChat
+              textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
+              renderInputToolbar={(props) => this.messengerBarContainer(props)}
                 scrollToBottom = {true}
                 messages={this.state.messages}
                 onSend={this.sendMsg}
@@ -372,7 +386,7 @@ render() {
         else{
           return(
             <View
-            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0}}>
+            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
 
             <ModifiedStatusBar/>
 
@@ -380,6 +394,8 @@ render() {
               style = {{  position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
               width: this.width, bottom: 0, right: 0}}>
               <GiftedChat
+              textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
+              renderInputToolbar={(props) => this.messengerBarContainer(props)}
                 scrollToBottom = {true}
                 messages={this.state.messages}
                 onSend={this.sendMsg}
@@ -422,7 +438,7 @@ render() {
         if(Platform.OS === 'ios'){
           return(
             <View
-            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0}}>
+            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
 
             <ModifiedStatusBar/>
 
@@ -430,6 +446,8 @@ render() {
               style = {{ position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
               width: this.width, bottom: 0, right: 0}}>
               <GiftedChat
+              textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
+              renderInputToolbar={(props) => this.messengerBarContainer(props)}
                 scrollToBottom = {true}
                 messages={this.state.messages}
                 onSend={this.sendMsg}
@@ -441,7 +459,7 @@ render() {
                 renderAvatar={null}
               />
             </View>
-            <Animated.Image source={{uri: 'loadingred'}}
+            <Animated.Image source={{uri: 'loading' + global.themeForImages}}
               style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', bottom: this.height/2, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
             />
 
@@ -473,7 +491,7 @@ render() {
         else{
           return(
             <View
-            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0}}>
+            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
 
             <ModifiedStatusBar/>
 
@@ -481,6 +499,8 @@ render() {
               style = {{  position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
               width: this.width, bottom: 0, right: 0}}>
               <GiftedChat
+              textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
+              renderInputToolbar={(props) => this.messengerBarContainer(props)}
                 scrollToBottom = {true}
                 messages={this.state.messages}
                 onSend={this.sendMsg}
@@ -492,7 +512,7 @@ render() {
                 renderAvatar={null}
               />
             </KeyboardAvoidingView>
-            <Animated.Image source={{uri: 'loadingred'}}
+            <Animated.Image source={{uri: 'loading' + global.themeForImages}}
               style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', bottom: this.height/2, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
             />
 

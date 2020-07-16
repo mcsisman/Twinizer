@@ -28,7 +28,6 @@ import MessagesScreen from './Messages';
 import MainScreen from './Main';
 import HistoryScreen from './History';
 import CustomHeader from './components/CustomHeader'
-import BottomBar from './components/BottomBar'
 import ModifiedStatusBar from './components/ModifiedStatusBar'
 import ProfileCountryGenderButton from './components/ProfileCountryGenderButton'
 import ProfileBioButton from './components/ProfileBioButton'
@@ -43,8 +42,6 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
-
-var ourBlue = 'rgba(77,120,204,1)'
 
 export default class ProfileScreen extends Component<{}>{
   constructor(props){
@@ -71,6 +68,10 @@ export default class ProfileScreen extends Component<{}>{
   }
 
   componentDidMount(){
+    this._subscribe = this.props.navigation.addListener('focus', async () => {
+      console.log("subscribe")
+      this.setState({reRender: "ok"})
+    })
     console.log("PROFİL COMP")
     Keyboard.addListener("keyboardDidHide", this._keyboardDidHide);
     Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
@@ -160,12 +161,17 @@ static navigationOptions = {
   });
   };
   render(){
+    var backgroundColor = global.themeColor
+    backgroundColor = backgroundColor.slice(0, -2)
+    backgroundColor = backgroundColor + "0.2)"
+
+    console.log("backgroundColor:", backgroundColor)
     const {navigate} = this.props.navigation;
     return(
       <TouchableOpacity
       onPress = {()=> this.onPressScreen()}
       activeOpacity = {1}
-      style={{width: this.width, height: this.height, flex:1, flexDirection: "column", alignItems: "center"}}>
+      style={{backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)", width: this.width, height: this.height, flex:1, flexDirection: "column", alignItems: "center"}}>
       <ModifiedStatusBar/>
 
       <CustomHeader
@@ -215,7 +221,7 @@ static navigationOptions = {
       height: "70%", justifyContent: "center", alignItems: "center"}}>
 
       <Text
-      style= {{fontSize: 18*(this.width/360), color: "blue"}}>
+      style= {{fontSize: 18*(this.width/360), color: global.themeColor}}>
       Edit
       </Text>
       </TouchableOpacity>
@@ -232,7 +238,8 @@ static navigationOptions = {
       onFocus={() => {this.setState({bioOpacity: 0, selection: {start: this.state.text.length, end: this.state.text.length}}, () => {this.setState({ selection: null })})  }}
       selection={this.state.selection}
       numberOfLines={1}
-      style={{opacity: this.state.upperComponentsOpacity, paddingTop: 0, paddingBottom: 0, paddingLeft: 12, paddingRight: 12, textAlign: "center", backgroundColor:"white", borderWidth: 0.4, borderColor:"gray",
+      style={{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)",opacity: this.state.upperComponentsOpacity, paddingTop: 0, paddingBottom: 0, paddingLeft: 12, paddingRight: 12, textAlign: "center",
+      backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)", borderWidth: 0.4, borderColor:"gray",
       fontSize: 14*(this.width/360), width: this.width/2*(8/10), height:this.width/2*(8/10)*(7/6)/5 }}
       onChangeText={(text) => this.setState({text: text})}>
       </TextInput>
@@ -275,8 +282,8 @@ static navigationOptions = {
       opacity = {this.state.upperComponentsOpacity}
       onOpen = {()=> this.onPressGender()}
       onValueChange = {(value)=> this.onValueChangeGender(value)}
-      items = {[{label: global.langFilterMale, color: 'black', value: global.langFilterMale},
-                  {label: global.langFilterFemale, color: 'black', value: global.langFilterFemale}]}
+      items = {[{label: global.langFilterMale, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", value: global.langFilterMale},
+                  {label: global.langFilterFemale, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", value: global.langFilterFemale}]}
       label = {"label"}
       height = {this.width/2*(8/10)*(7/6)/5}
       width = {this.width/2*(8/10)}/>
@@ -288,10 +295,10 @@ static navigationOptions = {
       <TouchableOpacity
       activeOpacity = {1}
       style={{ top: "74%", position: "absolute", borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,
-      justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(43,120,228,0.2)', paddingLeft: 15, paddingRight: 15, paddingTop: 5, paddingBottom:5}}
+      justifyContent: 'center', alignItems: 'center', backgroundColor: backgroundColor, paddingLeft: 15, paddingRight: 15, paddingTop: 5, paddingBottom:5}}
       onPress={()=> this.onPressSave()}>
 
-      <Text style={{color: 'rgba(43,120,228,1)', fontSize: 15*(this.width/360)}}>
+      <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
       SAVE
       </Text>
       </TouchableOpacity>

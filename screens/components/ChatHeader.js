@@ -38,18 +38,18 @@ export default class ChatHeader extends Component {
     this.width = Math.round(Dimensions.get('screen').width);
     return(
       <View
-      style = {{ position: 'absolute', backgroundColor: 'white', height: headerHeight,
+      style = {{ position: 'absolute', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", height: headerHeight,
       width: this.width, top: getStatusBarHeight(), right: 0, borderBottomWidth: 2, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
 
       <TouchableOpacity
       activeOpacity = {0.3}
       onPress = {this.props.onPressBack}
       style={{position: 'absolute', left: this.width/25, width: this.width*(1/10), height: this.width*(1/10), top: (headerHeight - this.width*(1/10))/2, justifyContent: 'center', alignItems: 'center',
-      backgroundColor: 'white', borderTopLeftRadius: 64,borderTopRightRadius: 64,borderBottomLeftRadius: 64, borderBottomRightRadius: 64}}>
+      borderTopLeftRadius: 64,borderTopRightRadius: 64,borderBottomLeftRadius: 64, borderBottomRightRadius: 64}}>
       <Image
       style={{position: 'absolute', width: '60%', height: '60%',
       borderBottomLeftRadius: 64, borderTopRightRadius: 64, borderTopLeftRadius: 64, borderBottomRightRadius: 64}}
-      source={{uri: 'backarrowred'}}>
+      source={{uri: 'backarrow' + global.themeForImages}}>
       </Image>
       </TouchableOpacity>
 
@@ -60,7 +60,7 @@ export default class ChatHeader extends Component {
 
       <View
       style={{right: 0, position:"absolute", width: this.width*(4/10), height: this.width*(1/10)*(7/6), justifyContent: 'center', }}>
-      <Text style = {{ fontSize: 22, position:"absolute"}}
+      <Text style = {{ fontSize: 22, position: "absolute", color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,0.9)"}}
       numberOfLines={1}>
       {global.receiverUsername}
       </Text>
@@ -77,11 +77,11 @@ export default class ChatHeader extends Component {
       style={{position: 'absolute', width: this.width*2/10, right:0, position:"absolute", height: this.width*(1/10)*(7/6), justifyContent: 'center', alignItems: 'center', }}
       onPress = {this.props.onPressCamera}>
       <View
-      style={{borderColor: "rgba(241,51,18,1)", borderWidth: 2, width: this.width*(1/10)*(7/6), height: this.width*(1/10)*(7/6),
+      style={{borderColor: global.themeColor, borderWidth: 2, width: this.width*(1/10)*(7/6), height: this.width*(1/10)*(7/6),
       justifyContent: 'center', alignItems: 'center', borderBottomLeftRadius: 555, borderTopRightRadius: 555, borderTopLeftRadius: 555, borderBottomRightRadius: 555}}>
       <Image
       style={{width: "60%", height: "60%"}}
-      source={{uri: "camerared"}}>
+      source={{uri: "camera" + global.themeForImages}}>
       </Image>
       </View>
       </TouchableOpacity>

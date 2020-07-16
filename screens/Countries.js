@@ -205,7 +205,7 @@ class Countries {
     var items = []
     var countries = this.countries
     for( i = 0; i < 196; i++){
-      items[i] = { label: this.countries[i], color: 'black', value: this.countries[i] }
+      items[i] = { label: this.countries[i], color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", value: this.countries[i] }
     }
     return items;
   }

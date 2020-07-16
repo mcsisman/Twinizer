@@ -65,8 +65,8 @@ export default class ChatSendImgBottomBar extends Component {
       style={{borderTopLeftRadius:555, borderTopRightRadius: 555, borderBottomLeftRadius: 555, borderBottomRightRadius: 555,
          backgroundColor:"rgba(255,255,255,0.8)", justifyContent:"center", alignItems: "center", width: "100%", height: "100%"}}>
 
-      <Image source={{uri: "plus"}}
-        style={{width: this.width*5/100, height: this.width*5/100}}
+      <Image source={{uri: "circleplus" + global.themeForImages}}
+        style={{width: "100%", height: "100%"}}
       />
 
       </TouchableOpacity>
@@ -90,8 +90,8 @@ export default class ChatSendImgBottomBar extends Component {
       <TouchableOpacity
       activeOpacity = {1}
       style={{paddingLeft: 12, paddingRight: 12, borderBottomRightRadius: 36, borderBottomLeftRadius:36, height: "87%",
-        borderTopLeftRadius:36, borderTopRightRadius:36, justifyContent:"center", alignItems: "center", backgroundColor: "rgba(241,51,18,1)",
-        borderColor: "rgba(241,51,18,1)", borderWidth: 1}}>
+        borderTopLeftRadius:36, borderTopRightRadius:36, justifyContent:"center", alignItems: "center", backgroundColor: global.themeColor,
+        borderColor: global.themeColor, borderWidth: 1}}>
       <Text
       style = {{fontSize: 15*(this.width/360), fontWeight: "bold",  color: "white"}}>
       Send

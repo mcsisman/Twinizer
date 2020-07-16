@@ -37,10 +37,10 @@ export default class HistoryCircle extends Component {
     }
 
     return(
-      <View style={{borderColor:'rgba(241,51,18,1)', borderWidth: 3, position: 'absolute', width: this.props.width, height: this.props.height, borderBottomLeftRadius: 500, borderTopRightRadius: 500,
+      <View style={{borderColor: global.themeColor, borderWidth: 3, position: 'absolute', width: this.props.width, height: this.props.height, borderBottomLeftRadius: 500, borderTopRightRadius: 500,
       borderTopLeftRadius: 500, borderBottomRightRadius: 500, flex:1, bottom: this.props.bottom, right: this.props.right}}>
 
-      <View style={{position: 'absolute', width: '75%', height: "75%", bottom: '12.5%', right: '12.5%', backgroundColor: 'rgba(241,51,18,1)',
+      <View style={{position: 'absolute', width: '75%', height: "75%", bottom: '12.5%', right: '12.5%', backgroundColor: global.themeColor,
       borderBottomLeftRadius: 500, borderTopRightRadius: 500, borderTopLeftRadius: 500, borderBottomRightRadius: 500, opacity: innerOpacity }}>
       </View>
 

@@ -40,12 +40,13 @@ export default class GenderScreen extends Component<{}>{
     this.state = {
       splashOver : false,
       color: 'rgba(0,0,0,0.4)',
-      buttonOpacity: 'rgba(241,51,18,0.4)',
+      buttonOpacity: global.themeColor,
+      opacity: 0.4,
       disabled: true,
-      femaleText: 'rgba(241,51,18,1)',
-      maleText: 'rgba(241,51,18,1)',
-      maleBG: "white",
-      femaleBG: "white",
+      femaleText: global.themeColor,
+      maleText: global.themeColor,
+      maleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
+      femaleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
       gender: "",
       country: "Country"
     }
@@ -69,29 +70,33 @@ writeGenderToDatabase(){
 maleSelected(){
 
   if (global.globalCountry == null || global.globalCountry == ""){ // MALE IS SELECTED, COUNTRY IS NOT SELECTED
-    this.setState({maleBG: 'rgba(241,51,18,1)', maleText: "white", femaleBG: "white", femaleText: 'rgba(241,51,18,1)', disabled: true,  buttonOpacity: 'rgba(241,51,18,0.4)', gender: "Male"})
+    this.setState({maleBG: global.themeColor, maleText: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", femaleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)" ,
+    femaleText: global.themeColor, disabled: true,  buttonOpacity: global.themeColor, gender: "Male", opacity: 0.4})
   }
   else { // MALE IS SELECTED, COUNTRY IS SELECTED
-    this.setState({maleBG: 'rgba(241,51,18,1)', maleText: "white", femaleBG: "white", femaleText: 'rgba(241,51,18,1)', disabled: false, buttonOpacity: 'rgba(241,51,18,1)', gender: "Male"})
+    this.setState({maleBG: global.themeColor, maleText: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", femaleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
+    femaleText: global.themeColor, disabled: false, buttonOpacity: global.themeColor, gender: "Male", opacity: 1})
   }
   global.globalGender = "Male";
 }
 femaleSelected(){ // FEMALE IS SELECTED, COUNTRY IS NOT SELECTED
   if (global.globalCountry == null || global.globalCountry == ""){
-    this.setState({femaleBG: 'rgba(241,51,18,1)', femaleText: "white", maleBG: "white", maleText: 'rgba(241,51,18,1)', disabled: true, buttonOpacity: 'rgba(241,51,18,0.4)', gender: "Female"})
+    this.setState({femaleBG: global.themeColor, femaleText: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", maleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
+     maleText: global.themeColor, disabled: true, buttonOpacity: global.themeColor, gender: "Female", opacity: 0.4})
   }
   else { // FEMALE IS SELECTED, COUNTRY IS ELECTED
-    this.setState({femaleBG: 'rgba(241,51,18,1)', femaleText: "white", maleBG: "white", maleText: 'rgba(241,51,18,1)', disabled: false, buttonOpacity: 'rgba(241,51,18,1)', gender: "Female"})
+    this.setState({femaleBG: global.themeColor, femaleText: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", maleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
+    maleText: global.themeColor, disabled: false, buttonOpacity: global.themeColor, gender: "Female", opacity: 1})
   }
   global.globalGender = "Female";
 }
 
 valueChange(value){
   if(value == null || global.globalGender == ""){ // IF COUNTRY OR GENDER IS NOT SELECTED, DISABLE THE NEXT BUTTON
-    this.setState({country: "Country", color: 'rgba(0,0,0,0.4)', disabled: true, buttonOpacity: 'rgba(241,51,18,0.4)'})
+    this.setState({country: "Country", color: 'rgba(0,0,0,0.4)', disabled: true, buttonOpacity: global.themeColor, opacity: 0.4})
   }
   else{ // IF BOTH COUNTRY AND GENDER IS SELECTED, ENABLE THE NEXT BUTTON
-    this.setState({country: value, color: 'rgba(241,51,18,1)', buttonOpacity: 'rgba(241,51,18,1)', disabled: false})
+    this.setState({country: value, color: global.themeColor, buttonOpacity: global.themeColor, disabled: false, opacity: 1})
   }
   global.globalCountry = value;
 }
@@ -101,7 +106,7 @@ valueChange(value){
     return(
 
       <View
-      style={{width: this.width, height: this.height, top: 0, flex:1, flexDirection: 'column', alignItems: 'center',}}>
+      style={{width: this.width, height: this.height, top: 0, flex:1, flexDirection: 'column', alignItems: 'center', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
 
       <ModifiedStatusBar/>
 
@@ -109,18 +114,22 @@ valueChange(value){
       title = {global.langCompleteYourProfile}
       onPress = {()=> this.props.navigation.goBack()}/>
       <OvalButton
+      opacity = {1}
       width = {this.width*3/10}
       bottom = {(this.height*50)/100}
       right = {this.width*(1.5/10)}
+      borderColor = {global.themeColor}
       title = {global.langMale}
       backgroundColor = {this.state.maleBG}
       textColor = {this.state.maleText}
       onPress = { ()=> this.maleSelected()}/>
 
       <OvalButton
+      opacity = {1}
       width = {this.width*3/10}
       bottom = {(this.height*50)/100}
       right = {this.width*(5.5/10)}
+      borderColor = {global.themeColor}
       title = {global.langFemale}
       backgroundColor = {this.state.femaleBG}
       textColor = {this.state.femaleText}
@@ -130,6 +139,7 @@ valueChange(value){
       text = {global.langSelectGender}/>
 
       <CountryPicker
+      borderBottomColor = {global.themeColor}
       width = {this.width*(60/100)}
       height = {this.width*(12/100)}
       right = {this.width*(20/100)}
@@ -142,11 +152,13 @@ valueChange(value){
       pageNo = {1}/>
 
       <OvalButton
+      backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
       width = {this.width*3/10}
       bottom = {(this.height*12)/100}
       right = {this.width*(3.5/10)}
       title = {global.langNext}
       textColor = {this.state.buttonOpacity}
+      opacity = {this.state.opacity}
       onPress = { ()=> this.writeGenderToDatabase()}
       disabled = {this.state.disabled}
       borderColor = {this.state.buttonOpacity}/>

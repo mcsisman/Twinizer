@@ -29,12 +29,13 @@ export default class OvalButton extends Component {
    textFontSize: PropTypes.number,
    title: PropTypes.string,
    disabled: PropTypes.bool,
-   borderRadius: PropTypes.number
+   borderRadius: PropTypes.number,
+   opacity: PropTypes.number
  }
  static defaultProps = {
-   borderColor: 'rgba(241,51,18,1)',
+   borderColor: global.themeColor,
    backgroundColor: 'white',
-   textColor: 'rgba(241,51,18,1)',
+   textColor: global.themeColor,
    textFontSize: 20*(screenWidth/360),
    height: screenWidth*(1.2/10),
    title: "TITLE",
@@ -42,11 +43,14 @@ export default class OvalButton extends Component {
    borderRadius: 24
  }
   render(){
+
     return(
       <TouchableOpacity
-      activeOpacity = {1}
-      style={{ justifyContent: 'center', alignItems: 'center', position: 'absolute', backgroundColor: this.props.backgroundColor, paddingLeft: 15, paddingRight: 15,
-       width: this.props.width, height: this.props.height,  bottom: this.props.bottom, right: this.props.right, borderBottomLeftRadius: this.props.borderRadius, borderTopRightRadius: this.props.borderRadius,
+      activeOpacity = {this.props.opacity}
+      style={{ opacity: this.props.opacity, justifyContent: 'center', alignItems: 'center', position: 'absolute',
+      backgroundColor: this.props.backgroundColor, paddingLeft: 15, paddingRight: 15,
+       width: this.props.width, height: this.props.height,  bottom: this.props.bottom, right: this.props.right,
+       borderBottomLeftRadius: this.props.borderRadius, borderTopRightRadius: this.props.borderRadius,
        borderTopLeftRadius: this.props.borderRadius, borderBottomRightRadius: this.props.borderRadius, borderColor: this.props.borderColor, borderWidth: 2}}
        onPress={this.props.onPress }
        disabled = {this.props.disabled}>

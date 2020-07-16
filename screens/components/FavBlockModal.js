@@ -38,6 +38,8 @@ export default class FavBlockModal extends Component {
    animationIn: PropTypes.string,
    animationOut: PropTypes.string,
    backdropOpacity: PropTypes.number,
+   onPressTick: PropTypes.func,
+   tickIsVisible: PropTypes.number
  }
  static defaultProps = {
    addFontSize: 15,
@@ -47,6 +49,7 @@ export default class FavBlockModal extends Component {
    animationIn: "zoomInUp",
    animationOut: "zoomOutUp",
    backdropOpacity: 0.4,
+   tickIsVisible: 0
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
@@ -67,7 +70,7 @@ export default class FavBlockModal extends Component {
       <View style={{
       borderBottomLeftRadius: 8, borderTopRightRadius: 8,
       borderTopLeftRadius: 8, borderBottomRightRadius: 8,
-      backgroundColor: 'white',
+      backgroundColor: global.isDarkMode ? global.darkModeColors[0] : "rgba(255,255,255,1)",
       width: screenWidth*(6.5/10),
       paddingTop: 10,
       paddingBottom: 0,
@@ -78,20 +81,49 @@ export default class FavBlockModal extends Component {
 
       <View style={{paddingTop: 10, paddingBottom: 10, width: screenWidth*(6/10), flex:1}}>
 
-      <Text style={{ color: 'black' ,fontFamily: "Candara", fontSize: this.props.alertFontSize*(screenWidth/360)}}>
-      {this.props.txtAlert}
+      <Text style={{ marginLeft: 2, marginRight: 2, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: this.props.alertFontSize*(screenWidth/360)}}>
+      sşlfd kgsdşlf kglsşdfk gşlsdkf şlgk şlsdfkg şlsdfk gşlsdkf şlsdkfgş lsdkfgşl ksdfşlg ksdlşfk gsdşlkfg
       </Text>
       </View>
 
       <View
+      style={{ flexDirection:"row", width: screenWidth*(6/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems: "flex-start",
+      }}>
+
+      <View
+      style={{width: screenWidth*(5/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems: "flex-start",
+      }}>
+      <Text
+      style={{marginLeft:7, marginRight:7, fontSize: 12*this.width/360, color: global.themeColor}}>
+      Don't show this dialog again
+      </Text>
+      </View>
+
+      <View
+      style={{ width: screenWidth*(1/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems: "center",}}>
+
+      <TouchableOpacity
+      activeOpacity = {1}
+      style={{ borderWidth:1, borderColor: global.themeColor, width: screenWidth*(1/17), height:screenWidth*(1/17), justifyContent: 'center', alignItems: "center",}}
+      onPress = {this.props.onPressTick}>
+      <Image
+      source = {{uri: "tick" + global.themeForImages}}
+      style = {{opacity: this.props.tickIsVisible ? 1 : 0, width: "65%", height: "65%"}}/>
+      </TouchableOpacity>
+      </View>
+
+      </View>
+      <View
+
       style={{ flexDirection: 'row', width: screenWidth*(6/10), height:screenWidth*(1.5/10), justifyContent: 'center',
       paddingLeft: 15, paddingRight: 15}}>
 
       <View
-      style={{flex:1, width: screenWidth*(3/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
+      style={{ width: screenWidth*(3/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
       <ImgModalOvalButton
-      title = {'Cancel'}
-      textColor = {'rgba(241,51,18,1)'}
+      activeOpacity = {0.7}
+      title = {'CANCEL'}
+      textColor = {global.themeColor}
       onPress = {this.props.onPressClose}
       borderColor = {'rgba(241,51,18,0)'}
       borderRadius = {0}
@@ -100,15 +132,16 @@ export default class FavBlockModal extends Component {
       </View>
 
       <View
-      style={{flex:1, width: screenWidth*(3/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
+      style={{width: screenWidth*(3/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
       <ImgModalOvalButton
+      activeOpacity = {0.7}
       title = {'ADD'}
-      textColor = {'rgba(241,51,18,1)'}
+      textColor = {global.themeColor}
       onPress = {this.props.onPressAdd}
-      borderColor = {'rgba(241,51,18,1)'}
-      borderRadius = {32}
+      borderColor = {'rgba(241,51,18,0)'}
+      borderRadius = {0}
       textFontSize = {this.props.addFontSize}
-      borderWidth = {1.5}/>
+      borderWidth = {0}/>
       </View>
 
       </View>

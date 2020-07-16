@@ -8,6 +8,7 @@ import {decode, encode} from 'base-64'
 import * as RNLocalize from "react-native-localize";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { navigationRef } from './screens/RootNavigation';
 import {
   SafeAreaView,
   StyleSheet,
@@ -36,6 +37,8 @@ import HistoryScreen from './screens/History';
 import SettingsScreen from './screens/Settings';
 import ThemeSettingsScreen from './screens/ThemeSettings';
 import ProfileScreen from './screens/Profile';
+import AsyncStorage from '@react-native-community/async-storage';
+import themes from './screens/Themes';
 
 if (!global.btoa) { global.btoa = encode }
 
@@ -53,6 +56,68 @@ var firebaseConfig = {
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   var user = firebase.auth().currentUser;
+
+
+  class Appp extends React.Component {
+
+    constructor() {
+      super();
+      this.state = {
+        loading: true,
+        authenticated: false,
+      };
+    }
+
+    async componentDidMount() {
+
+      firebase.auth().onAuthStateChanged(async (user) => {
+        console.log("USER??: ", firebase.auth().currentUser.email)
+        await this.setTheme()
+        if (user) {
+          this.setState({ loading: false, authenticated: true });
+        } else {
+          this.setState({ loading: false, authenticated: false });
+        }
+      });
+    }
+
+    async setTheme(){
+      // Theme color
+      var themeColor = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'theme')
+      console.log("STORAGEDAN GELEN THEME COLOR:", themeColor)
+      if(themeColor == null || themeColor == undefined){
+        themeColor = "Original"
+      }
+      global.themeColor = themes.getTheme(themeColor)
+      global.themeForImages = themes.getThemeForImages(themeColor)
+      var mode = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'mode')
+      if(mode == null || mode == undefined){
+        mode = "true"
+      }
+      if(mode == "true"){
+        global.isDarkMode = true
+      }
+      else{
+        global.isDarkMode = false
+      }
+      global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,1)", "rgba(255,255,255,1)"]
+    }
+
+    render() {
+      const {navigate} = this.props.navigation;
+      if (this.state.loading) return <View/>; // Render loading/splash screen etc
+      else{
+        if(this.state.authenticated){
+          navigate("Tabs")
+        }
+        else{
+          navigate("Splash")
+        }
+        return <View/>
+
+      }
+    }
+  }
 
   global.messagesFirstTime = true
   global.fromHistorySearch = false
@@ -216,7 +281,7 @@ function MyTabBar({ state, descriptors, navigation }) {
   }
 
   return (
-    <View style={{ flexDirection: 'row', backgroundColor: 'rgba(188,192,204,0.5)' }}>
+    <View style={{ flexDirection: 'row', backgroundColor: global.isDarkMode ? global.darkModeColors[0] : 'rgba(188,192,204,0.5)' }}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
@@ -236,7 +301,7 @@ function MyTabBar({ state, descriptors, navigation }) {
           });
 
           if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name);
+            navigation.navigate(route.name, {update: this.updateState});
           }
         };
 
@@ -246,13 +311,14 @@ function MyTabBar({ state, descriptors, navigation }) {
             target: route.key,
           });
         };
-        const imgArray1 = ["homered", "msgred", "historyred", "settingsred" ]
+        const imgArray1 = ["home" + global.themeForImages, "msg" + global.themeForImages, "history" + global.themeForImages, "settings" + global.themeForImages ]
         const imgArray2 = ["homegray", "msggray", "historygray", "settingsgray" ]
 
         var widthArray = ["40%", "32%", "40%", "28%" ]
         var heightArray = ["70%", "56%", "56%", "49%" ]
         return (
           <TouchableOpacity
+            key = {index}
             disabled = {isFocused ? true : false}
             activeOpacity = {0.8}
             accessibilityRole="button"
@@ -268,7 +334,7 @@ function MyTabBar({ state, descriptors, navigation }) {
               source = {{uri: isFocused ? imgArray1[index] : imgArray2[index]}}>
             </Image>
 
-            <Text style = {{bottom: '5%', position: 'absolute', color: isFocused ? 'rgba(241,51,18,1)' : 'rgba(128,128,128,1)' , fontSize: 12*(this.width/360) }}>
+            <Text style = {{bottom: '5%', position: 'absolute', color: isFocused ? global.themeColor : 'rgba(128,128,128,1)' , fontSize: 12*(this.width/360) }}>
               {label}
             </Text>
           </TouchableOpacity>
@@ -331,9 +397,17 @@ function MyTabs() {
  function App({navigation}) {
 
     return (
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
         headerMode = {"none"}>
+
+        <Stack.Screen options={{
+          transitionSpec: {
+            open: config,
+            close: config,
+          },
+        }}
+        name="Appp" component={Appp} />
 
         <Stack.Screen options={{
           transitionSpec: {

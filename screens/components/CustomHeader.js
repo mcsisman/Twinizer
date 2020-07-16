@@ -30,6 +30,8 @@ export default class CustomHeader extends Component {
     editPressed: PropTypes.string,
   }
   render(){
+    console.log("RENDERRRR")
+    console.log("THEME COLOR REND: ", global.themeColor)
     var filterOpacity = 1;
     if(!this.props.isFilterVisible){
       filterOpacity = 0
@@ -43,13 +45,13 @@ export default class CustomHeader extends Component {
       requestDisabled = false;
       messageDisabled = true;
       requestColor = "lockgray";
-      messageColor = "commentred";
+      messageColor = "comment" + global.themeForImages;
 
     }
     else{
       requestDisabled = true;
       messageDisabled = false;
-      requestColor = "lockred";
+      requestColor = "lock" + global.themeForImages;
       messageColor = "commentgray";
     }
     this.height = Math.round(Dimensions.get('screen').height);
@@ -58,9 +60,9 @@ export default class CustomHeader extends Component {
       if(this.props.editPressed == "Cancel"){
         return(
           <View
-          style = {{ backgroundColor: 'white', height: headerHeight,
+          style = {{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', height: headerHeight,
           width: this.width, right: 0, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
-          <Text style = {{fontSize: 24,color: 'rgba(242,73,19,1)'}}>
+          <Text style = {{fontSize: 24, color: global.themeColor}}>
           {this.props.title}
           </Text>
           </View>
@@ -69,21 +71,21 @@ export default class CustomHeader extends Component {
       else{
         return(
           <View
-          style = {{ backgroundColor: 'white', height: headerHeight,
+          style = {{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', height: headerHeight,
           width: this.width, right: 0, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
           <TouchableOpacity
           activeOpacity = {1}
           onPress = {this.props.onPress}
           disabled = {messageDisabled}
           style={{position: 'absolute', left: this.width*3/100, width: headerHeight*9/10, height: headerHeight*9/10, justifyContent: 'center', alignItems: 'center',
-          backgroundColor: 'white'}}>
+          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)'}}>
           <Image
           style={{position: 'absolute', width: '50%', height: '50%'}}
           source={{uri: messageColor}}>
           </Image>
           </TouchableOpacity>
 
-          <Text style = {{fontSize: 24,color: 'rgba(242,73,19,1)'}}>
+          <Text style = {{fontSize: 24,color: global.themeColor}}>
           {this.props.title}
           </Text>
 
@@ -92,7 +94,7 @@ export default class CustomHeader extends Component {
           onPress = {this.props.onPress}
           disabled = {requestDisabled}
           style={{position: 'absolute', right: this.width*2/100, width: headerHeight*9/10, height: headerHeight*9/10, justifyContent: 'center', alignItems: 'center',
-          backgroundColor: 'white'}}>
+          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)'}}>
           <Image
           style={{position: 'absolute', width: '50%', height: '50%'}}
           source={{uri: requestColor}}>
@@ -107,10 +109,10 @@ export default class CustomHeader extends Component {
       if(this.props.whichScreen == "Main"){
         return(
           <View
-          style = {{ backgroundColor: 'white', height: headerHeight,
+          style = {{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', height: headerHeight,
           width: this.width, right: 0, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
 
-          <Text style = {{fontSize: 28,color: 'rgba(242,73,19,1)'}}>
+          <Text style = {{fontSize: 28, color: global.themeColor}}>
           {this.props.title}
           </Text>
 
@@ -119,10 +121,10 @@ export default class CustomHeader extends Component {
           onPress = {this.props.onPress}
           disabled = {!this.props.isFilterVisible}
           style={{opacity: filterOpacity, position: 'absolute', right: this.width*2/100, width: headerHeight*9/10*(196/211), height: headerHeight*9/10, justifyContent: 'center', alignItems: 'center',
-          backgroundColor: 'white'}}>
+          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)'}}>
           <Image
           style={{position: 'absolute', width: '50%', height: '50%'}}
-          source={{uri: "filtergray"}}>
+          source={{uri: "filter" + global.themeForImages}}>
           </Image>
           </TouchableOpacity>
 
@@ -133,9 +135,9 @@ export default class CustomHeader extends Component {
         if(this.props.whichScreen == "Settings" || this.props.whichScreen == "History" ){
           return(
             <View
-            style = {{ backgroundColor: 'white', height: headerHeight,
+            style = {{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', height: headerHeight,
             width: this.width, right: 0, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
-            <Text style = {{fontSize: 24,color: 'rgba(242,73,19,1)'}}>
+            <Text style = {{fontSize: 24,color: global.themeColor}}>
             {this.props.title}
             </Text>
             </View>
@@ -144,21 +146,21 @@ export default class CustomHeader extends Component {
         else{
           return(
             <View
-            style = {{ backgroundColor: 'white', height: headerHeight,
+            style = {{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', height: headerHeight,
             width: this.width, right: 0, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
             <TouchableOpacity
             activeOpacity = {0.3}
             onPress = {this.props.onPress}
             style={{position: 'absolute', left: this.width/25, width: this.width*(1/10), height: this.width*(1/10), top: (headerHeight - this.width*(1/10))/2, justifyContent: 'center', alignItems: 'center',
-            backgroundColor: 'white', borderTopLeftRadius: 64,borderTopRightRadius: 64,borderBottomLeftRadius: 64, borderBottomRightRadius: 64}}>
+            backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', borderTopLeftRadius: 64,borderTopRightRadius: 64,borderBottomLeftRadius: 64, borderBottomRightRadius: 64}}>
             <Image
             style={{position: 'absolute', width: '60%', height: '60%',
             borderBottomLeftRadius: 64, borderTopRightRadius: 64, borderTopLeftRadius: 64, borderBottomRightRadius: 64}}
-            source={{uri: "backarrowred"}}>
+            source={{uri: "backarrow" + global.themeForImages}}>
             </Image>
             </TouchableOpacity>
 
-            <Text style = {{fontSize: 24,color: 'rgba(242,73,19,1)'}}>
+            <Text style = {{fontSize: 24,color: global.themeColor}}>
             {this.props.title}
             </Text>
             </View>

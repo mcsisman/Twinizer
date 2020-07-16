@@ -54,23 +54,23 @@ export default class ImageUploadScreen extends React.Component {
       photo3: null,
       photo4: null,
       profilePhoto: "",
-      buttonOpacity: 'rgba(241,51,18,0.4)',
+      opacity: 0.4,
       disabled: true,
       isim : firebase.auth().currentUser.displayName,
       color: 'rgba(0,0,0,0.4)',
-      borderOpacity1: 'rgba(241,51,18,1)',
+      borderOpacity1: global.themeColor,
       disabled1: true,
       opacity1: 0.4,
       str1: "",
-      borderOpacity2: 'rgba(241,51,18,1)',
+      borderOpacity2: global.themeColor,
       disabled2: true,
       opacity2: 0.4,
       str2: "",
-      borderOpacity3: 'rgba(241,51,18,1)',
+      borderOpacity3: global.themeColor,
       disabled3: true,
       opacity3: 0.4,
       str3: "",
-      borderOpacity4: 'rgba(241,51,18,1)',
+      borderOpacity4: global.themeColor,
       disabled4: true,
       opacity4: 0.4,
       str4: "",
@@ -220,7 +220,7 @@ library = (selectedPhoto) =>{
 
       if(!this.state.disabled1 && !this.state.disabled2 && !this.state.disabled3 && !this.state.disabled4){
         this.setState({
-          buttonOpacity: 'rgba(241,51,18,1)',
+          opacity: 1,
           disabled: false,
         });
       }
@@ -282,7 +282,7 @@ camera = (selectedPhoto) => {
 
       if(!this.state.disabled1 && !this.state.disabled2 && !this.state.disabled3 && !this.state.disabled4){
         this.setState({
-          buttonOpacity: 'rgba(241,51,18,1)',
+          opacity: 1,
           disabled: false,
         });
       }
@@ -296,7 +296,7 @@ camera = (selectedPhoto) => {
       outputRange: ['0deg', '360deg']
     })
     return (
-      <View style={{width: this.width, height: this.height, top: 0, flex:1, flexDirection:'column', alignItems: 'center',}}>
+      <View style={{width: this.width, height: this.height, top: 0, flex:1, flexDirection:'column', alignItems: 'center', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
 
       <ModifiedStatusBar/>
 
@@ -348,7 +348,7 @@ camera = (selectedPhoto) => {
       fontSize = {12.5}
       photo = {this.state.photo4}/>
 
-      <Animated.Image source={{uri: 'loadingred'}}
+      <Animated.Image source={{uri: 'loading' + global.themeForImages}}
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
         position: 'absolute', bottom: this.height*12/100 + headerHeight + getStatusBarHeight()-this.width*(1/10), left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 
@@ -359,14 +359,16 @@ camera = (selectedPhoto) => {
       pageNo = {3}/>
 
       <OvalButton
+      backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
       width = {this.width*3/10}
       bottom = {(this.height*12)/100}
       right = {this.width*(3.5/10)}
       title = {global.langNext}
-      textColor = {this.state.buttonOpacity}
+      opacity = {this.state.opacity}
+      textColor = {global.themeColor}
       onPress = { ()=> this.uploadPhoto(this.state.profilePhoto1,this.state.profilePhoto2,this.state.profilePhoto3,this.state.profilePhoto4 ) }
       disabled = {this.state.disabled}
-      borderColor = {this.state.buttonOpacity}/>
+      borderColor = {global.themeColor}/>
 
       <ImageUploadModal
       isVisible = {this.state.isVisible1}

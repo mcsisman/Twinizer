@@ -51,10 +51,10 @@ export default class ProfileUploadScreen extends React.Component {
       str: "",
       isim : firebase.auth().currentUser.displayName,
       color: 'rgba(0,0,0,0.4)',
-      borderOpacity: 'rgba(241,51,18,1)',
-      buttonOpacity: 'rgba(241,51,18,0.4)',
-      disabled: true,
+      borderOpacity: global.themeColor,
       opacity: 0.4,
+      disabled: true,
+      btnOpacity: 0.4,
       isVisible1: false,
       isVisible2: true,
       loadingOpacity: 0
@@ -122,7 +122,7 @@ library = () =>{
       opacity: 0,
       isVisible1: false,
       disabled: false,
-      buttonOpacity: 'rgba(241,51,18,1)',
+      btnOpacity: 1,
       profilePhoto: image.path
     });
   });
@@ -141,7 +141,7 @@ camera = () => {
       opacity: 0,
       isVisible1: false,
       disabled: false,
-      buttonOpacity: 'rgba(241,51,18,1)',
+      btnOpacity: 1,
       profilePhoto: image.path
     });
 
@@ -155,7 +155,7 @@ camera = () => {
     })
     const { photo } = this.state;
     return (
-      <View style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex:1, flexDirection: 'column'}}>
+      <View style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex:1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
 
       <ModifiedStatusBar/>
 
@@ -181,14 +181,16 @@ camera = () => {
       pageNo = {2}/>
 
       <OvalButton
+      backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
       width = {this.width*3/10}
       bottom = {(this.height*12)/100}
       right = {this.width*(3.5/10)}
       title = {global.langNext}
-      textColor = {this.state.buttonOpacity}
+      opacity = {this.state.btnOpacity}
+      textColor = {global.themeColor}
       onPress = { ()=> this.uploadPhoto(this.state.profilePhoto)}
       disabled = {this.state.disabled}
-      borderColor = {this.state.buttonOpacity}/>
+      borderColor = {global.themeColor}/>
 
       <ImageUploadModal
       isVisible = {this.state.isVisible1}
@@ -200,7 +202,7 @@ camera = () => {
       onPressCamera = {this.camera}
       onPressLibrary = {this.library}/>
 
-      <Animated.Image source={{uri: 'loadingred'}}
+      <Animated.Image source={{uri: 'loading' + global.themeForImages}}
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
         position: 'absolute', bottom: this.height*12/100 + headerHeight + getStatusBarHeight()-this.width*(1/10), left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 

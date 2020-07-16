@@ -30,7 +30,6 @@ import ChatScreen from './Chat';
 import HistoryScreen from './History';
 import CustomHeader from './components/CustomHeader'
 import SettingsScreen from './Settings';
-import BottomBar from './components/BottomBar'
 import ModifiedStatusBar from './components/ModifiedStatusBar'
 
 if(Platform.OS === 'android'){
@@ -45,7 +44,6 @@ var lastDBkey;
 var lastMsgFlag = false
 var afterDelete = false
 var scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight();
-var ourBlue = 'rgba(77,120,204,1)'
 var doneMessageColor = 'rgba(128,128,128,1)'
 var doneRequestColor = 'rgba(128,128,128,1)'
 var messageColorArray = []
@@ -104,7 +102,7 @@ export default class MessagesScreen extends Component<{}>{
       rightButtonDisabled: false,
       loadingDone: false
     }
-    this.navigateToChat = this.navigateToChat.bind(this);
+//this.navigateToChat = this.navigateToChat.bind(this);
     this.spinValue = new Animated.Value(0)
     this.doesExist = false
     scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight()
@@ -124,14 +122,25 @@ componentDidMount(){
       this.startFromLocal()
     }
   })
+
+  this._subscribe = this.props.navigation.addListener('blur', async () => {
+    this.spinAnimation()
+    this.setState({loadingDone: false, loadingOpacity: 1, editPressed: false, cancelPressed: false, editText: "Edit", messageBoxDisabled: false})
+  })
 };
 componentWillUnmount(){
+  console.log("AFASFAS FAS FAS FASF ASF ASF ASF ASF ASF AF ")
   this.resetVariables()
 }
 
 static navigationOptions = {
     header: null,
 };
+updateState = () =>{
+  console.log("LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG")
+  this.setState({reRender: "ok"})
+  return "TESTTTT"
+}
 resetVariables(){
   if(!newRequest){
     didSync = false
@@ -788,7 +797,7 @@ spinAnimation(){
 
 navigateToChat(receiverUid, receiverPhoto, receiverUsername){
 
-  const {navigate} = this.props.navigation;
+  //const {navigate} = this.props.navigation;
   global.localMessages = localMessages[count]
   global.receiverUid = receiverUid
   global.receiverPhoto = receiverPhoto
@@ -864,13 +873,13 @@ renderMessageBoxes(){
     return(
       <View style = {{flex: 1, flexDirection: "column", width: this.width, height: scrollViewHeight}}>
       <View style = {{ alignItems: 'center', justifyContent: 'center', width: this.width, height: scrollViewHeight/2}}>
-      <Image source={{uri: 'sadfacered'}}
+      <Image source={{uri: 'sadface' + global.themeForImages}}
         style={{width: scrollViewHeight/4, height: scrollViewHeight/4, opacity: 0.4}}/>
       </View>
 
       <View style = {{opacity: 0.7, alignItems: 'center', width: this.width, height: scrollViewHeight/4}}>
       <Text
-        style = {{fontSize: 25, fontFamily: "Candara" }}>
+        style = {{fontSize: 25, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" }}>
         No messages, sorry...
       </Text>
       </View>
@@ -927,13 +936,13 @@ renderRequestBoxes(){
     return(
       <View style = {{flex: 1, flexDirection: "column", width: this.width, height: scrollViewHeight}}>
       <View style = {{ alignItems: 'center', justifyContent: 'center', width: this.width, height: scrollViewHeight/2}}>
-      <Image source={{uri: 'sadfacered'}}
+      <Image source={{uri: 'sadface' + global.themeForImages}}
         style={{width: scrollViewHeight/4, height: scrollViewHeight/4, opacity: 0.4}}/>
       </View>
 
       <View style = {{opacity: 0.7, alignItems: 'center', width: this.width, height: scrollViewHeight/4}}>
       <Text
-        style = {{fontSize: 25, fontFamily: "Candara" }}>
+        style = {{fontSize: 25, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
         No requests, sorry...
       </Text>
       </View>
@@ -1002,7 +1011,7 @@ editButtonPressed(){
 }
 requestTrashButtonPressed(count){
   if(requestColorArray[count] == "trashgray"){
-    requestColorArray[count] = "trashred"
+    requestColorArray[count] = "trash" + global.themeForImages
   }
   else{
     requestColorArray[count] = "trashgray"
@@ -1012,7 +1021,7 @@ requestTrashButtonPressed(count){
 
 messageTrashButtonPressed(count){
   if(messageColorArray[count] == "trashgray"){
-    messageColorArray[count] = "trashred"
+    messageColorArray[count] = "trash" + global.themeForImages
   }
   else{
     messageColorArray[count] = "trashgray"
@@ -1042,9 +1051,9 @@ arrangeDoneColor(){
   var flag1 = false
   var flag2 = false
   for( i = 0; i < messageColorArray.length; i++){
-    if( messageColorArray[i] == "trashred"){
+    if( messageColorArray[i] == "trash" + global.themeForImages){
       flag1 = true
-      doneMessageColor = ourBlue
+      doneMessageColor = global.themeColor
       this.setState({messageDoneDisabled: false})
       break
     }
@@ -1054,9 +1063,9 @@ arrangeDoneColor(){
     this.setState({messageDoneDisabled: true})
   }
   for( i = 0; i < requestColorArray.length; i++){
-    if( requestColorArray[i] == "trashred"){
+    if( requestColorArray[i] == "trash" + global.themeForImages){
       flag2 = true
-      doneRequestColor = ourBlue
+      doneRequestColor = global.themeColor
       this.setState({requestDoneDisabled: false})
       break
     }
@@ -1084,7 +1093,7 @@ async deleteMessage(){
     else{
       receiverUid = messageArray[i].user._id
     }
-    if(messageColorArray[i] == "trashred"){
+    if(messageColorArray[i] == "trash" + global.themeForImages){
       uidarr.splice(i,1)
       messageColorArray.splice(i,1)
       messageLastSeenArray.splice(i,1)
@@ -1104,7 +1113,7 @@ async deleteMessage(){
 messageDonePress(){
   var deleteCount = 0
   for( i = 0; i < messageColorArray.length; i++){
-    if(messageColorArray[i] == "trashred"){
+    if(messageColorArray[i] == "trash" + global.themeForImages){
       deleteCount++;
     }
   }
@@ -1156,7 +1165,7 @@ render(){
       if(this.state.whichScreen == "left"){
         return(
           <View
-          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column'}}>
+          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
                   <ModifiedStatusBar/>
                   <CustomHeader
                   editPressed = {this.state.editText}
@@ -1164,7 +1173,7 @@ render(){
                   whichScreen = {"Messages"}
                   title = {"Requests"}/>
 
-                  <Animated.Image source={{uri: 'loadingred'}}
+                  <Animated.Image source={{uri: 'loading' + global.themeForImages}}
                     style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
                   />
         </View>
@@ -1173,7 +1182,7 @@ render(){
       else{
         return(
           <View
-          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column'}}>
+          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
                   <ModifiedStatusBar/>
                   <CustomHeader
                   editPressed = {this.state.editText}
@@ -1182,7 +1191,7 @@ render(){
                   editText = {this.state.editText}
                   title = {"Requests"}/>
 
-                  <Animated.Image source={{uri: 'loadingred'}}
+                  <Animated.Image source={{uri: 'loading' + global.themeForImages}}
                     style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
                   />
         </View>
@@ -1193,7 +1202,7 @@ render(){
       if(this.state.whichScreen == "left"){
         return(
           <View
-          style={{width: this.width, height: this.height, flex:1, flexDirection: 'column', alignItems: 'center',}}>
+          style={{width: this.width, height: this.height, flex:1, flexDirection: 'column', alignItems: 'center', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
                   <ModifiedStatusBar/>
 
                   <CustomHeader
@@ -1210,7 +1219,7 @@ render(){
                     onPress={()=>this.editButtonPressed()}
                     disabled = {false}>
 
-                  <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
+                  <Text style = {{fontSize: 20, color: global.themeColor}}>
                   {this.state.editText}
                   </Text>
                   </TouchableOpacity>
@@ -1220,7 +1229,7 @@ render(){
                     disabled = {this.state.messageDoneDisabled}
                     style={{opacity: this.state.messageDoneDisabled ? 0 : 1, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
                     onPress = {()=> this.messageDonePress()}>
-                  <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
+                  <Text style = {{fontSize: 20, color: global.themeColor}}>
                   Done
                   </Text>
                   </TouchableOpacity>
@@ -1238,7 +1247,7 @@ render(){
       else{
         return(
           <View
-          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column'}}>
+          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
                   <ModifiedStatusBar/>
                   <CustomHeader
                   editPressed = {this.state.editText}
@@ -1255,7 +1264,7 @@ render(){
                     onPress={()=>this.editButtonPressed()}
                     disabled = {false}>
 
-                  <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
+                  <Text style = {{fontSize: 20, color: global.themeColor}}>
                   {this.state.editText}
                   </Text>
                   </TouchableOpacity>
@@ -1264,7 +1273,7 @@ render(){
                     disabled = {this.state.requestDoneDisabled}
                     style={{opacity: this.state.requestDoneDisabled ? 0 : 1, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
                     onPress = {()=> this.requestDonePress()}>
-                  <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
+                  <Text style = {{fontSize: 20, color: global.themeColor}}>
                   Done
                   </Text>
                   </TouchableOpacity>
@@ -1286,7 +1295,7 @@ render(){
       if(this.state.whichScreen == "left"){ // IF SCREEN IS LEFT
         return(
           <View
-          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column'}}>
+          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
                   <ModifiedStatusBar/>
                   <CustomHeader
                   editPressed = {this.state.editText}
@@ -1295,7 +1304,7 @@ render(){
                   title = {"Messages"}
                   />
 
-                  <Animated.Image source={{uri: 'loadingred'}}
+                  <Animated.Image source={{uri: 'loading' + global.themeForImages}}
                     style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
                   />
         </View>
@@ -1304,7 +1313,7 @@ render(){
       else{
         return(
           <View
-          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column'}}>
+          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
                   <ModifiedStatusBar/>
                   <CustomHeader
                   onPress = {()=> this.switchButtonPressed("left")}
@@ -1313,7 +1322,7 @@ render(){
                   title = {"Requests"}
                   />
 
-                  <Animated.Image source={{uri: 'loadingred'}}
+                  <Animated.Image source={{uri: 'loading' + global.themeForImages}}
                     style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
                   />
         </View>
@@ -1324,7 +1333,7 @@ render(){
       if(this.state.whichScreen == "left"){
         return(
           <View
-          style={{width: this.width, height: this.height, flex:1, flexDirection: 'column', alignItems: 'center',}}>
+          style={{width: this.width, height: this.height, flex:1, flexDirection: 'column', alignItems: 'center', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
                   <ModifiedStatusBar/>
 
                   <CustomHeader
@@ -1341,7 +1350,7 @@ render(){
                     onPress={()=>this.editButtonPressed()}
                     disabled = {messageArray.length == 0 ? true : false}>
 
-                  <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
+                  <Text style = {{fontSize: 20, color: global.themeColor}}>
                   {this.state.editText}
                   </Text>
                   </TouchableOpacity>
@@ -1359,7 +1368,7 @@ render(){
       else{
         return(
           <View
-          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column'}}>
+          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
                   <ModifiedStatusBar/>
                   <CustomHeader
                   onPress = {()=> this.switchButtonPressed("left")}
@@ -1374,7 +1383,7 @@ render(){
                     onPress={()=>this.editButtonPressed()}
                     disabled = {requestArray.length == 0 ? true : false}>
 
-                  <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
+                  <Text style = {{fontSize: 20, color: global.themeColor}}>
                   {this.state.editText}
                   </Text>
                   </TouchableOpacity>

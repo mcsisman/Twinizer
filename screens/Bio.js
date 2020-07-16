@@ -48,7 +48,7 @@ export default class CountryScreen extends Component<{}>{
       email: "",
       country: "Country",
       color: 'rgba(0,0,0,0.4)',
-      buttonOpacity: 'rgba(241,51,18,1)',
+      buttonOpacity: global.themeColor,
       disabled: false,
       isVisible2: true,
       bioLimit: 0,
@@ -140,7 +140,7 @@ valueChange(value){
 
     return(
       <View
-      style={{flex:1, flexDirection: 'column', alignItems: 'center'}}>
+      style={{flex:1, flexDirection: 'column', alignItems: 'center', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
       <ModifiedStatusBar/>
 
       <CustomHeader
@@ -155,6 +155,7 @@ valueChange(value){
       pageNo = {4}/>
 
       <OvalButton
+      backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
       width = {this.width*3/10}
       bottom = {(this.height*12)/100}
       right = {this.width*(3.5/10)}
@@ -173,7 +174,7 @@ valueChange(value){
       txtGotIt = {global.langGotIt}
       onPressClose = {()=>this.setState({isVisible2:false}) }/>
 
-      <Animated.Image source={{uri: 'loadingred'}}
+      <Animated.Image source={{uri: 'loading' + global.themeForImages}}
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
         position: 'absolute', bottom: this.height*12/100 + headerHeight + getStatusBarHeight()-this.width*(1/10), left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 

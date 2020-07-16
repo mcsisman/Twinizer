@@ -55,7 +55,10 @@ export default class NewAccountScreen extends Component<{}>{
 
   }
   componentDidMount(){
-
+    this._subscribe = this.props.navigation.addListener('focus', async () => {
+      console.log("subscribe")
+      this.setState({reRender: "ok"})
+    })
   };
   static navigationOptions = {
       header: null,
@@ -133,7 +136,7 @@ writeUserData(userId, name, email, imageUrl) {
         <KeyboardAvoidingView behavior= "padding"
         enabled
         keyboardVerticalOffset = {-(this.height*12)/100}
-        style={{flex:1, flexDirection: 'column', backgroundColor: 'white'}}>
+        style={{flex:1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1]: 'rgba(255,255,255,1)'}}>
         <ModifiedStatusBar/>
 
         <CustomHeader
@@ -141,50 +144,52 @@ writeUserData(userId, name, email, imageUrl) {
         onPress = {()=> this.props.navigation.goBack()}/>
 
         <View
-        style={{backgroundColor: "white", width: this.width, height: this.height - getStatusBarHeight() - headerHeight, alignItems: 'center', flex:1}}>
+        style={{backgroundColor: global.isDarkMode ? global.darkModeColors[1]: 'rgba(255,255,255,1)', width: this.width, height: this.height - getStatusBarHeight() - headerHeight, alignItems: 'center', flex:1}}>
         <TextInput
-        placeholderTextColor='rgba(0,0,0,0.4)'
+        placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder= {global.langEmail}
         keyboardType= "email-address"
         //returnKeyType="Next"
         style={{fontFamily: "Candara", position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*47)/100, right: this.width*(2/10),
-         backgroundColor: 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'rgba(241,51,18,1)', borderBottomWidth: 2}}
+         backgroundColor: global.isDarkMode ?'rgba(255,255,255,0)': 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
          onChangeText={(text) => this.setState({email: text})}>
         </TextInput>
         <TextInput
-        placeholderTextColor='rgba(0,0,0,0.4)'
+        placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder={global.langUsername}
         //returnKeyType="Next"
         style={{fontFamily: "Candara", position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*40)/100, right: this.width*(2/10),
-         backgroundColor: 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'rgba(241,51,18,1)', borderBottomWidth: 2}}
+         backgroundColor: global.isDarkMode ? 'rgba(255,255,255,0)': 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
          onChangeText={(text) => this.setState({isim: text})}>
         </TextInput>
         <TextInput
-        placeholderTextColor='rgba(0,0,0,0.4)'
+        placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder={global.langPassword}
         secureTextEntry
         //returnKeyType="Next"
         style={{fontFamily: "Candara", position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*33)/100, left: this.width*(2/10),
-        backgroundColor: 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'rgba(241,51,18,1)', borderBottomWidth: 2}}
+        backgroundColor: global.isDarkMode ? 'rgba(255,255,255,0)': 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
          onChangeText={(text) => this.setState({sifre: text})}>
         </TextInput>
         <TextInput
-        placeholderTextColor='rgba(0,0,0,0.4)'
+        placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder={global.langConfirmPassword}
         secureTextEntry
         //returnKeyType="Next"
         style={{fontFamily: "Candara", position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*26)/100, left: this.width*(2/10),
-         backgroundColor: 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'rgba(241,51,18,1)', borderBottomWidth: 2}}
+         backgroundColor: global.isDarkMode ? 'rgba(255,255,255,0)': 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
          onChangeText={(text) => this.setState({sifre2: text})}>
         </TextInput>
 
 
         <OvalButton
+        opacity = {1}
+        backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
         bottom = {(this.height*13)/100}
         title = {global.langCreate}
-        textColor = {'rgba(241,51,18,1)'}
+        textColor = {global.themeColor}
         onPress = { ()=> this.check()}
-        borderColor = {'rgba(241,51,18,1)'}/>
+        borderColor = {global.themeColor}/>
 
         </View>
 

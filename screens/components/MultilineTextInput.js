@@ -44,15 +44,15 @@ export default class MultilineTextInput extends Component {
       <TextInput
         multiline = {true}
         maxLength = {100}
-        placeholderTextColor='rgba(0,0,0,0.4)'
+        placeholderTextColor = {global.isDarkMode ? "rgba(255,255,255,0.4)": "rgba(0,0,0,0.4)"}
         placeholder= {"Hello World!"}
-        style={{fontSize: 18*(this.width/360), width: this.width*(7/10),flex:1, borderColor: 'rgba(241,51,18,1)', borderBottomWidth: 2}}
+        style={{ color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: 18*(this.width/360), width: this.width*(7/10), flex:1, borderColor: global.themeColor, borderBottomWidth: 2}}
         onChangeText={this.props.onChangeText}>
       </TextInput>
 
       <View
-      style = {{paddingTop: 7, width: this.width*(7/10), flex:1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{fontSize: 18*(this.width/360), opacity: 0.4}}>
+      style = {{paddingTop: 7, width: this.width*(7/10), flex:1, justifyContent: 'center', alignItems: 'flex-end' }}>
+      <Text style={{color: global.themeColor, fontSize: 18*(this.width/360), opacity: 0.4}}>
       {this.props.characterNo + "/" + this.props.characterLimit}
       </Text>
       </View>

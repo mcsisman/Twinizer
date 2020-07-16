@@ -25,7 +25,6 @@ import {Image,
 import MessagesScreen from './Messages';
 import MainScreen from './Main';
 import SettingsScreen from './Settings';
-import BottomBar from './components/BottomBar'
 import CustomHeader from './components/CustomHeader'
 import ModifiedStatusBar from './components/ModifiedStatusBar'
 import SearchButton from './components/SearchButton'
@@ -53,7 +52,7 @@ export default class HistoryScreen extends Component<{}>{
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
       disabled: true,
-      buttonOpacity: 'rgba(244,92,66,0.4)',
+      opacity: 0.4,
       historyBoxDisabled: false,
       doneDisabled: true,
       editPressed: false,
@@ -65,6 +64,9 @@ export default class HistoryScreen extends Component<{}>{
     loadingDone = false
   }
 async componentDidMount(){
+  this._subscribe = this.props.navigation.addListener('focus', async () => {
+    this.setState({reRender: "ok"})
+  })
   console.log("COMPONENT DID MOUNT")
   this.spinAnimation()
   noOfSearch = await this.getNoOfSearch()
@@ -91,6 +93,11 @@ async componentDidMount(){
           useNativeDriver: true
         }
       )).start()
+  }
+  updateState = () =>{
+    console.log("LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG")
+    this.setState({reRender: "ok"})
+    return "TESTTTT"
   }
 async deleteHistory(indexArray){
   var historyArray;
@@ -130,7 +137,7 @@ donePress(){
     var deleteCount = 0
     var indexArray = []
     for( i = 0; i < colorArray.length; i++){
-      if(colorArray[i] == "trashred"){
+      if(colorArray[i] == "trash" + global.themeForImages){
         indexArray[deleteCount] = i
         deleteCount++;
       }
@@ -169,7 +176,7 @@ editButtonPressed(){
     colorArray[i] = "trashgray"
   }
   if(this.state.editText == "Edit"){
-    this.setState({disabled: true, buttonOpacity: 'rgba(244,92,66,0.4)', historyBoxDisabled: true, doneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false})
+    this.setState({disabled: true, opacity: 0.4, historyBoxDisabled: true, doneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false})
   }
   else{
     this.setState({historyBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
@@ -179,9 +186,9 @@ editButtonPressed(){
 arrangeDoneColor(){
     var flag1 = false
     for( i = 0; i < colorArray.length; i++){
-      if( colorArray[i] == "trashred"){
+      if( colorArray[i] == "trash" + global.themeForImages){
         flag1 = true
-        doneColor = ourBlue
+        doneColor = global.themeColor
         this.setState({doneDisabled: false})
         break
       }
@@ -193,7 +200,7 @@ arrangeDoneColor(){
   }
 async trashButtonPressed(i){
   if(colorArray[i] == "trashgray"){
-    colorArray[i] = "trashred"
+    colorArray[i] = "trash" + global.themeForImages
   }
   else{
     colorArray[i] = "trashgray"
@@ -205,11 +212,11 @@ historyBoxPressed(whichBox){
       if(i == whichBox){
         if(isSelectedArray[i] == true){
           isSelectedArray[i] = false
-          this.setState({disabled: true, buttonOpacity: 'rgba(244,92,66,0.4)'})
+          this.setState({disabled: true, opacity: 0.4})
         }
         else{
           isSelectedArray[i] = true
-          this.setState({disabled: false, buttonOpacity: 'rgba(244,92,66,1)'})
+          this.setState({disabled: false, opacity: 1})
         }
       }
       else{
@@ -323,7 +330,7 @@ render(){
   if(!loadingDone){
     return(
       <View
-      style={{width: this.width, height: this.height, flex:1, flexDirection: "column"}}>
+      style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
       <ModifiedStatusBar/>
 
       <CustomHeader
@@ -332,7 +339,7 @@ render(){
       title = {"History"}>
       </CustomHeader>
 
-      <Animated.Image source={{uri: 'loadingred'}}
+      <Animated.Image source={{uri: 'loading' + global.themeForImages}}
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15),
         position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
       />
@@ -343,7 +350,7 @@ render(){
     if(this.state.editPressed){
       return(
         <View
-        style={{width: this.width, height: this.height, flex:1, flexDirection: "column"}}>
+        style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
         <ModifiedStatusBar/>
 
         <CustomHeader
@@ -358,7 +365,7 @@ render(){
           onPress={()=>this.editButtonPressed()}
           disabled = {false}>
 
-        <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
+        <Text style = {{fontSize: 20, color: global.themeColor}}>
         {this.state.editText}
         </Text>
         </TouchableOpacity>
@@ -368,7 +375,7 @@ render(){
           disabled = {this.state.doneDisabled}
           style={{opacity: this.state.doneDisabled ? 0 : 1, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
           onPress = {()=> this.donePress()}>
-        <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
+        <Text style = {{fontSize: 20, color: global.themeColor}}>
         Done
         </Text>
         </TouchableOpacity>
@@ -376,7 +383,7 @@ render(){
         </View>
 
         <FlatList
-          style = {{backgroundColor: 'rgba(181,181,181,0.1)', height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
+          style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
           width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
           renderItem = {()=>this.renderHistoryBoxes()}
           data = { [{bos:"boş", key: "key"}]}
@@ -391,7 +398,7 @@ render(){
     else{
       return(
         <View
-        style={{width: this.width, height: this.height, flex:1, flexDirection: "column"}}>
+        style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
         <ModifiedStatusBar/>
 
         <CustomHeader
@@ -406,14 +413,14 @@ render(){
           onPress={()=>this.editButtonPressed()}
           disabled = {false}>
 
-        <Text style = {{fontSize: 20, color: "rgba(241,51,18,1)"}}>
+        <Text style = {{fontSize: 20, color: global.themeColor}}>
         {this.state.editText}
         </Text>
         </TouchableOpacity>
         </View>
 
         <FlatList
-          style = {{backgroundColor: 'rgba(181,181,181,0.1)', height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
+          style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
           width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
           renderItem = {()=>this.renderHistoryBoxes()}
           data = { [{bos:"boş", key: "key"}]}
@@ -425,11 +432,12 @@ render(){
         borderTopLeftRadius: 555, borderBottomRightRadius: 555, right: this.width/20, backgroundColor: "white", flex: 1, alignItems:'center',
         justifyContent: 'center', position: 'absolute',}}>
         <SearchButton
+        opacity = {this.state.opacity}
         onPress={()=>this.onPressSearch()}
         disabled = {this.state.disabled}
         width = {this.width/7}
         height ={this.width/7}
-        backgroundColor = {this.state.buttonOpacity}/>
+        backgroundColor = {global.themeColor}/>
         </View>
 
       </View>
