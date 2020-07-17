@@ -178,7 +178,7 @@ async componentDidMount(){
     global.fromMessages = false
     var localMessages = []
     var arr = []
-    this.checkIfUserDataExistsInLocalAndSaveIfNot()
+    this.getFavoriteAndBlockedUsers()
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.setState({reRender: "ok"})
       if(global.fromHistorySearch){
@@ -210,35 +210,16 @@ async checkIfAlreadySearching(){
     }
   })
 }
-
-
-async checkIfUserDataExistsInLocalAndSaveIfNot(){
-  // from asyncstorage part
-  currentUserGender = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userGender')
-  currentUserCountry = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userCountry')
-  currentUserUsername = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userName')
-  currentUserBio = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userBio')
+async getFavoriteAndBlockedUsers(){
   await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'favoriteUsers')
     .then(req => JSON.parse(req))
     .then(json => favoriteUsers = json)
   await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'blockedUsers')
     .then(req => JSON.parse(req))
     .then(json => blockedUsers = json)
-    // from firestore part
-  if(currentUserCountry == null || currentUserGender == null || currentUserUsername == null || currentUserBio == null){
-    var infoListener = firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/i");
-    await infoListener.once('value').then(async snapshot => {
-      currentUserGender = snapshot.val().g
-      currentUserCountry = snapshot.val().c
-      currentUserUsername = snapshot.val().u,
-      currentUserBio = snapshot.val().b
-      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userGender', currentUserGender)
-      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userCountry', currentUserCountry)
-      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userName', currentUserUsername)
-      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userBio', currentUserBio)
-    })
- }
 }
+
+
 spinAnimation(){
   console.log("SPIN ANIMATION")
   this.spinValue = new Animated.Value(0)

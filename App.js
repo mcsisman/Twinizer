@@ -71,36 +71,44 @@ var firebaseConfig = {
     async componentDidMount() {
 
       firebase.auth().onAuthStateChanged(async (user) => {
-        console.log("USER??: ", firebase.auth().currentUser.email)
-        await this.setTheme()
+        await this.setTheme(user)
         if (user) {
           this.setState({ loading: false, authenticated: true });
+
         } else {
           this.setState({ loading: false, authenticated: false });
         }
       });
     }
 
-    async setTheme(){
+    async setTheme(user){
       // Theme color
-      var themeColor = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'theme')
-      console.log("STORAGEDAN GELEN THEME COLOR:", themeColor)
-      if(themeColor == null || themeColor == undefined){
-        themeColor = "Original"
-      }
-      global.themeColor = themes.getTheme(themeColor)
-      global.themeForImages = themes.getThemeForImages(themeColor)
-      var mode = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'mode')
-      if(mode == null || mode == undefined){
-        mode = "true"
-      }
-      if(mode == "true"){
-        global.isDarkMode = true
+      if(user){
+        var themeColor = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'theme')
+        console.log("STORAGEDAN GELEN THEME COLOR:", themeColor)
+        if(themeColor == null || themeColor == undefined){
+          themeColor = "Original"
+        }
+        global.themeColor = themes.getTheme(themeColor)
+        global.themeForImages = themes.getThemeForImages(themeColor)
+        var mode = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'mode')
+        if(mode == null || mode == undefined){
+          mode = "true"
+        }
+        if(mode == "true"){
+          global.isDarkMode = true
+        }
+        else{
+          global.isDarkMode = false
+        }
+        global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,1)", "rgba(255,255,255,1)"]
       }
       else{
+        global.themeColor =  themes.getTheme("Original")
+        global.themeForImages = themes.getThemeForImages("Original")
         global.isDarkMode = false
       }
-      global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,1)", "rgba(255,255,255,1)"]
+
     }
 
     render() {
@@ -276,7 +284,7 @@ var firebaseConfig = {
 function MyTabBar({ state, descriptors, navigation }) {
   const focusedOptions = descriptors[state.routes[state.index].key].options;
 
-  if (focusedOptions.tabBarVisible === false) {
+  if (focusedOptions.tabBarVisible === false || state.index == 4) {
     return null;
   }
 
@@ -381,6 +389,10 @@ function MyTabs() {
         options={{
           tabBarLabel: 'Settings',
         }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
       />
     </Tab.Navigator>
   );

@@ -20,12 +20,8 @@ import HistoryCircle from './HistoryCircle'
 export default class HistoryBox extends Component {
   constructor(props) {
     super(props);
-    leftAnim = new Animated.Value(-this.width*(3/16))
+  }
 
-  }
-  componentDidMount(){
-    leftAnim = new Animated.Value(-this.width*(3/16))
-  }
   static navigationOptions = {
       header: null,
   };
@@ -39,7 +35,8 @@ export default class HistoryBox extends Component {
      photoSource: PropTypes.string,
      searchDate: PropTypes.string,
      onPressSearch: PropTypes.func,
-     isSelected: PropTypes.bool
+     isSelected: PropTypes.bool,
+     left: PropTypes.object
 
   }
 
@@ -48,31 +45,9 @@ export default class HistoryBox extends Component {
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
 
-    leftAnim = new Animated.Value(-this.width*(3/16))
-
-    if(this.props.editPressed){
-      leftAnim = new Animated.Value(0)
-      Animated.timing(leftAnim, {
-        duration: 152200,
-        toValue: -this.width*(3/16),
-        easing: Easing.linear,
-        useNativeDriver: true,
-      })
-
-    }
-    if(this.props.cancelPressed){
-      leftAnim = new Animated.Value(-this.width*(3/16))
-      Animated.timing(leftAnim, {
-        duration: 152200,
-        toValue: 0,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      })
-    }
-
     return(
       <Animated.View
-        style = {{borderBottomWidth: 1, borderBottomColor: "rgba(181,181,181,0.7)", left: leftAnim ,alignItems: 'center', paddingTop: 5, paddingBottom: 5, width: this.width + this.width*(3/16),
+        style = {{borderBottomWidth: 1, borderBottomColor: "rgba(181,181,181,0.7)", left: this.props.left ,alignItems: 'center', paddingTop: 5, paddingBottom: 5, width: this.width + this.width*(3/16),
         backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", flexDirection: "row", flex: 1}}>
 
         <TouchableOpacity

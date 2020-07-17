@@ -17,12 +17,8 @@ var leftAnim = new Animated.Value(-this.width*(3/16))
 export default class MessageBox extends Component {
   constructor(props) {
     super(props);
-    leftAnim = new Animated.Value(-this.width*(3/16))
+  }
 
-  }
-  componentDidMount(){
-    leftAnim = new Animated.Value(-this.width*(3/16))
-  }
   static navigationOptions = {
       header: null,
   };
@@ -37,41 +33,22 @@ export default class MessageBox extends Component {
     trashOnPress: PropTypes.func,
     isSeen: PropTypes.number,
     editPressed: PropTypes.bool,
-    cancelPressed: PropTypes.bool
+    cancelPressed: PropTypes.bool,
+    left: PropTypes.object
   }
+
 
   render(){
     var theColor;
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
 
-    leftAnim = new Animated.Value(-this.width*(3/16))
-
-    if(this.props.editPressed){
-      leftAnim = new Animated.Value(0)
-      Animated.timing(leftAnim, {
-        duration: 152200,
-        toValue: -this.width*(3/16),
-        easing: Easing.linear,
-        useNativeDriver: true,
-      })
-
-    }
-    if(this.props.cancelPressed){
-      leftAnim = new Animated.Value(-this.width*(3/16))
-      Animated.timing(leftAnim, {
-        duration: 152200,
-        toValue: 0,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      })
-    }
 
     this.msgBoxHeight = this.height/7
     this.avatarSize = this.msgBoxHeight*3/5
     return(
       <Animated.View
-        style = {{left: leftAnim, alignItems: 'center', height: this.msgBoxHeight, width: this.width + this.width*(3/16),
+        style = {{left: this.props.left, alignItems: 'center', height: this.msgBoxHeight, width: this.width + this.width*(3/16),
         borderBottomWidth: 1 ,borderBottomColor: 'rgba(181,181,181,0.7)', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", flexDirection: "row", flex: 1}}>
 
         <TouchableOpacity
@@ -95,7 +72,7 @@ export default class MessageBox extends Component {
         style = {{height: this.msgBoxHeight, width: this.width*(2.5/10), alignItems: 'center', justifyContent: 'center'}}>
         <Image
         style={{width: this.width*(1.6/10), height: this.width*(1.6/10)*(7/6), borderBottomLeftRadius: 13, borderTopRightRadius: 13, borderTopLeftRadius: 13, borderBottomRightRadius: 13}}
-        source = {{uri: this.props.avatarSource}}>
+        source = {{uri: this.props.avatarSource + '?' + new Date()}}>
         </Image>
         </View>
 

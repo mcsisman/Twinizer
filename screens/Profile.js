@@ -4,6 +4,8 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-community/async-storage';
+import RNFS from 'react-native-fs'
 import * as firebase from "firebase";
 
 import {Image,
@@ -42,17 +44,25 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
-
+var currentUserGender;
+var currentUserCountry;
+var currentUserUsername;
+var currentUserBio;
+var currentUserPhotoCount;
 export default class ProfileScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.state = {
+      newPhoto: false,
+      profilePhoto: "",
+      loadingDone: false,
+      userUsername: "",
+      userGender: "",
+      userCountry: "",
+      userBio: "",
+      userPhotoCount: 0,
       isVisible: false,
-      photo: {uri: "defaultavatar"},
-      value: "Afghanistan",
-      valueGender: "Male",
       bioOpacity: 1,
-      defaultText: "lkfdslk lsfdk sşldfk sşldfk lşwekf şlwkef şlwekf şwlekf şwelk fşwle kfwşlek fqşlk qşlek qlşek feeqq",
       bioLimit: 0,
       upperComponentsOpacity: 1,
       upperComponentsDisabled: false,
@@ -65,17 +75,25 @@ export default class ProfileScreen extends Component<{}>{
     }
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
+    this.spinValue = new Animated.Value(0)
   }
 
-  componentDidMount(){
+  async componentDidMount(){
     this._subscribe = this.props.navigation.addListener('focus', async () => {
+      this.setState({loadingDone: false})
+      this.spinAnimation()
+      await this.checkIfUserDataExistsInLocalAndSaveIfNot()
       console.log("subscribe")
       this.setState({reRender: "ok"})
+    })
+    this._subscribe = this.props.navigation.addListener('blur', async () => {
+      this.setState({loadingDone: false})
+      this.spinAnimation()
     })
     console.log("PROFİL COMP")
     Keyboard.addListener("keyboardDidHide", this._keyboardDidHide);
     Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
-    this.setState({defaultText: "lkfdslk lsfdk sşldfk sşldfk lşwekf şlwkef şlwekf şwlekf şwelk fşwle kfwşlek fqşlk qşlek qlşek feeqq", bioLimit:this.state.defaultText.length})
+
   }
 
 componentWillUnmount(){
@@ -102,24 +120,93 @@ static navigationOptions = {
       this.setState({upperComponentsOpacity: 0, upperComponentsDisabled: true})
     }
   };
-  onPressSave(){
-
+  spinAnimation(){
+    this.spinValue = new Animated.Value(0)
+    // First set up animation
+    Animated.loop(
+    Animated.timing(
+        this.spinValue,
+        {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true
+        }
+      )).start()
   }
-  onValueChange(value){
-    this.setState({value: value})
+  async checkIfUserDataExistsInLocalAndSaveIfNot(){
+    // from asyncstorage part
+
+    currentUserGender = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userGender')
+    currentUserCountry = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userCountry')
+    currentUserUsername = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userName')
+    currentUserBio = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userBio')
+    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userPhotoCount')
+      .then(req => JSON.parse(req))
+      .then(json => currentUserPhotoCount = json)
+
+    if(currentUserCountry == null || currentUserGender == null || currentUserUsername == null || currentUserBio == null || currentUserPhotoCount == null){
+      var infoListener = firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/i");
+      await infoListener.once('value').then(async snapshot => {
+        this.setState({ profilePhoto: "file://" + RNFS.DocumentDirectoryPath + firebase.auth().currentUser.uid + "profile.jpg", loadingDone: true,
+        userGender: snapshot.val().g, userCountry: snapshot.val().c, userUsername: snapshot.val().u, userBio: snapshot.val().b,  bioLimit: snapshot.val().b.length, userPhotoCount: snapshot.val().p })
+        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userGender', this.state.userGender)
+        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userCountry', this.state.userCountry)
+        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userName', this.state.userUsername)
+        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userBio', this.state.userBio)
+        await AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
+      })
+   }
+   else{
+     this.setState({ profilePhoto: "file://" + RNFS.DocumentDirectoryPath + firebase.auth().currentUser.uid + "profile.jpg", loadingDone: true, userGender: currentUserGender,
+     userCountry: currentUserCountry, userUsername: currentUserUsername, userBio: currentUserBio, bioLimit: currentUserBio.length, userPhotoCount: currentUserPhotoCount })
+   }
+  }
+
+  async onPressSave(){
+    if(this.state.newPhoto){
+      var uploadDone = false
+      var storage = firebase.storage();
+      var storageRef = storage.ref();
+      var metadata = {
+        contentType: 'image/jpeg',
+      };
+      const response = await fetch(this.state.profilePhoto);
+      const blob = await response.blob();
+      var ref1 = storageRef.child("Photos/" + firebase.auth().currentUser.uid + "/1.jpg");
+      await ref1.put(blob)
+      RNFS.copyFile(this.state.profilePhoto, RNFS.DocumentDirectoryPath + firebase.auth().currentUser.uid + "profile.jpg");
+      this.setState({userPhotoCount: this.state.userPhotoCount + 1})
+    }
+    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userGender', this.state.userGender)
+    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userCountry', this.state.userCountry)
+    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userName', this.state.userUsername)
+    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userBio', this.state.userBio)
+    await AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
+
+    var database = firebase.database();
+    await firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/i").update({
+      g: this.state.userGender,
+      c: this.state.userCountry,
+      b: this.state.userBio,
+      u: this.state.userUsername,
+      p: this.state.userPhotoCount
+    })
+  }
+  onCountryValueChange(value){
+    this.setState({userCountry: value})
   }
   onValueChangeGender(value){
-    this.setState({valueGender: value})
+    this.setState({userGender: value})
   }
   valueChange(value){
     if(this.state.bioLimit <= 100){
+      this.setState({userBio: value})
       global.globalBio = value;
       this.setState({bioLimit: value.length});
     }
   }
-  onBioFocus(){
 
-  }
   onPressCountry(){
     Keyboard.dismiss()
     this.setState({bioOpacity: 1})
@@ -142,7 +229,8 @@ static navigationOptions = {
       cropping: true
     }).then(image => {
       this.setState({
-        photo: {uri: image.path},
+        newPhoto: true,
+        profilePhoto: image.path,
         isVisible: false,
       });
     });
@@ -155,170 +243,196 @@ static navigationOptions = {
     }).then(image => {
       console.log(image);
       this.setState({
-        photo: {uri: image.path},
+        newPhoto: true,
+        profilePhoto: image.path,
         isVisible: false,
       });
   });
   };
   render(){
+    const spin = this.spinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '360deg']
+    })
+
     var backgroundColor = global.themeColor
     backgroundColor = backgroundColor.slice(0, -2)
     backgroundColor = backgroundColor + "0.2)"
-
-    console.log("backgroundColor:", backgroundColor)
     const {navigate} = this.props.navigation;
-    return(
-      <TouchableOpacity
-      onPress = {()=> this.onPressScreen()}
-      activeOpacity = {1}
-      style={{backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)", width: this.width, height: this.height, flex:1, flexDirection: "column", alignItems: "center"}}>
-      <ModifiedStatusBar/>
+    if(!this.state.loadingDone){
+      return(
+        <View
+        style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
+        <ModifiedStatusBar/>
 
-      <CustomHeader
-      whichScreen = {"Profile"}
-      onPress = {()=> this.props.navigation.goBack()}
-      isFilterVisible = {this.state.showFilter}
-      title = "Edit Profile">
-      </CustomHeader>
+        <CustomHeader
+        whichScreen = {"Profile"}
+        isFilterVisible = {this.state.showFilter}
+        title = {"Profile"}>
+        </CustomHeader>
 
-      <KeyboardAvoidingView
-      behavior= "height"
-      keyboardVerticalOffset = {(this.height*20)/100}
-      style={{justifyContent: "center", alignItems: "center", width: this.width, position:"absolute", top: headerHeight + getStatusBarHeight(),
-      height: (this.height-this.width/7 - headerHeight - getStatusBarHeight()), flexDirection: "row" }}>
+        <Animated.Image source={{uri: 'loading' + global.themeForImages}}
+          style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15),
+          position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingDone ? 0 : 1}}
+        />
+        </View>
+      )
+    }
+    else{
+      return(
+        <TouchableOpacity
+        onPress = {()=> this.onPressScreen()}
+        activeOpacity = {1}
+        style={{backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)", width: this.width, height: this.height, flex:1, flexDirection: "column", alignItems: "center"}}>
+        <ModifiedStatusBar/>
 
-      <ProfileBioButton
-      opacity = {this.state.bioOpacity}
-      onFocus = {()=>this.onBioFocus()}
-      defaultText = {this.state.defaultText}
-      onChangeText = {(text) => this.valueChange(text)}
-      characterNo = {this.state.bioLimit}/>
+        <CustomHeader
+        whichScreen = {"Profile"}
+        onPress = {()=> this.props.navigation.goBack()}
+        isFilterVisible = {this.state.showFilter}
+        title = "Edit Profile">
+        </CustomHeader>
 
-      </KeyboardAvoidingView>
+        <KeyboardAvoidingView
+        behavior= "height"
+        keyboardVerticalOffset = {(this.height*20)/100}
+        style={{justifyContent: "center", alignItems: "center", width: this.width, position:"absolute", top: headerHeight + getStatusBarHeight(),
+        height: (this.height-this.width/7 - headerHeight - getStatusBarHeight()), flexDirection: "row" }}>
 
-      <View
-      style={{opacity: this.state.upperComponentsOpacity, width: this.width, height: (this.height-this.width/7 - headerHeight - getStatusBarHeight())/2, flexDirection: "row" }}>
+        <ProfileBioButton
+        opacity = {this.state.bioOpacity}
+        defaultText = {this.state.userBio}
+        onChangeText = {(text) => this.valueChange(text)}
+        characterNo = {this.state.bioLimit}/>
 
-      <View
-      style={{opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}>
+        </KeyboardAvoidingView>
 
-      <Image
-      style={{opacity: this.state.upperComponentsOpacity, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius:12, borderBottomRightRadius:12, width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)}}
-      source = {this.state.photo}>
-      </Image>
+        <View
+        style={{opacity: this.state.upperComponentsOpacity, width: this.width, height: (this.height-this.width/7 - headerHeight - getStatusBarHeight())/2, flexDirection: "row" }}>
 
-      </View>
+        <View
+        style={{opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}>
 
-      <View
-      style={{opacity: this.state.upperComponentsOpacity, bottom: 0, position:"absolute", width: this.width/2,
-      height: (this.height-this.width/7 - headerHeight - getStatusBarHeight())/4 - this.width/2*(8/10)*(7/6)/2, justifyContent: "center", alignItems: "center"}}>
+        <Image
+        style={{opacity: this.state.upperComponentsOpacity, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius:12, borderBottomRightRadius:12, width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)}}
+        source = {{uri:this.state.profilePhoto + '?' + new Date()}}>
+        </Image>
 
-      <TouchableOpacity
-      activeOpacity = {1}
-      disabled = {this.state.upperComponentsDisabled}
-      onPress = {()=> this.onPressEdit()}
-      style={{opacity: this.state.upperComponentsOpacity, position:"absolute", width: "50%",
-      height: "70%", justifyContent: "center", alignItems: "center"}}>
+        </View>
 
-      <Text
-      style= {{fontSize: 18*(this.width/360), color: global.themeColor}}>
-      Edit
-      </Text>
+        <View
+        style={{opacity: this.state.upperComponentsOpacity, bottom: 0, position:"absolute", width: this.width/2,
+        height: (this.height-this.width/7 - headerHeight - getStatusBarHeight())/4 - this.width/2*(8/10)*(7/6)/2, justifyContent: "center", alignItems: "center"}}>
+
+        <TouchableOpacity
+        activeOpacity = {1}
+        disabled = {this.state.upperComponentsDisabled}
+        onPress = {()=> this.onPressEdit()}
+        style={{opacity: this.state.upperComponentsOpacity, position:"absolute", width: "50%",
+        height: "70%", justifyContent: "center", alignItems: "center"}}>
+
+        <Text
+        style= {{fontSize: 18*(this.width/360), color: global.themeColor}}>
+        Edit
+        </Text>
+        </TouchableOpacity>
+
+        </View>
+
+        <View
+        style={{ opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}>
+
+
+        <TextInput
+        defaultValue = {this.state.userUsername}
+        onBlur={() => {this.setState({selection: {start: 0,end: 0}})}}
+        onFocus={() => {this.setState({bioOpacity: 0, selection: {start: this.state.userUsername.length, end:this.state.userUsername.length}}, () => {this.setState({ selection: null })})  }}
+        selection={this.state.selection}
+        numberOfLines={1}
+        style={{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)",opacity: this.state.upperComponentsOpacity, paddingTop: 0, paddingBottom: 0, paddingLeft: 12, paddingRight: 12, textAlign: "left",
+        backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)", borderWidth: 0.4, borderColor:"gray",
+        fontSize: 14*(this.width/360), width: this.width/2*(8/10), height:this.width/2*(8/10)*(7/6)/5 }}
+        onChangeText={(text) => this.setState({userUsername: text})}>
+        </TextInput>
+
+
+        <View
+        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5.5, justifyContent: "center", alignItems: "center"}}>
+        </View>
+
+        <CountryPicker
+        backgroundColor = {"white"}
+        placeHolder = {false}
+        borderWidth = {0.4}
+        borderBottomWidth = {0.4}
+        borderColor = {"gray"}
+        borderBottomColor = {"gray"}
+        value = {this.state.userCountry}
+        disabled = {this.state.upperComponentsDisabled}
+        opacity = {this.state.upperComponentsOpacity}
+        onOpen = {()=> this.onPressCountry()}
+        onValueChange = {(value)=> this.onCountryValueChange(value)}
+        items = {countries.genderItems}
+        label = {"label"}
+        height = {this.width/2*(8/10)*(7/6)/5}
+        width = {this.width/2*(8/10)}/>
+
+        <View
+        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5.5, justifyContent: "center", alignItems: "center"}}>
+        </View>
+
+        <CountryPicker
+        backgroundColor = {"white"}
+        placeHolder = {false}
+        borderWidth = {0.4}
+        borderBottomWidth = {0.4}
+        borderColor = {"gray"}
+        borderBottomColor = {"gray"}
+        value = {this.state.userGender}
+        disabled = {this.state.upperComponentsDisabled}
+        opacity = {this.state.upperComponentsOpacity}
+        onOpen = {()=> this.onPressGender()}
+        onValueChange = {(value)=> this.onValueChangeGender(value)}
+        items = {[{label: global.langFilterMale, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", value: global.langFilterMale},
+                    {label: global.langFilterFemale, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", value: global.langFilterFemale}]}
+        label = {"label"}
+        height = {this.width/2*(8/10)*(7/6)/5}
+        width = {this.width/2*(8/10)}/>
+
+        </View>
+
+        </View>
+
+        <TouchableOpacity
+        activeOpacity = {1}
+        style={{ top: "80%", position: "absolute", borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,
+        justifyContent: 'center', alignItems: 'center', backgroundColor: backgroundColor, paddingLeft: 15, paddingRight: 15, paddingTop: 5, paddingBottom:5}}
+        onPress={()=> this.onPressSave()}>
+
+        <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
+        SAVE
+        </Text>
+        </TouchableOpacity>
+
+        <LogoutButton
+        top = {"88%"}
+        text = {"Delete My Account"}
+        position = {"absolute"}/>
+
+        <ImageUploadModal
+        isVisible={this.state.isVisible}
+        txtUploadPhoto = {global.langUploadPhoto}
+        txtCancel = {global.langCancel}
+        txtTakePhoto = {global.langTakePhoto}
+        txtOpenLibrary = {global.langLibrary}
+        onPressCancel = {()=>this.setState({isVisible: false}) }
+        onPressCamera = {this.camera}
+        onPressLibrary = {this.library}/>
+
       </TouchableOpacity>
 
-      </View>
-
-      <View
-      style={{ opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}>
+          );
+    }
 
 
-      <TextInput
-      defaultValue = {this.state.text}
-      onBlur={() => {this.setState({selection: {start: 0,end: 0}})}}
-      onFocus={() => {this.setState({bioOpacity: 0, selection: {start: this.state.text.length, end: this.state.text.length}}, () => {this.setState({ selection: null })})  }}
-      selection={this.state.selection}
-      numberOfLines={1}
-      style={{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)",opacity: this.state.upperComponentsOpacity, paddingTop: 0, paddingBottom: 0, paddingLeft: 12, paddingRight: 12, textAlign: "center",
-      backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)", borderWidth: 0.4, borderColor:"gray",
-      fontSize: 14*(this.width/360), width: this.width/2*(8/10), height:this.width/2*(8/10)*(7/6)/5 }}
-      onChangeText={(text) => this.setState({text: text})}>
-      </TextInput>
-
-
-      <View
-      style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5.5, justifyContent: "center", alignItems: "center"}}>
-      </View>
-
-      <CountryPicker
-      backgroundColor = {"white"}
-      placeHolder = {false}
-      borderWidth = {0.4}
-      borderBottomWidth = {0.4}
-      borderColor = {"gray"}
-      borderBottomColor = {"gray"}
-      value = {this.state.value}
-      disabled = {this.state.upperComponentsDisabled}
-      opacity = {this.state.upperComponentsOpacity}
-      onOpen = {()=> this.onPressCountry()}
-      onValueChange = {(value)=> this.onValueChange(value)}
-      items = {countries.genderItems}
-      label = {"label"}
-      height = {this.width/2*(8/10)*(7/6)/5}
-      width = {this.width/2*(8/10)}/>
-
-      <View
-      style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5.5, justifyContent: "center", alignItems: "center"}}>
-      </View>
-
-      <CountryPicker
-      backgroundColor = {"white"}
-      placeHolder = {false}
-      borderWidth = {0.4}
-      borderBottomWidth = {0.4}
-      borderColor = {"gray"}
-      borderBottomColor = {"gray"}
-      value = {this.state.valueGender}
-      disabled = {this.state.upperComponentsDisabled}
-      opacity = {this.state.upperComponentsOpacity}
-      onOpen = {()=> this.onPressGender()}
-      onValueChange = {(value)=> this.onValueChangeGender(value)}
-      items = {[{label: global.langFilterMale, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", value: global.langFilterMale},
-                  {label: global.langFilterFemale, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", value: global.langFilterFemale}]}
-      label = {"label"}
-      height = {this.width/2*(8/10)*(7/6)/5}
-      width = {this.width/2*(8/10)}/>
-
-      </View>
-
-      </View>
-
-      <TouchableOpacity
-      activeOpacity = {1}
-      style={{ top: "74%", position: "absolute", borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,
-      justifyContent: 'center', alignItems: 'center', backgroundColor: backgroundColor, paddingLeft: 15, paddingRight: 15, paddingTop: 5, paddingBottom:5}}
-      onPress={()=> this.onPressSave()}>
-
-      <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
-      SAVE
-      </Text>
-      </TouchableOpacity>
-
-      <LogoutButton
-      top = {"82%"}
-      text = {"Delete My Account"}
-      position = {"absolute"}/>
-
-      <ImageUploadModal
-      isVisible={this.state.isVisible}
-      txtUploadPhoto = {global.langUploadPhoto}
-      txtCancel = {global.langCancel}
-      txtTakePhoto = {global.langTakePhoto}
-      txtOpenLibrary = {global.langLibrary}
-      onPressCancel = {()=>this.setState({isVisible: false}) }
-      onPressCamera = {this.camera}
-      onPressLibrary = {this.library}/>
-
-    </TouchableOpacity>
-
-        );
   }}

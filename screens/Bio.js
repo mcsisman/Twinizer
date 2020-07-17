@@ -93,6 +93,7 @@ async writeCountryToDatabase(){
       g: global.globalGender,
       c: global.globalCountry,
       b: global.globalBio,
+      p: 0
     }).then(async function() {
       await firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/s").update({
         sb: false,
@@ -106,6 +107,7 @@ async writeCountryToDatabase(){
           AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userGender', global.globalGender)
           AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userCountry', global.globalCountry)
           AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userBio', global.globalBio)
+          AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userPhotoCount', 0)
         })
       });
     });

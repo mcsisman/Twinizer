@@ -6,6 +6,8 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import RNPickerSelect from 'react-native-picker-select';
 import Modal from "react-native-modal";
 import ImagePicker from 'react-native-image-crop-picker';
+import RNFS from 'react-native-fs'
+
 import * as firebase from "firebase";
 import {Image,
    Text,
@@ -101,9 +103,13 @@ uploadPhoto = async (uri) => {
       await ref1.put(blob).then(function(snapshot) {uploadDone = true}).catch(function(error) {
         Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
       });;
+
       this.spinValue = new Animated.Value(0)
       this.setState({loadingOpacity: 0})
     if (uploadDone){
+
+      RNFS.copyFile(this.state.profilePhoto, RNFS.DocumentDirectoryPath + firebase.auth().currentUser.uid + "profile.jpg");
+
       const {navigate} = this.props.navigation;
       navigate("ImageUpload")
     }

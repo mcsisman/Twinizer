@@ -6,7 +6,6 @@ import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import * as firebase from "firebase";
 import AsyncStorage from '@react-native-community/async-storage';
-
 import {Image,
    Text,
    View,
@@ -60,12 +59,17 @@ export default class HistoryScreen extends Component<{}>{
       editText: "Edit",
       reRender: "ok"
     }
+    this.leftAnimation = new Animated.Value(-this.width*(3/16))
     this.spinValue = new Animated.Value(0)
     loadingDone = false
   }
 async componentDidMount(){
   this._subscribe = this.props.navigation.addListener('focus', async () => {
+    this.leftAnimation = new Animated.Value(-this.width*(3/16))
     this.setState({reRender: "ok"})
+  })
+  this._subscribe = this.props.navigation.addListener('blur', async () => {
+    this.setState({editPressed: false, cancelPressed: false, editText: "Edit", messageBoxDisabled: false})
   })
   console.log("COMPONENT DID MOUNT")
   this.spinAnimation()
@@ -98,6 +102,24 @@ async componentDidMount(){
     console.log("LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG")
     this.setState({reRender: "ok"})
     return "TESTTTT"
+  }
+  historyBoxAnimation(){
+    if(this.state.editText == "Cancel"){
+      Animated.timing(this.leftAnimation, {
+        duration: 100,
+        toValue: -this.width*(3/16),
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }).start()
+    }
+    if(this.state.editText == "Edit"){
+      Animated.timing(this.leftAnimation, {
+        duration: 100,
+        toValue: 0,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }).start()
+    }
   }
 async deleteHistory(indexArray){
   var historyArray;
@@ -177,9 +199,11 @@ editButtonPressed(){
   }
   if(this.state.editText == "Edit"){
     this.setState({disabled: true, opacity: 0.4, historyBoxDisabled: true, doneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false})
+    this.historyBoxAnimation()
   }
   else{
     this.setState({historyBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
+    this.historyBoxAnimation()
     doneColor = 'rgba(128,128,128,1)'
     }
   }
@@ -304,6 +328,7 @@ renderHistoryBoxes(){
         const temp = i
         boxes.push(
           <HistoryBox
+          left = {this.leftAnimation}
           color = {colorArray[temp]}
           disabled = {this.state.historyBoxDisabled}
           onPress = {()=> this.historyBoxPressed(temp)}

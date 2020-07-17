@@ -30,9 +30,9 @@ export default class SwipeableBigImg extends Component {
   static propTypes = {
    isFavorite: PropTypes.bool,
    imgSource: PropTypes.string,
-   width: PropTypes.string,
-   height: PropTypes.string,
-   top: PropTypes.string,
+   width: PropTypes.object,
+   height: PropTypes.object,
+   top: PropTypes.object,
    right: PropTypes.number,
    onPress: PropTypes.func,
    backgroundOpacity: PropTypes.number

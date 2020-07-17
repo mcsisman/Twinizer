@@ -102,6 +102,7 @@ export default class MessagesScreen extends Component<{}>{
       rightButtonDisabled: false,
       loadingDone: false
     }
+    this.leftAnimation = new Animated.Value(-this.width*(3/16))
 //this.navigateToChat = this.navigateToChat.bind(this);
     this.spinValue = new Animated.Value(0)
     this.doesExist = false
@@ -111,6 +112,7 @@ componentDidMount(){
   console.log("COMPONENT DID MOUNT")
   global.newMsgListenerArray = []
   this._subscribe = this.props.navigation.addListener('focus', async () => {
+    this.leftAnimation = new Animated.Value(-this.width*(3/16))
     global.fromChatOfUid = ""
     global.fromMessages = true
     scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight()
@@ -136,6 +138,25 @@ componentWillUnmount(){
 static navigationOptions = {
     header: null,
 };
+
+messageBoxAnimation(){
+  if(this.state.editText == "Cancel"){
+    Animated.timing(this.leftAnimation, {
+      duration: 100,
+      toValue: -this.width*(3/16),
+      easing: Easing.linear,
+      useNativeDriver: false,
+    }).start()
+  }
+  if(this.state.editText == "Edit"){
+    Animated.timing(this.leftAnimation, {
+      duration: 100,
+      toValue: 0,
+      easing: Easing.linear,
+      useNativeDriver: false,
+    }).start()
+  }
+}
 updateState = () =>{
   console.log("LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG")
   this.setState({reRender: "ok"})
@@ -248,6 +269,24 @@ async getUsernameOfTheUid(){
     for( i = 0; i < noOfConversations; i++){
       var usernameOnceListener = firebase.database().ref('Users/' + conversationUidArray[i] + "/i");
       await usernameOnceListener.once('value').then(async snapshot => {
+        if(conversationUsernameArray[i].p != snapshot.val().p){
+          var downloadURL;
+          var storageRef = firebase.storage().ref("Photos/" + conversationUidArray[i] + "/1.jpg")
+          await storageRef.getDownloadURL().then(data =>{
+            downloadURL = data
+          })
+          let dirs = RNFetchBlob.fs.dirs
+          await RNFetchBlob
+          .config({
+            fileCache : true,
+            appendExt : 'jpg',
+            path: dirs.DocumentDir + '/' + conversationUidArray[i] + "y" + '.jpg'
+          })
+          .fetch('GET', downloadURL, {
+            //some headers ..
+          })
+
+        }
         conversationUsernameArray[i] = snapshot.val()
       })
       const index = i
@@ -304,6 +343,24 @@ createUsernameArray = async (snap, i, conversationUid) => {
     .then(json => localUsernames = json)
   conversationUsernameArray = localUsernames
 
+  if(conversationUsernameArray[i].p != snap.val().p){
+    var downloadURL;
+    var storageRef = firebase.storage().ref("Photos/" + conversationUid + "/1.jpg")
+    await storageRef.getDownloadURL().then(data =>{
+      downloadURL = data
+    })
+    let dirs = RNFetchBlob.fs.dirs
+    await RNFetchBlob
+    .config({
+      fileCache : true,
+      appendExt : 'jpg',
+      path: dirs.DocumentDir + '/' + conversationUid + "y" + '.jpg'
+    })
+    .fetch('GET', downloadURL, {
+      //some headers ..
+    })
+
+  }
   conversationUsernameArray[i] = snap.val()
 
   AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
@@ -911,6 +968,7 @@ renderMessageBoxes(){
         const temp = count
         messages.push(
           <MessageBox
+          left = {this.leftAnimation}
           color = {messageColorArray[temp]}
           disabled = {this.state.messageBoxDisabled}
           editPressed = {this.state.editPressed}
@@ -974,6 +1032,7 @@ renderRequestBoxes(){
         const temp = count
         messages.push(
           <MessageBox
+          left = {this.leftAnimation}
           color = {requestColorArray[temp]}
           disabled = {this.state.messageBoxDisabled}
           editPressed = {this.state.editPressed}
@@ -994,11 +1053,16 @@ renderRequestBoxes(){
 
 }
 editButtonPressed(){
+    console.log("EDIT BUTTON PRESSED DIŞ")
     if(this.state.editText == "Edit"){
       this.setState({messageDoneDisabled: true, requestDoneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false, messageBoxDisabled: true})
+      console.log("EDIT BUTTON PRESSED İF")
+      this.messageBoxAnimation()
     }
     else{
       this.setState({messageDoneDisabled: true, requestDoneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true, messageBoxDisabled: false})
+      console.log("EDIT BUTTON PRESSED ELSE")
+      this.messageBoxAnimation()
       for( i = 0; i < requestColorArray.length; i++){
         requestColorArray[i] = "trashgray"
       }
