@@ -266,32 +266,39 @@ async getUsernameOfTheUid(){
   if(global.messagesFirstTime){
     global.fromChatOfUid = ""
     console.log("MESSAGESA İLK DEFA GİRDİ")
+    var localUsernames = []
+    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_usernames')
+      .then(req => JSON.parse(req))
+      .then(json => localUsernames = json)
+
     for( i = 0; i < noOfConversations; i++){
       var usernameOnceListener = firebase.database().ref('Users/' + conversationUidArray[i] + "/i");
       await usernameOnceListener.once('value').then(async snapshot => {
-        if(conversationUsernameArray[i].p != snapshot.val().p){
-          var downloadURL;
-          var storageRef = firebase.storage().ref("Photos/" + conversationUidArray[i] + "/1.jpg")
-          await storageRef.getDownloadURL().then(data =>{
-            downloadURL = data
-          })
-          let dirs = RNFetchBlob.fs.dirs
-          await RNFetchBlob
-          .config({
-            fileCache : true,
-            appendExt : 'jpg',
-            path: dirs.DocumentDir + '/' + conversationUidArray[i] + "y" + '.jpg'
-          })
-          .fetch('GET', downloadURL, {
-            //some headers ..
-          })
-
-        }
         conversationUsernameArray[i] = snapshot.val()
       })
       const index = i
       usernameListener[i] = firebase.database().ref('Users/' + conversationUidArray[i]);
       await usernameListener[i].on('child_changed', async snap => await this.createUsernameArray(snap, index, conversationUidArray[index]));
+    }
+
+    for(i = 0; i < localUsernames.length; i++){
+      if(covnersationUsernameArray[i].p != localUsernames[i].p){
+        var downloadURL;
+        var storageRef = firebase.storage().ref("Photos/" + conversationUidArray[i] + "/1.jpg")
+        await storageRef.getDownloadURL().then(data =>{
+          downloadURL = data
+        })
+        let dirs = RNFetchBlob.fs.dirs
+        await RNFetchBlob
+        .config({
+          fileCache : true,
+          appendExt : 'jpg',
+          path: dirs.DocumentDir + '/' + conversationUidArray[i] + "y" + '.jpg'
+        })
+        .fetch('GET', downloadURL, {
+          //some headers ..
+        })
+      }
     }
   }
   else{

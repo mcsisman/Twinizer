@@ -5,6 +5,7 @@ import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import {navigate, route} from './RootNavigation'
 import * as firebase from "firebase";
+import AsyncStorage from '@react-native-community/async-storage';
 
 import {Image,
    Text,
@@ -66,6 +67,32 @@ export default class SettingsScreen extends Component<{}>{
     this.setState({reRender: "ok"})
     return "TESTTTT"
   }
+  onPressLogout(){
+    Alert.alert(
+    '',
+    "Are you sure you want to logout?" ,
+    [
+      {
+        text: 'No',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'Yes', onPress: () => this.onPressLogoutOk()},
+    ],
+    {cancelable: true},
+  );
+  }
+  onPressLogoutOk(){
+    AsyncStorage.removeItem(firebase.auth().currentUser.uid + 'userGender')
+    AsyncStorage.removeItem(firebase.auth().currentUser.uid + 'userCountry')
+    AsyncStorage.removeItem(firebase.auth().currentUser.uid + 'userName')
+    AsyncStorage.removeItem(firebase.auth().currentUser.uid + 'userBio')
+    AsyncStorage.removeItem(firebase.auth().currentUser.uid + 'userPhotoCount')
+    firebase.auth().signOut().then(function() {
+      console.log("LOGOUT SUCCESSFUL")
+      navigate("Splash")
+    })
+  }
   render(){
     console.log("settings render")
     const {navigate} = this.props.navigation;
@@ -108,7 +135,8 @@ export default class SettingsScreen extends Component<{}>{
       style = {{height: this.width/9}}/>
       <View
       style = {{height: this.width/9}}/>
-      <LogoutButton/>
+      <LogoutButton
+      onPress = {()=>this.onPressLogout()}/>
 
       </ScrollView>
 

@@ -71,6 +71,7 @@ var firebaseConfig = {
     async componentDidMount() {
 
       firebase.auth().onAuthStateChanged(async (user) => {
+        console.log("GİRİYOMU")
         await this.setTheme(user)
         if (user) {
           this.setState({ loading: false, authenticated: true });

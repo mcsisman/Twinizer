@@ -51,9 +51,6 @@ componentDidMount(){
 
 Login = (email, password) => {
     const {navigate} = this.props.navigation;
-    try {
-        firebase.auth().onAuthStateChanged(function(user) {
-        try {
           firebase
            .auth()
            .signInWithEmailAndPassword(email, password)
@@ -61,9 +58,9 @@ Login = (email, password) => {
              if(firebase.auth().currentUser.emailVerified){
                var storageRef = firebase.storage().ref("/embeddings2/" + firebase.auth().currentUser.uid + ".pickle");
                await storageRef.getDownloadURL().then(data =>{
-                 navigate("Tabs")
+                 navigate("Main")
                }).catch(function(error) {
-                 navigate("Tabs")
+                 navigate("Gender")
                });
              user = firebase.auth().currentUser
 
@@ -71,17 +68,10 @@ Login = (email, password) => {
              else{
                Alert.alert("", global.langEmailNotVerified )
              }
-        })
-        .catch(error => {
+        }).catch(error => {
           Alert.alert(global.langPlsTryAgain, global.langWrongEmailPassword)
       })
-      } catch (error) {
 
-        }
-    });
-  } catch (error) {
-    alert(error.toString(error));
-    }
   };
   check(){
     this.Login(this.state.isim, this.state.sifre)
