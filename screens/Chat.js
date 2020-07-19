@@ -172,14 +172,12 @@ camera = () => {
 });
 };
 imageSelected(){
-  var image = {
-    url: this.state.photoPath,
-    props: {
-    }
-  }
+  this.setState({renderImageChatScreen: false})
+  var image = { url: this.state.photoPath}
+
+  console.log("IMAGE PUSHED:", image)
   images.push(image)
   this.setState({renderImageChatScreen: true})
-
 }
 
 spinAnimation(){
@@ -260,7 +258,7 @@ renderSend(props) {
       );
   }
 
-  messengerBarContainer(props){
+messengerBarContainer(props){
     return (
       <InputToolbar
         {...props}
@@ -276,7 +274,17 @@ get user() {
     r: global.receiverUid,
   };
 }
-
+onPressPlus(){
+  this.setState({isVisible1: true})
+}
+closeImageMessage(){
+  images = []
+  this.setState({renderImageChatScreen: false})
+}
+onChange(){
+  console.log("CHANGED")
+  this.setState({reRender: "ok"})
+}
 render() {
   var renderKeyboardHeight;
     isRequest = "t"
@@ -311,7 +319,9 @@ render() {
     if(keyboardHeight == undefined){
       keyboardHeight = 0
     }
+
     if(this.state.renderImageChatScreen){
+      console.log("IMAGES:", images)
         return(
           <View
           style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, flexDirection:"column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
@@ -319,14 +329,26 @@ render() {
           <ModifiedStatusBar/>
 
           <ImageViewer
+          onChange = {()=> this.onChange()}
           imageUrls={images}
           onClick = {()=> Keyboard.dismiss()}/>
 
-          <ChatSendImgTopBar/>
+          <ChatSendImgTopBar
+          onPressCross = {()=>this.closeImageMessage()}/>
 
           <ChatSendImgBottomBar
+            onPressPlus = {()=> this.onPressPlus()}
             keyboardOpen = {this.state.keyboardOpen}
             keyboardHeight = {keyboardHeight}/>
+          <ImageUploadModal
+          isVisible={this.state.isVisible1}
+          txtUploadPhoto = {global.langUploadPhoto}
+          txtCancel = {global.langCancel}
+          txtTakePhoto = {global.langTakePhoto}
+          txtOpenLibrary = {global.langLibrary}
+          onPressCancel = {()=>this.setState({ isVisible1: false}) }
+          onPressCamera = {this.camera}
+          onPressLibrary = {this.library}/>
           </View>
         )
     }

@@ -281,25 +281,28 @@ async getUsernameOfTheUid(){
       await usernameListener[i].on('child_changed', async snap => await this.createUsernameArray(snap, index, conversationUidArray[index]));
     }
 
-    for(i = 0; i < localUsernames.length; i++){
-      if(covnersationUsernameArray[i].p != localUsernames[i].p){
-        var downloadURL;
-        var storageRef = firebase.storage().ref("Photos/" + conversationUidArray[i] + "/1.jpg")
-        await storageRef.getDownloadURL().then(data =>{
-          downloadURL = data
-        })
-        let dirs = RNFetchBlob.fs.dirs
-        await RNFetchBlob
-        .config({
-          fileCache : true,
-          appendExt : 'jpg',
-          path: dirs.DocumentDir + '/' + conversationUidArray[i] + "y" + '.jpg'
-        })
-        .fetch('GET', downloadURL, {
-          //some headers ..
-        })
+    if(localUsernames != null){
+      for(i = 0; i < localUsernames.length; i++){
+        if(conversationUsernameArray[i].p != localUsernames[i].p){
+          var downloadURL;
+          var storageRef = firebase.storage().ref("Photos/" + conversationUidArray[i] + "/1.jpg")
+          await storageRef.getDownloadURL().then(data =>{
+            downloadURL = data
+          })
+          let dirs = RNFetchBlob.fs.dirs
+          await RNFetchBlob
+          .config({
+            fileCache : true,
+            appendExt : 'jpg',
+            path: dirs.DocumentDir + '/' + conversationUidArray[i] + "y" + '.jpg'
+          })
+          .fetch('GET', downloadURL, {
+            //some headers ..
+          })
+        }
       }
     }
+
   }
   else{
     if(newRequest){

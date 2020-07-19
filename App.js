@@ -35,6 +35,7 @@ import ProfileUploadScreen from './screens/ProfileUpload';
 import BottomBar from './screens/components/BottomBar';
 import HistoryScreen from './screens/History';
 import SettingsScreen from './screens/Settings';
+import FavoriteUsersScreen from './screens/FavoriteUsers';
 import ThemeSettingsScreen from './screens/ThemeSettings';
 import ProfileScreen from './screens/Profile';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -499,6 +500,13 @@ function MyTabs() {
           },
         }}
         name="ImageUpload" component={ImageUploadScreen} />
+        <Stack.Screen options={{
+          transitionSpec: {
+            open: config,
+            close: config,
+          },
+        }}
+        name="FavoriteUsers" component={FavoriteUsersScreen} />
       </Stack.Navigator>
       </NavigationContainer>
     );

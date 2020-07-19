@@ -29,8 +29,6 @@ export default class HistoryBox extends Component {
      color: PropTypes.string,
      onPress: PropTypes.func,
      disabled: PropTypes.bool,
-     editPressed: PropTypes.bool,
-     cancelPressed: PropTypes.bool,
      trashOnPress: PropTypes.func,
      photoSource: PropTypes.string,
      searchDate: PropTypes.string,

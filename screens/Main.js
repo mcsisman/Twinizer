@@ -174,6 +174,9 @@ constructor(props){
   }
 
 async componentDidMount(){
+    this.addToFavoriteUsers("k209WPn6gmfHP3f2PphxyXeb84p1")
+    this.addToFavoriteUsers("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1")
+    this.addToFavoriteUsers("JtfxB5eiDvSzOM4dbhgGeU7PXVC2")
 
     global.fromMessages = false
     var localMessages = []

@@ -118,7 +118,7 @@ export default class SettingsScreen extends Component<{}>{
       <View
       style = {{height: this.width/9}}/>
       <SettingsButton
-      onPress = {()=> navigate("Messages")}
+      onPress = {()=> navigate("FavoriteUsers")}
       text = {"Favorite Users"}/>
       <SettingsButton
       text = {"Blocked Users"}/>

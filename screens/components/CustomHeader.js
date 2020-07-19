@@ -30,8 +30,6 @@ export default class CustomHeader extends Component {
     editPressed: PropTypes.string,
   }
   render(){
-    console.log("RENDERRRR")
-    console.log("THEME COLOR REND: ", global.themeColor)
     var filterOpacity = 1;
     if(!this.props.isFilterVisible){
       filterOpacity = 0
