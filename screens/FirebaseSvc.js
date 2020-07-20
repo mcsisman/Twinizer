@@ -1,6 +1,10 @@
 import * as firebase from "firebase";
 import uuid from 'uuid';
 import AsyncStorage from '@react-native-community/async-storage';
+import RNFetchBlob from 'rn-fetch-blob';
+import RNFS from 'react-native-fs';
+
+
 var firstTime = true
 var localMessages = []
 var arrayLength = 0
@@ -30,26 +34,45 @@ class FirebaseSvc {
   }
 
   parse = async snapshot => {
-    console.log("PARSE A GİRDİ:", snapshot.val())
     if(snapshot.val() != null){
       // remove k from snapshot data
       var snapVal = snapshot.val()
       delete snapVal["k"]
-      console.log("KEYS LENGTH: ", Object.keys(snapVal).length)
       if(Object.keys(snapVal).length != 0){
         var messageKey = Object.keys(snapVal)[0]
-        console.log("SNAP VAL: ", snapVal)
         await AsyncStorage.getItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages')
           .then(req => JSON.parse(req))
           .then(json => localMessages = json)
 
           const user = { _id: global.receiverUid, r: firebase.auth().currentUser.uid}
-          const { c: numberStamp, i: isRequest, text} = snapVal[messageKey];
+          const { p: p, c: numberStamp, i: isRequest, text} = snapVal[messageKey];
           const id = messageKey;
           const _id = messageKey; //needed for giftedchat
           const createdAt = new Date(numberStamp);
           const c = numberStamp
-          const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
+
+          var image ="";
+          if(p == "t"){
+            image = "file://" + RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "/" + messageKey + ".jpg"
+          }
+
+          var downloadURL;
+          var storageRef = firebase.storage().ref("Photos/" + firebase.auth().currentUser.uid + "/MessagePhotos/" + messageKey + ".jpg")
+          await storageRef.getDownloadURL().then(data =>{
+            downloadURL = data
+          })
+          let dirs = RNFetchBlob.fs.dirs
+          await RNFetchBlob
+          .config({
+            fileCache : true,
+            appendExt : 'jpg',
+            path: RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "/" + messageKey + ".jpg"
+          })
+          .fetch('GET', downloadURL, {
+            //some headers ..
+          })
+          console.log(" RESİM LOCALE KAYDEDİLDİ PARSEDA: ", image)
+
           const message = {
             c,
             id,
@@ -92,12 +115,11 @@ class FirebaseSvc {
   }
 
   // send the message to the Backend
-  send = async messages => {
-    console.log("SEND IN FIREBASE SVC")
+  send = async (messages, p, images, index) => {
+    console.log("SENDE GELEN MESSAGES:", messages)
     var isRequest;
     if(global.firstMessage){
       isRequest = "t"
-      console.log("GİRDİ GİRDİ")
       firebase.database().ref('Messages/' + global.receiverUid + "/" + firebase.auth().currentUser.uid).update({
         k:1
       })
@@ -155,18 +177,41 @@ class FirebaseSvc {
       const message = {
         text,
         c: this.timestamp,
-        i: isRequest
+        i: isRequest,
+        p: p
       };
-
       var pushedKey;
       pushedKey = this.ref.push(message).key;
+
+      // RESİMLİ MESAJSA
+      var image;
+      if( p == "t" ){
+
+        console.log("IMAGE:", images[index])
+        var storage = firebase.storage();
+        var storageRef = storage.ref();
+        var metadata = {
+          contentType: 'image/jpeg',
+        };
+
+          const response = await fetch(images[index].url);
+          const blob = await response.blob();
+          var ref1 = storageRef.child("Photos/" + global.receiverUid+ "/MessagePhotos/" + pushedKey + ".jpg");
+          ref1.put(blob).then(function(snapshot) {}).catch(function(error) {
+            Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
+          });;
+
+          await RNFS.mkdir(RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid)
+          await RNFS.copyFile(images[index].url, RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "/" + pushedKey + ".jpg");
+          image = "file://" + RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "/" + pushedKey + ".jpg"
+          console.log(" RESİM LOCALE KAYDEDİLDİ SENDDE: ", image)
+      }
 
       const user = { _id: firebase.auth().currentUser.uid, r: global.receiverUid}
       const id = pushedKey;
       const _id = pushedKey; //needed for giftedchat
       var createdAt = new Date();
       var c = createdAt.getTime()
-      const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
       const msg = {
         id,
         _id,
@@ -177,7 +222,7 @@ class FirebaseSvc {
         user,
         image
       };
-
+      global.msgToDisplay = msg
       var localMsgs = []
       await AsyncStorage.getItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages')
         .then(req => JSON.parse(req))
@@ -188,10 +233,9 @@ class FirebaseSvc {
         else{
           localMsgs.push(msg)
         }
-        AsyncStorage.setItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMsgs))
-
-
+        await AsyncStorage.setItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMsgs))
     }
+
   };
 
   refOff() {

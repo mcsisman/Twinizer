@@ -28,7 +28,8 @@ export default class ChatSendImgTopBar extends Component {
 
 
   static propTypes = {
-    onPressCross: PropTypes.func
+    onPressCross: PropTypes.func,
+    onPressTrash: PropTypes.func
  }
  static defaultProps = {
  }
@@ -53,6 +54,7 @@ export default class ChatSendImgTopBar extends Component {
 
       <TouchableOpacity
       activeOpacity = {1}
+      onPress = {this.props.onPressTrash}
       style={{width: this.width/10, height: this.width/10, justifyContent: "center", right: this.width/20, position:"absolute", alignItems:"center"}}>
       <Image
       style = {{width: this.width/17*(302/328), height: this.width/17}}

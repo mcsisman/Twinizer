@@ -63,6 +63,8 @@ export default class ChatScreen extends React.Component<Props> {
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
+      msgText: " ",
+      currentIndex: 0,
       enableSwipeDown: false,
       bigViewerOpacity: 1,
       smallViewerOpacity:0,
@@ -119,18 +121,41 @@ export default class ChatScreen extends React.Component<Props> {
 
 componentWillUnmount() {
   clearInterval(lastSeenInterval)
-  console.log("CLOSE LISTENER FOR:", global.receiverUid)
   firebaseSvc.refOff();
   this.keyboardDidShowListener.remove();
   this.keyboardDidHideListener.remove();
 }
 
 sendMsg = (messages) => {
-  firebaseSvc.send(messages)
+  firebaseSvc.send(messages, "f")
+
   this.setState(previousState => ({
     messages: GiftedChat.append(previousState.messages, messages[0]),
   }))
 }
+
+sendMsgWithImage = async (text) =>{
+  var messages;
+  for( i = 0; i < images.length; i++){
+    if( i != 0 ){
+      text = " "
+    }
+    messages = [{text: text, user: this.user, createdAt: new Date()}]
+    await firebaseSvc.send(messages, "t", images, i)
+    this.setState(previousState => ({
+      messages: GiftedChat.append(previousState.messages, global.msgToDisplay),
+    }))
+  }
+  images = []
+  messages[0].image =
+  console.log("ADLKFA:", messages[0])
+  this.setState({
+    currentIndex: 0,
+    msgText: " ",
+    renderImageChatScreen: false
+  })
+}
+
   static navigationOptions = {
       header: null,
   };
@@ -175,11 +200,10 @@ imageSelected(){
   this.setState({renderImageChatScreen: false})
   var image = { url: this.state.photoPath}
 
-  console.log("IMAGE PUSHED:", image)
   images.push(image)
+  console.log("IMAGES AFTER ADDING:", images)
   this.setState({renderImageChatScreen: true})
 }
-
 spinAnimation(){
     this.setState({test: "1"})
     this.spinValue = new Animated.Value(0)
@@ -200,7 +224,6 @@ goBackOnPress(){
 
     this.props.navigation.navigate("Messages")
   }
-
 renderTime(props) {
       return (
         <Time
@@ -257,7 +280,6 @@ renderSend(props) {
           </Send>
       );
   }
-
 messengerBarContainer(props){
     return (
       <InputToolbar
@@ -282,9 +304,28 @@ closeImageMessage(){
   this.setState({renderImageChatScreen: false})
 }
 onChange(){
-  console.log("CHANGED")
   this.setState({reRender: "ok"})
 }
+async deleteImageFromArray(){
+
+  this.setState({renderImageChatScreen: false})
+  console.log("IMAGES BEFORE REMOVE:", images)
+  images.splice(this.state.currentIndex, 1)
+  console.log("IMAGES AFTER REMOVE:", images)
+  if(images.length != 0){
+    if(images.length == this.state.currentIndex){
+      await this.setState({currentIndex: this.state.currentIndex - 1, renderImageChatScreen: true})
+      await this.setState({renderImageChatScreen: false})
+      await this.setState({renderImageChatScreen: true})
+    }
+    else{
+      await this.setState({renderImageChatScreen: true})
+      await this.setState({renderImageChatScreen: false})
+      await this.setState({renderImageChatScreen: true})
+    }
+  }
+}
+
 render() {
   var renderKeyboardHeight;
     isRequest = "t"
@@ -319,9 +360,8 @@ render() {
     if(keyboardHeight == undefined){
       keyboardHeight = 0
     }
-
+    console.log("MESAJLAR:", this.state.messages)
     if(this.state.renderImageChatScreen){
-      console.log("IMAGES:", images)
         return(
           <View
           style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, flexDirection:"column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
@@ -329,17 +369,21 @@ render() {
           <ModifiedStatusBar/>
 
           <ImageViewer
-          onChange = {()=> this.onChange()}
+          index = {this.state.currentIndex}
+          onChange={async (index) => { this.setState({ currentIndex: index }) }}
           imageUrls={images}
           onClick = {()=> Keyboard.dismiss()}/>
 
           <ChatSendImgTopBar
-          onPressCross = {()=>this.closeImageMessage()}/>
+          onPressTrash = {()=> this.deleteImageFromArray()}
+          onPressCross = {()=> this.closeImageMessage()}/>
 
           <ChatSendImgBottomBar
             onPressPlus = {()=> this.onPressPlus()}
             keyboardOpen = {this.state.keyboardOpen}
-            keyboardHeight = {keyboardHeight}/>
+            keyboardHeight = {keyboardHeight}
+            onChangeText = {(text) => this.setState({msgText: text})}
+            onPressSend = {()=>this.sendMsgWithImage(this.state.msgText)}/>
           <ImageUploadModal
           isVisible={this.state.isVisible1}
           txtUploadPhoto = {global.langUploadPhoto}

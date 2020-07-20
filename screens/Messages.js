@@ -5,6 +5,7 @@ import { NavigationContainer, navigation } from '@react-navigation/native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import RNPickerSelect from 'react-native-picker-select';
 import { NavigationEvents} from 'react-navigation';
+import RNFS from 'react-native-fs';
 
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFetchBlob from 'rn-fetch-blob'
@@ -543,12 +544,17 @@ getMessagesData = async callback =>{
         var snapVal = snapshot.val()
         var messageKey = Object.keys(snapVal)[0]
         const user = { _id: uidArray[count], r: firebase.auth().currentUser.uid}
-        const { c: numberStamp, i: isRequest, text} = snapVal[messageKey];
+        const { p: p, c: numberStamp, i: isRequest, text} = snapVal[messageKey];
         const id = messageKey;
         const _id = messageKey; //needed for giftedchat
         const c = numberStamp
         const createdAt = new Date(numberStamp);
-        const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
+
+        var image ="";
+        if(p == "t"){
+          image = "file://" + RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "/" + messageKey + ".jpg"
+        }
+        console.log(" RESİM MESAJDA OLUŞTURULDU: ", image)
         const message = {
           c,
           id,
@@ -697,12 +703,34 @@ syncLocalMessages = async (snapshot, uidCount) => {
         console.log("SNAP VAL: ", snapVal)
 
         const user = { _id: uidArray[uidCount], r: firebase.auth().currentUser.uid}
-        const { c: numberStamp, i: isRequest, text} = snapVal[messageKey];
+        const { p: p, c: numberStamp, i: isRequest, text} = snapVal[messageKey];
         const id = messageKey;
         const _id = messageKey; //needed for giftedchat
         const c = numberStamp
         const createdAt = new Date(numberStamp);
-        const image = "https://firebasestorage.googleapis.com/v0/b/twinizer-atc.appspot.com/o/Male%2FAlbania%2Faysalaytac97%40gmail.com%2F1.jpg?alt=media&token=770e262e-6a32-4954-b126-a399c8d379d1"
+
+        var image ="";
+        if(p == "t"){
+          image = "file://" + RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "/" + messageKey + ".jpg"
+        }
+
+        var downloadURL;
+        var storageRef = firebase.storage().ref("Photos/" + firebase.auth().currentUser.uid + "/MessagePhotos/" + messageKey + ".jpg")
+        await storageRef.getDownloadURL().then(data =>{
+          downloadURL = data
+        })
+        let dirs = RNFetchBlob.fs.dirs
+        await RNFetchBlob
+        .config({
+          fileCache : true,
+          appendExt : 'jpg',
+          path: RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "/" + messageKey + ".jpg"
+        })
+        .fetch('GET', downloadURL, {
+          //some headers ..
+        })
+        console.log(" RESİM LOCALE KAYDEDİLDİ MESSAGES LISTENERDA: ", image)
+
         const msg = {
           c,
           id,
@@ -976,8 +1004,10 @@ renderMessageBoxes(){
     count = 0
       while( count < messageArray.length){
         const temp = count
+        console.log("AGLKDALGŞA :", messageArray[count])
         messages.push(
           <MessageBox
+          isPhoto = {messageArray[count].image == undefined ? false : true}
           left = {this.leftAnimation}
           color = {messageColorArray[temp]}
           disabled = {this.state.messageBoxDisabled}
@@ -1042,6 +1072,7 @@ renderRequestBoxes(){
         const temp = count
         messages.push(
           <MessageBox
+          isPhoto = {requestArray[count].image == undefined ? false : true}
           left = {this.leftAnimation}
           color = {requestColorArray[temp]}
           disabled = {this.state.messageBoxDisabled}

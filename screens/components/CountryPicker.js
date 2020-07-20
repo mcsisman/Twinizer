@@ -51,7 +51,6 @@ export default class CountryPicker extends Component {
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
-    console.log("PLACEHOLDER:", this.props.placeHolder)
     if(this.props.placeHolder){
       return(
         <View style = {{paddingLeft: 5, opacity: this.props.opacity, justifyContent: 'center', backgroundColor: this.props.backgroundColor,  width:this.props.width ,

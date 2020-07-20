@@ -34,7 +34,6 @@ export default class CustomHeader extends Component {
     if(!this.props.isFilterVisible){
       filterOpacity = 0
     }
-    console.log(filterOpacity)
     var requestDisabled;
     var messageDisabled;
     var requestColor;

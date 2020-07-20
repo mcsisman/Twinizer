@@ -34,7 +34,8 @@ export default class MessageBox extends Component {
     isSeen: PropTypes.number,
     editPressed: PropTypes.bool,
     cancelPressed: PropTypes.bool,
-    left: PropTypes.object
+    left: PropTypes.object,
+    isPhoto: PropTypes.bool
   }
 
 
@@ -43,7 +44,14 @@ export default class MessageBox extends Component {
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
 
-
+    var messageText
+    console.log("IS PHOTO:", this.props.isPhoto)
+    if (this.props.isPhoto && this.props.lastMsg == " ") {
+      messageText = "Photo"
+    }
+    else{
+      messageText = this.props.lastMsg
+    }
     this.msgBoxHeight = this.height/7
     this.avatarSize = this.msgBoxHeight*3/5
     return(
@@ -87,11 +95,17 @@ export default class MessageBox extends Component {
         </Text>
         </View>
         <View
-        style = {{ height: this.msgBoxHeight/2,  justifyContent: 'center', width: this.width*45/80,}}>
+        style = {{ alignItems: "center", height: this.msgBoxHeight/2, width: this.width*45/80, flexDirection:"row"}}>
+        <View
+        style = {{height: this.msgBoxHeight/2, alignItems:"center", justifyContent: 'center', width: this.props.isPhoto ? this.width*9/80 : 0,}}>
+        <Image
+        style = {{opacity: this.props.isPhoto ? 1 : 0, width: this.width*9/180, height: this.width*9/180}}
+        source = {{uri: "camera" + global.themeForImages}}/>
+        </View>
           <Text
           numberOfLines={2}
-          style = {{fontSize: 16, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(128,128,128,1)", width: this.width*45/80}}>
-            {this.props.lastMsg}
+          style = {{fontSize: 16, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(128,128,128,1)", width: this.props.isPhoto ? this.width*36/80 : this.width*45/80}}>
+            {messageText}
           </Text>
         </View>
         </View>

@@ -32,7 +32,8 @@ export default class ChatSendImgBottomBar extends Component {
    keyboardOpen: PropTypes.bool,
    keyboardHeight: PropTypes.number,
    keyboardYcord: PropTypes.number,
-   onPressPlus: PropTypes.func
+   onPressPlus: PropTypes.func,
+   onPressSend: PropTypes.func
  }
  static defaultProps = {
  }
@@ -43,14 +44,11 @@ export default class ChatSendImgBottomBar extends Component {
     this.navbarHeight = this.height - this.windowHeight
     var bottom = 0;
     if(this.props.keyboardOpen){
-      console.log("navbar: ", this.navbarHeight)
       bottom = this.props.keyboardHeight + this.navbarHeight;
     }
     else{
-      console.log("ELSE")
       bottom = 0
     }
-    console.log("BOTTOM: ", bottom)
     return(
       <View
       style={{ width: this.width, height: this.height/8, justifyContent: "center", bottom: bottom, position:"absolute", alignItems:"center"}}>
@@ -91,6 +89,7 @@ export default class ChatSendImgBottomBar extends Component {
       style={{width: this.width*2/10, height: "100%", justifyContent:"flex-end", alignItems: "center",  right: 0, position: "absolute" }}>
       <TouchableOpacity
       activeOpacity = {1}
+      onPress = {this.props.onPressSend}
       style={{paddingLeft: 12, paddingRight: 12, borderBottomRightRadius: 36, borderBottomLeftRadius:36, height: "87%",
         borderTopLeftRadius:36, borderTopRightRadius:36, justifyContent:"center", alignItems: "center", backgroundColor: global.themeColor,
         borderColor: global.themeColor, borderWidth: 1}}>
