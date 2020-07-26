@@ -72,6 +72,7 @@ export default class FavoriteUsersScreen extends Component<{}>{
       header: null,
   };
   componentDidMount(){
+    console.log("component did mount in favorite users")
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.spinAnimation()
       focusedtoThisScreen = true
@@ -295,7 +296,7 @@ goBack(){
 
           <FlatList
             style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
-            width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+            width: this.width, flex: 1, flexDirection: 'column'}}
             renderItem = {()=>this.renderFavoriteUserBoxes()}
             data = { [{bos:"boş", key: "key"}]}
             refreshing = {true}>

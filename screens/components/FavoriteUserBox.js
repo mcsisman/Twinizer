@@ -65,7 +65,11 @@ export default class FavoriteUserBox extends Component {
       onPress={this.props.onPress}>
 
       <View
-      style={{justifyContent: "center", alignItems:"center", width: this.width/3, borderBottomLeftRadius: 8, borderTopRightRadius: 8, borderTopLeftRadius: 8, borderBottomRightRadius: 8}}>
+      style={{justifyContent: "center", alignItems:"center", width: this.width*2/8, borderBottomLeftRadius: 8, borderTopRightRadius: 8, borderTopLeftRadius: 8, borderBottomRightRadius: 8}}>
+      <View
+        style={{  width: '100%', height: '100%', backgroundColor: "gray",  position: 'absolute', opacity: this.props.backgroundOpacity, borderBottomLeftRadius: 16, borderTopRightRadius: 16,
+        borderTopLeftRadius: 16, borderBottomRightRadius: 16 }}
+      />
       <Image
       style={{width: this.width*2/8, height: this.width/4*(7/6), borderBottomLeftRadius: 8, borderTopRightRadius: 8, borderTopLeftRadius: 8, borderBottomRightRadius: 8}}
       source = {{uri: this.props.photoSource}}>

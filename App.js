@@ -397,6 +397,10 @@ function MyTabs() {
         name="Profile"
         component={ProfileScreen}
       />
+      <Tab.Screen
+        name="FavoriteUsers"
+        component={FavoriteUsersScreen}
+      />
     </Tab.Navigator>
   );
 }
