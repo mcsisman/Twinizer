@@ -129,6 +129,7 @@ var firebaseConfig = {
     }
   }
 
+  global.favoriteUsersListeners = false
   global.messagesFirstTime = true
   global.fromHistorySearch = false
   global.flag1 = true;

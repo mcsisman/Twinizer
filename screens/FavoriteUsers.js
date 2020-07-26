@@ -37,7 +37,6 @@ import SettingsButton from './components/SettingsButton'
 import FavoriteUserBox from './components/FavoriteUserBox'
 import LogoutButton from './components/LogoutButton'
 import ThemeSettingsScreen from './ThemeSettings';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -49,6 +48,8 @@ var favoriteUserUids = [];
 var favoriteUserUsernames = []
 var usernameListener = []
 var noOfFavUsers;
+var imageUrls = [];
+var focusedtoThisScreen = false;
 export default class FavoriteUsersScreen extends Component<{}>{
   constructor(props){
     super(props);
@@ -61,7 +62,8 @@ export default class FavoriteUsersScreen extends Component<{}>{
       doneDisabled: true,
       editText: "Edit",
       editPressed: false,
-      cancelPressed: true
+      cancelPressed: true,
+      reRender: false
     }
     this.spinValue = new Animated.Value(0)
     this.leftAnimation = new Animated.Value(-this.width/8)
@@ -70,12 +72,11 @@ export default class FavoriteUsersScreen extends Component<{}>{
       header: null,
   };
   componentDidMount(){
-    console.log("SETTINGS COMPONENT DID MOUNT")
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.spinAnimation()
+      focusedtoThisScreen = true
       await this.initializeFavoriteUsersScreen()
       this.leftAnimation = new Animated.Value(-this.width/8)
-      console.log("subscribe")
       this.setState({reRender: "ok"})
     })
   }
@@ -133,7 +134,9 @@ export default class FavoriteUsersScreen extends Component<{}>{
 
 async initializeFavoriteUsersScreen(){
   await this.getFavoriteUserUids()
-  await this.createUsernameArray()
+  if(!global.favoriteUsersListeners){
+    await this.createUsernameArray()
+  }
 }
 
   async getFavoriteUserUids(){
@@ -146,13 +149,15 @@ async initializeFavoriteUsersScreen(){
     else{
       noOfFavUsers = favoriteUserUids.length
     }
+    console.log("favUsers: ", favoriteUserUids)
     this.setState({loadingDone: true})
   }
   async createUsernameArray(){
     for( i = 0; i < noOfFavUsers; i++){
-
+      await this.getImageURL(favoriteUserUids[i], i)
       await this.getUsernameOfTheUid(favoriteUserUids[i], i)
     }
+    global.favoriteUsersListeners = true
   }
 
   async getUsernameOfTheUid(uid, i){
@@ -163,7 +168,20 @@ listenerFunc = async (snap, i, conversationUid) => {
     console.log("UIDS:", conversationUid)
     console.log("SNAPSHOT VAL:", snap.val())
     favoriteUserUsernames[i] = snap.val()
+    if(focusedtoThisScreen){
+      this.setState({reRender: !this.state.reRender})
+    }
   }
+
+  async getImageURL(uid, i){
+      var storageRef = firebase.storage().ref("Photos/" + uid + "/1.jpg")
+      await storageRef.getDownloadURL().then(data =>{
+        imageUrls[i] = data
+      }).catch(function(error) {
+        // Handle any errors
+      });
+  }
+
   renderFavoriteUserBoxes(){
       var scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight();
       var boxes = [];
@@ -188,9 +206,10 @@ listenerFunc = async (snap, i, conversationUid) => {
           boxes.push(
             <FavoriteUserBox
             left = {this.leftAnimation}
+            photoSource = {imageUrls[temp]}
             disabled = {this.state.favoriteBoxDisabled}
             text = {favoriteUserUsernames[temp]}
-            onPress = {()=> this.historyBoxPressed(temp)}
+            onPress = {()=>console.log("BASTİ")}
             key={i}/>
           )
         }
@@ -204,12 +223,16 @@ editButtonPressed(){
 donePress(){
 
 }
+goBack(){
+  focusedtoThisScreen = false
+  this.props.navigation.goBack()
+}
+
   render(){
     const spin = this.spinValue.interpolate({
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg']
     })
-    console.log("settings render")
     const {navigate} = this.props.navigation;
 
     console.log("EDIT PRESSED?", this.state.editPressed)
@@ -221,6 +244,7 @@ donePress(){
 
         <CustomHeader
         whichScreen = {"FavoriteUsers"}
+        onPress = {()=> this.goBack()}
         isFilterVisible = {this.state.showFilter}
         title = {"Favorite Users"}>
         </CustomHeader>
@@ -241,6 +265,7 @@ donePress(){
 
           <CustomHeader
           whichScreen = {"FavoriteUsers"}
+          onPress = {()=> this.goBack()}
           isFilterVisible = {this.state.showFilter}
           title = {"Favorite Users"}>
           </CustomHeader>
@@ -290,12 +315,13 @@ donePress(){
           <CustomHeader
           whichScreen = {"FavoriteUsers"}
           isFilterVisible = {this.state.showFilter}
+          onPress = {()=> this.goBack()}
           title = {"Favorite Users"}>
           </CustomHeader>
 
           <FlatList
             style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
-            width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+            width: this.width,flex: 1, flexDirection: 'column'}}
             renderItem = {()=>this.renderFavoriteUserBoxes()}
             data = { [{bos:"boş", key: "key"}]}
             refreshing = {true}>

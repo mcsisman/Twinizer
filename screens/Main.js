@@ -803,7 +803,7 @@ favBlockModalButtonClicked(uid){
 }
 
 addToFavoriteUsers(uid){
-  if (favoriteUsers == null || favoriteUsers.length == 0 || !favoriteUsers.includes(uid)){
+  if (favoriteUsers == null || favoriteUsers.length <= 10 || !favoriteUsers.includes(uid)){
     favoriteUsers.push(uid)
     AsyncStorage.setItem(firebase.auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
   }

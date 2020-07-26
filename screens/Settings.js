@@ -94,7 +94,6 @@ export default class SettingsScreen extends Component<{}>{
     })
   }
   render(){
-    console.log("settings render")
     const {navigate} = this.props.navigation;
     return(
       <View
