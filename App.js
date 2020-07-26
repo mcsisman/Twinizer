@@ -36,8 +36,11 @@ import BottomBar from './screens/components/BottomBar';
 import HistoryScreen from './screens/History';
 import SettingsScreen from './screens/Settings';
 import FavoriteUsersScreen from './screens/FavoriteUsers';
+import BlockedUsersScreen from './screens/BlockedUsers';
 import ThemeSettingsScreen from './screens/ThemeSettings';
 import ProfileScreen from './screens/Profile';
+import ProfileFavUserScreen from './screens/ProfileFavUser';
+import ProfileBlockedUserScreen from './screens/ProfileBlockedUser';
 import AsyncStorage from '@react-native-community/async-storage';
 import themes from './screens/Themes';
 
@@ -130,6 +133,7 @@ var firebaseConfig = {
   }
 
   global.favoriteUsersListeners = false
+  global.blockedUsersListeners = false
   global.messagesFirstTime = true
   global.fromHistorySearch = false
   global.flag1 = true;
@@ -401,6 +405,18 @@ function MyTabs() {
         name="FavoriteUsers"
         component={FavoriteUsersScreen}
       />
+      <Tab.Screen
+        name="BlockedUsers"
+        component={BlockedUsersScreen}
+      />
+      <Tab.Screen
+        name="ProfileFavUser"
+        component={ProfileFavUserScreen}
+      />
+      <Tab.Screen
+        name="ProfileBlockedUser"
+        component={ProfileBlockedUserScreen}
+      />
     </Tab.Navigator>
   );
 }
@@ -476,6 +492,20 @@ function MyTabs() {
             close: config,
           },
         }}
+        name="ProfileFavUser" component={ProfileFavUserScreen} />
+        <Stack.Screen options={{
+          transitionSpec: {
+            open: config,
+            close: config,
+          },
+        }}
+        name="ProfileBlockedUser" component={ProfileBlockedUserScreen} />
+        <Stack.Screen options={{
+          transitionSpec: {
+            open: config,
+            close: config,
+          },
+        }}
         name="Bio" component={BioScreen} />
         <Stack.Screen options={{
           transitionSpec: {
@@ -512,6 +542,13 @@ function MyTabs() {
           },
         }}
         name="FavoriteUsers" component={FavoriteUsersScreen} />
+        <Stack.Screen options={{
+          transitionSpec: {
+            open: config,
+            close: config,
+          },
+        }}
+        name="BlockedUsers" component={BlockedUsersScreen} />
       </Stack.Navigator>
       </NavigationContainer>
     );

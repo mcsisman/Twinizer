@@ -30,12 +30,12 @@ import MessagesScreen from './Messages';
 import MainScreen from './Main';
 import HistoryScreen from './History';
 import ProfileScreen from './Profile';
-import ProfileFavUserScreen from './ProfileFavUser';
+import ProfileBlockedUserScreen from './ProfileBlockedUser';
 import CustomHeader from './components/CustomHeader'
 import ModifiedStatusBar from './components/ModifiedStatusBar'
 import ProfileInfo from './components/ProfileInfo'
 import SettingsButton from './components/SettingsButton'
-import FavoriteUserBox from './components/FavoriteUserBox'
+import BlockedUserBox from './components/BlockedUserBox'
 import LogoutButton from './components/LogoutButton'
 import ThemeSettingsScreen from './ThemeSettings';
 
@@ -45,13 +45,13 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
-var favoriteUserUids = [];
-var favoriteUserUsernames = []
+var blockedUserUids = [];
+var blockedUserUsernames = []
 var usernameListener = []
 var noOfFavUsers;
 var imageUrls = [];
 var focusedtoThisScreen = false;
-export default class FavoriteUsersScreen extends Component<{}>{
+export default class BlockedUsersScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.height = Math.round(Dimensions.get('screen').height);
@@ -59,7 +59,7 @@ export default class FavoriteUsersScreen extends Component<{}>{
     this.state = {
       loadingDone: false,
       editPressed: false,
-      favoriteBoxDisabled: false,
+      blockedBoxDisabled: false,
       doneDisabled: true,
       editText: "Edit",
       editPressed: false,
@@ -73,11 +73,11 @@ export default class FavoriteUsersScreen extends Component<{}>{
       header: null,
   };
   componentDidMount(){
-    console.log("component did mount in favorite users")
+    console.log("component did mount in blocked users")
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.spinAnimation()
       focusedtoThisScreen = true
-      await this.initializeFavoriteUsersScreen()
+      await this.initializeBlockedUsersScreen()
       this.leftAnimation = new Animated.Value(-this.width/8)
       this.setState({reRender: "ok"})
     })
@@ -100,7 +100,7 @@ export default class FavoriteUsersScreen extends Component<{}>{
         }
       )).start()
   }
-  favoriteBoxAnimation(){
+  blockedBoxAnimation(){
     if(this.state.editText == "Cancel"){
       Animated.timing(this.leftAnimation, {
         duration: 100,
@@ -125,72 +125,56 @@ export default class FavoriteUsersScreen extends Component<{}>{
       colorArray[i] = "trashgray"
     }*/
     if(this.state.editText == "Edit"){
-      this.setState({favoriteBoxDisabled: true, doneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false})
+      this.setState({blockedBoxDisabled: true, doneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false})
       this.historyBoxAnimation()
     }
     else{
-      this.setState({favoriteBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
+      this.setState({blockedBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
       this.historyBoxAnimation()
       }
     }
 
-async initializeFavoriteUsersScreen(){
-  await this.getFavoriteUserUids()
-  if(!global.favoriteUsersListeners){
+async initializeBlockedUsersScreen(){
+  await this.getBlockedUserUids()
+  if(!global.blockedUsersListeners){
     await this.createUsernameArray()
   }
 }
 
-  async getFavoriteUserUids(){
-    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'favoriteUsers')
+  async getBlockedUserUids(){
+    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'blockedUsers')
       .then(req => JSON.parse(req))
-      .then(json => {
-        favoriteUserUids = json
-        if(favoriteUserUids == null || favoriteUserUids == undefined){
-          noOfFavUsers = 0
-        }
-        else{
-          noOfFavUsers = favoriteUserUids.length
-        }
-      })
-    console.log("favUsers: ", favoriteUserUids)
-    console.log("noOfFavUsers: ", noOfFavUsers)
+      .then(json => blockedUserUids = json)
+    if(blockedUserUids == null || blockedUserUids == undefined){
+      noOfFavUsers = 0
+    }
+    else{
+      noOfFavUsers = blockedUserUids.length
+    }
+    console.log("favUsers: ", blockedUserUids)
     this.setState({loadingDone: true})
   }
   async createUsernameArray(){
-    console.log("noOfFavUsers in createUsernameArray: ", noOfFavUsers)
-    for(let i = 0; i < noOfFavUsers; i++){
-      console.log("inside for iteration: ", i)
-      await this.getImageURL(favoriteUserUids[i], i)
-      await this.getUsernameOfTheUid(favoriteUserUids[i], i)
+    for( let i = 0; i < noOfFavUsers; i++){
+      await this.getUsernameOfTheUid(blockedUserUids[i], i)
     }
-    global.favoriteUsersListeners = true
+    global.blockedUsersListeners = true
   }
 
   async getUsernameOfTheUid(uid, i){
-    console.log("inside getUsernameOfTheUid: ", uid)
     usernameListener[i] = firebase.database().ref('Users/' + uid + "/i/u")
     await usernameListener[i].on('value', async snap => await this.listenerFunc(snap, i, uid));
   }
 listenerFunc = async (snap, i, conversationUid) => {
     console.log("UIDS:", conversationUid)
     console.log("SNAPSHOT VAL:", snap.val())
-    favoriteUserUsernames[i] = snap.val()
+    blockedUserUsernames[i] = snap.val()
     if(focusedtoThisScreen){
       this.setState({reRender: !this.state.reRender})
     }
   }
 
-  async getImageURL(uid, i){
-      var storageRef = firebase.storage().ref("Photos/" + uid + "/1.jpg")
-      await storageRef.getDownloadURL().then(data =>{
-        imageUrls[i] = data
-      }).catch(function(error) {
-        // Handle any errors
-      });
-  }
-
-  renderFavoriteUserBoxes(){
+  renderBlockedUserBoxes(){
       var scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight();
       var boxes = [];
       if(noOfFavUsers == 0){
@@ -200,7 +184,7 @@ listenerFunc = async (snap, i, conversationUid) => {
           <View style = {{opacity: 0.7, alignItems: 'center', width: this.width, top: scrollViewHeight/4,  height: scrollViewHeight/4}}>
           <Text
             style = {{fontSize: 25, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
-            No favorite users
+            No blocked users
           </Text>
           </View>
           </View>
@@ -210,14 +194,14 @@ listenerFunc = async (snap, i, conversationUid) => {
         for( let i = 0; i < noOfFavUsers; i++){
 
           const temp = i
-          console.log("FAVORITE USERNAME ARRAY:", favoriteUserUsernames[temp])
+          console.log("Blocked USERNAME ARRAY:", blockedUserUsernames[temp])
           boxes.push(
-            <FavoriteUserBox
+            <BlockedUserBox
             left = {this.leftAnimation}
             photoSource = {imageUrls[temp]}
-            disabled = {this.state.favoriteBoxDisabled}
-            text = {favoriteUserUsernames[temp]}
-            onPress = {()=>this.select(imageUrls[temp], favoriteUserUids[temp])}
+            disabled = {this.state.blockedBoxDisabled}
+            text = {blockedUserUsernames[temp]}
+            onPress = {()=>this.select(imageUrls[temp], blockedUserUids[temp])}
             key={i}/>
           )
         }
@@ -231,14 +215,16 @@ editButtonPressed(){
 donePress(){
 
 }
+
+select(url, uid){
+  global.selectedBlockedUserUid = uid
+  global.selectedBlockedUserUrl = url
+  navigate("ProfileBlockedUser")
+}
+
 goBack(){
   focusedtoThisScreen = false
   this.props.navigation.goBack()
-}
-select(url, uid){
-  global.selectedFavUserUid = uid
-  global.selectedFavUserUrl = url
-  navigate("ProfileFavUser")
 }
 
   render(){
@@ -256,10 +242,10 @@ select(url, uid){
         <ModifiedStatusBar/>
 
         <CustomHeader
-        whichScreen = {"FavoriteUsers"}
+        whichScreen = {"BlockedUsers"}
         onPress = {()=> this.goBack()}
         isFilterVisible = {this.state.showFilter}
-        title = {"Favorite Users"}>
+        title = {"Blocked Users"}>
         </CustomHeader>
 
         <Animated.Image source={{uri: 'loading' + global.themeForImages}}
@@ -277,10 +263,10 @@ select(url, uid){
           <ModifiedStatusBar/>
 
           <CustomHeader
-          whichScreen = {"FavoriteUsers"}
+          whichScreen = {"BlockedUsers"}
           onPress = {()=> this.goBack()}
           isFilterVisible = {this.state.showFilter}
-          title = {"Favorite Users"}>
+          title = {"Blocked Users"}>
           </CustomHeader>
           <View style = {{borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
           <TouchableOpacity
@@ -309,7 +295,7 @@ select(url, uid){
           <FlatList
             style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
             width: this.width, flex: 1, flexDirection: 'column'}}
-            renderItem = {()=>this.renderFavoriteUserBoxes()}
+            renderItem = {()=>this.renderBlockedUserBoxes()}
             data = { [{bos:"boş", key: "key"}]}
             refreshing = {true}>
           </FlatList>
@@ -326,16 +312,16 @@ select(url, uid){
           <ModifiedStatusBar/>
 
           <CustomHeader
-          whichScreen = {"FavoriteUsers"}
+          whichScreen = {"BlockedUsers"}
           isFilterVisible = {this.state.showFilter}
           onPress = {()=> this.goBack()}
-          title = {"Favorite Users"}>
+          title = {"Blocked Users"}>
           </CustomHeader>
 
           <FlatList
             style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
             width: this.width,flex: 1, flexDirection: 'column'}}
-            renderItem = {()=>this.renderFavoriteUserBoxes()}
+            renderItem = {()=>this.renderBlockedUserBoxes()}
             data = { [{bos:"boş", key: "key"}]}
             refreshing = {true}>
           </FlatList>

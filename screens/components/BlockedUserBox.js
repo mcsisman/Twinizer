@@ -24,7 +24,7 @@ if(Platform.OS === 'ios'){
 }
 var screenHeight = Math.round(Dimensions.get('screen').height);
 var screenWidth = Math.round(Dimensions.get('screen').width);
-export default class FavoriteUserBox extends Component {
+export default class BlockedUserBox extends Component {
 
 
   static propTypes = {
@@ -65,19 +65,7 @@ export default class FavoriteUserBox extends Component {
       onPress={this.props.onPress}>
 
       <View
-      style={{justifyContent: "center", alignItems:"center", width: this.width*2/8, borderBottomLeftRadius: 8, borderTopRightRadius: 8, borderTopLeftRadius: 8, borderBottomRightRadius: 8}}>
-      <View
-        style={{  width: '100%', height: '100%', backgroundColor: "gray",  position: 'absolute', opacity: this.props.backgroundOpacity, borderBottomLeftRadius: 16, borderTopRightRadius: 16,
-        borderTopLeftRadius: 16, borderBottomRightRadius: 16 }}
-      />
-      <Image
-      style={{width: this.width*2/8, height: this.width/4*(7/6), borderBottomLeftRadius: 8, borderTopRightRadius: 8, borderTopLeftRadius: 8, borderBottomRightRadius: 8}}
-      source = {{uri: this.props.photoSource}}>
-      </Image>
-      </View>
-
-      <View
-      style={{justifyContent: 'center', width: this.width*5/8, height: this.width/4*(7/6), bottom: 0, left: 0}}>
+      style={{justifyContent: 'center', width: this.width*6/8, height: this.width/8, bottom: 0, left: 0}}>
       <Text
         style = {{color: global.isDarkMode ? global.darkModeColors[3] : 'rgba(88,88,88,1)', fontSize: 18*this.width/360, left: this.width/20, position: "absolute" }}>
         {this.props.text}
@@ -85,7 +73,7 @@ export default class FavoriteUserBox extends Component {
       </View>
 
       <View
-      style={{justifyContent: 'center', alignItems: "center", position: 'absolute', width: this.width/8, height: this.width/4*(7/6), bottom: 0, right: 0}}>
+      style={{justifyContent: 'center', alignItems: "center", position: 'absolute', width: this.width/8, height: this.width/8, bottom: 0, right: 0}}>
       <Image source={{uri: 'settingsarrow' + global.themeForImages}}
       style={{opacity: 0.5, width: this.width/8*(4/10)*(61/110), height: this.width/8*(4/10)}}/>
       </View>
@@ -98,4 +86,4 @@ export default class FavoriteUserBox extends Component {
   }
 }
 
-export * from './FavoriteUserBox';
+export * from './BlockedUserBox';
