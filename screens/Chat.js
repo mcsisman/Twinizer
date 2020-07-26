@@ -385,6 +385,7 @@ render() {
             onChangeText = {(text) => this.setState({msgText: text})}
             onPressSend = {()=>this.sendMsgWithImage(this.state.msgText)}/>
           <ImageUploadModal
+          bottom = {keyboardHeight/2}
           isVisible={this.state.isVisible1}
           txtUploadPhoto = {global.langUploadPhoto}
           txtCancel = {global.langCancel}

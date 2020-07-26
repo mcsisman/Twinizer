@@ -80,6 +80,7 @@ export default class MessagesScreen extends Component<{}>{
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
+      allSelected: false,
       reRender: "ok",
       messageDoneDisabled: true,
       requestDoneDisabled: true,
@@ -219,6 +220,7 @@ resetVariables(){
     differenceArrayIndexes.splice(0, differenceArrayIndexes.length)
     urlArray.splice(0, urlArray.length)
     this.setState({
+      allSelected: false,
       messageDoneDisabled: true,
       requestDoneDisabled: true,
       messageBoxDisabled: false,
@@ -1096,12 +1098,12 @@ renderRequestBoxes(){
 editButtonPressed(){
     console.log("EDIT BUTTON PRESSED DIŞ")
     if(this.state.editText == "Edit"){
-      this.setState({messageDoneDisabled: true, requestDoneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false, messageBoxDisabled: true})
+      this.setState({allSelected: false, messageDoneDisabled: true, requestDoneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false, messageBoxDisabled: true})
       console.log("EDIT BUTTON PRESSED İF")
       this.messageBoxAnimation()
     }
     else{
-      this.setState({messageDoneDisabled: true, requestDoneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true, messageBoxDisabled: false})
+      this.setState({allSelected: false, messageDoneDisabled: true, requestDoneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true, messageBoxDisabled: false})
       console.log("EDIT BUTTON PRESSED ELSE")
       this.messageBoxAnimation()
       for( i = 0; i < requestColorArray.length; i++){
@@ -1243,6 +1245,21 @@ messageDonePress(){
   {cancelable: false},
 );
 }
+messageSelectAll(){
+  if(this.state.allSelected){
+    for( i = 0; i < messageArray.length; i++){
+      messageColorArray[i] = "trashgray"
+    }
+      this.setState({allSelected: !this.state.allSelected, messageDoneDisabled : true})
+  }
+  else{
+    for( i = 0; i < messageArray.length; i++){
+      messageColorArray[i] = "trash" + global.themeForImages
+    }
+      this.setState({allSelected: !this.state.allSelected, messageDoneDisabled : false})
+  }
+
+}
 render(){
   const {navigate} = this.props.navigation;
   var showEditMessage = true
@@ -1331,6 +1348,15 @@ render(){
 
                   <TouchableOpacity
                     activeOpacity = {1}
+                    style={{width: this.width/3,  left: this.width/3, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+                    onPress = {()=> this.messageSelectAll()}>
+                  <Text style = {{fontSize: 20, color: global.themeColor}}>
+                  {this.state.allSelected ? "Deselect All" : "Select All"}
+                  </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    activeOpacity = {1}
                     disabled = {this.state.messageDoneDisabled}
                     style={{opacity: this.state.messageDoneDisabled ? 0 : 1, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
                     onPress = {()=> this.messageDonePress()}>
@@ -1375,8 +1401,17 @@ render(){
                   </TouchableOpacity>
 
                   <TouchableOpacity
+                    activeOpacity = {1}
+                    style={{ width: this.width/3, left: this.width/3, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+                    onPress = {()=> this.requestSelectAll()}>
+                  <Text style = {{fontSize: 20, color: global.themeColor}}>
+                  {this.state.allSelected ? "Deselect All" : "Select All"}
+                  </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
                     disabled = {this.state.requestDoneDisabled}
-                    style={{opacity: this.state.requestDoneDisabled ? 0 : 1, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+                    style={{position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
                     onPress = {()=> this.requestDonePress()}>
                   <Text style = {{fontSize: 20, color: global.themeColor}}>
                   Done
