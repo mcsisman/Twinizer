@@ -50,6 +50,7 @@ export default class HistoryScreen extends Component<{}>{
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
+      allSelected: false,
       disabled: true,
       opacity: 0.4,
       historyBoxDisabled: false,
@@ -198,11 +199,11 @@ editButtonPressed(){
     colorArray[i] = "trashgray"
   }
   if(this.state.editText == "Edit"){
-    this.setState({disabled: true, opacity: 0.4, historyBoxDisabled: true, doneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false})
+    this.setState({allSelected: false, disabled: true, opacity: 0.4, historyBoxDisabled: true, doneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false})
     this.historyBoxAnimation()
   }
   else{
-    this.setState({historyBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
+    this.setState({allSelected: false, historyBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
     this.historyBoxAnimation()
     doneColor = 'rgba(128,128,128,1)'
     }
@@ -307,6 +308,21 @@ async getHistoryDate(whichBox){
   date = historyArray[whichBox]["searchDate"]
   return date;
 }
+selectAll(){
+  if(this.state.allSelected){
+    for( i = 0; i < colorArray.length; i++){
+      colorArray[i] = "trashgray"
+    }
+      this.setState({allSelected: !this.state.allSelected, doneDisabled : true})
+  }
+  else{
+    for( i = 0; i < colorArray.length; i++){
+      colorArray[i] = "trash" + global.themeForImages
+    }
+      this.setState({allSelected: !this.state.allSelected, doneDisabled : false})
+  }
+
+}
 renderHistoryBoxes(){
     var scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight();
     var boxes = [];
@@ -397,6 +413,15 @@ render(){
 
         <TouchableOpacity
           activeOpacity = {1}
+          style={{width: this.width/3,  left: this.width/3, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+          onPress = {()=> this.selectAll()}>
+        <Text style = {{fontSize: 20, color: global.themeColor}}>
+        {this.state.allSelected ? "Deselect All" : "Select All"}
+        </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          activeOpacity = {1}
           disabled = {this.state.doneDisabled}
           style={{opacity: this.state.doneDisabled ? 0 : 1, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
           onPress = {()=> this.donePress()}>
@@ -441,16 +466,6 @@ render(){
 
         <Text style = {{fontSize: 20, color: global.themeColor}}>
         {this.state.editText}
-        </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity = {1}
-          disabled = {this.state.doneDisabled}
-          style={{opacity: this.state.doneDisabled ? 0 : 1, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-          onPress = {()=> this.donePress()}>
-        <Text style = {{fontSize: 20, color: global.themeColor}}>
-        Done
         </Text>
         </TouchableOpacity>
 
