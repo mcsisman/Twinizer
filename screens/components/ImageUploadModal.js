@@ -40,6 +40,7 @@ export default class ImageUploadModal extends Component {
    animationOutTiming: PropTypes.number,
    animationIn: PropTypes.string,
    backdropOpacity: PropTypes.number,
+   bottom: PropTypes.number
 
  }
  static defaultProps = {
@@ -72,6 +73,7 @@ export default class ImageUploadModal extends Component {
       width: screenWidth*(6/10),
       height: screenWidth*(2.5/10),
       flexDirection: 'column',
+      bottom: this.props.bottom
       }}>
 
       <View

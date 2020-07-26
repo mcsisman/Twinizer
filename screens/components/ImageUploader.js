@@ -37,7 +37,8 @@ export default class ImageUploader extends Component {
       activeOpacity = {1}
       style={{ justifyContent: 'center', alignItems: 'center', position: 'absolute', backgroundColor: 'rgba(241,51,18,0)',
        width: this.props.width, height: this.props.width*(7/6), bottom: this.props.bottom, right: this.props.right, borderBottomLeftRadius: this.props.borderRadius, borderTopRightRadius: this.props.borderRadius,
-       borderTopLeftRadius: this.props.borderRadius, borderBottomRightRadius: this.props.borderRadius, borderOpacity: this.props.borderOpacity, borderColor: global.themeColor, borderWidth: 2}}
+       borderTopLeftRadius: this.props.borderRadius, borderBottomRightRadius: this.props.borderRadius, borderOpacity: this.props.borderOpacity,
+       borderColor: this.props.borderOpacity == 1 ? global.themeColor : "rgba(0,0,0,0)", borderWidth: 2}}
 
        onPress={this.props.onPress}>
        <Image source={this.props.photo}

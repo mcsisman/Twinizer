@@ -73,11 +73,11 @@ export default class ChatHeader extends Component {
       </TouchableOpacity>
 
       <TouchableOpacity
-      activeOpacity = {0.8}
+      activeOpacity = {1}
       style={{position: 'absolute', width: this.width*2/10, right:0, position:"absolute", height: this.width*(1/10)*(7/6), justifyContent: 'center', alignItems: 'center', }}
       onPress = {this.props.onPressCamera}>
       <View
-      style={{borderColor: global.themeColor, borderWidth: 2, width: this.width*(1/10)*(7/6), height: this.width*(1/10)*(7/6),
+      style={{borderColor: global.themeColor, borderWidth: 2, width: this.width*(1/10)*(7/6.5), height: this.width*(1/10)*(7/6.5),
       justifyContent: 'center', alignItems: 'center', borderBottomLeftRadius: 555, borderTopRightRadius: 555, borderTopLeftRadius: 555, borderBottomRightRadius: 555}}>
       <Image
       style={{width: "60%", height: "60%"}}

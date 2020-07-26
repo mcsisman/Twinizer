@@ -313,8 +313,7 @@ renderHistoryBoxes(){
     if(noOfSearch == 0){
       return(
         <View style = {{flex: 1, flexDirection: "column", width: this.width, height: scrollViewHeight}}>
-
-        <View style = {{opacity: 0.7, alignItems: 'center', width: this.width, top: scrollViewHeight/4,  height: scrollViewHeight/4}}>
+        <View style = {{opacity: 0.7, alignItems: 'center', width: this.width, height: scrollViewHeight/4}}>
         <Text
           style = {{fontSize: 25, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
           No recent activity
@@ -383,12 +382,13 @@ render(){
         isFilterVisible = {this.state.showFilter}
         title = {"History"}>
         </CustomHeader>
-        <View style = {{borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
+
+        <View style = {{opacity: noOfSearch == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
         <TouchableOpacity
           activeOpacity = {1}
           style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
           onPress={()=>this.editButtonPressed()}
-          disabled = {false}>
+          disabled = {noOfSearch == 0 ? true : false}>
 
         <Text style = {{fontSize: 20, color: global.themeColor}}>
         {this.state.editText}
@@ -431,6 +431,30 @@ render(){
         isFilterVisible = {this.state.showFilter}
         title = {"History"}>
         </CustomHeader>
+
+        <View style = {{opacity: noOfSearch == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
+        <TouchableOpacity
+          activeOpacity = {1}
+          style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+          onPress={()=>this.editButtonPressed()}
+          disabled = {noOfSearch == 0 ? true : false}>
+
+        <Text style = {{fontSize: 20, color: global.themeColor}}>
+        {this.state.editText}
+        </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          activeOpacity = {1}
+          disabled = {this.state.doneDisabled}
+          style={{opacity: this.state.doneDisabled ? 0 : 1, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+          onPress = {()=> this.donePress()}>
+        <Text style = {{fontSize: 20, color: global.themeColor}}>
+        Done
+        </Text>
+        </TouchableOpacity>
+
+        </View>
 
         <FlatList
           style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
