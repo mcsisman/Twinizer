@@ -51,7 +51,7 @@ export default class FavoriteUserBox extends Component {
 
       <TouchableOpacity
       activeOpacity = {1}
-      style = {{alignItems: 'center', justifyContent: 'center', width: this.width*(2/16), height: this.width/8}}
+      style = {{alignItems: 'center', justifyContent: 'center', width: this.width*(2/16), height: this.width/4*(7/6)}}
       onPress = {this.props.trashOnPress}>
         <Image
         style={{width: this.width*(3/16)*(4/10), height: this.width*(3/16)*(4/10)*(328/302)}}
@@ -91,8 +91,6 @@ export default class FavoriteUserBox extends Component {
       </View>
       </TouchableOpacity>
 
-      <View
-      style = {{width: this.width/8, height: this.width/8, left: 0, position:"absolute", backgroundColor:"blue"}}/>
       </Animated.View>
     )
   }

@@ -77,6 +77,11 @@ export default class BlockedUsersScreen extends Component<{}>{
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.spinAnimation()
       focusedtoThisScreen = true
+      console.log("focused on blocked users")
+      if(global.selectedBlockedUserIndex != null){
+        await usernameListener[global.selectedBlockedUserIndex].on('value',
+        async snap => await this.listenerFunc(snap, global.selectedBlockedUserIndex, blockedUserUids[global.selectedBlockedUserIndex]));
+      }
       await this.initializeBlockedUsersScreen()
       this.leftAnimation = new Animated.Value(-this.width/8)
       this.setState({reRender: "ok"})
@@ -166,8 +171,7 @@ async initializeBlockedUsersScreen(){
     await usernameListener[i].on('value', async snap => await this.listenerFunc(snap, i, uid));
   }
 listenerFunc = async (snap, i, conversationUid) => {
-    console.log("UIDS:", conversationUid)
-    console.log("SNAPSHOT VAL:", snap.val())
+    console.log("BlockedUsers Listener")
     blockedUserUsernames[i] = snap.val()
     if(focusedtoThisScreen){
       this.setState({reRender: !this.state.reRender})
@@ -201,7 +205,7 @@ listenerFunc = async (snap, i, conversationUid) => {
             photoSource = {imageUrls[temp]}
             disabled = {this.state.blockedBoxDisabled}
             text = {blockedUserUsernames[temp]}
-            onPress = {()=>this.select(imageUrls[temp], blockedUserUids[temp])}
+            onPress = {()=>this.select(imageUrls[temp], blockedUserUids[temp], usernameListener[temp], temp)}
             key={i}/>
           )
         }
@@ -216,15 +220,18 @@ donePress(){
 
 }
 
-select(url, uid){
+select(url, uid, listener, index){
+  listener.off()
   global.selectedBlockedUserUid = uid
   global.selectedBlockedUserUrl = url
+  global.selectedBlockedUserIndex = index
   navigate("ProfileBlockedUser")
 }
 
 goBack(){
   focusedtoThisScreen = false
-  this.props.navigation.goBack()
+  global.selectedBlockedUserIndex = null
+  this.props.navigation.navigate("Settings")
 }
 
   render(){

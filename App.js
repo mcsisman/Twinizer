@@ -132,6 +132,8 @@ var firebaseConfig = {
     }
   }
 
+  global.selectedFavUserIndex = null
+  global.selectedBlockedUserIndex = null
   global.favoriteUsersListeners = false
   global.blockedUsersListeners = false
   global.messagesFirstTime = true

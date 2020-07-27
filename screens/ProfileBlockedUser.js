@@ -48,11 +48,12 @@ var currentUserGender;
 var currentUserCountry;
 var currentUserUsername;
 var currentUserBio;
+var listener;
 export default class ProfileBlockedUserScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.state = {
-      profilePhoto: global.selectedBlockedUserUrl,
+      profilePhoto: "",
       loadingDone: false,
       userUsername: "",
       userGender: "",
@@ -74,8 +75,9 @@ export default class ProfileBlockedUserScreen extends Component<{}>{
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.setState({loadingDone: true})
       //this.spinAnimation()
-      await this.checkIfUserDataExistsInLocalAndSaveIfNot()
       console.log("subscribe")
+      await this.initializeBlockedUsersScreen()
+      await this.getImageURL(global.selectedBlockedUserUid)
       this.setState({reRender: "ok"})
     })
     this._subscribe = this.props.navigation.addListener('blur', async () => {
@@ -103,6 +105,44 @@ static navigationOptions = {
       )).start()
   }
 
+  async initializeBlockedUsersScreen(){
+    listener = firebase.database().ref('Users/' + global.selectedBlockedUserUid + "/i")
+    await listener.on('value', async snap => await this.listenerFunc(snap));
+  }
+
+  listenerFunc = async (snap) => {
+      this.setState({userUsername: snap.val().u, userGender: snap.val().g, userCountry: snap.val().c, userBio: snap.val().b})
+      console.log("ProfileBlockedUser Listener")
+    }
+
+    goBack(){
+      listener.off()
+      this.props.navigation.navigate("BlockedUsers")
+    }
+
+  spinAnimation(){
+    this.spinValue = new Animated.Value(0)
+    // First set up animation
+    Animated.loop(
+    Animated.timing(
+        this.spinValue,
+        {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true
+        }
+      )).start()
+  }
+
+  async getImageURL(uid){
+      var storageRef = firebase.storage().ref("Photos/" + uid + "/1.jpg")
+      await storageRef.getDownloadURL().then(data =>{
+        this.setState({profilePhoto: data})
+      }).catch(function(error) {
+        // Handle any errors
+      });
+  }
 
   render(){
     const spin = this.spinValue.interpolate({
@@ -141,7 +181,7 @@ static navigationOptions = {
 
         <CustomHeader
         whichScreen = {"Profile"}
-        onPress = {()=> this.props.navigation.goBack()}
+        onPress = {()=> this.goBack()}
         isFilterVisible = {this.state.showFilter}
         title = "Profile">
         </CustomHeader>
@@ -151,9 +191,9 @@ static navigationOptions = {
         height: (this.height-this.width/7 - headerHeight - getStatusBarHeight()), flexDirection: "row" }}>
 
         <View
-        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center"}}>
+        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderColor:"gray"}}>
         <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
-        bio
+        {this.state.userBio}
         </Text>
         </View>
 
@@ -182,9 +222,9 @@ static navigationOptions = {
         style={{ opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}>
 
         <View
-        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center"}}>
+        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderColor:"gray"}}>
         <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
-        username
+        {this.state.userUsername}
         </Text>
         </View>
 
@@ -193,9 +233,9 @@ static navigationOptions = {
         </View>
 
         <View
-        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center"}}>
+        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderColor:"gray"}}>
         <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
-        country
+        {this.state.userCountry}
         </Text>
         </View>
 
@@ -204,9 +244,9 @@ static navigationOptions = {
         </View>
 
         <View
-        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center"}}>
+        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderColor:"gray"}}>
         <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
-        gender
+        {this.state.userGender}
         </Text>
         </View>
 
@@ -229,6 +269,4 @@ static navigationOptions = {
 
           );
     }
-
-
   }}

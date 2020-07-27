@@ -50,6 +50,7 @@ var favoriteUserUsernames = []
 var usernameListener = []
 var noOfFavUsers;
 var imageUrls = [];
+var colorArray = []
 var focusedtoThisScreen = false;
 export default class FavoriteUsersScreen extends Component<{}>{
   constructor(props){
@@ -76,7 +77,12 @@ export default class FavoriteUsersScreen extends Component<{}>{
     console.log("component did mount in favorite users")
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.spinAnimation()
+      console.log("focused on favorite users")
       focusedtoThisScreen = true
+      if(global.selectedFavUserIndex != null){
+        await usernameListener[global.selectedFavUserIndex].on('value',
+        async snap => await this.listenerFunc(snap, global.selectedFavUserIndex, favoriteUserUids[global.selectedFavUserIndex]));
+      }
       await this.initializeFavoriteUsersScreen()
       this.leftAnimation = new Animated.Value(-this.width/8)
       this.setState({reRender: "ok"})
@@ -103,34 +109,35 @@ export default class FavoriteUsersScreen extends Component<{}>{
   favoriteBoxAnimation(){
     if(this.state.editText == "Cancel"){
       Animated.timing(this.leftAnimation, {
-        duration: 100,
-        toValue: -this.width*(3/16),
-        easing: Easing.linear,
+        duration: 200,
+        toValue: -this.width*(2/16),
+        easing: Easing.cubic,
         useNativeDriver: false,
       }).start()
     }
     if(this.state.editText == "Edit"){
       Animated.timing(this.leftAnimation, {
-        duration: 100,
+        duration: 200,
         toValue: 0,
-        easing: Easing.linear,
+        easing: Easing.cubic,
         useNativeDriver: false,
       }).start()
     }
   }
   editButtonPressed(){
-/*
-    for( i = 0; i < noOfSearch; i++){
+
+    for( let i = 0; i < noOfSearch; i++){
       isSelectedArray[i] = false
       colorArray[i] = "trashgray"
-    }*/
+    }
+    console.log("edit button pressed")
     if(this.state.editText == "Edit"){
       this.setState({favoriteBoxDisabled: true, doneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false})
-      this.historyBoxAnimation()
+      this.favoriteBoxAnimation()
     }
     else{
       this.setState({favoriteBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
-      this.historyBoxAnimation()
+      this.favoriteBoxAnimation()
       }
     }
 
@@ -173,8 +180,7 @@ async initializeFavoriteUsersScreen(){
     await usernameListener[i].on('value', async snap => await this.listenerFunc(snap, i, uid));
   }
 listenerFunc = async (snap, i, conversationUid) => {
-    console.log("UIDS:", conversationUid)
-    console.log("SNAPSHOT VAL:", snap.val())
+    console.log("FavoriteUsers Listener")
     favoriteUserUsernames[i] = snap.val()
     if(focusedtoThisScreen){
       this.setState({reRender: !this.state.reRender})
@@ -217,7 +223,7 @@ listenerFunc = async (snap, i, conversationUid) => {
             photoSource = {imageUrls[temp]}
             disabled = {this.state.favoriteBoxDisabled}
             text = {favoriteUserUsernames[temp]}
-            onPress = {()=>this.select(imageUrls[temp], favoriteUserUids[temp])}
+            onPress = {()=>this.select(imageUrls[temp], favoriteUserUids[temp], usernameListener[temp], temp)}
             key={i}/>
           )
         }
@@ -225,19 +231,45 @@ listenerFunc = async (snap, i, conversationUid) => {
       return boxes;
 }
 
-editButtonPressed(){
-
-}
 donePress(){
 
 }
+
+arrangeDoneColor(){
+    var flag1 = false
+    for( i = 0; i < colorArray.length; i++){
+      if( colorArray[i] == "trash" + global.themeForImages){
+        flag1 = true
+        doneColor = global.themeColor
+        this.setState({doneDisabled: false})
+        break
+      }
+    }
+    if(!flag1){
+      doneColor = 'rgba(128,128,128,1)'
+      this.setState({doneDisabled: true})
+    }
+  }
+async trashButtonPressed(i){
+  if(colorArray[i] == "trashgray"){
+    colorArray[i] = "trash" + global.themeForImages
+  }
+  else{
+    colorArray[i] = "trashgray"
+  }
+  this.arrangeDoneColor()
+}
+
 goBack(){
   focusedtoThisScreen = false
-  this.props.navigation.goBack()
+  global.selectedFavUserIndex = null
+  this.props.navigation.navigate("Settings")
 }
-select(url, uid){
+select(url, uid, listener, index){
+  listener.off()
   global.selectedFavUserUid = uid
   global.selectedFavUserUrl = url
+  global.selectedFavUserIndex = index
   navigate("ProfileFavUser")
 }
 
@@ -331,6 +363,18 @@ select(url, uid){
           onPress = {()=> this.goBack()}
           title = {"Favorite Users"}>
           </CustomHeader>
+
+          <View style = {{opacity: favoriteUserUids.length == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
+          <TouchableOpacity
+            activeOpacity = {1}
+            style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+            onPress={()=>this.editButtonPressed()}
+            disabled = {noOfFavUsers == 0 ? true : false}>
+          <Text style = {{fontSize: 20, color: global.themeColor}}>
+          {this.state.editText}
+          </Text>
+          </TouchableOpacity>
+          </View>
 
           <FlatList
             style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
