@@ -31,6 +31,8 @@ export default class FavoriteUserBox extends Component {
    onPress: PropTypes.func,
    bottom: PropTypes.number,
    text: PropTypes.string,
+   trashOnPress: PropTypes.func,
+   trashImage: PropTypes.string,
    photoSource: PropTypes.string,
    left: PropTypes.object,
    isSelected: PropTypes.bool,
@@ -55,7 +57,7 @@ export default class FavoriteUserBox extends Component {
       onPress = {this.props.trashOnPress}>
         <Image
         style={{width: this.width*(3/16)*(4/10), height: this.width*(3/16)*(4/10)*(328/302)}}
-        source = {{uri: "trashgray"}}>
+        source = {{uri: this.props.trashImage}}>
         </Image>
       </TouchableOpacity>
 

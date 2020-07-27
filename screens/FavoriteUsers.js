@@ -126,8 +126,7 @@ export default class FavoriteUsersScreen extends Component<{}>{
   }
   editButtonPressed(){
 
-    for( let i = 0; i < noOfSearch; i++){
-      isSelectedArray[i] = false
+    for( let i = 0; i < noOfFavUsers; i++){
       colorArray[i] = "trashgray"
     }
     console.log("edit button pressed")
@@ -220,6 +219,8 @@ listenerFunc = async (snap, i, conversationUid) => {
           boxes.push(
             <FavoriteUserBox
             left = {this.leftAnimation}
+            trashImage = {colorArray[temp]}
+            trashOnPress = {()=> this.trashButtonPressed(temp)}
             photoSource = {imageUrls[temp]}
             disabled = {this.state.favoriteBoxDisabled}
             text = {favoriteUserUsernames[temp]}
@@ -232,12 +233,27 @@ listenerFunc = async (snap, i, conversationUid) => {
 }
 
 donePress(){
-
+  for(let i = 0; i < noOfFavUsers; i++){
+    if(colorArray[i] == "trash" + global.themeForImages){
+      imageUrls.splice(i,1)
+      favoriteUserUids.splice(i,1)
+      usernameListener[i].off()
+      usernameListener.splice(i,1)
+      favoriteUserUsernames.splice(i,1)
+      noOfFavUsers = noOfFavUsers - 1
+    }
+  }
+  for( let i = 0; i < noOfFavUsers; i++){
+    colorArray[i] = "trashgray"
+  }
+  this.setState({favoriteBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
+  this.favoriteBoxAnimation()
+  AsyncStorage.setItem(firebase.auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUserUids))
 }
 
 arrangeDoneColor(){
     var flag1 = false
-    for( i = 0; i < colorArray.length; i++){
+    for(let i = 0; i < colorArray.length; i++){
       if( colorArray[i] == "trash" + global.themeForImages){
         flag1 = true
         doneColor = global.themeColor
