@@ -60,6 +60,7 @@ export default class ChatScreen extends React.Component<Props> {
 
   constructor(props) {
     super(props);
+    this.onLongPress = this.onLongPress.bind(this);
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
@@ -326,6 +327,46 @@ async deleteImageFromArray(){
   }
 }
 
+async deleteMessage(message){
+  var messageId;
+  messageId = message.id
+  messageArray = this.state.messages
+  for( i = messageArray.length - 1; i >= 0; i--){
+    if(messageId == messageArray[i].id){
+      messageArray.splice(i,1)
+      break
+    }
+  }
+  this.setState({messages: messageArray})
+
+  await AsyncStorage.getItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages')
+    .then(req => JSON.parse(req))
+    .then(json => localMessages = json)
+
+  for( i = localMessages.length - 1; i >= 0; i--){
+    if(messageId == localMessages[i].id){
+      localMessages.splice(i,1)
+      break
+    }
+  }
+  AsyncStorage.setItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
+}
+onLongPress(context, message) {
+  const options = ['Delete Message', 'Cancel'];
+  const cancelButtonIndex = options.length - 1;
+  context.actionSheet().showActionSheetWithOptions({
+    options,
+    cancelButtonIndex,
+  },
+  (buttonIndex) => {
+    switch (buttonIndex) {
+    case 0:
+      this.deleteMessage(message)
+      break;
+    }
+    });
+}
+
 render() {
   var renderKeyboardHeight;
     isRequest = "t"
@@ -410,6 +451,7 @@ render() {
               style = {{ position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
               width: this.width, bottom: 0, right: 0}}>
               <GiftedChat
+              onLongPress={this.onLongPress}
               textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
               renderInputToolbar={(props) => this.messengerBarContainer(props)}
                 scrollToBottom = {true}
@@ -461,6 +503,7 @@ render() {
               style = {{  position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
               width: this.width, bottom: 0, right: 0}}>
               <GiftedChat
+              onLongPress={this.onLongPress}
               textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
               renderInputToolbar={(props) => this.messengerBarContainer(props)}
                 scrollToBottom = {true}
@@ -513,6 +556,7 @@ render() {
               style = {{ position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
               width: this.width, bottom: 0, right: 0}}>
               <GiftedChat
+              onLongPress={this.onLongPress}
               textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
               renderInputToolbar={(props) => this.messengerBarContainer(props)}
                 scrollToBottom = {true}
@@ -566,6 +610,7 @@ render() {
               style = {{  position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
               width: this.width, bottom: 0, right: 0}}>
               <GiftedChat
+              onLongPress={this.onLongPress}
               textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
               renderInputToolbar={(props) => this.messengerBarContainer(props)}
                 scrollToBottom = {true}

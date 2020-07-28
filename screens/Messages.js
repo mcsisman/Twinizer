@@ -526,21 +526,22 @@ getMessagesData = async callback =>{
   arr.sort()
   var key = arr[0] + "" + arr[1];
 
-
   var listener23 = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-").limitToLast(1);
   await listener23.once('value').then(async snapshot => {
       console.log("ONCE A GİRDİ:", snapshot.val())
-      var data;
+      var data = "";
       if(snapshot.val() == null || snapshot.val() == undefined ){
         var localMsgs = []
         await AsyncStorage.getItem(firebase.auth().currentUser.uid + uidArray[count] + '/messages')
           .then(req => JSON.parse(req))
           .then(json => localMsgs = json)
-        if(localMsgs == null){
-
+        if(localMsgs != null && localMsgs != undefined && localMsgs.length != 0){
+          data = localMsgs[localMsgs.length - 1]
+          lastDBkey = localMsgs[localMsgs.length - 1]._id
         }
-        data = localMsgs[localMsgs.length - 1]
-        lastDBkey = localMsgs[localMsgs.length - 1]._id
+        else{
+          this.setState({loadingDone: true, test: "1", loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
+        }
       }
       else{
         var snapVal = snapshot.val()
@@ -574,7 +575,7 @@ getMessagesData = async callback =>{
       messageArray.splice(0, messageArray.length)
       requestArray.splice(0, requestArray.length)
 
-      if(!fromChat){
+      if(!fromChat && data != ""){
         if(dataArray.length < noOfConversations){
           dataArray[count] = data
         }
@@ -711,28 +712,26 @@ syncLocalMessages = async (snapshot, uidCount) => {
         const c = numberStamp
         const createdAt = new Date(numberStamp);
 
-        var image ="";
+        var image = "";
         if(p == "t"){
           image = "file://" + RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "/" + messageKey + ".jpg"
+          var downloadURL;
+          var storageRef = firebase.storage().ref("Photos/" + firebase.auth().currentUser.uid + "/MessagePhotos/" + messageKey + ".jpg")
+          await storageRef.getDownloadURL().then(data =>{
+            downloadURL = data
+          })
+          let dirs = RNFetchBlob.fs.dirs
+          await RNFetchBlob
+          .config({
+            fileCache : true,
+            appendExt : 'jpg',
+            path: RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "/" + messageKey + ".jpg"
+          })
+          .fetch('GET', downloadURL, {
+            //some headers ..
+          })
+          console.log(" RESİM LOCALE KAYDEDİLDİ MESSAGES LISTENERDA: ", image)
         }
-
-        var downloadURL;
-        var storageRef = firebase.storage().ref("Photos/" + firebase.auth().currentUser.uid + "/MessagePhotos/" + messageKey + ".jpg")
-        await storageRef.getDownloadURL().then(data =>{
-          downloadURL = data
-        })
-        let dirs = RNFetchBlob.fs.dirs
-        await RNFetchBlob
-        .config({
-          fileCache : true,
-          appendExt : 'jpg',
-          path: RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "/" + messageKey + ".jpg"
-        })
-        .fetch('GET', downloadURL, {
-          //some headers ..
-        })
-        console.log(" RESİM LOCALE KAYDEDİLDİ MESSAGES LISTENERDA: ", image)
-
         const msg = {
           c,
           id,
@@ -1009,7 +1008,7 @@ renderMessageBoxes(){
         console.log("AGLKDALGŞA :", messageArray[count])
         messages.push(
           <MessageBox
-          isPhoto = {messageArray[count].image == undefined ? false : true}
+          isPhoto = {messageArray[count].image == "" || messageArray[count].image == undefined ? false : true}
           left = {this.leftAnimation}
           color = {messageColorArray[temp]}
           disabled = {this.state.messageBoxDisabled}
@@ -1074,7 +1073,7 @@ renderRequestBoxes(){
         const temp = count
         messages.push(
           <MessageBox
-          isPhoto = {requestArray[count].image == undefined ? false : true}
+          isPhoto = {requestArray[count].image == "" || requestArray[count].image == undefined ? false : true}
           left = {this.leftAnimation}
           color = {requestColorArray[temp]}
           disabled = {this.state.messageBoxDisabled}
