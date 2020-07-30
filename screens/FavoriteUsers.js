@@ -50,7 +50,7 @@ var favoriteUserUsernames = []
 var usernameListener = []
 var noOfFavUsers;
 var imageUrls = [];
-var colorArray = []
+var colorArray = [];
 var focusedtoThisScreen = false;
 export default class FavoriteUsersScreen extends Component<{}>{
   constructor(props){
@@ -74,14 +74,15 @@ export default class FavoriteUsersScreen extends Component<{}>{
       header: null,
   };
   componentDidMount(){
-    console.log("component did mount in favorite users")
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.spinAnimation()
-      console.log("focused on favorite users")
       focusedtoThisScreen = true
-      if(global.selectedFavUserIndex != null){
+      if(global.selectedFavUserIndex != null && !global.removeFromFavUser){
         await usernameListener[global.selectedFavUserIndex].on('value',
         async snap => await this.listenerFunc(snap, global.selectedFavUserIndex, favoriteUserUids[global.selectedFavUserIndex]));
+      }
+      if(global.removeFromFavUser){
+        this.removeFromUser()
       }
       await this.initializeFavoriteUsersScreen()
       this.leftAnimation = new Animated.Value(-this.width/8)
@@ -129,7 +130,6 @@ export default class FavoriteUsersScreen extends Component<{}>{
     for( let i = 0; i < noOfFavUsers; i++){
       colorArray[i] = "trashgray"
     }
-    console.log("edit button pressed")
     if(this.state.editText == "Edit"){
       this.setState({favoriteBoxDisabled: true, doneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false})
       this.favoriteBoxAnimation()
@@ -142,12 +142,15 @@ export default class FavoriteUsersScreen extends Component<{}>{
 
 async initializeFavoriteUsersScreen(){
   await this.getFavoriteUserUids()
-  if(!global.favoriteUsersListeners){
+  console.log("global.favoriteUsersListeners: ", global.favoriteUsersListeners)
+  console.log("noOfFavUsers: ", noOfFavUsers)
+  if(global.favoriteUsersListeners < noOfFavUsers){
     await this.createUsernameArray()
   }
 }
 
   async getFavoriteUserUids(){
+
     await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'favoriteUsers')
       .then(req => JSON.parse(req))
       .then(json => {
@@ -159,37 +162,35 @@ async initializeFavoriteUsersScreen(){
           noOfFavUsers = favoriteUserUids.length
         }
       })
-    console.log("favUsers: ", favoriteUserUids)
-    console.log("noOfFavUsers: ", noOfFavUsers)
     this.setState({loadingDone: true})
   }
   async createUsernameArray(){
-    console.log("noOfFavUsers in createUsernameArray: ", noOfFavUsers)
-    for(let i = 0; i < noOfFavUsers; i++){
-      console.log("inside for iteration: ", i)
+    for(let i = global.favoriteUsersListeners; i < noOfFavUsers; i++){
       await this.getImageURL(favoriteUserUids[i], i)
       await this.getUsernameOfTheUid(favoriteUserUids[i], i)
     }
-    global.favoriteUsersListeners = true
+    global.favoriteUsersListeners = noOfFavUsers
   }
 
   async getUsernameOfTheUid(uid, i){
-    console.log("inside getUsernameOfTheUid: ", uid)
     usernameListener[i] = firebase.database().ref('Users/' + uid + "/i/u")
-    await usernameListener[i].on('value', async snap => await this.listenerFunc(snap, i, uid));
+    const firstTotalfavs = noOfFavUsers
+    await usernameListener[i].on('value', async snap => await this.listenerFunc(snap, i, uid, firstTotalfavs));
   }
-listenerFunc = async (snap, i, conversationUid) => {
-    console.log("FavoriteUsers Listener")
-    favoriteUserUsernames[i] = snap.val()
+listenerFunc = async (snap, i, conversationUid, firstTotal) => {
+    console.log("LISTENER")
+    var diff = firstTotal - noOfFavUsers
+    favoriteUserUsernames[i - diff] = snap.val()
     if(focusedtoThisScreen){
       this.setState({reRender: !this.state.reRender})
     }
   }
 
-  async getImageURL(uid, i){
+  getImageURL(uid, i){
       var storageRef = firebase.storage().ref("Photos/" + uid + "/1.jpg")
-      await storageRef.getDownloadURL().then(data =>{
+      storageRef.getDownloadURL().then(data =>{
         imageUrls[i] = data
+        this.setState({reRender: !this.state.reRender})
       }).catch(function(error) {
         // Handle any errors
       });
@@ -213,9 +214,7 @@ listenerFunc = async (snap, i, conversationUid) => {
       }
       else{
         for( let i = 0; i < noOfFavUsers; i++){
-
           const temp = i
-          console.log("FAVORITE USERNAME ARRAY:", favoriteUserUsernames[temp])
           boxes.push(
             <FavoriteUserBox
             left = {this.leftAnimation}
@@ -233,7 +232,8 @@ listenerFunc = async (snap, i, conversationUid) => {
 }
 
 donePress(){
-  for(let i = 0; i < noOfFavUsers; i++){
+  var limit = noOfFavUsers
+  for(let i = limit-1; i >= 0; i--){
     if(colorArray[i] == "trash" + global.themeForImages){
       imageUrls.splice(i,1)
       favoriteUserUids.splice(i,1)
@@ -288,6 +288,17 @@ select(url, uid, listener, index){
   global.selectedFavUserIndex = index
   navigate("ProfileFavUser")
 }
+removeFromUser(){
+  imageUrls.splice(global.selectedFavUserIndex,1)
+  favoriteUserUids.splice(global.selectedFavUserIndex,1)
+  usernameListener.splice(global.selectedFavUserIndex,1)
+  favoriteUserUsernames.splice(global.selectedFavUserIndex,1)
+  noOfFavUsers = noOfFavUsers - 1
+  global.removeFromFavUser = false
+  global.favoriteUsersListeners = global.favoriteUsersListeners - 1
+  this.setState({reRender: !this.state.reRender})
+  AsyncStorage.setItem(firebase.auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUserUids))
+}
 
   render(){
     const spin = this.spinValue.interpolate({
@@ -296,7 +307,6 @@ select(url, uid, listener, index){
     })
     const {navigate} = this.props.navigation;
 
-    console.log("EDIT PRESSED?", this.state.editPressed)
     if(!this.state.loadingDone){
       return(
         <View

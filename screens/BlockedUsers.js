@@ -48,7 +48,8 @@ if(Platform.OS === 'ios'){
 var blockedUserUids = [];
 var blockedUserUsernames = []
 var usernameListener = []
-var noOfFavUsers;
+var noOfBlockedUsers;
+var colorArray = [];
 var imageUrls = [];
 var focusedtoThisScreen = false;
 export default class BlockedUsersScreen extends Component<{}>{
@@ -73,14 +74,15 @@ export default class BlockedUsersScreen extends Component<{}>{
       header: null,
   };
   componentDidMount(){
-    console.log("component did mount in blocked users")
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.spinAnimation()
       focusedtoThisScreen = true
-      console.log("focused on blocked users")
-      if(global.selectedBlockedUserIndex != null){
+      if(global.selectedBlockedUserIndex != null && !global.removeFromBlockedUser){
         await usernameListener[global.selectedBlockedUserIndex].on('value',
         async snap => await this.listenerFunc(snap, global.selectedBlockedUserIndex, blockedUserUids[global.selectedBlockedUserIndex]));
+      }
+      if(global.removeFromBlockedUser){
+        this.removeFromUser()
       }
       await this.initializeBlockedUsersScreen()
       this.leftAnimation = new Animated.Value(-this.width/8)
@@ -109,7 +111,7 @@ export default class BlockedUsersScreen extends Component<{}>{
     if(this.state.editText == "Cancel"){
       Animated.timing(this.leftAnimation, {
         duration: 100,
-        toValue: -this.width*(3/16),
+        toValue: -this.width*(2/16),
         easing: Easing.linear,
         useNativeDriver: false,
       }).start()
@@ -124,11 +126,10 @@ export default class BlockedUsersScreen extends Component<{}>{
     }
   }
   editButtonPressed(){
-/*
+
     for( i = 0; i < noOfSearch; i++){
-      isSelectedArray[i] = false
       colorArray[i] = "trashgray"
-    }*/
+    }
     if(this.state.editText == "Edit"){
       this.setState({blockedBoxDisabled: true, doneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false})
       this.historyBoxAnimation()
@@ -141,38 +142,42 @@ export default class BlockedUsersScreen extends Component<{}>{
 
 async initializeBlockedUsersScreen(){
   await this.getBlockedUserUids()
-  if(!global.blockedUsersListeners){
+  if(global.blockedUsersListeners < noOfBlockedUsers){
     await this.createUsernameArray()
   }
 }
 
   async getBlockedUserUids(){
+
     await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'blockedUsers')
       .then(req => JSON.parse(req))
-      .then(json => blockedUserUids = json)
-    if(blockedUserUids == null || blockedUserUids == undefined){
-      noOfFavUsers = 0
-    }
-    else{
-      noOfFavUsers = blockedUserUids.length
-    }
-    console.log("favUsers: ", blockedUserUids)
+      .then(json => {
+        blockedUserUids = json
+        if(blockedUserUids == null || blockedUserUids == undefined){
+          noOfBlockedUsers = 0
+        }
+        else{
+          noOfBlockedUsers = blockedUserUids.length
+        }
+      })
     this.setState({loadingDone: true})
   }
   async createUsernameArray(){
-    for( let i = 0; i < noOfFavUsers; i++){
+    for( let i = global.blockedUsersListeners; i < noOfBlockedUsers; i++){
       await this.getUsernameOfTheUid(blockedUserUids[i], i)
     }
-    global.blockedUsersListeners = true
+    global.blockedUsersListeners = noOfBlockedUsers
   }
 
   async getUsernameOfTheUid(uid, i){
     usernameListener[i] = firebase.database().ref('Users/' + uid + "/i/u")
-    await usernameListener[i].on('value', async snap => await this.listenerFunc(snap, i, uid));
+    const firstTotalblocks = noOfBlockedUsers
+    await usernameListener[i].on('value', async snap => await this.listenerFunc(snap, i, uid,  firstTotalblocks));
   }
-listenerFunc = async (snap, i, conversationUid) => {
-    console.log("BlockedUsers Listener")
-    blockedUserUsernames[i] = snap.val()
+listenerFunc = async (snap, i, conversationUid, firstTotal) => {
+    console.log("LISTENER")
+    var diff = firstTotal - noOfBlockedUsers
+    blockedUserUsernames[i-diff] = snap.val()
     if(focusedtoThisScreen){
       this.setState({reRender: !this.state.reRender})
     }
@@ -181,7 +186,7 @@ listenerFunc = async (snap, i, conversationUid) => {
   renderBlockedUserBoxes(){
       var scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight();
       var boxes = [];
-      if(noOfFavUsers == 0){
+      if(noOfBlockedUsers == 0){
         return(
           <View style = {{flex: 1, flexDirection: "column", width: this.width, height: scrollViewHeight}}>
 
@@ -195,13 +200,14 @@ listenerFunc = async (snap, i, conversationUid) => {
         )
       }
       else{
-        for( let i = 0; i < noOfFavUsers; i++){
+        for( let i = 0; i < noOfBlockedUsers; i++){
 
           const temp = i
-          console.log("Blocked USERNAME ARRAY:", blockedUserUsernames[temp])
           boxes.push(
             <BlockedUserBox
             left = {this.leftAnimation}
+            trashImage = {colorArray[temp]}
+            trashOnPress = {()=> this.trashButtonPressed(temp)}
             photoSource = {imageUrls[temp]}
             disabled = {this.state.blockedBoxDisabled}
             text = {blockedUserUsernames[temp]}
@@ -214,10 +220,61 @@ listenerFunc = async (snap, i, conversationUid) => {
 }
 
 editButtonPressed(){
-
+  for( let i = 0; i < noOfBlockedUsers; i++){
+    colorArray[i] = "trashgray"
+  }
+  if(this.state.editText == "Edit"){
+    this.setState({blockedBoxDisabled: true, doneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false})
+    this.blockedBoxAnimation()
+  }
+  else{
+    this.setState({blockedBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
+    this.blockedBoxAnimation()
+    }
 }
 donePress(){
+  var limit = noOfBlockedUsers
+  for(let i = limit-1; i >= 0; i--){
+    if(colorArray[i] == "trash" + global.themeForImages){
+      imageUrls.splice(i,1)
+      blockedUserUids.splice(i,1)
+      usernameListener[i].off()
+      usernameListener.splice(i,1)
+      blockedUserUsernames.splice(i,1)
+      noOfBlockedUsers = noOfBlockedUsers - 1
+    }
+  }
+  for( let i = 0; i < noOfBlockedUsers; i++){
+    colorArray[i] = "trashgray"
+  }
+  this.setState({blockedBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
+  this.blockedBoxAnimation()
+  AsyncStorage.setItem(firebase.auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUserUids))
+}
 
+arrangeDoneColor(){
+    var flag1 = false
+    for(let i = 0; i < colorArray.length; i++){
+      if( colorArray[i] == "trash" + global.themeForImages){
+        flag1 = true
+        doneColor = global.themeColor
+        this.setState({doneDisabled: false})
+        break
+      }
+    }
+    if(!flag1){
+      doneColor = 'rgba(128,128,128,1)'
+      this.setState({doneDisabled: true})
+    }
+  }
+async trashButtonPressed(i){
+  if(colorArray[i] == "trashgray"){
+    colorArray[i] = "trash" + global.themeForImages
+  }
+  else{
+    colorArray[i] = "trashgray"
+  }
+  this.arrangeDoneColor()
 }
 
 select(url, uid, listener, index){
@@ -234,6 +291,18 @@ goBack(){
   this.props.navigation.navigate("Settings")
 }
 
+removeFromUser(){
+  imageUrls.splice(global.selectedBlockedUserIndex,1)
+  blockedUserUids.splice(global.selectedBlockedUserIndex,1)
+  usernameListener.splice(global.selectedBlockedUserIndex,1)
+  blockedUserUsernames.splice(global.selectedBlockedUserIndex,1)
+  noOfBlockedUsers = noOfBlockedUsers - 1
+  global.removeFromBlockedUser = false
+  global.blockedUsersListeners = global.blockedUsersListeners - 1
+  this.setState({reRender: !this.state.reRender})
+  AsyncStorage.setItem(firebase.auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUserUids))
+}
+
   render(){
     const spin = this.spinValue.interpolate({
       inputRange: [0, 1],
@@ -241,7 +310,6 @@ goBack(){
     })
     const {navigate} = this.props.navigation;
 
-    console.log("EDIT PRESSED?", this.state.editPressed)
     if(!this.state.loadingDone){
       return(
         <View
@@ -324,6 +392,18 @@ goBack(){
           onPress = {()=> this.goBack()}
           title = {"Blocked Users"}>
           </CustomHeader>
+
+          <View style = {{opacity: blockedUserUids.length == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
+          <TouchableOpacity
+            activeOpacity = {1}
+            style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+            onPress={()=>this.editButtonPressed()}
+            disabled = {noOfBlockedUsers == 0 ? true : false}>
+          <Text style = {{fontSize: 20, color: global.themeColor}}>
+          {this.state.editText}
+          </Text>
+          </TouchableOpacity>
+          </View>
 
           <FlatList
             style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
