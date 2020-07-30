@@ -1262,8 +1262,10 @@ uploadSearchPhoto = async (uri) => {
     var ref1 = storageRef.child("Photos/" + firebase.auth().currentUser.uid + "/SearchPhotos/" + "search-photo.jpg");
     ref1.put(blob).then(snapshot => {
       const updateRef = firebase.firestore().collection('Users').doc('embedder');
+      var batch = 0
+      var randFloat = Math.random()
       updateRef.set({
-      name: firebase.auth().currentUser.uid
+      name: firebase.auth().currentUser.uid + "_" + batch.toString() + "_" + randFloat.toString()
       }).then(() => {
             this.setState({
               messageButtonDisabled: true,

@@ -36,6 +36,7 @@ import ProfileBioButton from './components/ProfileBioButton'
 import CountryPicker from './components/CountryPicker'
 import LogoutButton from './components/LogoutButton'
 import ImageUploadModal from './components/ImageUploadModal'
+import FavBlockedUsersButtonModal from './components/FavBlockedUsersButtonModal'
 import SendMsgButton from './components/SendMsgButton'
 import BlockUserButton from './components/BlockUserButton'
 import FavoriteUserButton from './components/FavoriteUserButton'
@@ -56,6 +57,8 @@ export default class ProfileFavUserScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.state = {
+      removeModalVisible: false,
+      blockModalVisible: false,
       profilePhoto: "",
       loadingDone: false,
       userUsername: "",
@@ -137,7 +140,23 @@ static navigationOptions = {
     this.props.navigation.navigate("FavoriteUsers")
   }
   sendMsg(){
+    global.receiverUid = "pg7bdvxZS0XvAzL4YcU7Tzc3Xpk2"
+    global.receiverMail = "cemil.sisman@ug.bilkent.edu.tr"
+    global.receiverGender = "Male"
+    global.receiverCountry = "Azerbaijan"
+    global.receiverUsername = "cemil ug"
+    //global.firstMessage = true
+    this.props.navigation.navigate("Chat")
+  }
 
+  async buttonClicked(whichButton){
+    if(whichButton == "block"){
+      await this.block()
+    }
+    if(whichButton == "remove"){
+      this.remove()
+    }
+    this.setState({removeModalVisible:false, blockModalVisible: false})
   }
 
   render(){
@@ -254,17 +273,31 @@ static navigationOptions = {
         <FavoriteUserButton
         disabled = {false}
         image = {"trashyellow"}
-        onPress = {()=>this.remove()}
+        onPress = {()=> this.setState({removeModalVisible:true})}
         opacity = {1}/>
         <SendMsgButton
         disabled = {false}
-        onPress = {()=>this.sendMsg()}
+        onPress = {async ()=> await this.sendMsg()}
         opacity = {1}/>
         <BlockUserButton
         disabled = {false}
-        onPress = {async ()=> await this.block()}
+        onPress = {()=>this.setState({blockModalVisible:true})}
         opacity = {1}/>
         </View>
+
+        <FavBlockedUsersButtonModal
+        isVisible = {this.state.removeModalVisible}
+        txtButton = {"REMOVE"}
+        txtAlert= {"You are removing this user from favorites. Are you sure?"}
+        onPressAdd= {async ()=> await this.buttonClicked("remove")}
+        onPressClose = {()=>this.setState({removeModalVisible:false})}/>
+
+        <FavBlockedUsersButtonModal
+        isVisible = {this.state.blockModalVisible}
+        txtButton = {"BLOCK"}
+        txtAlert= {"You are blocking this user. Are you sure?"}
+        onPressAdd= {async ()=> await this.buttonClicked("block")}
+        onPressClose = {()=>this.setState({blockModalVisible:false})}/>
 
       </View>
 

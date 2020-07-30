@@ -190,6 +190,7 @@ listenerFunc = async (snap, i, conversationUid, firstTotal) => {
       var storageRef = firebase.storage().ref("Photos/" + uid + "/1.jpg")
       storageRef.getDownloadURL().then(data =>{
         imageUrls[i] = data
+        console.log("profil photo: ", data)
         this.setState({reRender: !this.state.reRender})
       }).catch(function(error) {
         // Handle any errors
@@ -282,11 +283,20 @@ goBack(){
   this.props.navigation.navigate("Settings")
 }
 select(url, uid, listener, index){
-  listener.off()
-  global.selectedFavUserUid = uid
-  global.selectedFavUserUrl = url
-  global.selectedFavUserIndex = index
-  navigate("ProfileFavUser")
+  var storageRef = firebase.storage().ref("Photos/" + uid + "/1.jpg")
+  storageRef.getDownloadURL().then(data =>{
+    imageUrls[index] = data
+    global.selectedFavUserUrl = data
+    console.log("profil photo: ", data)
+    this.setState({reRender: !this.state.reRender})
+    listener.off()
+    global.selectedFavUserUid = uid
+    //global.selectedFavUserUrl = url
+    global.selectedFavUserIndex = index
+    navigate("ProfileFavUser")
+  }).catch(function(error) {
+    // Handle any errors
+  });
 }
 removeFromUser(){
   imageUrls.splice(global.selectedFavUserIndex,1)

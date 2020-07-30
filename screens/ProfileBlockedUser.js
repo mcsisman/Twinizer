@@ -36,7 +36,7 @@ import ProfileBioButton from './components/ProfileBioButton'
 import CountryPicker from './components/CountryPicker'
 import LogoutButton from './components/LogoutButton'
 import ImageUploadModal from './components/ImageUploadModal'
-import SendMsgButton from './components/SendMsgButton'
+import FavBlockedUsersButtonModal from './components/FavBlockedUsersButtonModal'
 import BlockUserButton from './components/BlockUserButton'
 import FavoriteUserButton from './components/FavoriteUserButton'
 import countries from './Countries'
@@ -56,6 +56,9 @@ export default class ProfileBlockedUserScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.state = {
+      removeModalVisible: false,
+      favModalVisible: false,
+      addToFavBlockVisible: false,
       profilePhoto: "",
       loadingDone: false,
       userUsername: "",
@@ -142,6 +145,7 @@ static navigationOptions = {
       var storageRef = firebase.storage().ref("Photos/" + uid + "/1.jpg")
       await storageRef.getDownloadURL().then(data =>{
         this.setState({profilePhoto: data})
+        console.log("profil photo: ", data)
       }).catch(function(error) {
         // Handle any errors
       });
@@ -162,8 +166,15 @@ static navigationOptions = {
     AsyncStorage.setItem(firebase.auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
     this.props.navigation.navigate("BlockedUsers")
   }
-  sendMsg(){
 
+  async buttonClicked(whichButton){
+    if(whichButton == "fav"){
+      await this.fav()
+    }
+    if(whichButton == "remove"){
+      this.remove()
+    }
+    this.setState({removeModalVisible:false, favModalVisible: false})
   }
 
   render(){
@@ -275,22 +286,32 @@ static navigationOptions = {
         </View>
 
         <View
-        style = {{opacity: 1, backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10,
+        style = {{opacity: 1, backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/3, height: this.width/10,
         borderBottomLeftRadius: 16, borderBottomRightRadius: 16, borderTopLeftRadius: 16, borderTopRightRadius: 16}}>
         <FavoriteUserButton
         disabled = {false}
-        onPress = {async ()=> await this.fav()}
-        opacity = {1}/>
-        <SendMsgButton
-        disabled = {false}
-        onPress = {()=>this.sendMsg()}
+        onPress = {()=> this.setState({favModalVisible:true})}
         opacity = {1}/>
         <BlockUserButton
         disabled = {false}
         image = {"trash" + global.themeForImages}
-        onPress = {()=>this.remove()}
+        onPress = {()=> this.setState({removeModalVisible:true})}
         opacity = {1}/>
         </View>
+
+        <FavBlockedUsersButtonModal
+        isVisible = {this.state.removeModalVisible}
+        txtButton = {"REMOVE"}
+        txtAlert= {"You are unblocking this user. Are you sure?"}
+        onPressAdd= {async ()=> await this.buttonClicked("remove")}
+        onPressClose = {()=>this.setState({removeModalVisible:false})}/>
+
+        <FavBlockedUsersButtonModal
+        isVisible = {this.state.favModalVisible}
+        txtButton = {"FAVORITE"}
+        txtAlert= {"You are adding this user to favorites. Are you sure?"}
+        onPressAdd= {async ()=> await this.buttonClicked("fav")}
+        onPressClose = {()=>this.setState({favModalVisible:false})}/>
 
       </View>
 

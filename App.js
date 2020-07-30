@@ -13,6 +13,7 @@ import {
   SafeAreaView,
   StyleSheet,
   ScrollView,
+  ImageBackground,
   View,
   Dimensions,
   Text,
@@ -118,7 +119,12 @@ var firebaseConfig = {
 
     render() {
       const {navigate} = this.props.navigation;
-      if (this.state.loading) return <View/>; // Render loading/splash screen etc
+      if (this.state.loading) return (
+        <ImageBackground
+        source={{uri: 'flare'}}
+        style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}>
+        </ImageBackground>
+      ); // Render loading/splash screen etc
       else{
         if(this.state.authenticated){
           navigate("Tabs")
@@ -126,7 +132,12 @@ var firebaseConfig = {
         else{
           navigate("Splash")
         }
-        return <View/>
+        return (
+          <ImageBackground
+          source={{uri: 'flare'}}
+          style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}>
+          </ImageBackground>
+        )
 
       }
     }
