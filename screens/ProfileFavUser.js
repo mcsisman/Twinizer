@@ -36,6 +36,9 @@ import ProfileBioButton from './components/ProfileBioButton'
 import CountryPicker from './components/CountryPicker'
 import LogoutButton from './components/LogoutButton'
 import ImageUploadModal from './components/ImageUploadModal'
+import SendMsgButton from './components/SendMsgButton'
+import BlockUserButton from './components/BlockUserButton'
+import FavoriteUserButton from './components/FavoriteUserButton'
 import countries from './Countries'
 
 if(Platform.OS === 'android'){
@@ -53,7 +56,7 @@ export default class ProfileFavUserScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.state = {
-      profilePhoto: global.selectedFavUserUrl,
+      profilePhoto: "",
       loadingDone: false,
       userUsername: "",
       userGender: "",
@@ -73,7 +76,7 @@ export default class ProfileFavUserScreen extends Component<{}>{
 
   async componentDidMount(){
     this._subscribe = this.props.navigation.addListener('focus', async () => {
-      this.setState({loadingDone: true})
+      this.setState({loadingDone: true, profilePhoto: global.selectedFavUserUrl})
       //this.spinAnimation()
       console.log("subscribe")
       await this.initializeFavoriteUsersScreen()
@@ -118,6 +121,24 @@ static navigationOptions = {
       listener.off()
       this.props.navigation.navigate("FavoriteUsers")
     }
+  remove(){
+    listener.off()
+    global.removeFromFavUser = true
+    this.props.navigation.navigate("FavoriteUsers")
+  }
+  async block(){
+    listener.off()
+    global.removeFromFavUser = true
+    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'blockedUsers')
+      .then(req => JSON.parse(req))
+      .then(json => blockedUsers = json)
+    blockedUsers.push(global.selectedFavUserUid)
+    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+    this.props.navigation.navigate("FavoriteUsers")
+  }
+  sendMsg(){
+
+  }
 
   render(){
     const spin = this.spinValue.interpolate({
@@ -162,19 +183,6 @@ static navigationOptions = {
         </CustomHeader>
 
         <View
-        style={{justifyContent: "center", alignItems: "center", width: this.width, position:"absolute", top: headerHeight + getStatusBarHeight(),
-        height: (this.height-this.width/7 - headerHeight - getStatusBarHeight()), flexDirection: "row" }}>
-
-        <View
-        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderColor:"gray"}}>
-        <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
-        {this.state.userBio}
-        </Text>
-        </View>
-
-        </View>
-
-        <View
         style={{opacity: this.state.upperComponentsOpacity, width: this.width, height: (this.height-this.width/7 - headerHeight - getStatusBarHeight())/2, flexDirection: "row" }}>
 
         <View
@@ -194,7 +202,7 @@ static navigationOptions = {
         </View>
 
         <View
-        style={{ opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}>
+        style={{opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}>
 
         <View
         style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderColor:"gray"}}>
@@ -229,16 +237,34 @@ static navigationOptions = {
 
         </View>
 
-        <TouchableOpacity
-        activeOpacity = {1}
-        style={{ top: "80%", position: "absolute", borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,
-        justifyContent: 'center', alignItems: 'center', backgroundColor: backgroundColor, paddingLeft: 15, paddingRight: 15, paddingTop: 5, paddingBottom:5}}
-        onPress={()=> this.onPressSave()}>
-
+        <View
+        style={{width: this.width*4/6, height: this.height*2/10,  borderWidth: 0.9, borderColor:"gray"}}>
         <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
-        SAVE
+        {this.state.userBio}
         </Text>
-        </TouchableOpacity>
+        </View>
+
+        <View
+        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5.5, justifyContent: "center", alignItems: "center"}}>
+        </View>
+
+        <View
+        style = {{opacity: 1, backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10,
+        borderBottomLeftRadius: 16, borderBottomRightRadius: 16, borderTopLeftRadius: 16, borderTopRightRadius: 16}}>
+        <FavoriteUserButton
+        disabled = {false}
+        image = {"trashyellow"}
+        onPress = {()=>this.remove()}
+        opacity = {1}/>
+        <SendMsgButton
+        disabled = {false}
+        onPress = {()=>this.sendMsg()}
+        opacity = {1}/>
+        <BlockUserButton
+        disabled = {false}
+        onPress = {async ()=> await this.block()}
+        opacity = {1}/>
+        </View>
 
       </View>
 

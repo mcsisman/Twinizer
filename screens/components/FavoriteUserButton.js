@@ -29,9 +29,11 @@ export default class FavoriteUserButton extends Component {
   static propTypes = {
    onPress: PropTypes.func,
    disabled: PropTypes.bool,
-   opacity: PropTypes.number
+   opacity: PropTypes.number,
+   image: PropTypes.string
  }
  static defaultProps = {
+   image: "star"
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
@@ -43,7 +45,7 @@ export default class FavoriteUserButton extends Component {
         onPress={this.props.onPress}
         disabled = {this.props.disabled}>
 
-        <Image source={{uri: "star"}}
+        <Image source={{uri: this.props.image}}
           style={{ height: this.width/10*(7/10), width: this.width/10*(7/10) }}
         />
 

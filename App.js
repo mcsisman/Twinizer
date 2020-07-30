@@ -132,10 +132,12 @@ var firebaseConfig = {
     }
   }
 
+  global.removeFromFavUser = false
+  global.removeFromBlockedUser = false
   global.selectedFavUserIndex = null
   global.selectedBlockedUserIndex = null
-  global.favoriteUsersListeners = false
-  global.blockedUsersListeners = false
+  global.favoriteUsersListeners = 0
+  global.blockedUsersListeners = 0
   global.messagesFirstTime = true
   global.fromHistorySearch = false
   global.flag1 = true;
