@@ -35,7 +35,6 @@ import {Image,
    Platform,
    Keyboard
   } from 'react-native';
-var isRequest = "t"
 var lastMsg = ""
 var lastSeenInterval;
 var localMessages = [];
@@ -369,28 +368,14 @@ onLongPress(context, message) {
 
 render() {
   var renderKeyboardHeight;
-    isRequest = "t"
-    // IF THERE IS AT LEAST ONE isRequest = false, the conversation is a message
     if(this.state.messages != undefined){
       var msgs = this.state.messages
       if(msgs.length != 0 ){
-        this.state.messages.forEach(message=>{
-          if(message.isRequest == "f"){
-            isRequest = "f"
-          }
-        })
         global.firstMessage = false
-        lastMsg = this.state.messages[0]
       }
-
     }
-    // IF THERE ARE NO MESSAGES, IT'S THE FIRST MESSAGE
     if(lastMsg == ""){
       global.firstMessage = true
-    }
-    else{     // IF THERE IS AT LEAST ONE isRequest = false, the conversation is a message
-      global.lastMsg = lastMsg
-      global.isRequest = isRequest
     }
 
     const spin = this.spinValue.interpolate({
@@ -685,7 +670,6 @@ async getLastLocalMessages(){
 
   }
 resetVariables(){
-    isRequest = "t"
     lastMsg = ""
     lastSeenInterval;
     localMessages = [];

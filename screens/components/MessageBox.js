@@ -104,7 +104,7 @@ export default class MessageBox extends Component {
         </View>
           <Text
           numberOfLines={2}
-          style = {{fontSize: 16, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(128,128,128,1)", width: this.props.isPhoto ? this.width*36/80 : this.width*45/80}}>
+          style = {{fontStyle: messageText == "No message" ? "italic" : "normal" ,fontSize: 16, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(128,128,128,1)", width: this.props.isPhoto ? this.width*36/80 : this.width*45/80}}>
             {messageText}
           </Text>
         </View>

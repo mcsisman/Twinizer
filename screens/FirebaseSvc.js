@@ -45,7 +45,7 @@ class FirebaseSvc {
           .then(json => localMessages = json)
 
           const user = { _id: global.receiverUid, r: firebase.auth().currentUser.uid}
-          const { p: p, c: numberStamp, i: isRequest, text} = snapVal[messageKey];
+          const { p: p, c: numberStamp, text} = snapVal[messageKey];
           const id = messageKey;
           const _id = messageKey; //needed for giftedchat
           const createdAt = new Date(numberStamp);
@@ -78,7 +78,6 @@ class FirebaseSvc {
             id,
             _id,
             createdAt,
-            isRequest,
             text,
             user,
             image
@@ -116,60 +115,50 @@ class FirebaseSvc {
 
   // send the message to the Backend
   send = async (messages, p, images, index) => {
+    AsyncStorage.setItem('IsRequest/' + firebase.auth().currentUser.uid + "/" + global.receiverUid, "false")
+    firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + global.receiverUid).update({
+      k:1
+    })
     console.log("SENDE GELEN MESSAGES:", messages)
-    var isRequest;
     if(global.firstMessage){
-      isRequest = "t"
-      firebase.database().ref('Messages/' + global.receiverUid + "/" + firebase.auth().currentUser.uid).update({
-        k:1
+      var kExists = false
+      var kListener = firebase.database().ref('Messages/' + global.receiverUid + "/" + firebase.auth().currentUser.uid + "/k");
+      await kListener.once('value').then(async snapshot => {
+        if(snapshot.val() != null){
+          kExists = true
+        }
       })
-      firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + global.receiverUid).update({
-        k:1
-      })
-      global.firstMessage = false
-
-      var gender = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userGender')
-      var country = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userCountry')
-      var username = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userName')
-      var bio = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userBio')
-
-      var senderRef = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("MessageInformation");
-      if(senderRef.exists){
-        senderRef.update({
-          UidArray: firebase.firestore.FieldValue.arrayUnion(global.receiverUid),
+      if(!kExists){
+        firebase.database().ref('Messages/' + global.receiverUid + "/" + firebase.auth().currentUser.uid).update({
+          k: 0
         })
-      }
-      else{
-        senderRef.set({
-          UidArray: firebase.firestore.FieldValue.arrayUnion(global.receiverUid),
-        }, {merge: true})
-      }
+        global.firstMessage = false
 
-      var receiverRef = firebase.firestore().collection(global.receiverUid).doc("MessageInformation");
-      if(receiverRef.exists){
-        receiverRef.update({
-          UidArray: firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid),
-        })
-      }
-      else{
-        receiverRef.set({
-          UidArray: firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid),
-        }, {merge: true})
-      }
-
-    }
-    else{
-      if(global.isRequest == "t" && global.lastMsg != undefined){
-        if(global.lastMsg["user"]["r"] == firebase.auth().currentUser.uid){
-          isRequest = "f"
+        var senderRef = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("MessageInformation");
+        if(senderRef.exists){
+          senderRef.update({
+            UidArray: firebase.firestore.FieldValue.arrayUnion(global.receiverUid),
+          })
         }
         else{
-          isRequest = "t"
+          senderRef.set({
+            UidArray: firebase.firestore.FieldValue.arrayUnion(global.receiverUid),
+          }, {merge: true})
+        }
+
+        var receiverRef = firebase.firestore().collection(global.receiverUid).doc("MessageInformation");
+        if(receiverRef.exists){
+          receiverRef.update({
+            UidArray: firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid),
+          })
+        }
+        else{
+          receiverRef.set({
+            UidArray: firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid),
+          }, {merge: true})
         }
       }
-      else{
-        isRequest = "f"
-      }
+
     }
 
     for (let i = 0; i < messages.length; i++) {
@@ -177,7 +166,6 @@ class FirebaseSvc {
       const message = {
         text,
         c: this.timestamp,
-        i: isRequest,
         p: p
       };
       var pushedKey;
@@ -217,7 +205,6 @@ class FirebaseSvc {
         _id,
         c,
         createdAt,
-        isRequest,
         text,
         user,
         image

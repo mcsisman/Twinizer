@@ -30,6 +30,7 @@ import MessageSwitchButton from './components/MessageSwitchButton'
 import ChatScreen from './Chat';
 import HistoryScreen from './History';
 import CustomHeader from './components/CustomHeader'
+import DeleteMessageModal from './components/DeleteMessageModal'
 import SettingsScreen from './Settings';
 import ModifiedStatusBar from './components/ModifiedStatusBar'
 
@@ -80,6 +81,7 @@ export default class MessagesScreen extends Component<{}>{
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
+      deleteModalVisible: false,
       allSelected: false,
       reRender: "ok",
       messageDoneDisabled: true,
@@ -519,6 +521,7 @@ async printMessagesData(){
 }
 
 getMessagesData = async callback =>{
+  var isEmpty = false
   var arr = []
   arr.splice(0, arr.length)
   arr[0] = firebase.auth().currentUser.uid
@@ -530,24 +533,27 @@ getMessagesData = async callback =>{
   await listener23.once('value').then(async snapshot => {
       console.log("ONCE A GİRDİ:", snapshot.val())
       var data = "";
-      if(snapshot.val() == null || snapshot.val() == undefined ){
+      var emptyMessage;
+      if(snapshot.val() == null || snapshot.val() == undefined){
+        isEmpty = true
         var localMsgs = []
         await AsyncStorage.getItem(firebase.auth().currentUser.uid + uidArray[count] + '/messages')
           .then(req => JSON.parse(req))
           .then(json => localMsgs = json)
-        if(localMsgs != null && localMsgs != undefined && localMsgs.length != 0){
-          data = localMsgs[localMsgs.length - 1]
-          lastDBkey = localMsgs[localMsgs.length - 1]._id
-        }
-        else{
-          this.setState({loadingDone: true, test: "1", loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
-        }
+          if(localMsgs != null && localMsgs != undefined && localMsgs.length != 0){
+            data = localMsgs[localMsgs.length - 1]
+            lastDBkey = localMsgs[localMsgs.length - 1]._id
+          }
+          else{
+            console.log(" database boş, local boş")
+            data = { c: "notime", id: "emptymsgid", _id: "emptymsgid", text: "No message", user:{ _id: firebase.auth().currentUser.uid, r: uidArray[count]}, image: "" }
+          }
       }
       else{
         var snapVal = snapshot.val()
         var messageKey = Object.keys(snapVal)[0]
         const user = { _id: uidArray[count], r: firebase.auth().currentUser.uid}
-        const { p: p, c: numberStamp, i: isRequest, text} = snapVal[messageKey];
+        const { p: p, c: numberStamp, text} = snapVal[messageKey];
         const id = messageKey;
         const _id = messageKey; //needed for giftedchat
         const c = numberStamp
@@ -563,7 +569,6 @@ getMessagesData = async callback =>{
           id,
           _id,
           createdAt,
-          isRequest,
           text,
           user,
           image
@@ -571,14 +576,25 @@ getMessagesData = async callback =>{
         data = message
         lastDBkey = messageKey
       }
-
+      console.log("DATA:", data)
+      //ELSE İN DIŞI
       messageArray.splice(0, messageArray.length)
       requestArray.splice(0, requestArray.length)
 
       if(!fromChat && data != ""){
+        console.log("IS EMPTY=?", isEmpty)
+        if( data.user.r == firebase.auth().currentUser.uid && !isEmpty){
+          console.log("ÜST")
+          await this.setShowMessageBox(data.user._id, "true")
+        }
+        if( data.user._id == firebase.auth().currentUser.uid && !isEmpty){
+          console.log("ALT")
+          await this.setShowMessageBox(data.user.r, "true")
+        }
         if(dataArray.length < noOfConversations){
           dataArray[count] = data
         }
+        var newMsgIndex;
         if(dataArray.length == noOfConversations){
           for(i = 0; i < noOfConversations; i++){
             if( (data.user.r == dataArray[i].user.r && data.user._id == dataArray[i].user._id) || (data.user.r == dataArray[i].user._id && data.user._id == dataArray[i].user.r) ){
@@ -587,14 +603,35 @@ getMessagesData = async callback =>{
             }
           }
           for( i = 0; i < noOfConversations; i++){
-            if(dataArray[i].isRequest == "f" || dataArray[i].user._id == firebase.auth().currentUser.uid){
-              messageArray.push(dataArray[i])
-              noOfNonRequests++;
+            var isReq = await AsyncStorage.getItem('IsRequest/' + firebase.auth().currentUser.uid + "/" + uidArray[i])
+            var kVal;
+            var kListener = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[i] + "/k");
+            await kListener.once('value').then(async snapshot => {
+              if(snapshot.val() != null){
+                kVal = snapshot.val()
+              }
+            })
+
+            var showBox = await AsyncStorage.getItem('ShowMessageBox/' + firebase.auth().currentUser.uid + "/" + uidArray[i])
+            console.log("SHOW BOX OF UID?", uidArray[i])
+            console.log("SHOW BOX?", showBox)
+            if(kVal == 0){
+              isReq = "true"
             }
             else{
-              requestArray.push(dataArray[i])
-
+              isReq = "false"
             }
+            this.setLocalIsRequest(uidArray[i], isReq)
+            if(showBox == "true" || showBox == undefined || showBox == null){
+              if(isReq == "false"){
+                messageArray.push(dataArray[i])
+                noOfNonRequests++;
+              }
+              else{
+                requestArray.push(dataArray[i])
+              }
+            }
+
           }
           requestArray.sort(this.sortByProperty("c"));
           requestArray.reverse()
@@ -640,15 +677,15 @@ getMessagesData = async callback =>{
               }
             }
           }
-
           for( i = 0; i < requestArray.length; i++){
             for( j = 0; j < photoArray.length; j++){
-              if(requestArray[i].user._id == conversationUidArray[j]){
+              if(requestArray[i].user._id == conversationUidArray[j] || requestArray[i].user.r == conversationUidArray[j]){
                 requestPhotoArray[i] = photoArray[j]
                 requestUsernameArray[i] = conversationUsernameArray[j]
               }
             }
           }
+          console.log("REQUEST ARRAY HATADAN ÖNCE:", requestUsernameArray)
           for( i = 0; i < messageArray.length; i++){
             for( j = 0; j < photoArray.length; j++){
               if(messageArray[i].user._id == conversationUidArray[j] || messageArray[i].user.r == conversationUidArray[j]){
@@ -658,10 +695,12 @@ getMessagesData = async callback =>{
             }
           }
 
-          this.setState({loadingDone: true, test: "1", loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
+          this.setState({loadingDone: true, loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
         }
       }
-
+      else{
+        this.setState({loadingDone: true, loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false,})
+      }
 
   })
   var lastLocalKey = await this.getLastLocalMessage()
@@ -675,7 +714,6 @@ getMessagesData = async callback =>{
     global.newMsgListenerArray[count].isOpen = true
     global.newMsgListenerArray[count].listenerID = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-");
     await global.newMsgListenerArray[count].listenerID.on('value', async snapshot => await this.syncLocalMessages(snapshot, uidCount));
-
   }
 };
 async getLastLocalMessage(){
@@ -696,6 +734,7 @@ async getLastLocalMessage(){
 syncLocalMessages = async (snapshot, uidCount) => {
   // remove k from snapshot data
   if(snapshot.val() != null){
+    console.log("BUNA GİRİYO MU")
     var snapVal = snapshot.val()
     console.log("MESAJ GELDİ:", snapshot.val())
     var messageKey;
@@ -706,7 +745,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
         console.log("SNAP VAL: ", snapVal)
 
         const user = { _id: uidArray[uidCount], r: firebase.auth().currentUser.uid}
-        const { p: p, c: numberStamp, i: isRequest, text} = snapVal[messageKey];
+        const { p: p, c: numberStamp, text} = snapVal[messageKey];
         const id = messageKey;
         const _id = messageKey; //needed for giftedchat
         const c = numberStamp
@@ -737,7 +776,6 @@ syncLocalMessages = async (snapshot, uidCount) => {
           id,
           _id,
           createdAt,
-          isRequest,
           text,
           user,
           image
@@ -753,10 +791,15 @@ syncLocalMessages = async (snapshot, uidCount) => {
           }
       }
       firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
-      firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[uidCount]).update({
-        k:1
-      })
-
+      var kValue;
+      var isRequ = await AsyncStorage.getItem('IsRequest/' + firebase.auth().currentUser.uid + "/" + uidArray[i])
+      if(isRequ == undefined || isRequ == null || isRequ == "true"){
+        kValue = 0
+      }
+      if( isRequ == "false"){
+        kValue = 1
+      }
+      this.setRequestDB(uidArray[uidCount], kValue)
         await AsyncStorage.setItem(firebase.auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
         lastMsgFlag = lastDBkey == localMessages[uidCount][localMessages[uidCount].length - 1]._id
         if(lastMsgFlag || didSync){
@@ -778,7 +821,27 @@ syncLocalMessages = async (snapshot, uidCount) => {
                 }
               }
               for( i = 0; i < noOfConversations; i++){
-                if(dataArray[i].isRequest == "f" || dataArray[i].user._id == firebase.auth().currentUser.uid){
+                var isReq = await AsyncStorage.getItem('IsRequest/' + firebase.auth().currentUser.uid + "/" + uidArray[i])
+                if(isReq == undefined || isReq == null || isReq == ""){
+                  var kVal;
+                  var kListener = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[i] + "/k");
+                  await kListener.once('value').then(async snapshot => {
+                    if(snapshot.val() != null){
+                      kVal = snapshot.val()
+                    }
+                  })
+
+                  if(kVal == 0){
+                    isReq = "true"
+                  }
+
+                  else{
+                    isReq = "false"
+                  }
+                  this.setLocalIsRequest(uidArray[i], isReq)
+                }
+
+                if(isReq == "false"){
                   messageArray.push(dataArray[i])
                   noOfNonRequests++;
                 }
@@ -802,11 +865,16 @@ syncLocalMessages = async (snapshot, uidCount) => {
                 else{
                   key = firebase.auth().currentUser.uid + "" + requestArray[i].user._id
                   time = await AsyncStorage.getItem(key + 'lastSeen')
-                  if(requestArray[i].c > time){
-                    requestLastSeenArray[i] = 1
+                  if(requestArray[i].c == "notime"){
+                    requestLastSeenArray[i] = 0
                   }
                   else{
-                    requestLastSeenArray[i] = 0
+                    if(requestArray[i].c > time){
+                      requestLastSeenArray[i] = 1
+                    }
+                    else{
+                      requestLastSeenArray[i] = 0
+                    }
                   }
                 }
               }
@@ -822,11 +890,16 @@ syncLocalMessages = async (snapshot, uidCount) => {
                 else{
                   key = firebase.auth().currentUser.uid + "" + messageArray[i].user._id
                   time = await AsyncStorage.getItem(key + 'lastSeen')
-                  if(messageArray[i].c > time){
-                    messageLastSeenArray[i] = 1
+                  if(messageArray[i].c == "notime"){
+                    messageLastSeenArray[i] = 0
                   }
                   else{
-                    messageLastSeenArray[i] = 0
+                    if(messageArray[i].c > time){
+                      messageLastSeenArray[i] = 1
+                    }
+                    else{
+                      messageLastSeenArray[i] = 0
+                    }
                   }
                 }
               }
@@ -862,11 +935,20 @@ syncLocalMessages = async (snapshot, uidCount) => {
 };
 
 sortByProperty(property){
+
    return function(a,b){
-      if(a[property] > b[property])
-         return 1;
-      else if(a[property] < b[property])
-         return -1;
+     if(a[property] == "notime"){
+       return -1
+     }
+     else if(b[property] == "notime"){
+       return 1
+     }
+     else if(a[property] > b[property]){
+       return 1;
+     }
+     else if(a[property] < b[property]){
+       return -1;
+     }
       return 0;
    }
 }
@@ -893,7 +975,6 @@ spinAnimation(){
 
 navigateToChat(receiverUid, receiverPhoto, receiverUsername){
 
-  //const {navigate} = this.props.navigation;
   global.localMessages = localMessages[count]
   global.receiverUid = receiverUid
   global.receiverPhoto = receiverPhoto
@@ -916,52 +997,57 @@ navigateToChat(receiverUid, receiverPhoto, receiverUsername){
   this.props.navigation.navigate("Chat")
 }
 getMsgTime(timestamp){
-
-  var currentDate = new Date()
-  var currentDay = currentDate.getDate()
-  var currentMonth = currentDate.getMonth() + 1
-  var currentYear = currentDate.getFullYear()
-
-  var date = new Date(timestamp);
-  var hours = date.getHours();
-  var minutes = date.getMinutes();
-  var day = date.getDate()
-  var month = currentDate.getMonth() + 1
-  var year = currentDate.getFullYear()
-
-  if(currentYear > year){
-    if(day < 10)
-      day = "0" + day
-    if(month < 10)
-      month = "0" + month
-    return day + "." + month + "." + year;
-  }
-  else if(currentMonth > month){
-    if(day < 10)
-      day = "0" + day
-    if(month < 10)
-      month = "0" + month
-    return day + "." + month + "." + year;
-  }
-  else if( currentDay - day > 1){
-    if(day < 10)
-      day = "0" + day
-    if(month < 10)
-      month = "0" + month
-    return day + "." + month + "." + year;
-  }
-  else if( currentDay - day == 1){
-    if(day < 10)
-      day = "0" + day
-    if(month < 10)
-      month = "0" + month
-    return "Yesterday";
+  if(timestamp == "notime"){
+    return ""
   }
   else{
-    if(minutes < 10)
-      minutes = "0" + minutes;
-    return hours + ':' + minutes;
+    var currentDate = new Date()
+    var currentDay = currentDate.getDate()
+    var currentMonth = currentDate.getMonth() + 1
+    var currentYear = currentDate.getFullYear()
+
+    var date = new Date(timestamp);
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var day = date.getDate()
+    var month = currentDate.getMonth() + 1
+    var year = currentDate.getFullYear()
+
+    if(currentYear > year){
+      if(day < 10)
+        day = "0" + day
+      if(month < 10)
+        month = "0" + month
+      return day + "." + month + "." + year;
+    }
+    else if(currentMonth > month){
+      if(day < 10)
+        day = "0" + day
+      if(month < 10)
+        month = "0" + month
+      return day + "." + month + "." + year;
+    }
+    else if( currentDay - day > 1){
+      if(day < 10)
+        day = "0" + day
+      if(month < 10)
+        month = "0" + month
+      return day + "." + month + "." + year;
+    }
+    else if( currentDay - day == 1){
+      if(day < 10)
+        day = "0" + day
+      if(month < 10)
+        month = "0" + month
+      return "Yesterday";
+    }
+    else{
+      if(minutes < 10)
+        minutes = "0" + minutes;
+      return hours + ':' + minutes;
+    }
   }
+
 }
 
 renderMessageBoxes(){
@@ -1005,7 +1091,6 @@ renderMessageBoxes(){
     count = 0
       while( count < messageArray.length){
         const temp = count
-        console.log("AGLKDALGŞA :", messageArray[count])
         messages.push(
           <MessageBox
           isPhoto = {messageArray[count].image == "" || messageArray[count].image == undefined ? false : true}
@@ -1181,68 +1266,99 @@ arrangeDoneColor(){
     this.setState({requestDoneDisabled: true})
   }
 }
-requestDonePress(){
+
+async clearMessages(uid){
+  var emptyArr = []
+  await AsyncStorage.setItem(firebase.auth().currentUser.uid + uid + '/messages', JSON.stringify(emptyArr))
 }
-async deleteMessage(){
-  var docRef = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("MessageInformation");
-  var uidarr = []
-  await docRef.get().then(async doc =>{
-    uidarr = await doc.data()["UidArray"]
+async deleteMessages(uid, which){
+  await this.clearMessages(uid)
+  if(which == "messages"){
+    await this.setLocalIsRequest(uid, "true")
+    await this.setRequestDB(uid, 0)
+  }
+  await this.setShowMessageBox(uid, "false")
+}
+
+async setShowMessageBox(uid, bool){
+  console.log("DELETED FOR:", uid)
+  await AsyncStorage.setItem('ShowMessageBox/' + firebase.auth().currentUser.uid + "/" + uid, bool)
+}
+async setLocalIsRequest(uid, bool){
+  await AsyncStorage.setItem('IsRequest/' + firebase.auth().currentUser.uid + "/" + uid, bool)
+}
+async setRequestDB(uid, value){
+  firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uid).update({
+    k: value
   })
-  afterDelete = true
-  var messageLength = messageColorArray.length
-  var receiverUid;
-  for( i = messageLength - 1; i >= 0; i--){
-    if(firebase.auth().currentUser.uid == messageArray[i].user._id){
-      receiverUid = messageArray[i].user.r
-    }
-    else{
-      receiverUid = messageArray[i].user._id
-    }
-    if(messageColorArray[i] == "trash" + global.themeForImages){
-      uidarr.splice(i,1)
-      messageColorArray.splice(i,1)
-      messageLastSeenArray.splice(i,1)
-      messageArray.splice(i,1)
-      messagePhotoArray.splice(i,1)
-      messageUsernameArray.splice(i,1)
+}
+async deleteMessagesPressed(){
+  for( i = 0; i < messageColorArray.length; i++){
+    if( messageColorArray[i] != "trashgray"){
+      if(messageArray[i].user.r == firebase.auth().currentUser.uid){
+        await this.deleteMessages(messageArray[i].user._id, "messages")
+      }
+      else{
+        await this.deleteMessages(messageArray[i].user.r, "messages")
+      }
     }
   }
-  var senderRef = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("MessageInformation");
-  senderRef.set({
-    UidArray: uidarr,
-  }, {merge: true})
+  this.reloadPage()
+}
+async deleteRequestPressed(){
 
-  this.arrangeDoneColor()
-  this.setState({messageDoneDisabled: true, requestDoneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true, messageBoxDisabled: false})
+  for( i = 0; i < requestColorArray.length; i++){
+    if( requestColorArray[i] != "trashgray"){
+      if(requestArray[i].user.r == firebase.auth().currentUser.uid){
+        await this.deleteMessages(requestArray[i].user._id, "requests")
+      }
+      else{
+        await this.deleteMessages(requestArray[i].user.r, "requests")
+      }
+    }
+  }
+  this.reloadPage()
+}
+async clearMessagesPressed(){
+
+  for( i = 0; i < messageColorArray.length; i++){
+    if( messageColorArray[i] != "trashgray"){
+      if(messageArray[i].user.r == firebase.auth().currentUser.uid){
+        await this.clearMessages(messageArray[i].user._id)
+      }
+      else{
+        await this.clearMessages(messageArray[i].user.r)
+      }
+    }
+  }
+  this.reloadPage()
+}
+async clearRequestPressed(){
+
+  for( i = 0; i < requestColorArray.length; i++){
+    if( requestColorArray[i] != "trashgray"){
+      if(requestArray[i].user.r == firebase.auth().currentUser.uid){
+        await this.clearMessages(requestArray[i].user._id)
+      }
+      else{
+        await this.clearMessages(requestArray[i].user.r)
+      }
+    }
+  }
+  this.reloadPage()
+}
+
+reloadPage(){
+  this.startFromLocal()
+  this.leftAnimation = new Animated.Value(-this.width*(3/16))
+  this.setState({deleteModalVisible: false, allSelected: false, messageDoneDisabled: true, requestDoneDisabled: true,
+    editText: "Edit", editPressed: false, cancelPressed: true, messageBoxDisabled: false})
+}
+requestDonePress(){
+  this.setState({ deleteModalVisible: true })
 }
 messageDonePress(){
-  var deleteCount = 0
-  for( i = 0; i < messageColorArray.length; i++){
-    if(messageColorArray[i] == "trash" + global.themeForImages){
-      deleteCount++;
-    }
-  }
-  var alertMsg;
-  if(deleteCount == 1){
-    alertMsg = "If you proceed to delete this conversation, you can't access it until you receive a new message request."
-  }
-  else{
-    alertMsg = "If you proceed to delete these " + deleteCount + " conversations, you can't access them until you receive a new message request. "
-  }
-  Alert.alert(
-  'Warning!',
-  alertMsg ,
-  [
-    {
-      text: 'Cancel',
-      onPress: () => console.log('Cancel Pressed'),
-      style: 'cancel',
-    },
-    {text: 'Delete Anyways', onPress: () => this.deleteMessage()},
-  ],
-  {cancelable: false},
-);
+  this.setState({ deleteModalVisible: true })
 }
 messageSelectAll(){
   if(this.state.allSelected){
@@ -1371,6 +1487,13 @@ render(){
                     renderItem = {()=>this.renderMessageBoxes()}
                     data = { [{bos:"boş", key: "key"}]}>
                   </FlatList>
+
+                  <DeleteMessageModal
+                  onPressClose = {()=> this.setState({deleteModalVisible: false})}
+                  isVisible = {this.state.deleteModalVisible}
+                  onPressClear = {()=> this.clearMessagesPressed()}
+                  onPressDelete = {()=> this.deleteMessagesPressed()}
+                  txtAlert = {""}/>
         </View>
             )
       }
@@ -1424,6 +1547,12 @@ render(){
                   renderItem = {()=>this.renderRequestBoxes()}
                   data = { [{bos:"boş", key: "key"}]}>
                   </FlatList>
+                  <DeleteMessageModal
+                  onPressClose = {()=> this.setState({deleteModalVisible: false})}
+                  onPressClear = {()=> this.clearRequestPressed()}
+                  onPressDelete = {()=> this.deleteRequestPressed()}
+                  isVisible = {this.state.deleteModalVisible}
+                  txtAlert = {""}/>
         </View>
         )
       }
