@@ -68,7 +68,7 @@ export default class FavoriteUsersScreen extends Component<{}>{
       reRender: false
     }
     this.spinValue = new Animated.Value(0)
-    this.leftAnimation = new Animated.Value(-this.width/8)
+    this.leftAnimation = new Animated.Value(-this.width*3/16)
   }
   static navigationOptions = {
       header: null,
@@ -85,7 +85,7 @@ export default class FavoriteUsersScreen extends Component<{}>{
         this.removeFromUser()
       }
       await this.initializeFavoriteUsersScreen()
-      this.leftAnimation = new Animated.Value(-this.width/8)
+      this.leftAnimation = new Animated.Value(-this.width*3/16)
       this.setState({reRender: "ok"})
     })
   }
@@ -111,7 +111,7 @@ export default class FavoriteUsersScreen extends Component<{}>{
     if(this.state.editText == "Cancel"){
       Animated.timing(this.leftAnimation, {
         duration: 200,
-        toValue: -this.width*(2/16),
+        toValue: -this.width*(3/16),
         easing: Easing.cubic,
         useNativeDriver: false,
       }).start()
