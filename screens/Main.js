@@ -88,8 +88,10 @@ var currentUserUsername;
 var currentUserBio;
 var isFav = false;
 var addingToWhichList = "";
+var listToAdd = ""
 var favoriteUsers = []
 var blockedUsers = []
+var showThisDialog = "true"
 export default class MainScreen extends Component<{}>{
 constructor(props){
     super(props);
@@ -132,12 +134,14 @@ constructor(props){
       photoRight2: global.width*((12.5+2490)/10),
       photoRight3: global.width*((9+2490)/10),
       photoRight4: global.width*((4+2490)/10),
+      photoRight5: global.width*((-1+2490)/10),
       photoTop2: 0,
       uri0: null,
       uri1: null,
       uri2: null,
       uri3: null,
       uri4: null,
+      uri5: null,
       uri2_username: "",
       uri2_country: "",
       uri2_gender: "",
@@ -174,16 +178,18 @@ constructor(props){
   }
 
 async componentDidMount(){
+
+
+    showThisDialog = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'showThisDialog')
+    global.fromMessages = false
+    var localMessages = []
+    var arr = []
+    await this.getFavoriteAndBlockedUsers()
     this.addToFavoriteUsers("k209WPn6gmfHP3f2PphxyXeb84p1")
     this.addToFavoriteUsers("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1")
     this.addToFavoriteUsers("JtfxB5eiDvSzOM4dbhgGeU7PXVC2")
     this.addToBlockedUsers("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1")
     this.addToBlockedUsers("JtfxB5eiDvSzOM4dbhgGeU7PXVC2")
-
-    global.fromMessages = false
-    var localMessages = []
-    var arr = []
-    this.getFavoriteAndBlockedUsers()
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.setState({reRender: "ok"})
       if(global.fromHistorySearch){
@@ -467,6 +473,8 @@ leftActionComplete(){
     photoRight2: this.state.test  + this.width*(10/10),
     photoRight3: this.state.photoRight3 + this.width*(10/10),
     photoRight4: this.state.photoRight4 + this.width*(10/10),
+    photoRight5: this.state.photoRight5 + this.width*(10/10),
+    uri5: this.state.uri3,
     uri4: this.state.uri2,
     uri3: this.state.uri1,
     uri2: this.state.uri0,
@@ -499,6 +507,8 @@ leftActionComplete(){
       photoRight2: this.state.test  + this.width*(5/10),
       photoRight3: this.state.photoRight3 + this.width*(5/10),
       photoRight4: this.state.photoRight4 + this.width*(5/10),
+      photoRight5: this.state.photoRight5 + this.width*(5/10),
+      uri5: this.state.uri4,
       uri4: this.state.uri3,
       uri3: this.state.uri2,
       uri2: this.state.uri1,
@@ -570,11 +580,13 @@ async rightActionComplete(){
     photoRight2: this.state.test - this.width*(10/10),
     photoRight3: this.state.photoRight3 - this.width*(10/10),
     photoRight4: this.state.photoRight4 - this.width*(10/10),
+    photoRight5: this.state.photoRight5 - this.width*(10/10),
     uri0: this.state.uri2,
     uri1: this.state.uri3,
     uri2: this.state.uri4,
     uri3: photoArray[global.swipeCount + 1],
     uri4: photoArray[global.swipeCount + 2],
+    uri5: photoArray[global.swipeCount + 3],
     uri2_username: usernameArray[global.swipeCount],
     uri2_country:countryArray[global.swipeCount],
     uri2_gender:genderArray[global.swipeCount],
@@ -584,9 +596,9 @@ async rightActionComplete(){
   })
   if (photoArray.length < emailArray.length){
     await this.getImageURL(photoArray.length)
-    await this.downloadImages(photoArray.length)
+    //await this.downloadImages(photoArray.length)
     await this.getImageURL(photoArray.length)
-    await this.downloadImages(photoArray.length)
+    //await this.downloadImages(photoArray.length)
   }
   global.deactivationDistanceRight = global.deactivationDistanceRight + this.width*(5/10)
   global.activationDistanceLeft = global.activationDistanceLeft - this.width*(10/10)
@@ -608,11 +620,13 @@ async rightActionComplete(){
     photoRight2: this.state.test - this.width*(5/10),
     photoRight3: this.state.photoRight3 - this.width*(5/10),
     photoRight4: this.state.photoRight4 - this.width*(5/10),
+    photoRight5: this.state.photoRight5 - this.width*(5/10),
     uri0: this.state.uri1,
     uri1: this.state.uri2,
     uri2: this.state.uri3,
     uri3: this.state.uri4,
     uri4: photoArray[global.swipeCount + 2],
+    uri5: photoArray[global.swipeCount + 3],
     uri2_username: usernameArray[global.swipeCount],
     uri2_country:countryArray[global.swipeCount],
     uri2_gender:genderArray[global.swipeCount],
@@ -622,7 +636,7 @@ async rightActionComplete(){
   })
   if (photoArray.length < emailArray.length){
     await this.getImageURL(photoArray.length)
-    await this.downloadImages(photoArray.length)
+    //await this.downloadImages(photoArray.length)
   }
   global.deactivationDistanceRight = global.deactivationDistanceRight + this.width*(5/10)
   global.activationDistanceLeft = global.activationDistanceLeft - this.width*(5/10)
@@ -681,6 +695,8 @@ leftActionIncomplete(){
     photoRight2: this.state.test  + this.width*(5/10),
     photoRight3: this.state.photoRight3 + this.width*(5/10),
     photoRight4: this.state.photoRight4 + this.width*(5/10),
+    photoRight5: this.state.photoRight5 + this.width*(5/10),
+    uri5: this.state.uri4,
     uri4: this.state.uri3,
     uri3: this.state.uri2,
     uri2: this.state.uri1,
@@ -750,11 +766,13 @@ rightActionIncomplete(){
     photoRight2: this.state.test - this.width*(5/10),
     photoRight3: this.state.photoRight3 - this.width*(5/10),
     photoRight4: this.state.photoRight4 - this.width*(5/10),
+    photoRight5: this.state.photoRight5 - this.width*(5/10),
     uri0: this.state.uri1,
     uri1: this.state.uri2,
     uri2: this.state.uri3,
     uri3: this.state.uri4,
     uri4: photoArray[global.swipeCount - 2],
+    uri5: photoArray[global.swipeCount - 3],
     uri2_username: usernameArray[global.swipeCount],
     uri2_country:countryArray[global.swipeCount],
     uri2_gender:genderArray[global.swipeCount],
@@ -791,11 +809,22 @@ addToListButtonClicked(list){
   else{
     addingToWhichList = "Blocked Users"
   }
-  this.setState({addToFavBlockVisible:true})
+  console.log("showThisDialog: ", showThisDialog)
+  if(showThisDialog == "true" || showThisDialog == null){
+    this.setState({addToFavBlockVisible:true})
+  }
+  else{
+    this.favBlockModalButtonClicked(emailArray[global.swipeCount])
+    this.setState({addToFavBlockVisible:false})
+  }
 }
 
 favBlockModalButtonClicked(uid){
-  if (list == "Favorites"){
+  if(this.state.tickVisible){
+    showThisDialog = "false"
+    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'showThisDialog', showThisDialog)
+  }
+  if (addingToWhichList == "Favorite Users"){
     this.addToFavoriteUsers(uid)
   }
   else{
@@ -805,7 +834,7 @@ favBlockModalButtonClicked(uid){
 }
 
 addToFavoriteUsers(uid){
-  if ((favoriteUsers == null || favoriteUsers.length == 10 || !favoriteUsers.includes(uid)) && favoriteUsers.length <= 10){
+  if ((favoriteUsers == null || favoriteUsers.length == 0 || !favoriteUsers.includes(uid)) && favoriteUsers.length <= 10){
     favoriteUsers.push(uid)
     AsyncStorage.setItem(firebase.auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
   }
@@ -991,6 +1020,8 @@ async getImageURL(imageIndex){
     var storageRef = firebase.storage().ref("Photos/" + emailArray[imageIndex] + "/1.jpg")
     await storageRef.getDownloadURL().then(data =>{
       this.downloadURL = data
+      photoArray.push(data)
+
     }).catch(function(error) {
       // Handle any errors
     });
@@ -1007,7 +1038,7 @@ async checkFunction(){
           for(let i = 0; i < 10; i++){
             // resim indirme KISMI /////////////////////////////////////////////////
             await this.getImageURL(i);
-            await this.downloadImages(i);
+            //await this.downloadImages(i);
           }
           console.log("biyere geldik, mainPhotoArray.length ", mainPhotoArray.length)
           this.setState({
@@ -1016,6 +1047,7 @@ async checkFunction(){
             uri2: photoArray[0],
             uri3: photoArray[1],
             uri4: photoArray[2],
+            uri5: photoArray[3],
             uri2_username: usernameArray[0],
             uri2_country: countryArray[0],
             uri2_gender: genderArray[0],
@@ -1072,6 +1104,7 @@ async filterDone(){
     uri2: null,
     uri3: null,
     uri4: null,
+    uri5: null,
     imagePath: null,
     swipeableDisabled: true,
     uri2_username: "",
@@ -1097,7 +1130,7 @@ async filterDone(){
     for(let i = photoArray.length; i < 10; i++){
       // resim indirme KISMI /////////////////////////////////////////////////
       await this.getImageURL(i);
-      await this.downloadImages(i);
+      //await this.downloadImages(i);
     }
   }
   this.setState({
@@ -1106,6 +1139,7 @@ async filterDone(){
     uri2: photoArray[0],
     uri3: photoArray[1],
     uri4: photoArray[2],
+    uri5: photoArray[3],
     uri2_username: usernameArray[0],
     uri2_country: countryArray[0],
     uri2_gender: genderArray[0],
@@ -1276,6 +1310,7 @@ uploadSearchPhoto = async (uri) => {
               uri2: null,
               uri3: null,
               uri4: null,
+              uri5: null,
               notifIsVisible: true,
               imagePath: null,
               swipeableDisabled: true,
@@ -1423,6 +1458,11 @@ render(){
       right = {this.state.photoRight4}
       backgroundOpacity = {this.state.backgroundOpacity}/>
 
+      <SwipeableSmallImg
+      imgSource = {this.state.uri5}
+      right = {this.state.photoRight5}
+      backgroundOpacity = {this.state.backgroundOpacity}/>
+
       </Swipeable>
 
       <ImageUploader
@@ -1465,7 +1505,7 @@ render(){
       onPressTick = {()=> this.setState({tickVisible: this.state.tickVisible ? 0 : 1})}
       isVisible = {this.state.addToFavBlockVisible}
       txtAlert= {"You are adding" +this.state.uri2_username+ " to " +addingToWhichList+ ". Are you sure?"}
-      onPressAdd= {()=>this.addToFavoriteUsers(emailArray[global.swipeCount])}
+      onPressAdd= {()=>this.favBlockModalButtonClicked(emailArray[global.swipeCount])}
       onPressClose = {()=>this.setState({addToFavBlockVisible:false})}/>
 
       <ImageUploadModal
@@ -1501,19 +1541,19 @@ render(){
       onPressSendMsg = {()=>this.sendFirstMessage()}/>
 
       <View
-      style = {{opacity: 1, backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
+      style = {{opacity: this.state.messageButtonOpacity, backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
       borderBottomLeftRadius: 16, borderBottomRightRadius: 16, borderTopLeftRadius: 16, borderTopRightRadius: 16,
       position: "absolute", top: this.width*(5/10)*(7/6) + (this.height)*(20/100) + getStatusBarHeight()}}>
       <FavoriteUserButton
-      disabled = {false}
+      disabled = {this.state.messageButtonDisabled}
       onPress = {()=>this.addToListButtonClicked("Favorites")}
       opacity = {1}/>
       <SendMsgButton
-      disabled = {false}
+      disabled = {this.state.messageButtonDisabled}
       onPress = {()=>this.sendFirstMessage()}
       opacity = {1}/>
       <BlockUserButton
-      disabled = {false}
+      disabled = {this.state.messageButtonDisabled}
       onPress = {()=>this.addToListButtonClicked("Blocked")}
       opacity = {1}/>
       </View>

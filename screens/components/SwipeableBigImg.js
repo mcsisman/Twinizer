@@ -46,17 +46,6 @@ export default class SwipeableBigImg extends Component {
       style={{ position: 'absolute', backgroundColor: 'rgba(244,92,66,0)',
        width: this.props.width, height: this.props.height, top: this.props.top, right: this.props.right , borderBottomLeftRadius: 16, borderTopRightRadius: 16,
        borderTopLeftRadius: 16, borderBottomRightRadius: 16}}>
-       <View // SEND MESSAGE BUTONU
-         style={{opacity: this.props.isFavorite, justifyContent: 'center', alignItems: 'center', width: '24%', height: '16%', backgroundColor: "rgba(128,128,128,0.5)",
-         borderTopLeftRadius: 16,borderBottomRightRadius: 16}}
-         onPress={this.props.onPress}
-         disabled = {this.props.disabled}>
-
-         <Image source={{uri: "star"}}
-           style={{ height: '50%', width: '40%' }}
-         />
-
-       </View>
        <TouchableOpacity
        activeOpacity = {1}
        style = {{width: '100%', height: '100%', borderBottomLeftRadius: 16, borderTopRightRadius: 16,
@@ -73,6 +62,17 @@ export default class SwipeableBigImg extends Component {
          borderTopLeftRadius: 16, borderBottomRightRadius: 16 }}
        />
        </TouchableOpacity>
+       <View // SEND MESSAGE BUTONU
+         style={{opacity: this.props.isFavorite, justifyContent: 'center', alignItems: 'center', width: '24%', height: '16%', backgroundColor: "rgba(128,128,128,0.5)",
+         borderTopLeftRadius: 16,borderBottomRightRadius: 16}}
+         onPress={this.props.onPress}
+         disabled = {this.props.disabled}>
+
+         <Image source={{uri: "star"}}
+           style={{ height: '50%', width: '40%' }}
+         />
+
+       </View>
       </Animated.View>
     )
   }

@@ -82,7 +82,7 @@ export default class FavBlockModal extends Component {
       <View style={{paddingTop: 10, paddingBottom: 10, width: screenWidth*(6/10), flex:1}}>
 
       <Text style={{ marginLeft: 2, marginRight: 2, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: this.props.alertFontSize*(screenWidth/360)}}>
-      sşlfd kgsdşlf kglsşdfk gşlsdkf şlgk şlsdfkg şlsdfk gşlsdkf şlsdkfgş lsdkfgşl ksdfşlg ksdlşfk gsdşlkfg
+      {this.props.txtAlert}
       </Text>
       </View>
 
