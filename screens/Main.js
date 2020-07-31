@@ -1397,7 +1397,7 @@ render(){
       <CustomHeader
       whichScreen = {"Main"}
       onPress = {()=> this.setState({isVisible2: true})}
-      isFilterVisible = {true}
+      isFilterVisible = {this.state.showFilter}
       title = {"Twinizer"}>
       </CustomHeader>
 
