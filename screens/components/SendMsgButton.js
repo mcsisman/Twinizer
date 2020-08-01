@@ -29,9 +29,13 @@ export default class SendMsgButton extends Component {
   static propTypes = {
    onPress: PropTypes.func,
    disabled: PropTypes.bool,
-   opacity: PropTypes.number
+   opacity: PropTypes.number,
+   width: PropTypes.number,
+   height: PropTypes.number
  }
  static defaultProps = {
+   width: screenWidth/6,
+   height: screenWidth/10,
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
@@ -39,7 +43,7 @@ export default class SendMsgButton extends Component {
     return(
       <TouchableOpacity // SEND MESSAGE BUTONU
         activeOpacity = {1}
-        style={{ opacity: this.props.opacity, justifyContent: 'center', alignItems: 'center', width: this.width/6, height: this.width/10, borderRightWidth: 0.7, borderColor: "white"}}
+        style={{ opacity: this.props.opacity, justifyContent: 'center', alignItems: 'center', width: this.props.width, height: this.props.height, borderRightWidth: 0.7, borderColor: "white"}}
         onPress={this.props.onPress}
         disabled = {this.props.disabled}>
 

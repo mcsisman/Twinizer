@@ -30,9 +30,13 @@ export default class BlockUserButton extends Component {
    onPress: PropTypes.func,
    disabled: PropTypes.bool,
    opacity: PropTypes.number,
-   image: PropTypes.string
+   image: PropTypes.string,
+   width: PropTypes.number,
+   height: PropTypes.number
  }
  static defaultProps = {
+   width: screenWidth/6,
+   height: screenWidth/10,
    image: "block"
  }
   render(){
@@ -41,7 +45,7 @@ export default class BlockUserButton extends Component {
     return(
       <TouchableOpacity // SEND MESSAGE BUTONU
         activeOpacity = {1}
-        style={{ opacity: this.props.opacity, justifyContent: 'center', alignItems: 'center', width: this.width/6, height: this.width/10}}
+        style={{ opacity: this.props.opacity, justifyContent: 'center', alignItems: 'center', width: this.props.width, height: this.props.height}}
         onPress={this.props.onPress}
         disabled = {this.props.disabled}>
 

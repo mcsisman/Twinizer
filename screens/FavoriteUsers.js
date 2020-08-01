@@ -74,6 +74,8 @@ export default class FavoriteUsersScreen extends Component<{}>{
       header: null,
   };
   componentDidMount(){
+    this.setState({loadingDone: false})
+    this.spinAnimation()
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.spinAnimation()
       focusedtoThisScreen = true

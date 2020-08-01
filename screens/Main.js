@@ -1074,6 +1074,8 @@ async checkFunction(){
 }
 
 async filterDone(){
+  this.setState({loadingOpacity: 1})
+  this.spinAnimation()
   this.inSearchDone = false;
   emailArray = [];
   usernameArray = [];
@@ -1151,6 +1153,7 @@ async filterDone(){
   })
   console.log(this.state.uri2_bio);
   console.log(this.state.uri2);
+  this.setState({loadingOpacity: 0})
 }
 
 async searchDone(value){

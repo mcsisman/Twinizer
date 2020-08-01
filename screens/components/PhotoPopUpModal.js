@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import {createStackNavigator, Header} from 'react-navigation-stack';
 import Modal from "react-native-modal";
+import BlockUserButton from './BlockUserButton'
+import FavoriteUserButton from './FavoriteUserButton'
+import SendMsgButton from './SendMsgButton'
+
 import PropTypes from 'prop-types';
 import {
   View,
@@ -32,7 +36,9 @@ export default class PhotoPopUpModal extends Component {
    bio: PropTypes.string,
    onPressCancel: PropTypes.func,
    imgSource: PropTypes.string,
-   onPressSendMsg: PropTypes.func
+   onPressSendMsg: PropTypes.func,
+   onPressFav: PropTypes.func,
+   onPressBlock: PropTypes.func
 
  }
  static defaultProps = {
@@ -72,25 +78,25 @@ export default class PhotoPopUpModal extends Component {
           paddingBottom: 0
           }}>
 
-          <View style={{backgroundColor: global.themeColor,justifyContent: 'center',
+          <View style={{backgroundColor:  global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)",justifyContent: 'center',
           alignItems: 'center',width: this.width*(8/10), height: this.width*(8/10)*(1/6),
           borderTopLeftRadius: 12, borderTopRightRadius: 12}}>
 
-          <Text style={{ textAlign: 'center', color: "white" ,fontFamily: "Candara", fontSize: (this.width*(1/18))}}>
+          <Text style={{ textAlign: 'center', color: global.themeColor ,fontFamily: "Candara", fontSize: (this.width*(1/18))}}>
             {this.props.username}
           </Text>
           <TouchableOpacity
           style={{width: this.width*(2/15), height: this.width*(2/15), right: 0, position:'absolute', top:0}}
            onPress={this.props.onPressCancel}>
-           <Image source={{uri: 'crosswhite'}}
+           <Image source={{uri: 'cross' + global.themeForImages}}
              style={{width: '40%', height: '40%', right:'30%', bottom: '30%', position: 'absolute' }}
            />
           </TouchableOpacity>
 
           </View>
 
-          <View style={{ paddingTop: 5, paddingBottom: 5, paddingLeft:10, paddingRight: 10, backgroundColor: global.themeColor}}>
-          <Text style={{ textAlign: 'left', color: 'white', fontSize: (this.width*(1/25))}}>
+          <View style={{ paddingTop: 5, paddingBottom: 5, paddingLeft:10, paddingRight: 10, backgroundColor:  global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
+          <Text style={{ textAlign: 'left', color: global.themeColor, fontSize: (this.width*(1/25))}}>
             {this.props.bio}
           </Text>
           </View>
@@ -101,17 +107,29 @@ export default class PhotoPopUpModal extends Component {
           />
           </View>
 
-          <TouchableOpacity
-            activeOpacity = {1}
-            style={{justifyContent: 'center', alignItems: 'center', width: this.width*(8/10), height: this.width*(8/10)*(1/6),
-            borderBottomLeftRadius: 12, borderBottomRightRadius: 12, backgroundColor: global.themeColor}}
-            onPress={this.props.onPressSendMsg}>
+          <View
+          style = {{opacity: 1, backgroundColor:  global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)" , flexDirection: "row", width: this.width*(8/10), height: this.width*(8/10)*(1/6),
+          borderBottomLeftRadius: 12, borderBottomRightRadius: 12}}>
+          <FavoriteUserButton
+          disabled = {false}
+          width = {this.width*(8/30)}
+          height = {this.width*(8/10)*(1/6)}
+          onPress = {this.props.onPressFav}
+          opacity = {1}/>
+          <SendMsgButton
+          disabled = {false}
+          width = {this.width*(8/30)}
+          height = {this.width*(8/10)*(1/6)}
+          onPress = {this.props.onPressSendMsg}
+          opacity = {1}/>
+          <BlockUserButton
+          disabled = {false}
+          width = {this.width*(8/30)}
+          height = {this.width*(8/10)*(1/6)}
+          onPress = {this.props.onPressBlock}
+          opacity = {1}/>
+          </View>
 
-            <Image source={{uri: "sendmessage"}}
-              style={{ height: this.width*(8/10)*(1/6)*(5/10), width: this.width*(8/10)*(1/6)*(5/10)*2.62 }}
-            />
-
-          </TouchableOpacity>
         </View>
       </Modal>
     )

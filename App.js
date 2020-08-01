@@ -36,6 +36,7 @@ import ProfileUploadScreen from './screens/ProfileUpload';
 import BottomBar from './screens/components/BottomBar';
 import HistoryScreen from './screens/History';
 import SettingsScreen from './screens/Settings';
+import AboutScreen from './screens/About';
 import FavoriteUsersScreen from './screens/FavoriteUsers';
 import BlockedUsersScreen from './screens/BlockedUsers';
 import ThemeSettingsScreen from './screens/ThemeSettings';
@@ -415,6 +416,10 @@ function MyTabs() {
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
+      />
+      <Tab.Screen
+        name="About"
+        component={AboutScreen}
       />
       <Tab.Screen
         name="FavoriteUsers"

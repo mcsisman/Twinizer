@@ -78,6 +78,9 @@ export default class ProfileFavUserScreen extends Component<{}>{
   }
 
   async componentDidMount(){
+    this.setState({loadingDone: false})
+    this.spinAnimation()
+    console.log("comp did mount")
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.setState({loadingDone: true, profilePhoto: global.selectedFavUserUrl})
       //this.spinAnimation()

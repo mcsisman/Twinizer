@@ -35,7 +35,6 @@ import ProfileInfo from './components/ProfileInfo'
 import SettingsButton from './components/SettingsButton'
 import LogoutButton from './components/LogoutButton'
 import ThemeSettingsScreen from './ThemeSettings';
-import AboutScreen from './About';
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -44,7 +43,7 @@ if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
 
-export default class SettingsScreen extends Component<{}>{
+export default class AboutScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.height = Math.round(Dimensions.get('screen').height);
@@ -57,7 +56,7 @@ export default class SettingsScreen extends Component<{}>{
       header: null,
   };
   componentDidMount(){
-    console.log("SETTINGS COMPONENT DID MOUNT")
+    console.log("ABOUT COMPONENT DID MOUNT")
     this._subscribe = this.props.navigation.addListener('focus', () => {
       console.log("subscribe")
       this.setState({reRender: "ok"})
@@ -68,32 +67,7 @@ export default class SettingsScreen extends Component<{}>{
     this.setState({reRender: "ok"})
     return "TESTTTT"
   }
-  onPressLogout(){
-    Alert.alert(
-    '',
-    "Are you sure you want to logout?" ,
-    [
-      {
-        text: 'No',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      {text: 'Yes', onPress: () => this.onPressLogoutOk()},
-    ],
-    {cancelable: true},
-  );
-  }
-  onPressLogoutOk(){
-    AsyncStorage.removeItem(firebase.auth().currentUser.uid + 'userGender')
-    AsyncStorage.removeItem(firebase.auth().currentUser.uid + 'userCountry')
-    AsyncStorage.removeItem(firebase.auth().currentUser.uid + 'userName')
-    AsyncStorage.removeItem(firebase.auth().currentUser.uid + 'userBio')
-    AsyncStorage.removeItem(firebase.auth().currentUser.uid + 'userPhotoCount')
-    firebase.auth().signOut().then(function() {
-      console.log("LOGOUT SUCCESSFUL")
-      navigate("Splash")
-    })
-  }
+
   render(){
     const {navigate} = this.props.navigation;
     return(
@@ -102,9 +76,10 @@ export default class SettingsScreen extends Component<{}>{
       <ModifiedStatusBar/>
 
       <CustomHeader
-      whichScreen = {"Settings"}
+      whichScreen = {"About"}
       isFilterVisible = {this.state.showFilter}
-      title = "Settings">
+      onPress = {()=> this.props.navigation.navigate("Settings")}
+      title = "About Twinizer">
       </CustomHeader>
 
       <ScrollView
@@ -112,32 +87,20 @@ export default class SettingsScreen extends Component<{}>{
       <View
       style = {{height: this.width/9}}/>
       <SettingsButton
-      onPress = {()=> navigate("Profile")}
-      text = {"Edit Profile"}/>
+      onPress = {()=> console.log("privacy")}
+      text = {"Privacy Policy"}/>
 
       <View
       style = {{height: this.width/9}}/>
       <SettingsButton
-      onPress = {()=> navigate("FavoriteUsers")}
-      text = {"Favorite Users"}/>
-      <SettingsButton
-      onPress = {()=> navigate("BlockedUsers")}
-      text = {"Blocked Users"}/>
+      onPress = {()=> console.log("Terms")}
+      text = {"Terms of Use"}/>
 
       <View
       style = {{height: this.width/9}}/>
       <SettingsButton
-      onPress = {()=> this.props.navigation.navigate("ThemeSettings", {update: this.updateState})}
-      text = {"Theme Settings"}/>
-      <View
-      style = {{height: this.width/9}}/>
-      <SettingsButton
-      onPress = {()=> this.props.navigation.navigate("About", {update: this.updateState})}
-      text = {"About Twinizer"}/>
-      <View
-      style = {{height: this.width/9}}/>
-      <LogoutButton
-      onPress = {()=>this.onPressLogout()}/>
+      onPress = {()=> console.log("Libraries")}
+      text = {"Licences"}/>
 
       </ScrollView>
 
