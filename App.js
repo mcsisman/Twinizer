@@ -37,6 +37,8 @@ import BottomBar from './screens/components/BottomBar';
 import HistoryScreen from './screens/History';
 import SettingsScreen from './screens/Settings';
 import AboutScreen from './screens/About';
+import LibraryLicencesScreen from './screens/LibraryLicences';
+import DisplayLicenceScreen from './screens/DisplayLicence';
 import FavoriteUsersScreen from './screens/FavoriteUsers';
 import BlockedUsersScreen from './screens/BlockedUsers';
 import ThemeSettingsScreen from './screens/ThemeSettings';
@@ -420,6 +422,14 @@ function MyTabs() {
       <Tab.Screen
         name="About"
         component={AboutScreen}
+      />
+      <Tab.Screen
+        name="LibraryLicences"
+        component={LibraryLicencesScreen}
+      />
+      <Tab.Screen
+        name="DisplayLicence"
+        component={DisplayLicenceScreen}
       />
       <Tab.Screen
         name="FavoriteUsers"
