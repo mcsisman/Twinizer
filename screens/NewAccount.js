@@ -4,7 +4,8 @@ import RNPickerSelect from 'react-native-picker-select';
 import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
-import * as firebase from "firebase";
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 import CustomHeader from './components/CustomHeader'
 import AsyncStorage from '@react-native-community/async-storage';
 import {Image,
@@ -65,7 +66,7 @@ export default class NewAccountScreen extends Component<{}>{
   };
 
 writeUserData(userId, name, email, imageUrl) {
-  firebase.database().ref('users/' + userId).set({
+  database().ref('users/' + userId).set({
     username: name,
     email: email,
     profile_picture : imageUrl
@@ -74,20 +75,18 @@ writeUserData(userId, name, email, imageUrl) {
     SignUp = (email, password) => {
       const {navigate} = this.props.navigation;
     try {
-           firebase
-               .auth()
+              auth()
                .createUserWithEmailAndPassword(this.state.email, this.state.sifre)
-               .then(user => {
-                      var database = firebase.database();
-                      firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/i").set({
+               .then(() => {
+                 console.log(auth().currentUser.uid)
+                      console.log(database().ref('/Users/' + auth().currentUser.uid + "/i"))
+                      database().ref('/Users/' + auth().currentUser.uid + "/i").set({
                       u: this.state.isim,
                     });
-                    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userName', this.state.isim)
-                      firebase.auth().onAuthStateChanged(function(user) {
-                        user.sendEmailVerification();
-                        navigate('Splash')
-                        Alert.alert('',global.langVerificationSent);
-                      });
+                    AsyncStorage.setItem(auth().currentUser.uid + 'userName', this.state.isim)
+                    auth().currentUser.sendEmailVerification();
+                    navigate('Splash')
+                    Alert.alert('',global.langVerificationSent);
                 })
                 .catch(error => {
                   if(error.message == 'The email is badly formatted.'){

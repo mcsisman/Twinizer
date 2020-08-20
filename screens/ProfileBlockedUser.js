@@ -6,7 +6,9 @@ import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFS from 'react-native-fs'
-import * as firebase from "firebase";
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
 
 import {Image,
    Text,
@@ -115,7 +117,7 @@ static navigationOptions = {
   }
 
   async initializeBlockedUsersScreen(){
-    listener = firebase.database().ref('Users/' + global.selectedBlockedUserUid + "/i")
+    listener = database().ref('Users/' + global.selectedBlockedUserUid + "/i")
     await listener.on('value', async snap => await this.listenerFunc(snap));
   }
 
@@ -145,7 +147,7 @@ static navigationOptions = {
   }
 
   async getImageURL(uid){
-      var storageRef = firebase.storage().ref("Photos/" + uid + "/1.jpg")
+      var storageRef = storage().ref("Photos/" + uid + "/1.jpg")
       await storageRef.getDownloadURL().then(data =>{
         this.setState({profilePhoto: data})
         console.log("profil photo: ", data)
@@ -162,11 +164,11 @@ static navigationOptions = {
   async fav(){
     listener.off()
     global.removeFromBlockedUser = true
-    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'favoriteUsers')
+    await AsyncStorage.getItem(auth().currentUser.uid + 'favoriteUsers')
       .then(req => JSON.parse(req))
       .then(json => favoriteUsers = json)
     favoriteUsers.push(global.selectedBlockedUserUid)
-    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
+    AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
     this.props.navigation.navigate("BlockedUsers")
   }
 

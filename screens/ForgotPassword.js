@@ -3,7 +3,7 @@ import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import * as firebase from "firebase";
+import auth from '@react-native-firebase/auth';
 import {Image,
    Text,
    View,
@@ -47,7 +47,7 @@ static navigationOptions = {
 };
   check(){
     const {navigate} = this.props.navigation;
-    firebase.auth().sendPasswordResetEmail(this.state.email)
+    auth().sendPasswordResetEmail(this.state.email)
       .then(function (user) {
         navigate('Splash')
         Alert.alert("", global.langPlsCheckEmail)

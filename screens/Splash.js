@@ -3,7 +3,8 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { createStackNavigator} from '@react-navigation/stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import { Header } from 'react-navigation-stack';
-import * as firebase from "firebase";
+import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
 import {Image,
    Text,
    View,
@@ -51,19 +52,21 @@ componentDidMount(){
 
 Login = (email, password) => {
     const {navigate} = this.props.navigation;
-          firebase
-           .auth()
+          auth()
            .signInWithEmailAndPassword(email, password)
-           .then(async res => {
-             if(firebase.auth().currentUser.emailVerified){
-               var storageRef = firebase.storage().ref("/embeddings2/" + firebase.auth().currentUser.uid + ".pickle");
+           .then(async () => {
+             if(auth().currentUser.emailVerified){
+               var storageRef = storage().ref("Embeddings/" + auth().currentUser.uid + ".pickle")
+               console.log("STORAGE REF: ", storageRef)
                await storageRef.getDownloadURL().then(data =>{
-                 navigate("Main")
+                 console.log("EMBEDDING VAR: ", auth().currentUser.uid)
+                 console.log("DATA: ", data)
+                 navigate("Tabs")
                }).catch(function(error) {
+                 console.log("EMBEDDING YOK: ", auth().currentUser.uid)
                  navigate("Gender")
                });
-             user = firebase.auth().currentUser
-
+             user = auth().currentUser
              }
              else{
                Alert.alert("", global.langEmailNotVerified )

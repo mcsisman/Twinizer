@@ -4,7 +4,9 @@ import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
-import * as firebase from "firebase";
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
 import themes from './Themes';
 import {navigate, route} from './RootNavigation'
 
@@ -76,8 +78,8 @@ export default class ThemeSettingsScreen extends Component<{}>{
     })
   }
   async getSelectedTheme(){
-    var themeColor = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'theme')
-    var mode = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'mode')
+    var themeColor = await AsyncStorage.getItem(auth().currentUser.uid + 'theme')
+    var mode = await AsyncStorage.getItem(auth().currentUser.uid + 'mode')
 
     if(themeColor == null || themeColor == undefined){
       themeColor = "Original"
@@ -133,8 +135,8 @@ export default class ThemeSettingsScreen extends Component<{}>{
     global.themeForImages = themes.getThemeForImages(themeColor)
     this.setState({reRender: "ok"})
     this.props.route.params.update()
-    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'theme', themeColor)
-    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'mode', mode)
+    AsyncStorage.setItem(auth().currentUser.uid + 'theme', themeColor)
+    AsyncStorage.setItem(auth().currentUser.uid + 'mode', mode)
   }
   render(){
     const {navigate} = this.props.navigation;

@@ -39,7 +39,7 @@ export default class FavBlockModal extends Component {
    animationOut: PropTypes.string,
    backdropOpacity: PropTypes.number,
    onPressTick: PropTypes.func,
-   tickIsVisible: PropTypes.number
+   tickIsVisible: PropTypes.bool
  }
  static defaultProps = {
    addFontSize: 15,
@@ -49,7 +49,7 @@ export default class FavBlockModal extends Component {
    animationIn: "zoomInUp",
    animationOut: "zoomOutUp",
    backdropOpacity: 0.4,
-   tickIsVisible: 0
+   tickIsVisible: false
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);

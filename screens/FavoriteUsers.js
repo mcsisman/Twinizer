@@ -4,9 +4,10 @@ import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import {navigate, route} from './RootNavigation'
-import * as firebase from "firebase";
 import AsyncStorage from '@react-native-community/async-storage';
-
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
 import {Image,
    Text,
    View,
@@ -153,7 +154,7 @@ async initializeFavoriteUsersScreen(){
 
   async getFavoriteUserUids(){
 
-    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'favoriteUsers')
+    await AsyncStorage.getItem(auth().currentUser.uid + 'favoriteUsers')
       .then(req => JSON.parse(req))
       .then(json => {
         favoriteUserUids = json
@@ -175,7 +176,7 @@ async initializeFavoriteUsersScreen(){
   }
 
   async getUsernameOfTheUid(uid, i){
-    usernameListener[i] = firebase.database().ref('Users/' + uid + "/i/u")
+    usernameListener[i] = database().ref('Users/' + uid + "/i/u")
     const firstTotalfavs = noOfFavUsers
     await usernameListener[i].on('value', async snap => await this.listenerFunc(snap, i, uid, firstTotalfavs));
   }
@@ -189,7 +190,7 @@ listenerFunc = async (snap, i, conversationUid, firstTotal) => {
   }
 
   getImageURL(uid, i){
-      var storageRef = firebase.storage().ref("Photos/" + uid + "/1.jpg")
+      var storageRef = storage().ref("Photos/" + uid + "/1.jpg")
       storageRef.getDownloadURL().then(data =>{
         imageUrls[i] = data
         console.log("profil photo: ", data)
@@ -251,7 +252,7 @@ donePress(){
   }
   this.setState({favoriteBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
   this.favoriteBoxAnimation()
-  AsyncStorage.setItem(firebase.auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUserUids))
+  AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUserUids))
 }
 
 arrangeDoneColor(){
@@ -285,7 +286,7 @@ goBack(){
   this.props.navigation.navigate("Settings")
 }
 select(url, uid, listener, index){
-  var storageRef = firebase.storage().ref("Photos/" + uid + "/1.jpg")
+  var storageRef = storage().ref("Photos/" + uid + "/1.jpg")
   storageRef.getDownloadURL().then(data =>{
     imageUrls[index] = data
     global.selectedFavUserUrl = data
@@ -309,7 +310,7 @@ removeFromUser(){
   global.removeFromFavUser = false
   global.favoriteUsersListeners = global.favoriteUsersListeners - 1
   this.setState({reRender: !this.state.reRender})
-  AsyncStorage.setItem(firebase.auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUserUids))
+  AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUserUids))
 }
 
   render(){

@@ -6,7 +6,9 @@ import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFS from 'react-native-fs'
-import * as firebase from "firebase";
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
 
 import {Image,
    Text,
@@ -141,48 +143,48 @@ static navigationOptions = {
   async checkIfUserDataExistsInLocalAndSaveIfNot(){
     // from asyncstorage part
 
-    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userGender').then( req => {
+    await AsyncStorage.getItem(auth().currentUser.uid + 'userGender').then( req => {
       currentUserGender = req
     })
-    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userCountry').then( req => {
+    await AsyncStorage.getItem(auth().currentUser.uid + 'userCountry').then( req => {
       currentUserCountry = req
     })
-    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userName').then( req => {
+    await AsyncStorage.getItem(auth().currentUser.uid + 'userName').then( req => {
       currentUserUsername = req
     })
-    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userBio').then( req => {
+    await AsyncStorage.getItem(auth().currentUser.uid + 'userBio').then( req => {
       currentUserBio = req
     })
-    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'userPhotoCount')
+    await AsyncStorage.getItem(auth().currentUser.uid + 'userPhotoCount')
       .then(req => JSON.parse(req))
       .then(json => {
         currentUserPhotoCount = json
       })
     if(currentUserCountry == null || currentUserGender == null || currentUserUsername == null || currentUserBio == null || currentUserPhotoCount == null){
-      var infoListener = firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/i");
+      var infoListener = database().ref('Users/' + auth().currentUser.uid + "/i");
       await infoListener.once('value').then(async snapshot => {
         this.setState({loadingDone: true, userGender: snapshot.val().g, userCountry: snapshot.val().c, userUsername: snapshot.val().u,
           userBio: snapshot.val().b,  bioLimit: snapshot.val().b.length, userPhotoCount: snapshot.val().p })
         await this.getImageURL()
         await this.downloadImages()
-        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userGender', this.state.userGender)
+        AsyncStorage.setItem(auth().currentUser.uid + 'userGender', this.state.userGender)
         console.log("this.state.userGender: ", this.state.userGender)
-        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userCountry', this.state.userCountry)
-        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userName', this.state.userUsername)
-        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userBio', this.state.userBio)
-        await AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
-        this.setState({profilePhoto:  "file://" + RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "profile.jpg"})
+        AsyncStorage.setItem(auth().currentUser.uid + 'userCountry', this.state.userCountry)
+        AsyncStorage.setItem(auth().currentUser.uid + 'userName', this.state.userUsername)
+        AsyncStorage.setItem(auth().currentUser.uid + 'userBio', this.state.userBio)
+        await AsyncStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
+        this.setState({profilePhoto:  "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg"})
       })
    }
    else{
-     this.setState({ profilePhoto: "file://" + RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "profile.jpg", loadingDone: true, userGender: currentUserGender,
+     this.setState({ profilePhoto: "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg", loadingDone: true, userGender: currentUserGender,
      userCountry: currentUserCountry, userUsername: currentUserUsername, userBio: currentUserBio, bioLimit: currentUserBio.length, userPhotoCount: currentUserPhotoCount })
    }
   }
 
   async getImageURL(){
     console.log("getImageURL")
-      var storageRef = firebase.storage().ref("Photos/" + firebase.auth().currentUser.uid + "/1.jpg")
+      var storageRef = storage().ref("Photos/" + auth().currentUser.uid + "/1.jpg")
       await storageRef.getDownloadURL().then(data =>{
         this.downloadURL = data
         console.log("profil photo: ", data)
@@ -194,12 +196,12 @@ static navigationOptions = {
   async downloadImages(){
       console.log("downloadImages")
       let dirs = RNFetchBlob.fs.dirs
-      console.log(dirs.DocumentDir + "/" + firebase.auth().currentUser.uid + "profile.jpg")
+      console.log(dirs.DocumentDir + "/" + auth().currentUser.uid + "profile.jpg")
       await RNFetchBlob
       .config({
         fileCache : true,
         appendExt : 'jpg',
-        path: dirs.DocumentDir + "/" + firebase.auth().currentUser.uid + "profile.jpg"
+        path: dirs.DocumentDir + "/" + auth().currentUser.uid + "profile.jpg"
       })
       .fetch('GET', this.downloadURL, {
         //some headers ..
@@ -213,26 +215,25 @@ static navigationOptions = {
   async onPressSave(){
     if(this.state.newPhoto){
       var uploadDone = false
-      var storage = firebase.storage();
-      var storageRef = storage.ref();
+      var storageRef = storage().ref();
       var metadata = {
         contentType: 'image/jpeg',
       };
       const response = await fetch(this.state.profilePhoto);
       const blob = await response.blob();
-      var ref1 = storageRef.child("Photos/" + firebase.auth().currentUser.uid + "/1.jpg");
+      var ref1 = storageRef.child("Photos/" + auth().currentUser.uid + "/1.jpg");
       await ref1.put(blob)
-      RNFS.copyFile(this.state.profilePhoto, RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "profile.jpg");
+      RNFS.copyFile(this.state.profilePhoto, RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg");
       this.setState({userPhotoCount: this.state.userPhotoCount + 1})
     }
-    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userGender', this.state.userGender)
-    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userCountry', this.state.userCountry)
-    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userName', this.state.userUsername)
-    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userBio', this.state.userBio)
-    await AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
+    AsyncStorage.setItem(auth().currentUser.uid + 'userGender', this.state.userGender)
+    AsyncStorage.setItem(auth().currentUser.uid + 'userCountry', this.state.userCountry)
+    AsyncStorage.setItem(auth().currentUser.uid + 'userName', this.state.userUsername)
+    AsyncStorage.setItem(auth().currentUser.uid + 'userBio', this.state.userBio)
+    await AsyncStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
 
-    var database = firebase.database();
-    await firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/i").update({
+    var database = database();
+    await database().ref('Users/' + auth().currentUser.uid + "/i").update({
       g: this.state.userGender,
       c: this.state.userCountry,
       b: this.state.userBio,

@@ -6,10 +6,12 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import RNPickerSelect from 'react-native-picker-select';
 import { NavigationEvents} from 'react-navigation';
 import RNFS from 'react-native-fs';
-
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFetchBlob from 'rn-fetch-blob'
-import * as firebase from "firebase";
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 import {Image,
    Text,
    View,
@@ -247,7 +249,7 @@ async startFromLocal(){
   await this.spinAnimation()
   var localUids = []
   localUids.splice(0, localUids.length)
-  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_uids')
+  await AsyncStorage.getItem(auth().currentUser.uid + 'message_uids')
     .then(req => JSON.parse(req))
     .then(json => localUids = json)
 
@@ -272,17 +274,17 @@ async getUsernameOfTheUid(){
     global.fromChatOfUid = ""
     console.log("MESSAGESA İLK DEFA GİRDİ")
     var localUsernames = []
-    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_usernames')
+    await AsyncStorage.getItem(auth().currentUser.uid + 'message_usernames')
       .then(req => JSON.parse(req))
       .then(json => localUsernames = json)
 
     for( i = 0; i < noOfConversations; i++){
-      var usernameOnceListener = firebase.database().ref('Users/' + conversationUidArray[i] + "/i");
+      var usernameOnceListener = database().ref('Users/' + conversationUidArray[i] + "/i");
       await usernameOnceListener.once('value').then(async snapshot => {
         conversationUsernameArray[i] = snapshot.val()
       })
       const index = i
-      usernameListener[i] = firebase.database().ref('Users/' + conversationUidArray[i]);
+      usernameListener[i] = database().ref('Users/' + conversationUidArray[i]);
       await usernameListener[i].on('child_changed', async snap => await this.createUsernameArray(snap, index, conversationUidArray[index]));
     }
 
@@ -290,7 +292,7 @@ async getUsernameOfTheUid(){
       for(i = 0; i < localUsernames.length; i++){
         if(conversationUsernameArray[i].p != localUsernames[i].p){
           var downloadURL;
-          var storageRef = firebase.storage().ref("Photos/" + conversationUidArray[i] + "/1.jpg")
+          var storageRef = storage().ref("Photos/" + conversationUidArray[i] + "/1.jpg")
           await storageRef.getDownloadURL().then(data =>{
             downloadURL = data
           })
@@ -313,7 +315,7 @@ async getUsernameOfTheUid(){
     if(newRequest){
       console.log("İLK DEĞİL, NEW REQUEST")
       var localUsernames = []
-      await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_usernames')
+      await AsyncStorage.getItem(auth().currentUser.uid + 'message_usernames')
         .then(req => JSON.parse(req))
         .then(json => localUsernames = json)
       conversationUsernameArray = localUsernames
@@ -321,9 +323,9 @@ async getUsernameOfTheUid(){
       if(conversationUsernameArray == null){
         conversationUsernameArray = []
       }
-      usernameListener[noOfConversations-1] = firebase.database().ref('Users/' + conversationUidArray[noOfConversations-1]);
+      usernameListener[noOfConversations-1] = database().ref('Users/' + conversationUidArray[noOfConversations-1]);
       await usernameListener[noOfConversations-1].on('child_changed', async snap => await this.createUsernameArray(snap, noOfConversations-1, conversationUidArray[noOfConversations-1]));
-      var usernameOnceListener = firebase.database().ref('Users/' + conversationUidArray[noOfConversations-1] + "/i");
+      var usernameOnceListener = database().ref('Users/' + conversationUidArray[noOfConversations-1] + "/i");
       await usernameOnceListener.once('value').then(async snapshot => {
         if(conversationUsernameArray.length == 0){
           conversationUsernameArray[0] = snapshot.val()
@@ -333,7 +335,7 @@ async getUsernameOfTheUid(){
         }
         conversationUsernameArray
       })
-      await AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
+      await AsyncStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
     }
     else{
       console.log("BAŞKA SAYFADAN GELDİ; İLK DEĞİL")
@@ -342,7 +344,7 @@ async getUsernameOfTheUid(){
       }
       global.comingFromChat = false
       var localUsernames = []
-      await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_usernames')
+      await AsyncStorage.getItem(auth().currentUser.uid + 'message_usernames')
         .then(req => JSON.parse(req))
         .then(json => localUsernames = json)
       conversationUsernameArray = localUsernames
@@ -353,14 +355,14 @@ async getUsernameOfTheUid(){
 createUsernameArray = async (snap, i, conversationUid) => {
   console.log("CREATE USERNAME ARRAY")
   var localUsernames = []
-  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_usernames')
+  await AsyncStorage.getItem(auth().currentUser.uid + 'message_usernames')
     .then(req => JSON.parse(req))
     .then(json => localUsernames = json)
   conversationUsernameArray = localUsernames
 
   if(conversationUsernameArray[i].p != snap.val().p){
     var downloadURL;
-    var storageRef = firebase.storage().ref("Photos/" + conversationUid + "/1.jpg")
+    var storageRef = storage().ref("Photos/" + conversationUid + "/1.jpg")
     await storageRef.getDownloadURL().then(data =>{
       downloadURL = data
     })
@@ -378,13 +380,13 @@ createUsernameArray = async (snap, i, conversationUid) => {
   }
   conversationUsernameArray[i] = snap.val()
 
-  AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
+  AsyncStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
   this.startFromLocal()
 }
 async createConversationArrays(){
 
-    var db = firebase.firestore();
-    var docRef = db.collection(firebase.auth().currentUser.uid).doc("MessageInformation");
+    var db = firestore();
+    var docRef = db.collection(auth().currentUser.uid).doc("MessageInformation");
     await docRef.onSnapshot(async doc =>{
       if(!afterDelete){
         if(!newRequest){
@@ -431,7 +433,7 @@ async createUidPhotoArrays(){
   // GET THE UIDS THAT ARE SAVED TO LOCAL
   var localUids = []
   localUids.splice(0, localUids.length)
-  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'message_uids')
+  await AsyncStorage.getItem(auth().currentUser.uid + 'message_uids')
     .then(req => JSON.parse(req))
     .then(json => localUids = json)
 
@@ -445,8 +447,8 @@ async createUidPhotoArrays(){
         console.log("CONVERSATION UIDLER:", conversationUidArray)
         differenceArray = conversationUidArray.filter(x => !localUids.includes(x))
         console.log("DIFFERENCE ARRAY:", differenceArray)
-        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
-        AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
+        AsyncStorage.setItem(auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
+        AsyncStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
         for(i = 0; i < conversationUidArray.length; i++){
           for(j = 0; j < differenceArray.length; j++){
             if( conversationUidArray[i] == differenceArray[j] ){
@@ -456,7 +458,7 @@ async createUidPhotoArrays(){
         }
         console.log("DIFFERENCE ARRAY INDEXES:", differenceArrayIndexes)
         for(i = 0; i < differenceArray.length; i++){
-          var storageRef = firebase.storage().ref("Photos/" + conversationUidArray[differenceArrayIndexes[i]] + "/1.jpg")
+          var storageRef = storage().ref("Photos/" + conversationUidArray[differenceArrayIndexes[i]] + "/1.jpg")
           await storageRef.getDownloadURL().then(data =>{
             urlArray.push(data)
           })
@@ -478,8 +480,8 @@ async createUidPhotoArrays(){
       console.log("LOCAL UIDLER:", localUids)
       console.log("CONVERSATION UIDLER:", conversationUidArray)
       differenceArray = conversationUidArray
-      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
-      AsyncStorage.setItem(firebase.auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
+      AsyncStorage.setItem(auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
+      AsyncStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
       console.log("DIFFERENCE ARRAY:", differenceArray)
       for(i = 0; i < conversationUidArray.length; i++){
         for(j = 0; j < differenceArray.length; j++){
@@ -490,7 +492,7 @@ async createUidPhotoArrays(){
       }
       console.log("DIFFERENCE ARRAY INDEXES:", differenceArrayIndexes)
       for(i = 0; i < differenceArray.length; i++){
-        var storageRef = firebase.storage().ref("Photos/" + conversationUidArray[i] + "/1.jpg")
+        var storageRef = storage().ref("Photos/" + conversationUidArray[i] + "/1.jpg")
         await storageRef.getDownloadURL().then(data =>{
           urlArray.push(data)
         })
@@ -524,12 +526,12 @@ getMessagesData = async callback =>{
   var isEmpty = false
   var arr = []
   arr.splice(0, arr.length)
-  arr[0] = firebase.auth().currentUser.uid
+  arr[0] = auth().currentUser.uid
   arr[1] = uidArray[count]
   arr.sort()
   var key = arr[0] + "" + arr[1];
 
-  var listener23 = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-").limitToLast(1);
+  var listener23 = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-").limitToLast(1);
   await listener23.once('value').then(async snapshot => {
       console.log("ONCE A GİRDİ:", snapshot.val())
       var data = "";
@@ -537,7 +539,7 @@ getMessagesData = async callback =>{
       if(snapshot.val() == null || snapshot.val() == undefined){
         isEmpty = true
         var localMsgs = []
-        await AsyncStorage.getItem(firebase.auth().currentUser.uid + uidArray[count] + '/messages')
+        await AsyncStorage.getItem(auth().currentUser.uid + uidArray[count] + '/messages')
           .then(req => JSON.parse(req))
           .then(json => localMsgs = json)
           if(localMsgs != null && localMsgs != undefined && localMsgs.length != 0){
@@ -546,13 +548,13 @@ getMessagesData = async callback =>{
           }
           else{
             console.log(" database boş, local boş")
-            data = { c: "notime", id: "emptymsgid", _id: "emptymsgid", text: "No message", user:{ _id: firebase.auth().currentUser.uid, r: uidArray[count]}, image: "" }
+            data = { c: "notime", id: "emptymsgid", _id: "emptymsgid", text: "No message", user:{ _id: auth().currentUser.uid, r: uidArray[count]}, image: "" }
           }
       }
       else{
         var snapVal = snapshot.val()
         var messageKey = Object.keys(snapVal)[0]
-        const user = { _id: uidArray[count], r: firebase.auth().currentUser.uid}
+        const user = { _id: uidArray[count], r: auth().currentUser.uid}
         const { p: p, c: numberStamp, text} = snapVal[messageKey];
         const id = messageKey;
         const _id = messageKey; //needed for giftedchat
@@ -561,7 +563,7 @@ getMessagesData = async callback =>{
 
         var image ="";
         if(p == "t"){
-          image = "file://" + RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "/" + messageKey + ".jpg"
+          image = "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + messageKey + ".jpg"
         }
         console.log(" RESİM MESAJDA OLUŞTURULDU: ", image)
         const message = {
@@ -583,11 +585,11 @@ getMessagesData = async callback =>{
 
       if(!fromChat && data != ""){
         console.log("IS EMPTY=?", isEmpty)
-        if( data.user.r == firebase.auth().currentUser.uid && !isEmpty){
+        if( data.user.r == auth().currentUser.uid && !isEmpty){
           console.log("ÜST")
           await this.setShowMessageBox(data.user._id, "true")
         }
-        if( data.user._id == firebase.auth().currentUser.uid && !isEmpty){
+        if( data.user._id == auth().currentUser.uid && !isEmpty){
           console.log("ALT")
           await this.setShowMessageBox(data.user.r, "true")
         }
@@ -603,16 +605,16 @@ getMessagesData = async callback =>{
             }
           }
           for( i = 0; i < noOfConversations; i++){
-            var isReq = await AsyncStorage.getItem('IsRequest/' + firebase.auth().currentUser.uid + "/" + uidArray[i])
+            var isReq = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[i])
             var kVal;
-            var kListener = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[i] + "/k");
+            var kListener = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[i] + "/k");
             await kListener.once('value').then(async snapshot => {
               if(snapshot.val() != null){
                 kVal = snapshot.val()
               }
             })
 
-            var showBox = await AsyncStorage.getItem('ShowMessageBox/' + firebase.auth().currentUser.uid + "/" + uidArray[i])
+            var showBox = await AsyncStorage.getItem('ShowMessageBox/' + auth().currentUser.uid + "/" + uidArray[i])
             console.log("SHOW BOX OF UID?", uidArray[i])
             console.log("SHOW BOX?", showBox)
             if(kVal == 0){
@@ -643,11 +645,11 @@ getMessagesData = async callback =>{
             requestColorArray[i] = "trashgray"
             var key;
             var time;
-            if(requestArray[i].user._id == firebase.auth().currentUser.uid){
+            if(requestArray[i].user._id == auth().currentUser.uid){
               requestLastSeenArray[i] = 0
             }
             else{
-              key = firebase.auth().currentUser.uid + "" + requestArray[i].user._id
+              key = auth().currentUser.uid + "" + requestArray[i].user._id
               time = await AsyncStorage.getItem(key + 'lastSeen')
               if(requestArray[i].c > time){
                 requestLastSeenArray[i] = 1
@@ -663,11 +665,11 @@ getMessagesData = async callback =>{
             var key;
             var time;
 
-            if(messageArray[i].user._id == firebase.auth().currentUser.uid){
+            if(messageArray[i].user._id == auth().currentUser.uid){
               messageLastSeenArray[i] = 0
             }
             else{
-              key = firebase.auth().currentUser.uid + "" + messageArray[i].user._id
+              key = auth().currentUser.uid + "" + messageArray[i].user._id
               time = await AsyncStorage.getItem(key + 'lastSeen')
               if(messageArray[i].c > time){
                 messageLastSeenArray[i] = 1
@@ -712,14 +714,14 @@ getMessagesData = async callback =>{
   if(!global.newMsgListenerArray[count].isOpen && global.fromChatOfUid != global.newMsgListenerArray[count].uid){
     console.log("CREATED LISTENER FOR:", global.newMsgListenerArray[count].uid)
     global.newMsgListenerArray[count].isOpen = true
-    global.newMsgListenerArray[count].listenerID = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-");
+    global.newMsgListenerArray[count].listenerID = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-");
     await global.newMsgListenerArray[count].listenerID.on('value', async snapshot => await this.syncLocalMessages(snapshot, uidCount));
   }
 };
 async getLastLocalMessage(){
 
   var lastLocalKey;
-  await AsyncStorage.getItem(firebase.auth().currentUser.uid + otherUserUid + '/messages')
+  await AsyncStorage.getItem(auth().currentUser.uid + otherUserUid + '/messages')
     .then(req => JSON.parse(req))
     .then(json => localMessages[count] = json)
     if(localMessages[count] != null && localMessages[count].length != 0){
@@ -744,7 +746,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
         messageKey = Object.keys(snapshot.val())[i]
         console.log("SNAP VAL: ", snapVal)
 
-        const user = { _id: uidArray[uidCount], r: firebase.auth().currentUser.uid}
+        const user = { _id: uidArray[uidCount], r: auth().currentUser.uid}
         const { p: p, c: numberStamp, text} = snapVal[messageKey];
         const id = messageKey;
         const _id = messageKey; //needed for giftedchat
@@ -753,9 +755,9 @@ syncLocalMessages = async (snapshot, uidCount) => {
 
         var image = "";
         if(p == "t"){
-          image = "file://" + RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "/" + messageKey + ".jpg"
+          image = "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + messageKey + ".jpg"
           var downloadURL;
-          var storageRef = firebase.storage().ref("Photos/" + firebase.auth().currentUser.uid + "/MessagePhotos/" + messageKey + ".jpg")
+          var storageRef = storage().ref("Photos/" + auth().currentUser.uid + "/MessagePhotos/" + messageKey + ".jpg")
           await storageRef.getDownloadURL().then(data =>{
             downloadURL = data
           })
@@ -764,7 +766,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
           .config({
             fileCache : true,
             appendExt : 'jpg',
-            path: RNFS.DocumentDirectoryPath + "/" + firebase.auth().currentUser.uid + "/" + messageKey + ".jpg"
+            path: RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + messageKey + ".jpg"
           })
           .fetch('GET', downloadURL, {
             //some headers ..
@@ -790,9 +792,9 @@ syncLocalMessages = async (snapshot, uidCount) => {
             console.log("Locale kaydedilen mesaj on else: ", msg)
           }
       }
-      firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
+      database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
       var kValue;
-      var isRequ = await AsyncStorage.getItem('IsRequest/' + firebase.auth().currentUser.uid + "/" + uidArray[i])
+      var isRequ = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[i])
       if(isRequ == undefined || isRequ == null || isRequ == "true"){
         kValue = 0
       }
@@ -800,7 +802,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
         kValue = 1
       }
       this.setRequestDB(uidArray[uidCount], kValue)
-        await AsyncStorage.setItem(firebase.auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
+        await AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
         lastMsgFlag = lastDBkey == localMessages[uidCount][localMessages[uidCount].length - 1]._id
         if(lastMsgFlag || didSync){
           didSync = true
@@ -821,10 +823,10 @@ syncLocalMessages = async (snapshot, uidCount) => {
                 }
               }
               for( i = 0; i < noOfConversations; i++){
-                var isReq = await AsyncStorage.getItem('IsRequest/' + firebase.auth().currentUser.uid + "/" + uidArray[i])
+                var isReq = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[i])
                 if(isReq == undefined || isReq == null || isReq == ""){
                   var kVal;
-                  var kListener = firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uidArray[i] + "/k");
+                  var kListener = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[i] + "/k");
                   await kListener.once('value').then(async snapshot => {
                     if(snapshot.val() != null){
                       kVal = snapshot.val()
@@ -859,11 +861,11 @@ syncLocalMessages = async (snapshot, uidCount) => {
                 requestColorArray[i] = "trashgray"
                 var key;
                 var time;
-                if(requestArray[i].user._id == firebase.auth().currentUser.uid){
+                if(requestArray[i].user._id == auth().currentUser.uid){
                   requestLastSeenArray[i] = 0
                 }
                 else{
-                  key = firebase.auth().currentUser.uid + "" + requestArray[i].user._id
+                  key = auth().currentUser.uid + "" + requestArray[i].user._id
                   time = await AsyncStorage.getItem(key + 'lastSeen')
                   if(requestArray[i].c == "notime"){
                     requestLastSeenArray[i] = 0
@@ -884,11 +886,11 @@ syncLocalMessages = async (snapshot, uidCount) => {
                 var key;
                 var time;
 
-                if(messageArray[i].user._id == firebase.auth().currentUser.uid){
+                if(messageArray[i].user._id == auth().currentUser.uid){
                   messageLastSeenArray[i] = 0
                 }
                 else{
-                  key = firebase.auth().currentUser.uid + "" + messageArray[i].user._id
+                  key = auth().currentUser.uid + "" + messageArray[i].user._id
                   time = await AsyncStorage.getItem(key + 'lastSeen')
                   if(messageArray[i].c == "notime"){
                     messageLastSeenArray[i] = 0
@@ -1079,7 +1081,7 @@ renderMessageBoxes(){
     while( count < messageArray.length){
       timeArray[count] = this.getMsgTime(messageArray[count].c)
 
-      if( messageArray[count].user.r == firebase.auth().currentUser.uid){
+      if( messageArray[count].user.r == auth().currentUser.uid){
         receiverArray[count] = messageArray[count].user._id
       }
       else{
@@ -1144,7 +1146,7 @@ renderRequestBoxes(){
     while( count < requestArray.length){
       timeArray[count] = this.getMsgTime(requestArray[count].c)
 
-      if( requestArray[count].user.r == firebase.auth().currentUser.uid){
+      if( requestArray[count].user.r == auth().currentUser.uid){
         receiverArray[count] = requestArray[count].user._id
       }
       else{
@@ -1269,7 +1271,7 @@ arrangeDoneColor(){
 
 async clearMessages(uid){
   var emptyArr = []
-  await AsyncStorage.setItem(firebase.auth().currentUser.uid + uid + '/messages', JSON.stringify(emptyArr))
+  await AsyncStorage.setItem(auth().currentUser.uid + uid + '/messages', JSON.stringify(emptyArr))
 }
 async deleteMessages(uid, which){
   await this.clearMessages(uid)
@@ -1282,20 +1284,20 @@ async deleteMessages(uid, which){
 
 async setShowMessageBox(uid, bool){
   console.log("DELETED FOR:", uid)
-  await AsyncStorage.setItem('ShowMessageBox/' + firebase.auth().currentUser.uid + "/" + uid, bool)
+  await AsyncStorage.setItem('ShowMessageBox/' + auth().currentUser.uid + "/" + uid, bool)
 }
 async setLocalIsRequest(uid, bool){
-  await AsyncStorage.setItem('IsRequest/' + firebase.auth().currentUser.uid + "/" + uid, bool)
+  await AsyncStorage.setItem('IsRequest/' + auth().currentUser.uid + "/" + uid, bool)
 }
 async setRequestDB(uid, value){
-  firebase.database().ref('Messages/' + firebase.auth().currentUser.uid + "/" + uid).update({
+  database().ref('Messages/' + auth().currentUser.uid + "/" + uid).update({
     k: value
   })
 }
 async deleteMessagesPressed(){
   for( i = 0; i < messageColorArray.length; i++){
     if( messageColorArray[i] != "trashgray"){
-      if(messageArray[i].user.r == firebase.auth().currentUser.uid){
+      if(messageArray[i].user.r == auth().currentUser.uid){
         await this.deleteMessages(messageArray[i].user._id, "messages")
       }
       else{
@@ -1309,7 +1311,7 @@ async deleteRequestPressed(){
 
   for( i = 0; i < requestColorArray.length; i++){
     if( requestColorArray[i] != "trashgray"){
-      if(requestArray[i].user.r == firebase.auth().currentUser.uid){
+      if(requestArray[i].user.r == auth().currentUser.uid){
         await this.deleteMessages(requestArray[i].user._id, "requests")
       }
       else{
@@ -1323,7 +1325,7 @@ async clearMessagesPressed(){
 
   for( i = 0; i < messageColorArray.length; i++){
     if( messageColorArray[i] != "trashgray"){
-      if(messageArray[i].user.r == firebase.auth().currentUser.uid){
+      if(messageArray[i].user.r == auth().currentUser.uid){
         await this.clearMessages(messageArray[i].user._id)
       }
       else{
@@ -1337,7 +1339,7 @@ async clearRequestPressed(){
 
   for( i = 0; i < requestColorArray.length; i++){
     if( requestColorArray[i] != "trashgray"){
-      if(requestArray[i].user.r == firebase.auth().currentUser.uid){
+      if(requestArray[i].user.r == auth().currentUser.uid){
         await this.clearMessages(requestArray[i].user._id)
       }
       else{

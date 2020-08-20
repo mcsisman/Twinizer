@@ -4,9 +4,10 @@ import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import {navigate, route} from './RootNavigation'
-import * as firebase from "firebase";
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-community/async-storage';
-
 import {Image,
    Text,
    View,
@@ -84,12 +85,12 @@ export default class SettingsScreen extends Component<{}>{
   );
   }
   onPressLogoutOk(){
-    AsyncStorage.removeItem(firebase.auth().currentUser.uid + 'userGender')
-    AsyncStorage.removeItem(firebase.auth().currentUser.uid + 'userCountry')
-    AsyncStorage.removeItem(firebase.auth().currentUser.uid + 'userName')
-    AsyncStorage.removeItem(firebase.auth().currentUser.uid + 'userBio')
-    AsyncStorage.removeItem(firebase.auth().currentUser.uid + 'userPhotoCount')
-    firebase.auth().signOut().then(function() {
+    AsyncStorage.removeItem(auth().currentUser.uid + 'userGender')
+    AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry')
+    AsyncStorage.removeItem(auth().currentUser.uid + 'userName')
+    AsyncStorage.removeItem(auth().currentUser.uid + 'userBio')
+    AsyncStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
+    auth().signOut().then(function() {
       console.log("LOGOUT SUCCESSFUL")
       navigate("Splash")
     })

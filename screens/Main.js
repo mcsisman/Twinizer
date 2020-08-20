@@ -5,7 +5,10 @@ import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import RNPickerSelect from 'react-native-picker-select';
-import * as firebase from "firebase";
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 import Modal from "react-native-modal";
 import ImagePicker from 'react-native-image-crop-picker';
 import Swipeable from 'react-native-swipeable';
@@ -87,11 +90,13 @@ var currentUserCountry;
 var currentUserUsername;
 var currentUserBio;
 var isFav = false;
+var isBlock = false;
 var addingToWhichList = "";
 var listToAdd = ""
 var favoriteUsers = []
 var blockedUsers = []
-var showThisDialog = "true"
+var favShowThisDialog = "true"
+var blockShowThisDialog = "true"
 export default class MainScreen extends Component<{}>{
 constructor(props){
     super(props);
@@ -102,7 +107,8 @@ constructor(props){
     global.activationDistanceRight = this.width*(2.5/10)
     global.deactivationDistanceRight = this.width*(2.5/10)
     this.state = {
-      tickVisible: false,
+      favTickVisible: false,
+      blockTickVisible: false,
       showFilter: false,
       photoPath: "",
       splashOver : false,
@@ -116,7 +122,8 @@ constructor(props){
       notifIsVisible: false,
       isVisible1: false,
       isVisible2: false,
-      addToFavBlockVisible: false,
+      addToFavVisible: false,
+      addToBlockVisible: false,
       country: null,
       gender: null,
       disabledSearch: true,
@@ -180,7 +187,8 @@ constructor(props){
 async componentDidMount(){
 
 
-    showThisDialog = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'showThisDialog')
+    favShowThisDialog = await AsyncStorage.getItem(auth().currentUser.uid + 'favShowThisDialog')
+    blockShowThisDialog = await AsyncStorage.getItem(auth().currentUser.uid + 'blockShowThisDialog')
     global.fromMessages = false
     var localMessages = []
     var arr = []
@@ -213,7 +221,7 @@ updateState = () =>{
 }
 
 async checkIfAlreadySearching(){
-  var listener23 = firebase.database().ref('Users/' + firebase.auth().currentUser.uid +"/s/sb");
+  var listener23 = database().ref('Users/' + auth().currentUser.uid +"/s/sb");
   await listener23.once('value').then(async snapshot => {
     if(snapshot.val() == "t"){
       this.checkFunction();
@@ -222,12 +230,18 @@ async checkIfAlreadySearching(){
   })
 }
 async getFavoriteAndBlockedUsers(){
-  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'favoriteUsers')
+  await AsyncStorage.getItem(auth().currentUser.uid + 'favoriteUsers')
     .then(req => JSON.parse(req))
     .then(json => favoriteUsers = json)
-  await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'blockedUsers')
+    if (favoriteUsers == null){
+      favoriteUsers = []
+    }
+  await AsyncStorage.getItem(auth().currentUser.uid + 'blockedUsers')
     .then(req => JSON.parse(req))
     .then(json => blockedUsers = json)
+    if (blockedUsers == null){
+      blockedUsers = []
+    }
 }
 
 
@@ -802,47 +816,78 @@ async sendFirstMessage(){
   this.props.navigation.navigate("Chat")
 }
 
-addToListButtonClicked(list){
-  if (list == "Favorites"){
-    addingToWhichList = "Favorite Users"
+addToFavButtonClicked(){
+  if(favShowThisDialog == "true" || favShowThisDialog == null){
+    this.setState({addToFavVisible:true})
   }
   else{
-    addingToWhichList = "Blocked Users"
+    this.favModalButtonClicked(emailArray[global.swipeCount])
+    this.setState({addToFavVisible:false})
   }
-  console.log("showThisDialog: ", showThisDialog)
-  if(showThisDialog == "true" || showThisDialog == null){
-    this.setState({addToFavBlockVisible:true})
+}
+addToBlockButtonClicked(){
+  if(blockShowThisDialog == "true" || blockShowThisDialog == null){
+    this.setState({addToBlockVisible:true})
   }
   else{
-    this.favBlockModalButtonClicked(emailArray[global.swipeCount])
-    this.setState({addToFavBlockVisible:false})
+    this.blockModalButtonClicked(emailArray[global.swipeCount])
+    this.setState({addToBlockVisible:false})
   }
 }
 
-favBlockModalButtonClicked(uid){
-  if(this.state.tickVisible){
-    showThisDialog = "false"
-    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'showThisDialog', showThisDialog)
+favModalButtonClicked(uid){
+  if(this.state.favTickVisible){
+    favShowThisDialog = "false"
+    AsyncStorage.setItem(auth().currentUser.uid + 'favShowThisDialog', favShowThisDialog)
   }
-  if (addingToWhichList == "Favorite Users"){
-    this.addToFavoriteUsers(uid)
+  this.addToFavoriteUsers(uid)
+  isBlock = false
+  isFav = true
+  this.setState({addToFavVisible:false})
+}
+blockModalButtonClicked(uid){
+  if(this.state.blockTickVisible){
+    blockShowThisDialog = "false"
+    AsyncStorage.setItem(auth().currentUser.uid + 'blockShowThisDialog', blockShowThisDialog)
   }
-  else{
-    this.addToBlockedUsers(uid)
-  }
-  this.setState({addToFavBlockVisible:false})
+  this.addToBlockedUsers(uid)
+  isBlock = true
+  isFav = false
+  this.setState({addToBlockVisible:false})
 }
 
 addToFavoriteUsers(uid){
-  if ((favoriteUsers == null || favoriteUsers.length == 0 || !favoriteUsers.includes(uid)) && favoriteUsers.length <= 10){
+  console.log("favoriteUsers: ", favoriteUsers)
+  if (favoriteUsers == null){
+    if (blockedUsers.includes(uid)){
+      var index = blockedUsers.indexOf(uid)
+      blockedUsers.splice(index,1)
+      AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+    }
     favoriteUsers.push(uid)
-    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
+    AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
+  }
+  else if (favoriteUsers.length == 0 || !favoriteUsers.includes(uid)) {
+    if (favoriteUsers.length <= 15){
+      if (blockedUsers.includes(uid)){
+        var index = blockedUsers.indexOf(uid)
+        blockedUsers.splice(index,1)
+        AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+      }
+      favoriteUsers.push(uid)
+      AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
+    }
   }
 }
 addToBlockedUsers(uid){
   if (blockedUsers == null || blockedUsers.length == 0 || !blockedUsers.includes(uid)){
+    if (favoriteUsers.includes(uid)){
+      var index = favoriteUsers.indexOf(uid)
+      favoriteUsers.splice(index,1)
+      AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
+    }
     blockedUsers.push(uid)
-    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+    AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
   }
 }
 
@@ -893,7 +938,7 @@ valueChangeGender(value){
 
 async createEmailDistanceArrays(gender, country, fn){
   if (fn == "searchDone"){
-    bioDict_ref = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("Bios")
+    bioDict_ref = firestore().collection(auth().currentUser.uid).doc("Bios")
     bioDict_ref.get().then(doc => {
      if (doc.exists) {
        bioDict = doc.data();
@@ -1017,7 +1062,7 @@ async downloadImages(imageIndex){
 }
 
 async getImageURL(imageIndex){
-    var storageRef = firebase.storage().ref("Photos/" + emailArray[imageIndex] + "/1.jpg")
+    var storageRef = storage().ref("Photos/" + emailArray[imageIndex] + "/1.jpg")
     await storageRef.getDownloadURL().then(data =>{
       this.downloadURL = data
       photoArray.push(data)
@@ -1028,7 +1073,7 @@ async getImageURL(imageIndex){
 }
 
 async checkFunction(){
-    var docRef1 = firebase.firestore().collection(firebase.auth().currentUser.uid).doc("Similarity").onSnapshot(async doc =>{
+    var docRef1 = firestore().collection(auth().currentUser.uid).doc("Similarity").onSnapshot(async doc =>{
       if(doc.exists){
         if (this.probabilityDoneCheck) {
           // createEmailDistanceArrays KISMI ////////////////////////////////////////
@@ -1157,7 +1202,7 @@ async filterDone(){
 }
 
 async searchDone(value){
-  this.setState({showFilter: false, loadingOpacity: 1})
+  this.setState({showFilter: false, loadingOpacity: 1, backgroundOpacity: 0.2})
   this.spinAnimation()
   this.inSearchDone = true;
   photoArray.splice(0, photoArray.length)
@@ -1291,18 +1336,17 @@ async saveSearchPhotoLocally(photoPath){
 uploadSearchPhoto = async (uri) => {
     const response = await fetch(uri);
     const blob = await response.blob();
-    var storage = firebase.storage();
-    var storageRef = storage.ref();
+    var storageRef = storage().ref();
     var metadata = {
       contentType: 'image/jpeg',
     };
-    var ref1 = storageRef.child("Photos/" + firebase.auth().currentUser.uid + "/SearchPhotos/" + "search-photo.jpg");
+    var ref1 = storageRef.child("Photos/" + auth().currentUser.uid + "/SearchPhotos/" + "search-photo.jpg");
     ref1.put(blob).then(snapshot => {
-      const updateRef = firebase.firestore().collection('Users').doc('embedder');
+      const updateRef = firestore().collection('Functions').doc('Embedder');
       var batch = 0
       var randFloat = Math.random()
       updateRef.set({
-      name: firebase.auth().currentUser.uid + "_" + batch.toString() + "_" + randFloat.toString()
+      name: auth().currentUser.uid + "_" + batch.toString() + "_" + randFloat.toString()
       }).then(() => {
             this.setState({
               messageButtonDisabled: true,
@@ -1391,6 +1435,12 @@ render(){
     }
     else{
       isFav = false
+      if (blockedUsers != null && blockedUsers.length != 0 && blockedUsers.includes(emailArray[global.swipeCount])){
+        isBlock = true
+      }
+      else{
+        isBlock = false
+      }
     }
     return(
       <View
@@ -1443,6 +1493,7 @@ render(){
 
       <SwipeableBigImg
       isFavorite = { isFav ? 1 : 0}
+      isBlocked = { isBlock ? 1 : 0}
       imgSource = {this.state.uri2}
       width = {this.widthAnimation}
       height = {this.heightAnimation}
@@ -1504,12 +1555,20 @@ render(){
       onPressClose = {()=>this.setState({notifIsVisible:false})}/>
 
       <FavBlockModal
-      tickIsVisible = {this.state.tickVisible}
-      onPressTick = {()=> this.setState({tickVisible: this.state.tickVisible ? 0 : 1})}
-      isVisible = {this.state.addToFavBlockVisible}
-      txtAlert= {"You are adding" +this.state.uri2_username+ " to " +addingToWhichList+ ". Are you sure?"}
-      onPressAdd= {()=>this.favBlockModalButtonClicked(emailArray[global.swipeCount])}
-      onPressClose = {()=>this.setState({addToFavBlockVisible:false})}/>
+      tickIsVisible = {this.state.favTickVisible}
+      onPressTick = {()=> this.setState({favTickVisible: this.state.favTickVisible ? 0 : 1})}
+      isVisible = {this.state.addToFavVisible}
+      txtAlert= {"You are adding " +this.state.uri2_username+ " to favorite users. Are you sure?"}
+      onPressAdd= {()=>this.favModalButtonClicked(emailArray[global.swipeCount])}
+      onPressClose = {()=>this.setState({addToFavVisible:false})}/>
+
+      <FavBlockModal
+      tickIsVisible = {this.state.blockTickVisible}
+      onPressTick = {()=> this.setState({blockTickVisible: this.state.blockTickVisible ? 0 : 1})}
+      isVisible = {this.state.addToBlockVisible}
+      txtAlert= {"You are blocking " +this.state.uri2_username + ". Are you sure?"}
+      onPressAdd= {()=>this.blockModalButtonClicked(emailArray[global.swipeCount])}
+      onPressClose = {()=>this.setState({addToBlockVisible:false})}/>
 
       <ImageUploadModal
       isVisible={this.state.isVisible1}
@@ -1549,7 +1608,7 @@ render(){
       position: "absolute", top: this.width*(5/10)*(7/6) + (this.height)*(20/100) + getStatusBarHeight()}}>
       <FavoriteUserButton
       disabled = {this.state.messageButtonDisabled}
-      onPress = {()=>this.addToListButtonClicked("Favorites")}
+      onPress = {()=>this.addToFavButtonClicked()}
       opacity = {1}/>
       <SendMsgButton
       disabled = {this.state.messageButtonDisabled}
@@ -1557,7 +1616,7 @@ render(){
       opacity = {1}/>
       <BlockUserButton
       disabled = {this.state.messageButtonDisabled}
-      onPress = {()=>this.addToListButtonClicked("Blocked")}
+      onPress = {()=>this.addToBlockButtonClicked()}
       opacity = {1}/>
       </View>
 

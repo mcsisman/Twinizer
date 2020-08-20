@@ -4,7 +4,8 @@ import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import {navigate, route} from './RootNavigation'
-import * as firebase from "firebase";
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import {Image,
@@ -151,7 +152,7 @@ async initializeBlockedUsersScreen(){
 
   async getBlockedUserUids(){
 
-    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'blockedUsers')
+    await AsyncStorage.getItem(auth().currentUser.uid + 'blockedUsers')
       .then(req => JSON.parse(req))
       .then(json => {
         blockedUserUids = json
@@ -172,7 +173,7 @@ async initializeBlockedUsersScreen(){
   }
 
   async getUsernameOfTheUid(uid, i){
-    usernameListener[i] = firebase.database().ref('Users/' + uid + "/i/u")
+    usernameListener[i] = database().ref('Users/' + uid + "/i/u")
     const firstTotalblocks = noOfBlockedUsers
     await usernameListener[i].on('value', async snap => await this.listenerFunc(snap, i, uid,  firstTotalblocks));
   }
@@ -251,7 +252,7 @@ donePress(){
   }
   this.setState({blockedBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
   this.blockedBoxAnimation()
-  AsyncStorage.setItem(firebase.auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUserUids))
+  AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUserUids))
 }
 
 arrangeDoneColor(){
@@ -302,7 +303,7 @@ removeFromUser(){
   global.removeFromBlockedUser = false
   global.blockedUsersListeners = global.blockedUsersListeners - 1
   this.setState({reRender: !this.state.reRender})
-  AsyncStorage.setItem(firebase.auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUserUids))
+  AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUserUids))
 }
 
   render(){

@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "507482022642",
-    "firebase_url": "https://twinizer-atc.firebaseio.com",
-    "project_id": "twinizer-atc",
-    "storage_bucket": "twinizer-atc.appspot.com"
+    "project_number": "635128453022",
+    "firebase_url": "https://twinizer-6b1c9.firebaseio.com",
+    "project_id": "twinizer-6b1c9",
+    "storage_bucket": "twinizer-6b1c9.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:507482022642:android:0ff6cae6946e23781de66b",
+        "mobilesdk_app_id": "1:635128453022:android:7c66d7246b1257c7aee88f",
         "android_client_info": {
           "package_name": "com.twinizer"
         }
       },
       "oauth_client": [
         {
-          "client_id": "507482022642-j4e1mr23meseks2dodriva0vbh84bgsn.apps.googleusercontent.com",
+          "client_id": "635128453022-dim0qsofmgv9otemtci39tbers1rpmk4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.twinizer",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "635128453022-0446au08fmeht2bmvouqfbne4v6rplah.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDC4ypCP9VVHKR_V_AXz4qoPJTXsmn32Os"
+          "current_key": "AIzaSyAbAD4aAT3FdvAFQwHA257zEQ_rgfPIRew"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "507482022642-j4e1mr23meseks2dodriva0vbh84bgsn.apps.googleusercontent.com",
+              "client_id": "635128453022-0446au08fmeht2bmvouqfbne4v6rplah.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

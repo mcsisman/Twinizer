@@ -7,7 +7,7 @@ class Licences {
       "@react-navigation/bottom-tabs",
       "@react-navigation/native",
       "@react-navigation/stack",
-      "firebase",
+      "react-native-firebase",
       "react",
       "react-native",
       "react-native-fs",
@@ -39,7 +39,7 @@ class Licences {
       "@react-navigation/bottom-tabs",
       "@react-navigation/native",
       "@react-navigation/stack",
-      "firebase",
+      "react-native-firebase",
       "react",
       "react-native",
       "react-native-fs",
@@ -95,7 +95,7 @@ class Licences {
     }
     var mitlicenced = false
     var apachelicencedlibraries = {
-      "firebase": "Firebase",
+      "react-native-firebase": "react-native-firebase",
     }
     if (mitlicencedlibraries[global.selectedLicence.replace('_','/')] != null){
       copyright = mitlicencedlibraries[global.selectedLicence.replace('_','/')]

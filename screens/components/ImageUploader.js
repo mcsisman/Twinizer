@@ -22,9 +22,9 @@ export default class ImageUploader extends Component {
    bottom: PropTypes.number,
    right: PropTypes.number,
    borderRadius: PropTypes.number,
-   borderOpacity: PropTypes.string,
+   borderOpacity: PropTypes.number,
    onPress: PropTypes.func,
-   textOpacity: PropTypes.string,
+   textOpacity: PropTypes.number,
    fontSize: PropTypes.number,
    photo: PropTypes.object
  }

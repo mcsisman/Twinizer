@@ -5,7 +5,9 @@ import { NavigationContainer, navigation } from '@react-navigation/native';
 import { Header } from 'react-navigation-stack';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import ImagePicker from 'react-native-image-crop-picker';
-import * as firebase from "firebase";
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
 import Modal from "react-native-modal";
 import {Image,
    Text,
@@ -88,28 +90,22 @@ async writeCountryToDatabase(){
       global.globalBio = " ";
     }
     console.log(writeDone)
-    var database = firebase.database();
-    await firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/i").update({
+    await database().ref('Users/' + auth().currentUser.uid + "/i").update({
       g: global.globalGender,
       c: global.globalCountry,
-      b: global.globalBio,
+      b: global.globalBio, 
       p: 0
     }).then(async function() {
-      await firebase.database().ref('Users/' + firebase.auth().currentUser.uid + "/s").update({
-        sb: false,
-        s: 0
-      }).then(async function() {
-        const updateRef = firebase.firestore().collection('Users').doc('User1');
+        const updateRef = firestore().collection('Functions').doc('Model');
         await updateRef.set({
-          name: firebase.auth().currentUser.uid
+          name: auth().currentUser.uid
         }).then(function() {
           updateDone = true;
-          AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userGender', global.globalGender)
-          AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userCountry', global.globalCountry)
-          AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userBio', global.globalBio)
-          AsyncStorage.setItem(firebase.auth().currentUser.uid + 'userPhotoCount', 0)
+          AsyncStorage.setItem(auth().currentUser.uid + 'userGender', global.globalGender)
+          AsyncStorage.setItem(auth().currentUser.uid + 'userCountry', global.globalCountry)
+          AsyncStorage.setItem(auth().currentUser.uid + 'userBio', global.globalBio)
+          AsyncStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(0))
         })
-      });
     });
 
     this.setState({loadingOpacity: 0})

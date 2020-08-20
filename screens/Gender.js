@@ -3,7 +3,6 @@ import { createStackNavigator} from '@react-navigation/stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import { Header } from 'react-navigation-stack';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import * as firebase from "firebase";
 import {Image,
    Text,
    View,

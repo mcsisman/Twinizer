@@ -6,7 +6,8 @@ import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFS from 'react-native-fs'
-import * as firebase from "firebase";
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 
 import {Image,
    Text,
@@ -114,7 +115,7 @@ static navigationOptions = {
   }
 
   async initializeFavoriteUsersScreen(){
-    listener = firebase.database().ref('Users/' + global.selectedFavUserUid + "/i")
+    listener = database().ref('Users/' + global.selectedFavUserUid + "/i")
     await listener.on('value', async snap => await this.listenerFunc(snap));
   }
 
@@ -135,11 +136,11 @@ static navigationOptions = {
   async block(){
     listener.off()
     global.removeFromFavUser = true
-    await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'blockedUsers')
+    await AsyncStorage.getItem(auth().currentUser.uid + 'blockedUsers')
       .then(req => JSON.parse(req))
       .then(json => blockedUsers = json)
     blockedUsers.push(global.selectedFavUserUid)
-    AsyncStorage.setItem(firebase.auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+    AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
     this.props.navigation.navigate("FavoriteUsers")
   }
   sendMsg(){

@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
-import * as firebase from "firebase";
-import 'firebase/firestore';
 import { fromRight, zoomIn, zoomOut, flipX, flipY, fromBottom } from 'react-navigation-transitions'
 import {decode, encode} from 'base-64'
 import * as RNLocalize from "react-native-localize";
+import auth from '@react-native-firebase/auth';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { navigationRef } from './screens/RootNavigation';
@@ -52,19 +51,6 @@ if (!global.btoa) { global.btoa = encode }
 
 if (!global.atob) { global.atob = decode }
 
-var firebaseConfig = {
-  apiKey: "AIzaSyCA_BGwxwWUMeKmJA_zl2br9Cdg2C_6k0c",
-  authDomain: "twinizer-atc.firebaseapp.com",
-  databaseURL: "https://twinizer-atc.firebaseio.com",
-  projectId: "twinizer-atc",
-  storageBucket: "twinizer-atc.appspot.com",
-  messagingSenderId: "507482022642",
-  appId: "1:507482022642:web:8ad756e90c9fe4171de66b"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  var user = firebase.auth().currentUser;
-
 
   class Appp extends React.Component {
 
@@ -77,32 +63,29 @@ var firebaseConfig = {
     }
 
     async componentDidMount() {
+      const user = auth().currentUser;
+      await this.setTheme(user)
+      if (user) {
+        this.setState({ loading: false, authenticated: true });
 
-      firebase.auth().onAuthStateChanged(async (user) => {
-        console.log("GİRİYOMU")
-        await this.setTheme(user)
-        if (user) {
-          this.setState({ loading: false, authenticated: true });
-
-        } else {
-          this.setState({ loading: false, authenticated: false });
-        }
-      });
+      } else {
+        this.setState({ loading: false, authenticated: false });
+      }
     }
 
     async setTheme(user){
       // Theme color
       if(user){
-        var themeColor = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'theme')
+        var themeColor = await AsyncStorage.getItem(auth().currentUser.uid + 'theme')
         console.log("STORAGEDAN GELEN THEME COLOR:", themeColor)
         if(themeColor == null || themeColor == undefined){
           themeColor = "Original"
         }
         global.themeColor = themes.getTheme(themeColor)
         global.themeForImages = themes.getThemeForImages(themeColor)
-        var mode = await AsyncStorage.getItem(firebase.auth().currentUser.uid + 'mode')
+        var mode = await AsyncStorage.getItem(auth().currentUser.uid + 'mode')
         if(mode == null || mode == undefined){
-          mode = "true"
+          mode = "false"
         }
         if(mode == "true"){
           global.isDarkMode = true
@@ -141,7 +124,6 @@ var firebaseConfig = {
           style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}>
           </ImageBackground>
         )
-
       }
     }
   }

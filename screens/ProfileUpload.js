@@ -7,8 +7,8 @@ import RNPickerSelect from 'react-native-picker-select';
 import Modal from "react-native-modal";
 import ImagePicker from 'react-native-image-crop-picker';
 import RNFS from 'react-native-fs'
-
-import * as firebase from "firebase";
+import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
 import {Image,
    Text,
    View,
@@ -51,7 +51,7 @@ export default class ProfileUploadScreen extends React.Component {
       photo: null,
       profilePhoto: "",
       str: "",
-      isim : firebase.auth().currentUser.displayName,
+      isim : auth().currentUser.displayName,
       color: 'rgba(0,0,0,0.4)',
       borderOpacity: global.themeColor,
       opacity: 0.4,
@@ -91,15 +91,14 @@ export default class ProfileUploadScreen extends React.Component {
 uploadPhoto = async (uri) => {
     this.setState({loadingOpacity: 1})
     this.spinAnimation()
-    var storage = firebase.storage();
-    var storageRef = storage.ref();
+    var storageRef =  storage().ref();
     var metadata = {
       contentType: 'image/jpeg',
     };
       console.log(uploadDone)
       const response = await fetch(uri);
       const blob = await response.blob();
-      var ref1 = storageRef.child("Photos/" + firebase.auth().currentUser.uid + this.state.str);
+      var ref1 = storageRef.child("Photos/" + auth().currentUser.uid + this.state.str);
       await ref1.put(blob).then(function(snapshot) {uploadDone = true}).catch(function(error) {
         Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
       });;
@@ -108,7 +107,7 @@ uploadPhoto = async (uri) => {
       this.setState({loadingOpacity: 0})
     if (uploadDone){
 
-      RNFS.copyFile(this.state.profilePhoto, RNFS.DocumentDirectoryPath + firebase.auth().currentUser.uid + "profile.jpg");
+      RNFS.copyFile(this.state.profilePhoto, RNFS.DocumentDirectoryPath + auth().currentUser.uid + "profile.jpg");
 
       const {navigate} = this.props.navigation;
       navigate("ImageUpload")

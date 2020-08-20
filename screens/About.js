@@ -4,7 +4,6 @@ import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import {navigate, route} from './RootNavigation'
-import * as firebase from "firebase";
 import AsyncStorage from '@react-native-community/async-storage';
 
 import {Image,

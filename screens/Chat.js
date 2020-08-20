@@ -1,7 +1,7 @@
-import firebase from 'firebase';
 import React from 'react';
 import { InputToolbar, Send, Bubble, Time, GiftedChat } from 'react-native-gifted-chat';
 import firebaseSvc from './FirebaseSvc';
+import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-community/async-storage';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
@@ -338,7 +338,7 @@ async deleteMessage(message){
   }
   this.setState({messages: messageArray})
 
-  await AsyncStorage.getItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages')
+  await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
     .then(req => JSON.parse(req))
     .then(json => localMessages = json)
 
@@ -348,7 +348,7 @@ async deleteMessage(message){
       break
     }
   }
-  AsyncStorage.setItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
+  AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
 }
 onLongPress(context, message) {
   const options = ['Delete Message', 'Cancel'];
@@ -645,14 +645,14 @@ render() {
 
   async updateLastSeenFile(){
     var currentTime = "" + new Date().getTime();
-    var key = firebase.auth().currentUser.uid + "" + global.receiverUid
+    var key = auth().currentUser.uid + "" + global.receiverUid
     AsyncStorage.setItem(key + 'lastSeen', currentTime )
 
   }
 async getLastLocalMessages(){
     messageArray = []
     messageArray.splice(0, messageArray.length)
-    await AsyncStorage.getItem(firebase.auth().currentUser.uid + global.receiverUid + '/messages')
+    await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
       .then(req => JSON.parse(req))
       .then(json => localMessages = json)
     var number;

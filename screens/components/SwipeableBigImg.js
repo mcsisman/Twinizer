@@ -28,7 +28,8 @@ export default class SwipeableBigImg extends Component {
 
 
   static propTypes = {
-   isFavorite: PropTypes.bool,
+   isFavorite: PropTypes.number,
+   isBlocked: PropTypes.number,
    imgSource: PropTypes.string,
    width: PropTypes.object,
    height: PropTypes.object,
@@ -62,13 +63,24 @@ export default class SwipeableBigImg extends Component {
          borderTopLeftRadius: 16, borderBottomRightRadius: 16 }}
        />
        </TouchableOpacity>
-       <View // SEND MESSAGE BUTONU
+       <View
          style={{opacity: this.props.isFavorite, justifyContent: 'center', alignItems: 'center', width: '24%', height: '16%', backgroundColor: "rgba(128,128,128,0.5)",
          borderTopLeftRadius: 16,borderBottomRightRadius: 16}}
          onPress={this.props.onPress}
          disabled = {this.props.disabled}>
 
          <Image source={{uri: "star"}}
+           style={{ height: '50%', width: '40%' }}
+         />
+
+       </View>
+       <View
+         style={{opacity: this.props.isBlocked, justifyContent: 'center', alignItems: 'center', bottom: '16%', left: '76%', width: '24%', height: '16%', backgroundColor: "rgba(128,128,128,0.5)",
+         borderTopRightRadius: 16,borderBottomLeftRadius: 16}}
+         onPress={this.props.onPress}
+         disabled = {this.props.disabled}>
+
+         <Image source={{uri: "block"}}
            style={{ height: '50%', width: '40%' }}
          />
 
