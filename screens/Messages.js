@@ -3,7 +3,6 @@ import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import RNPickerSelect from 'react-native-picker-select';
 import { NavigationEvents} from 'react-navigation';
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -742,7 +741,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
     var messageKey;
     var noOfNewMsgs = Object.keys(snapVal).length
     if(noOfNewMsgs != 0){
-      for(i = 0; i < noOfNewMsgs; i++){
+      for(i = noOfNewMsgs - 1; i >= 0; i--){
         messageKey = Object.keys(snapshot.val())[i]
         console.log("SNAP VAL: ", snapVal)
 
@@ -794,13 +793,16 @@ syncLocalMessages = async (snapshot, uidCount) => {
       }
       database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
       var kValue;
-      var isRequ = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[i])
+      var isRequ = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[uidCount])
+
       if(isRequ == undefined || isRequ == null || isRequ == "true"){
         kValue = 0
       }
-      if( isRequ == "false"){
+      if(isRequ == "false"){
         kValue = 1
       }
+      console.log("K VALUE:", kValue)
+      console.log("IS REQU??:", isRequ)
       this.setRequestDB(uidArray[uidCount], kValue)
         await AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
         lastMsgFlag = lastDBkey == localMessages[uidCount][localMessages[uidCount].length - 1]._id

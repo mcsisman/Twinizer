@@ -15,7 +15,8 @@ import {Image,
    TextInput,
    Alert,
    StatusBar,
-   Platform
+   Platform,
+   Keyboard
   } from 'react-native';
 import SplashScreen from './Splash';
 import CustomHeader from './components/CustomHeader'
@@ -63,6 +64,11 @@ static navigationOptions = {
       enabled
       style={{flex:1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)'}}>
 
+      <TouchableOpacity
+      activeOpacity = {1}
+      style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
+       onPress={()=> Keyboard.dismiss() }>
+
       <ModifiedStatusBar/>
       <CustomHeader
       title = {global.langForgotPassword}
@@ -90,6 +96,7 @@ static navigationOptions = {
       borderRadius = {32}/>
 
       </View>
+      </TouchableOpacity>
       </KeyboardAvoidingView>
         );
   }

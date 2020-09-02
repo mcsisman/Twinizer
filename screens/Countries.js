@@ -1,4 +1,21 @@
-class Countries {
+import {Image,
+   Text,
+   View,
+   StyleSheet,
+   Dimensions,
+   TouchableOpacity,
+   ImageBackground,
+   KeyboardAvoidingView,
+   TextInput,
+   Alert,
+   StatusBar,
+   Easing,
+   Button,
+   Animated,
+   Platform
+  } from 'react-native';
+  import React, {Component} from 'react';
+  class Countries {
   // COUNTRY LIST
   get countries(){
     var countries = [
@@ -209,13 +226,32 @@ class Countries {
     }
     return items;
   }
+  get newGenderItems(){
+    var items = []
+    var countries = this.countries
+    for( i = 0; i < 196; i++){
+      items[i] = { label: this.countries[i], key: i + 1}
+    }
+    return items;
+
+  }
   // PICKER LIST FOR COUNTRIES MAIN PAGE
   get mainItems(){
     var items = []
     var countries = this.countries
-    items[0] = { label: "All Countries", color: 'red', value: "All Countries" };
+    items[0] = { label: "All Countries", color: 'red', value: "All Countries"};
     for( i = 1; i < 196; i++){
       items[i] = { label: this.countries[i-1], color: 'black', value: this.countries[i-1] }
+    }
+    return items;
+  }
+
+  get newMainItems(){
+    var items = []
+    var countries = this.countries
+    items[0] = { label: "All Countries", key: 1, component: <View style={{}}><Text style={{color: 'red', fontSize: 16,  textAlign: "center"}}>All Countries</Text></View> };
+    for( i = 1; i < 196; i++){
+      items[i] = { label: this.countries[i-1], key: i+1}
     }
     return items;
   }

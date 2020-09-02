@@ -74,9 +74,10 @@ export default class FilterModal extends Component {
           </Text>
 
           <CountryPicker
+          selectedValue = {this.props.countrySelectedValue == null ? "Select a Country" : this.props.countrySelectedValue }
           borderBottomColor = {global.themeColor}
           onValueChange = {this.props.onValueChangeCountry}
-          items = {countries.mainItems}
+          items = {countries.newMainItems}
           label = {this.props.placeHolder1}
           bottom = {this.height*10/100}
           right = {this.width*(2.5/100)}
@@ -84,11 +85,12 @@ export default class FilterModal extends Component {
           width = {this.width*(45/100)}/>
 
           <CountryPicker
+          selectedValue = {this.props.genderSelectedValue == null ? "Select a Gender" : this.props.genderSelectedValue}
           borderBottomColor = {global.themeColor}
           onValueChange = {this.props.onValueChangeGender}
-          items = {[{label: global.langAllGenders, color: 'red', value: global.langAllGenders},
-                      {label: global.langFilterMale, color: 'black', value: global.langFilterMale},
-                      {label: global.langFilterFemale, color: 'black', value: global.langFilterFemale}]}
+          items = {[{label: global.langAllGenders, key: 1, component: <View style={{}}><Text style={{color: 'red', fontSize: 16,  textAlign: "center"}}>{global.langAllGenders}</Text></View>},
+                      {label: global.langFilterMale, key: 2},
+                      {label: global.langFilterFemale, key: 3}]}
           label = {this.props.placeHolder2}
           bottom = {this.height*10/100}
           right = {this.width*(52.5/100)}

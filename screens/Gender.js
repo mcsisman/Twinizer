@@ -37,6 +37,7 @@ export default class GenderScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.state = {
+      pickerTextColor: "gray",
       splashOver : false,
       color: 'rgba(0,0,0,0.4)',
       buttonOpacity: global.themeColor,
@@ -47,8 +48,10 @@ export default class GenderScreen extends Component<{}>{
       maleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
       femaleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
       gender: "",
-      country: "Country"
+      country: "Country",
+      selectedValue: "Select a Country"
     }
+    var selectedValue = "Select"
     this.countries = countries.countries
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
@@ -91,13 +94,16 @@ femaleSelected(){ // FEMALE IS SELECTED, COUNTRY IS NOT SELECTED
 }
 
 valueChange(value){
+  this.setState({selectedValue: value.label})
   if(value == null || global.globalGender == ""){ // IF COUNTRY OR GENDER IS NOT SELECTED, DISABLE THE NEXT BUTTON
     this.setState({country: "Country", color: 'rgba(0,0,0,0.4)', disabled: true, buttonOpacity: global.themeColor, opacity: 0.4})
   }
   else{ // IF BOTH COUNTRY AND GENDER IS SELECTED, ENABLE THE NEXT BUTTON
-    this.setState({country: value, color: global.themeColor, buttonOpacity: global.themeColor, disabled: false, opacity: 1})
+    this.setState({country: value.label, color: global.themeColor, buttonOpacity: global.themeColor, disabled: false, opacity: 1})
   }
-  global.globalCountry = value;
+  console.log("VALUEEEEEEEEE:", this.state.selectedValue)
+  console.log("KEYYYYYYYYYY:", value.key)
+  global.globalCountry = value.label;
 }
 
   render(){
@@ -144,8 +150,11 @@ valueChange(value){
       right = {this.width*(20/100)}
       bottom = {this.height*(3.5/10)}
       onValueChange = {(value) => this.valueChange(value)}
-      items = {countries.genderItems}
-      label = {global.langCountry}/>
+      items = {countries.newGenderItems}
+      label = {global.langCountry}
+      textColor = {this.state.pickerTextColor}
+      selectedValue = {this.state.selectedValue}/>
+
 
       <PageDots
       pageNo = {1}/>

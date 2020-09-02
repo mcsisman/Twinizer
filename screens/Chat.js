@@ -134,6 +134,10 @@ sendMsg = (messages) => {
   }))
 }
 
+onPressInfo(){
+  Keyboard.dismiss()
+  this.setState({photoPopUpIsVisible: true})
+}
 sendMsgWithImage = async (text) =>{
   var messages;
   for( i = 0; i < images.length; i++){
@@ -170,6 +174,7 @@ _keyboardDidHide = () => {
 };
 
 onPressCamera(){
+  Keyboard.dismiss()
   this.setState({isVisible1: true})
 }
 library = () =>{
@@ -430,6 +435,11 @@ render() {
             <View
             style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
 
+            <TouchableOpacity
+            activeOpacity = {1}
+            style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
+             onPress={()=> Keyboard.dismiss() }>
+
             <ModifiedStatusBar/>
 
             <View
@@ -453,7 +463,7 @@ render() {
 
             <ChatHeader
             onPressBack = {()=> this.goBackOnPress()}
-            onPressInfo = {()=> this.setState({photoPopUpIsVisible: true})}
+            onPressInfo = {()=> this.onPressInfo()}
             onPressCamera = {()=> this.onPressCamera()}/>
 
             <ImageUploadModal
@@ -474,6 +484,7 @@ render() {
             onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
             imgSource = {global.receiverPhoto}/>
 
+            </TouchableOpacity>
             </View>
           )
         }
@@ -481,6 +492,11 @@ render() {
           return(
             <View
             style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
+
+            <TouchableOpacity
+            activeOpacity = {1}
+            style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
+             onPress={()=> Keyboard.dismiss() }>
 
             <ModifiedStatusBar/>
 
@@ -505,7 +521,7 @@ render() {
 
             <ChatHeader
             onPressBack = {()=> this.goBackOnPress()}
-            onPressInfo = {()=> this.setState({photoPopUpIsVisible: true})}
+            onPressInfo = {()=> this.onPressInfo()}
             onPressCamera = {()=> this.onPressCamera()}/>
 
             <ImageUploadModal
@@ -525,6 +541,8 @@ render() {
             bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
             onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
             imgSource = {global.receiverPhoto}/>
+
+            </TouchableOpacity>
             </View>
           )
         }
@@ -535,6 +553,11 @@ render() {
             <View
             style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
 
+            <TouchableOpacity
+            activeOpacity = {1}
+            style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
+             onPress={()=> Keyboard.dismiss() }>
+
             <ModifiedStatusBar/>
 
             <View
@@ -561,7 +584,7 @@ render() {
 
             <ChatHeader
             onPressBack = {()=> this.goBackOnPress()}
-            onPressInfo = {()=> this.setState({photoPopUpIsVisible: true})}
+            onPressInfo = {()=> this.onPressInfo()}
             onPressCamera = {()=> this.onPressCamera()}/>
 
             <ImageUploadModal
@@ -581,6 +604,8 @@ render() {
             bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
             onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
             imgSource = {global.receiverPhoto}/>
+
+            </TouchableOpacity>
             </View>
           )
         }
@@ -588,6 +613,11 @@ render() {
           return(
             <View
             style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
+
+            <TouchableOpacity
+            activeOpacity = {1}
+            style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
+             onPress={()=> Keyboard.dismiss() }>
 
             <ModifiedStatusBar/>
 
@@ -615,7 +645,7 @@ render() {
 
             <ChatHeader
             onPressBack = {()=> this.goBackOnPress()}
-            onPressInfo = {()=> this.setState({photoPopUpIsVisible: true})}
+            onPressInfo = {()=> this.onPressInfo()}
             onPressCamera = {()=> this.onPressCamera()}/>
 
             <ImageUploadModal
@@ -635,6 +665,8 @@ render() {
             bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
             onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
             imgSource = {global.receiverPhoto}/>
+
+            </TouchableOpacity>
             </View>
           )
         }

@@ -53,7 +53,7 @@ export default class ProfileUploadScreen extends React.Component {
       str: "",
       isim : auth().currentUser.displayName,
       color: 'rgba(0,0,0,0.4)',
-      borderOpacity: global.themeColor,
+      borderOpacity: 1,
       opacity: 0.4,
       disabled: true,
       btnOpacity: 0.4,
@@ -122,7 +122,7 @@ library = () =>{
     console.log(image);
     this.setState({
       photo: {uri: image.path},
-      borderOpacity: 'rgba(66,66,255,0)',
+      borderOpacity: 0,
       str: '/1.jpg',
       opacity: 0,
       isVisible1: false,
@@ -141,7 +141,7 @@ camera = () => {
     console.log(image);
     this.setState({
       photo: {uri: image.path},
-      borderOpacity: 'rgba(66,66,255,0)',
+      borderOpacity: 0,
       str: '/1.jpg',
       opacity: 0,
       isVisible1: false,

@@ -13,6 +13,7 @@ import Modal from "react-native-modal";
 import ImagePicker from 'react-native-image-crop-picker';
 import Swipeable from 'react-native-swipeable';
 import RNFetchBlob from 'rn-fetch-blob'
+import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Image,
    Text,
@@ -185,6 +186,25 @@ constructor(props){
   }
 
 async componentDidMount(){
+
+
+  var authStatus = await messaging().requestPermission();
+  var enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    console.log("AUTHSTATUS: ", authStatus)
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+  }
+  messaging()
+    .getToken()
+    .then(token => {
+      userToken = token;
+      console.log("TOKEN: ", userToken)
+    });
+    var unsubscribe = messaging().onMessage(async remoteMessage => {
+        console.log("BILDIRIM GELDI")
+      });
 
 
     favShowThisDialog = await AsyncStorage.getItem(auth().currentUser.uid + 'favShowThisDialog')
@@ -807,7 +827,7 @@ async sendFirstMessage(){
   //global.receiverGender = genderArray[global.swipeCount]
   //global.receiverCountry = countryArray[global.swipeCount]
   //global.receiverUsername = usernameArray[global.swipeCount]
-  global.receiverUid = "pg7bdvxZS0XvAzL4YcU7Tzc3Xpk2"
+  global.receiverUid = "p9UY4QQtEnRTWBYDfgG4pyHiyZg2"
   global.receiverMail = "cemil.sisman@ug.bilkent.edu.tr"
   global.receiverGender = "Male"
   global.receiverCountry = "Azerbaijan"
@@ -1450,7 +1470,7 @@ render(){
       <CustomHeader
       whichScreen = {"Main"}
       onPress = {()=> this.setState({isVisible2: true})}
-      isFilterVisible = {this.state.showFilter}
+      isFilterVisible = {1}
       title = {"Twinizer"}>
       </CustomHeader>
 
@@ -1583,8 +1603,10 @@ render(){
       <FilterModal
       isVisible={this.state.isVisible2}
       onBackdropPress = {()=> this.setState({isVisible2: false})}
-      onValueChangeGender = {(value) => this.valueChangeGender(value)}
-      onValueChangeCountry = {(value) => this.valueChangeCountry(value)}
+      onValueChangeGender = {(value) => this.valueChangeGender(value.label)}
+      onValueChangeCountry = {(value) => this.valueChangeCountry(value.label)}
+      genderSelectedValue = {this.state.gender}
+      countrySelectedValue = {this.state.country}
       placeHolder1 = {this.state.placeHolder1}
       placeHolder2 = {this.state.placeHolder2}
       onPressSearch = {()=>this.filterDone()}

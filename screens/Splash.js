@@ -15,7 +15,8 @@ import {Image,
    KeyboardAvoidingView,
    TextInput,
    Alert,
-   Platform
+   Platform,
+   Keyboard
   } from 'react-native';
 import MainScreen from './Main';
 import ForgotPasswordScreen from './ForgotPassword';
@@ -61,7 +62,7 @@ Login = (email, password) => {
                await storageRef.getDownloadURL().then(data =>{
                  console.log("EMBEDDING VAR: ", auth().currentUser.uid)
                  console.log("DATA: ", data)
-                 navigate("Tabs")
+                 navigate("Gender")
                }).catch(function(error) {
                  console.log("EMBEDDING YOK: ", auth().currentUser.uid)
                  navigate("Gender")
@@ -94,6 +95,10 @@ Login = (email, password) => {
         return(
           <KeyboardAvoidingView behavior="padding" enabled
           style={{width: this.width, height: this.height, flex:1, backgroundColor: 'rgba(255,255,255, 0)'}}>
+          <TouchableOpacity
+          activeOpacity = {1}
+          style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
+           onPress={()=> Keyboard.dismiss() }>
           <ImageBackground
           source={{uri: 'flare'}}
           style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}>
@@ -122,6 +127,7 @@ Login = (email, password) => {
         </TextInput>
 
         <TouchableOpacity
+        activeOpacity = {1}
         style={{position: 'absolute', backgroundColor: 'rgba(255,255,255, 0)',
          width: this.width*(2/10), height: (this.height*6)/100, flex:1, bottom: 0, right: this.width*(2/100)}}
          onPress={()=>navigate("NewAccount") }>
@@ -136,6 +142,7 @@ Login = (email, password) => {
         </TouchableOpacity>
 
         <TouchableOpacity
+        activeOpacity = {1}
         style={{position: 'absolute', backgroundColor: 'rgba(255,255,255, 0)',
          width: this.width*(4/10), height: (this.height*6)/100, flex:1, bottom: 0, left: this.width*(2/100)}}
          onPress={()=> navigate( "ForgotPassword") }>
@@ -145,6 +152,7 @@ Login = (email, password) => {
         </TouchableOpacity>
 
         <TouchableOpacity
+        activeOpacity = {1}
         style={{justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(255,255,255, 0)',
           paddingLeft: 15, paddingRight: 15, height: (this.height*6)/100, flex:1, bottom: (this.height*25)/100}}
          onPress={()=>this.check() }>
@@ -155,6 +163,7 @@ Login = (email, password) => {
         </TouchableOpacity>
 
         </ImageBackground>
+        </TouchableOpacity>
         </KeyboardAvoidingView>
         );
       }

@@ -242,10 +242,10 @@ static navigationOptions = {
     })
   }
   onCountryValueChange(value){
-    this.setState({userCountry: value})
+    this.setState({userCountry: value.label})
   }
   onValueChangeGender(value){
-    this.setState({userGender: value})
+    this.setState({userGender: value.label})
   }
   valueChange(value){
     if(this.state.bioLimit <= 100){
@@ -415,12 +415,12 @@ static navigationOptions = {
         borderBottomWidth = {0.4}
         borderColor = {"gray"}
         borderBottomColor = {"gray"}
-        value = {this.state.userCountry}
+        selectedValue = {this.state.userCountry}
         disabled = {this.state.upperComponentsDisabled}
         opacity = {this.state.upperComponentsOpacity}
         onOpen = {()=> this.onPressCountry()}
         onValueChange = {(value)=> this.onCountryValueChange(value)}
-        items = {countries.genderItems}
+        items = {countries.newGenderItems}
         label = {"label"}
         height = {this.width/2*(8/10)*(7/6)/5}
         width = {this.width/2*(8/10)}/>
@@ -436,13 +436,13 @@ static navigationOptions = {
         borderBottomWidth = {0.4}
         borderColor = {"gray"}
         borderBottomColor = {"gray"}
-        value = {this.state.userGender}
+        selectedValue = {this.state.userGender}
         disabled = {this.state.upperComponentsDisabled}
         opacity = {this.state.upperComponentsOpacity}
         onOpen = {()=> this.onPressGender()}
         onValueChange = {(value)=> this.onValueChangeGender(value)}
-        items = {[{label: global.langFilterMale, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", value: global.langFilterMale},
-                    {label: global.langFilterFemale, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", value: global.langFilterFemale}]}
+        items = {[{label: global.langFilterMale, key: 1},
+                    {label: global.langFilterFemale, key: 2}]}
         label = {"label"}
         height = {this.width/2*(8/10)*(7/6)/5}
         width = {this.width/2*(8/10)}/>

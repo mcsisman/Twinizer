@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import RNPickerSelect from 'react-native-picker-select';
 import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
@@ -21,7 +20,8 @@ import {Image,
    Picker,
    Alert,
    StatusBar,
-   Platform
+   Platform,
+   Keyboard
   } from 'react-native';
 import SplashScreen from './Splash';
 import MessagesScreen from './Messages';
@@ -136,6 +136,12 @@ writeUserData(userId, name, email, imageUrl) {
         enabled
         keyboardVerticalOffset = {-(this.height*12)/100}
         style={{flex:1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1]: 'rgba(255,255,255,1)'}}>
+
+        <TouchableOpacity
+        activeOpacity = {1}
+        style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
+         onPress={()=> Keyboard.dismiss() }>
+
         <ModifiedStatusBar/>
 
         <CustomHeader
@@ -191,7 +197,7 @@ writeUserData(userId, name, email, imageUrl) {
         borderColor = {global.themeColor}/>
 
         </View>
-
+        </TouchableOpacity>
         </KeyboardAvoidingView>
 
       );

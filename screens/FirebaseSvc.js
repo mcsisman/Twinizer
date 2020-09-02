@@ -37,11 +37,12 @@ class FirebaseSvc {
 
   parse = async snapshot => {
     if(snapshot.val() != null){
+      console.log("PARSE SNAPSHOT:", snapshot.val())
       // remove k from snapshot data
       var snapVal = snapshot.val()
       delete snapVal["k"]
       if(Object.keys(snapVal).length != 0){
-        var messageKey = Object.keys(snapVal)[0]
+        var messageKey = Object.keys(snapVal)[Object.keys(snapVal).length - 1]
         await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
           .then(req => JSON.parse(req))
           .then(json => localMessages = json)

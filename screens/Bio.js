@@ -22,7 +22,8 @@ import {Image,
    StatusBar,
    Platform,
    Animated,
-   Easing
+   Easing,
+   Keyboard
   } from 'react-native';
 import MainScreen from './Main';
 import CustomHeader from './components/CustomHeader'
@@ -93,7 +94,7 @@ async writeCountryToDatabase(){
     await database().ref('Users/' + auth().currentUser.uid + "/i").update({
       g: global.globalGender,
       c: global.globalCountry,
-      b: global.globalBio, 
+      b: global.globalBio,
       p: 0
     }).then(async function() {
         const updateRef = firestore().collection('Functions').doc('Model');
@@ -112,7 +113,7 @@ async writeCountryToDatabase(){
     this.spinValue = new Animated.Value(0)
     if (updateDone){
       const {navigate} = this.props.navigation;
-      navigate("Main")
+      navigate("Tabs")
     }
     else {
       Alert.alert("Upload Failed", "Creating account is failed. Try Again.." )
@@ -139,6 +140,13 @@ valueChange(value){
     return(
       <View
       style={{flex:1, flexDirection: 'column', alignItems: 'center', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
+
+      <TouchableOpacity
+      activeOpacity = {1}
+      style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
+       onPress={()=> Keyboard.dismiss() }>
+
+
       <ModifiedStatusBar/>
 
       <CustomHeader
@@ -181,6 +189,7 @@ valueChange(value){
       bottom = {(this.height*16)/100 + headerHeight + getStatusBarHeight()}
       right = {this.width*(4.6/10)}/>
 
+      </TouchableOpacity>
     </View>
 
         );
