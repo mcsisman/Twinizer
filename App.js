@@ -184,7 +184,7 @@ if (!global.atob) { global.atob = decode }
     global.langCancel = "İptal"
     //ImageUpload
     global.langImageUploadScreen = "Lütfen Dört Fotoğraf Yükleyin."
-    global.langImageAlert = "Lütfen sadece sizin yüzünüzün olduğu bir fotoğraf yükleyin. Bu fotoğraflar sadece mesaj isteği gönderdiğiniz kişiler tarafından görüntülenebilir.\nFotoğraflarınız profilinizin modelini oluşturmak için kullanılacaktır. Bu model, profilinizin diğer kullanıcıların yaptığı aramalarda görülmesini sağlar."
+    global.langImageAlert = "Lütfen sadece sizin yüzünüzün olduğu bir fotoğraf yükleyin. Bu fotoğraflar diğer kullanıcılar tarafından görüntülenemez.\nFotoğraflarınız profilinizin modelini oluşturmak için kullanılacaktır. Bu model, profilinizin diğer kullanıcıların yaptığı aramalarda görülmesini sağlar."
     global.langDone = "BİTİR"
     //Main
     global.langSearchPhoto = "Bir fotoğraf ile arayın"
@@ -245,7 +245,7 @@ if (!global.atob) { global.atob = decode }
     global.langCancel = "Cancel"
     //ImageUpload
     global.langImageUploadScreen = "Please Upload Four Photos."
-    global.langImageAlert = "Please make sure to choose photos that include your face only. These photos will only be visible to the users that you send a message requests to.\nYour photos will be used to create a model of your profile. This model will allow your profile to appear in other users' search results."
+    global.langImageAlert = "Please make sure to choose photos that include your face only. These photos will not be visible to any user.\nYour photos will be used to create a model of your profile. This model will allow your profile to appear in other users' search results."
     global.langDone = "DONE"
     //Main
     global.langSearchPhoto = "Search with a photo"
@@ -273,9 +273,6 @@ if (!global.atob) { global.atob = decode }
     global.welcomePhoto = 'welcome'
 
   }
-
-
-
 
   const config = {
   animation: 'timing',

@@ -1660,7 +1660,7 @@ render(){
       isVisible = {this.state.openProfileIsVisible}
       onBackdropPress = {()=> this.setState({openProfileIsVisible: false})}
       username = {this.state.uri2_username}
-      bio = {"\"Ne bakıyorsun\""}
+      bio = {this.state.uri2_bio}
       onPressCancel = {()=>this.setState({openProfileIsVisible:false}) }
       imgSource = {this.state.uri2}
       onPressSendMsg = {()=>this.sendFirstMessage()}/>

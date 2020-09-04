@@ -54,7 +54,7 @@ export default class ThemeSettingsScreen extends Component<{}>{
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
-
+      tickVisible: global.isDarkMode
     }
   }
   async componentDidMount(){
