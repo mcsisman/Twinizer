@@ -9,11 +9,12 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import messaging from '@react-native-firebase/messaging';
+import OneSignal from 'react-native-onesignal'
 import Modal from "react-native-modal";
 import ImagePicker from 'react-native-image-crop-picker';
 import Swipeable from 'react-native-swipeable';
 import RNFetchBlob from 'rn-fetch-blob'
-import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Image,
    Text,
@@ -88,6 +89,7 @@ var hepsi = true;
 var flagIs20 = false;
 var currentUserGender;
 var currentUserCountry;
+var playerId;
 var currentUserUsername;
 var currentUserBio;
 var isFav = false;
@@ -186,27 +188,7 @@ constructor(props){
   }
 
 async componentDidMount(){
-
-
   var authStatus = await messaging().requestPermission();
-  var enabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-    console.log("AUTHSTATUS: ", authStatus)
-  if (enabled) {
-    console.log('Authorization status:', authStatus);
-  }
-  messaging()
-    .getToken()
-    .then(token => {
-      userToken = token;
-      console.log("TOKEN: ", userToken)
-    });
-    var unsubscribe = messaging().onMessage(async remoteMessage => {
-        console.log("BILDIRIM GELDI")
-      });
-
-
     favShowThisDialog = await AsyncStorage.getItem(auth().currentUser.uid + 'favShowThisDialog')
     blockShowThisDialog = await AsyncStorage.getItem(auth().currentUser.uid + 'blockShowThisDialog')
     global.fromMessages = false
@@ -224,7 +206,36 @@ async componentDidMount(){
         await this.setSearchPhotoFromHistory(global.historyPhotoUri)
       }
     })
-
+    // WHOLE ONESIGNAL THINGS
+    OneSignal.setLogLevel(6, 0);
+    OneSignal.init("7af3b2d1-d4fe-418d-a096-4f57f2c384c8", {kOSSettingsKeyAutoPrompt : false, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption:2});
+    OneSignal.inFocusDisplaying(2);
+    OneSignal.getPermissionSubscriptionState((status) => {
+      console.log(status);
+      global.playerId = status.userId;
+      console.log(global.playerId);
+    });
+    OneSignal.addEventListener('received', this.onReceived);
+    OneSignal.addEventListener('opened', this.onOpened);
+    OneSignal.addEventListener('ids', this.onIds);
+    // Check playerId from local and change if it is changed
+    playerId = await AsyncStorage.getItem(auth().currentUser.uid + 'playerId')
+    if(playerId != global.playerId){
+      var temp = 0;
+      database().ref('/Users/'+auth().currentUser.uid + '/i/o').once('value').then(snapshot => {
+        if(snapshot.val()){
+          temp = snapshot.val()
+        }
+        console.log("temp: ", temp)
+        database().ref('/Users/'+auth().currentUser.uid + '/i').update({
+          o: temp + 1
+        });
+      });
+      database().ref('/PlayerIds/').update({
+        [auth().currentUser.uid]: global.playerId
+      });
+      AsyncStorage.setItem(auth().currentUser.uid + 'playerId', global.playerId)
+    }
     global.swipeCount = 0
     // this.checkIfAlreadySearching()
     this.welcome = {uri: 'twinizermain'}
@@ -238,6 +249,21 @@ updateState = () =>{
   console.log("LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG")
   this.setState({reRender: "ok"})
   return "TESTTTT"
+}
+
+onReceived(notification) {
+    console.log("Notification received: ", notification);
+  }
+
+onOpened(openResult) {
+    console.log('Message: ', openResult.notification.payload.body);
+    console.log('Data: ', openResult.notification.payload.additionalData);
+    console.log('isActive: ', openResult.notification.isAppInFocus);
+    console.log('openResult: ', openResult);
+}
+
+onIds(device) {
+    console.log('Device info: ', device);
 }
 
 async checkIfAlreadySearching(){
@@ -833,6 +859,21 @@ async sendFirstMessage(){
   global.receiverCountry = "Azerbaijan"
   global.receiverUsername = "cemil ug"
   //global.firstMessage = true
+  global.playerIdArray[global.receiverUid] = await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + "playerId")
+  console.log("global.playerIdArray: ", global.playerIdArray)
+  var tempo = await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + "o")
+  var realtimeo = 0;
+  database().ref('/Users/'+ global.receiverUid + "/i/o").once('value').then(snapshot => {
+    realtimeo = snapshot.val()
+  });
+  if(tempo != realtimeo){
+    database().ref('/PlayerIds/'+global.receiverUid).once('value').then(snapshot => {
+      console.log("PLAYER ID READ EDIYO")
+      global.playerIdArray[global.receiverUid] = snapshot.val()
+      AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + "playerId", snapshot.val())
+      AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + "o", realtimeo)
+    });
+  }
   this.props.navigation.navigate("Chat")
 }
 

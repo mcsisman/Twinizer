@@ -166,6 +166,17 @@ class FirebaseSvc {
 
     for (let i = 0; i < messages.length; i++) {
       const { text, user1 } = messages[i];
+      fetch('https://onesignal.com/api/v1/notifications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8'
+        },
+        body: JSON.stringify({"app_id": "7af3b2d1-d4fe-418d-a096-4f57f2c384c8",
+               "include_player_ids": ["d73672c4-eb82-472d-b0d8-2d652dafc351"], //global.playerIdArray[global.receiverUid]
+               "contents": {"en": global.receiverUsername + ": " + text}})
+      }).then((response) => {
+        console.log(response)
+      });
       const message = {
         text,
         c: this.timestamp,
@@ -224,7 +235,6 @@ class FirebaseSvc {
         }
         await AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMsgs))
     }
-
   };
 
   refOff() {

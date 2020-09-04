@@ -267,6 +267,21 @@ async startFromLocal(){
   }
 
 }
+
+async updatePlayerIds(snapshot, index){
+  var userInfo = snapshot.val()
+  global.playerIdArray[conversationUidArray[index]] = await AsyncStorage.getItem(auth().currentUser.uid + conversationUidArray[index] + "playerId")
+  var tempo = await AsyncStorage.getItem(auth().currentUser.uid + conversationUidArray[index] + "o")
+  if(tempo != userInfo.o){
+    database().ref('/PlayerIds/'+ conversationUidArray[index]).once('value').then(snapshot => {
+      console.log("PLAYER ID READ EDIYO")
+      global.playerIdArray[conversationUidArray[index]] = snapshot.val()
+      AsyncStorage.setItem(auth().currentUser.uid + conversationUidArray[index] + "playerId", snapshot.val())
+      AsyncStorage.setItem(auth().currentUser.uid + conversationUidArray[index] + "o", userInfo.o)
+    });
+  }
+}
+
 async getUsernameOfTheUid(){
 
   if(global.messagesFirstTime){
@@ -281,6 +296,7 @@ async getUsernameOfTheUid(){
       var usernameOnceListener = database().ref('Users/' + conversationUidArray[i] + "/i");
       await usernameOnceListener.once('value').then(async snapshot => {
         conversationUsernameArray[i] = snapshot.val()
+        await this.updatePlayerIds(snapshot, i)
       })
       const index = i
       usernameListener[i] = database().ref('Users/' + conversationUidArray[i]);
@@ -332,6 +348,7 @@ async getUsernameOfTheUid(){
         else{
           conversationUsernameArray.push(snapshot.val())
         }
+        await this.updatePlayerIds(snapshot, conversationUsernameArray.length-1)
         conversationUsernameArray
       })
       await AsyncStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))

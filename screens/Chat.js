@@ -128,7 +128,6 @@ componentWillUnmount() {
 
 sendMsg = (messages) => {
   firebaseSvc.send(messages, "f")
-
   this.setState(previousState => ({
     messages: GiftedChat.append(previousState.messages, messages[0]),
   }))

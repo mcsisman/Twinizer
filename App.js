@@ -128,6 +128,7 @@ if (!global.atob) { global.atob = decode }
     }
   }
 
+  global.playerIdArray = {}
   global.removeFromFavUser = false
   global.removeFromBlockedUser = false
   global.selectedFavUserIndex = null
