@@ -19,6 +19,7 @@ class Licences {
       "react-native-loading-spinner-overlay",
       "react-native-localize",
       "react-native-modal",
+      "react-native-onesignal",
       "react-native-picker-select",
       "react-native-safe-area-context",
       "react-native-screens",
@@ -51,6 +52,7 @@ class Licences {
       "react-native-loading-spinner-overlay",
       "react-native-localize",
       "react-native-modal",
+      "react-native-onesignal",
       "react-native-picker-select",
       "react-native-safe-area-context",
       "react-native-screens",
@@ -94,13 +96,57 @@ class Licences {
       "rn-fetch-blob": "2017 xeiyan@gmail.com"
     }
     var mitlicenced = false
-    var apachelicencedlibraries = {
-      "react-native-firebase": "react-native-firebase",
+    var oneSignalLicenced = false
+    var firebaselicenced = false
+    var firebaselicencedlibraries = {
+      "react-native-firebase": "2016-present Invertase Limited <oss@invertase.io> & Contributors",
     }
+    var oneSignalLicence = {
+      "react-native-onesignal": "2019 OneSignal",
+    }
+    console.log("mitlicenced", mitlicencedlibraries[global.selectedLicence.replace('_','/')])
+    console.log("oneSignalLicenced", oneSignalLicence[global.selectedLicence.replace('_','/')])
+    console.log("firebaselicenced", firebaselicencedlibraries[global.selectedLicence.replace('_','/')])
+    // MIT LICENCE
     if (mitlicencedlibraries[global.selectedLicence.replace('_','/')] != null){
       copyright = mitlicencedlibraries[global.selectedLicence.replace('_','/')]
       mitlicenced = true
     }
+    // ONE SIGNAL LICENCE
+    else if (oneSignalLicence[global.selectedLicence.replace('_','/')] != null) {
+      copyright = oneSignalLicence[global.selectedLicence.replace('_','/')]
+      oneSignalLicenced = true
+    }
+    // firebase LICENCE
+    else if (firebaselicencedlibraries[global.selectedLicence.replace('_','/')] != null) {
+      copyright = firebaselicencedlibraries[global.selectedLicence.replace('_','/')]
+      firebaselicenced = true
+    }
+    var mitlicenceOneSignal = "MIT License " +
+    "\n " +
+    "Copyright (c)  " + copyright + " " +
+    "\n " +
+    "Permission is hereby granted, free of charge, to any person obtaining a copy " +
+    "of this software and associated documentation files (the \"Software\"), to deal " +
+    "in the Software without restriction, including without limitation the rights " +
+    "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell " +
+    "copies of the Software, and to permit persons to whom the Software is " +
+    "furnished to do so, subject to the following conditions: " +
+    "\n " +
+    "1. The above copyright notice and this permission notice shall be included in all " +
+    "copies or substantial portions of the Software. " +
+    "\n " +
+    "2. All copies of substantial portions of the Software may only be used in connection" +
+    " with services provided by OneSignal." +
+    "\n " +
+    "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR " +
+    "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, " +
+    "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE " +
+    "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER " +
+    "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, " +
+    "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE " +
+    "SOFTWARE. \n"
+
     var mitlicence = "MIT License " +
     "\n " +
     "Copyright (c)  " + copyright + " " +
@@ -122,6 +168,39 @@ class Licences {
     "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, " +
     "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE " +
     "SOFTWARE. \n"
+    var firebaselicence = "Apache License " +
+    "\n " +
+    "------------------ " +
+    "\n " +
+    "Copyright (c)  " + copyright + " " +
+    "\n " +
+    "Licensed under the Apache License, Version 2.0 (the \"License\"); " +
+    "you may not use this library except in compliance with the License. " +
+    "\n " +
+    "You may obtain a copy of the Apache-2.0 License at " +
+    "\n " +
+    "    http://www.apache.org/licenses/LICENSE-2.0 " +
+    "\n " +
+    "Unless required by applicable law or agreed to in writing, software " +
+    "distributed under the License is distributed on an \"AS IS\" BASIS, " +
+    "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. " +
+    "See the License for the specific language governing permissions and " +
+    "limitations under the License. " +
+    "\n " +
+    "Creative Commons Attribution 3.0 License " +
+    "\n " +
+    "---------------------------------------- " +
+    "\n " +
+    "Copyright (c)  " + copyright + " " +
+    "\n " +
+    "Documentation and other instructional materials provided for this project " +
+    "(including on a separate documentation repository or it's documentation website) are " +
+    "licensed under the Creative Commons Attribution 3.0 License. Code samples/blocks " +
+    "contained therein are licensed under the Apache License, Version 2.0 (the \"License\"), as above. " +
+    "\n " +
+    "You may obtain a copy of the Creative Commons Attribution 3.0 License at " +
+    "\n " +
+    "    https://creativecommons.org/licenses/by/3.0/ "
     var apachelicence = "Copyright (c)  " + copyright + " " +
     "\n " +
     "Apache License " +
@@ -330,8 +409,11 @@ class Licences {
     if(mitlicenced){
       return mitlicence
     }
-    else{
-      return apachelicence
+    else if (oneSignalLicenced) {
+      return mitlicenceOneSignal
+    }
+    else if (firebaselicenced) {
+      return firebaselicence
     }
   }
 }
