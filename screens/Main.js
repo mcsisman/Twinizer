@@ -260,6 +260,8 @@ onOpened(openResult) {
     console.log('Data: ', openResult.notification.payload.additionalData);
     console.log('isActive: ', openResult.notification.isAppInFocus);
     console.log('openResult: ', openResult);
+    //const {navigate} = this.props.navigation;
+    //navigate("Messages")
 }
 
 onIds(device) {
@@ -1135,45 +1137,56 @@ async getImageURL(imageIndex){
 
 async checkFunction(){
     var docRef1 = firestore().collection(auth().currentUser.uid).doc("Similarity").onSnapshot(async doc =>{
+      console.log("CHECK FUNCTION: ", doc.data())
       if(doc.exists){
         if (this.probabilityDoneCheck) {
           // createEmailDistanceArrays KISMI ////////////////////////////////////////
           dict = doc.data();
-          await this.createEmailDistanceArrays("All Genders","All Countries","searchDone");
-          ////////////////////////////////////////////////////////////////////////////////
-          for(let i = 0; i < 10; i++){
-            // resim indirme KISMI /////////////////////////////////////////////////
-            await this.getImageURL(i);
-            //await this.downloadImages(i);
+          console.log("DICT SONUCU: ", dict)
+          if(dict["noface"] != null){
+            this.setState({
+              loadingOpacity: 0
+            })
+            this.spinValue = new Animated.Value(0)
+            Alert.alert("Error!", "There is no face in your search photo.." )
           }
-          console.log("biyere geldik, mainPhotoArray.length ", mainPhotoArray.length)
-          this.setState({
-            uri0: null,
-            uri1: null,
-            uri2: photoArray[0],
-            uri3: photoArray[1],
-            uri4: photoArray[2],
-            uri5: photoArray[3],
-            uri2_username: usernameArray[0],
-            uri2_country: countryArray[0],
-            uri2_gender: genderArray[0],
-            uri2_bio: bioDict[emailArray[0]],
-            backgroundOpacity: 0,
-            swipeableDisabled: false,
-            messageButtonDisabled: false,
-            messageButtonOpacity: 1,
-            showFilter: true,
-            loadingOpacity: 0
-          })
-          this.spinValue = new Animated.Value(0)
-          console.log(photoArray)
-          console.log(emailArray)
-          console.log(genderArray)
-          console.log(countryArray)
-          console.log(distanceArray)
-          console.log(bioDict)
-        }
-        this.probabilityDoneCheck = true;
+          else{
+            await this.createEmailDistanceArrays("All Genders","All Countries","searchDone");
+            ////////////////////////////////////////////////////////////////////////////////
+            for(let i = 0; i < 10; i++){
+              // resim indirme KISMI /////////////////////////////////////////////////
+              await this.getImageURL(i);
+              //await this.downloadImages(i);
+            }
+            console.log("biyere geldik, mainPhotoArray.length ", mainPhotoArray.length)
+            this.setState({
+              uri0: null,
+              uri1: null,
+              uri2: photoArray[0],
+              uri3: photoArray[1],
+              uri4: photoArray[2],
+              uri5: photoArray[3],
+              uri2_username: usernameArray[0],
+              uri2_country: countryArray[0],
+              uri2_gender: genderArray[0],
+              uri2_bio: bioDict[emailArray[0]],
+              backgroundOpacity: 0,
+              swipeableDisabled: false,
+              messageButtonDisabled: false,
+              messageButtonOpacity: 1,
+              showFilter: true,
+              loadingOpacity: 0
+            })
+            this.spinValue = new Animated.Value(0)
+            console.log(photoArray)
+            console.log(emailArray)
+            console.log(genderArray)
+            console.log(countryArray)
+            console.log(distanceArray)
+            console.log(bioDict)
+          }
+          }
+          this.probabilityDoneCheck = true;
       }
       console.log(this.state.uri2);
     });
@@ -1314,9 +1327,6 @@ async searchDone(value){
   global.deactivationLeftDistance= global.width*(2.5/10)
   this.saveSearchPhotoLocally(this.state.photoPath)
   this.uploadSearchPhoto("file://" + RNFS.DocumentDirectoryPath + "/search-photos/1.jpg")
-  if (this.probabilityDoneCheck == false){
-    this.checkFunction();
-  }
 }
 
 async getLastSearchNo(){
@@ -1511,7 +1521,7 @@ render(){
       <CustomHeader
       whichScreen = {"Main"}
       onPress = {()=> this.setState({isVisible2: true})}
-      isFilterVisible = {1}
+      isFilterVisible = {true}
       title = {"Twinizer"}>
       </CustomHeader>
 

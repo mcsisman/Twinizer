@@ -43,6 +43,7 @@ if(Platform.OS === 'ios'){
 
 var writeDone = false;
 var updateDone = false;
+var listenerStarted = false;
 export default class CountryScreen extends Component<{}>{
   constructor(props){
     super(props);
@@ -97,27 +98,42 @@ async writeCountryToDatabase(){
       b: global.globalBio,
       p: 0
     }).then(async function() {
+        var randFloat = Math.random()
         const updateRef = firestore().collection('Functions').doc('Model');
         await updateRef.set({
-          name: auth().currentUser.uid
+          name: auth().currentUser.uid + "_" + randFloat.toString()
         }).then(function() {
-          updateDone = true;
           AsyncStorage.setItem(auth().currentUser.uid + 'userGender', global.globalGender)
           AsyncStorage.setItem(auth().currentUser.uid + 'userCountry', global.globalCountry)
           AsyncStorage.setItem(auth().currentUser.uid + 'userBio', global.globalBio)
           AsyncStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(0))
+          var modelDoneRef = firestore().collection(auth().currentUser.uid).doc('ModelResult');
+          modelDoneRef.onSnapshot(async doc =>{
+            console.log("listenerStarted: ", listenerStarted)
+            if(listenerStarted){
+              var dict = doc.data()
+              console.log("dict: ", dict)
+              if(dict["result"] < 0){
+                Alert.alert("Error!", "Check your photos and be sure that there is a face in each of them.." )
+                updateDone = false;
+              }
+              else{
+                updateDone = true;
+              }
+              this.setState({loadingOpacity: 0})
+              this.spinValue = new Animated.Value(0)
+              if (updateDone){
+                const {navigate} = this.props.navigation;
+                navigate("Tabs")
+              }
+              else {
+                Alert.alert("Upload Failed", "Creating account is failed. Try Again.." )
+              }
+            }
+            listenerStarted = true
+          })
         })
     });
-
-    this.setState({loadingOpacity: 0})
-    this.spinValue = new Animated.Value(0)
-    if (updateDone){
-      const {navigate} = this.props.navigation;
-      navigate("Tabs")
-    }
-    else {
-      Alert.alert("Upload Failed", "Creating account is failed. Try Again.." )
-    }
   }
   else {
     Alert.alert("Fail", "You exceeded the character limit." )

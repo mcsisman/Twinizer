@@ -40,7 +40,7 @@ export default class CountryPicker extends Component {
    onOpen: PropTypes.func,
    borderWidth: PropTypes.number,
    borderBottomWidth: PropTypes.number,
-   placeHolder: PropTypes.string,
+   placeHolder: PropTypes.bool,
    backgroundColor: PropTypes.string,
    selectedValue: PropTypes.string
  }
