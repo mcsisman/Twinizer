@@ -403,7 +403,7 @@ removeFromUser(){
           title = {"Favorite Users"}>
           </CustomHeader>
 
-          <View style = {{opacity: favoriteUserUids.length == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
+          <View style = {{opacity: noOfFavUsers == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
           <TouchableOpacity
             activeOpacity = {1}
             style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}

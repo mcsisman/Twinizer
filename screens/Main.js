@@ -1673,6 +1673,7 @@ render(){
       <PhotoPopUpModal
       isVisible = {this.state.openProfileIsVisible}
       onPressImage = {() => {
+        this.props.navigation.setOptions({tabBarVisible: false})
         this.setState({imageViewerVisible: true})
       }}
       onBackdropPress = {()=> this.setState({openProfileIsVisible: false})}
@@ -1707,7 +1708,9 @@ render(){
         <ImageViewerModal
         isVisible = {this.state.imageViewerVisible}
         images = {this.state.uri2}
+        whichScreen = {"tabs"}
         onCancel = {() => {
+          this.props.navigation.setOptions({tabBarVisible: true})
           this.setState({imageViewerVisible: false})
         }}/>
     </View>
