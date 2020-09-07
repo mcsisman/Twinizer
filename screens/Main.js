@@ -12,6 +12,7 @@ import storage from '@react-native-firebase/storage';
 import messaging from '@react-native-firebase/messaging';
 import OneSignal from 'react-native-onesignal'
 import Modal from "react-native-modal";
+import ImageViewer from 'react-native-image-zoom-viewer';
 import ImagePicker from 'react-native-image-crop-picker';
 import Swipeable from 'react-native-swipeable';
 import RNFetchBlob from 'rn-fetch-blob'
@@ -49,6 +50,7 @@ import FavBlockModal from './components/FavBlockModal'
 import ImageUploadModal from './components/ImageUploadModal'
 import FilterModal from './components/FilterModal'
 import PhotoPopUpModal from './components/PhotoPopUpModal'
+import ImageViewerModal from './components/ImageViewerModal'
 import SendMsgButton from './components/SendMsgButton'
 import BlockUserButton from './components/BlockUserButton'
 import FavoriteUserButton from './components/FavoriteUserButton'
@@ -110,6 +112,7 @@ constructor(props){
     global.activationDistanceRight = this.width*(2.5/10)
     global.deactivationDistanceRight = this.width*(2.5/10)
     this.state = {
+      imageViewerVisible: false,
       favTickVisible: false,
       blockTickVisible: false,
       showFilter: false,
@@ -195,11 +198,11 @@ async componentDidMount(){
     var localMessages = []
     var arr = []
     await this.getFavoriteAndBlockedUsers()
-    this.addToFavoriteUsers("k209WPn6gmfHP3f2PphxyXeb84p1")
-    this.addToFavoriteUsers("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1")
-    this.addToFavoriteUsers("JtfxB5eiDvSzOM4dbhgGeU7PXVC2")
-    this.addToBlockedUsers("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1")
-    this.addToBlockedUsers("JtfxB5eiDvSzOM4dbhgGeU7PXVC2")
+    //this.addToFavoriteUsers("k209WPn6gmfHP3f2PphxyXeb84p1")
+    //this.addToFavoriteUsers("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1")
+    //this.addToFavoriteUsers("JtfxB5eiDvSzOM4dbhgGeU7PXVC2")
+    //this.addToBlockedUsers("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1")
+    //this.addToBlockedUsers("JtfxB5eiDvSzOM4dbhgGeU7PXVC2")
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.setState({reRender: "ok"})
       if(global.fromHistorySearch){
@@ -1668,6 +1671,9 @@ render(){
 
       <PhotoPopUpModal
       isVisible = {this.state.openProfileIsVisible}
+      onPressImage = {() => {
+        this.setState({imageViewerVisible: true})
+      }}
       onBackdropPress = {()=> this.setState({openProfileIsVisible: false})}
       username = {this.state.uri2_username}
       bio = {this.state.uri2_bio}
@@ -1696,6 +1702,13 @@ render(){
       <Animated.Image source={{uri: 'loading' + global.themeForImages}}
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
         position: 'absolute', bottom: (this.height)*(20/100) - (getStatusBarHeight()) + (this.width*3/10*(7/6)) + this.width/30 - this.width/7, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
+
+        <ImageViewerModal
+        isVisible = {this.state.imageViewerVisible}
+        images = {this.state.uri2}
+        onCancel = {() => {
+          this.setState({imageViewerVisible: false})
+        }}/>
     </View>
 
         );

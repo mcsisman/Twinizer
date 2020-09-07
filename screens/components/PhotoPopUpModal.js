@@ -38,7 +38,8 @@ export default class PhotoPopUpModal extends Component {
    imgSource: PropTypes.string,
    onPressSendMsg: PropTypes.func,
    onPressFav: PropTypes.func,
-   onPressBlock: PropTypes.func
+   onPressBlock: PropTypes.func,
+   onPressImage: PropTypes.func
 
  }
  static defaultProps = {
@@ -49,6 +50,7 @@ export default class PhotoPopUpModal extends Component {
    animationIn: "zoomInUp",
    animationOut: "zoomOutUp",
    backdropOpacity: 0.4,
+   onPressImage: null
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
@@ -101,11 +103,13 @@ export default class PhotoPopUpModal extends Component {
           </Text>
           </View>
 
-          <View style={{width: this.width*(9/10), height: this.width*(8/10)*(7/6)}}>
+          <TouchableOpacity
+          style={{width: this.width*(9/10), height: this.width*(8/10)*(7/6)}}
+          onPress={this.props.onPressImage}>
           <Image source={{uri: this.props.imgSource}}
             style={{ width: this.width*(8/10), height: this.width*(8/10)*(7/6)}}
           />
-          </View>
+          </TouchableOpacity>
 
           <View
           style = {{opacity: 1, backgroundColor:  global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)" , flexDirection: "row", width: this.width*(8/10), height: this.width*(8/10)*(1/6),

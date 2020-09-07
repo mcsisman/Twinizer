@@ -5,6 +5,7 @@ import { fromRight, zoomIn, zoomOut, flipX, flipY, fromBottom } from 'react-navi
 import {decode, encode} from 'base-64'
 import * as RNLocalize from "react-native-localize";
 import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { navigationRef } from './screens/RootNavigation';
@@ -113,7 +114,16 @@ if (!global.atob) { global.atob = decode }
       ); // Render loading/splash screen etc
       else{
         if(this.state.authenticated){
-          navigate("Tabs")
+          var storageRef = storage().ref("Embeddings/" + auth().currentUser.uid + ".pickle")
+          console.log("STORAGE REF: ", storageRef)
+          storageRef.getDownloadURL().then(data =>{
+            console.log("EMBEDDING VAR: ", auth().currentUser.uid)
+            console.log("DATA: ", data)
+            navigate("Tabs")
+          }).catch(function(error) {
+            console.log("EMBEDDING YOK: ", auth().currentUser.uid)
+            navigate("Gender")
+          });
         }
         else{
           navigate("Splash")

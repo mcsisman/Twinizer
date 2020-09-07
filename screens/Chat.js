@@ -12,6 +12,7 @@ import ChatHeader from './components/ChatHeader'
 import ImageUploadModal from './components/ImageUploadModal'
 import ChatterInfo from './components/ChatterInfo'
 import MessagesScreen from './Messages'
+import ImageViewerModal from './components/ImageViewerModal'
 import ImagePicker from 'react-native-image-crop-picker';
 import ChatSendImgBottomBar from './components/ChatSendImgBottomBar'
 import ChatSendImgTopBar from './components/ChatSendImgTopBar'
@@ -63,6 +64,7 @@ export default class ChatScreen extends React.Component<Props> {
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
+      imageViewerVisible: false,
       msgText: " ",
       currentIndex: 0,
       enableSwipeDown: false,
@@ -478,10 +480,18 @@ render() {
             <ChatterInfo
             isVisible = {this.state.photoPopUpIsVisible}
             onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
+            onPressImage = {() => {this.setState({imageViewerVisible: true})}}
             username = {global.receiverUsername}
             bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
             onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
             imgSource = {global.receiverPhoto}/>
+
+            <ImageViewerModal
+            isVisible = {this.state.imageViewerVisible}
+            images = {global.receiverPhoto}
+            onCancel = {() => {
+              this.setState({imageViewerVisible: false})
+            }}/>
 
             </TouchableOpacity>
             </View>
@@ -536,10 +546,18 @@ render() {
             <ChatterInfo
             isVisible = {this.state.photoPopUpIsVisible}
             onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
+            onPressImage = {() => {this.setState({imageViewerVisible: true})}}
             username = {global.receiverUsername}
             bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
             onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
             imgSource = {global.receiverPhoto}/>
+
+            <ImageViewerModal
+            isVisible = {this.state.imageViewerVisible}
+            images = {global.receiverPhoto}
+            onCancel = {() => {
+              this.setState({imageViewerVisible: false})
+            }}/>
 
             </TouchableOpacity>
             </View>
@@ -599,10 +617,18 @@ render() {
             <ChatterInfo
             isVisible = {this.state.photoPopUpIsVisible}
             onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
+            onPressImage = {() => {this.setState({imageViewerVisible: true})}}
             username = {global.receiverUsername}
             bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
             onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
             imgSource = {global.receiverPhoto}/>
+
+            <ImageViewerModal
+            isVisible = {this.state.imageViewerVisible}
+            images = {global.receiverPhoto}
+            onCancel = {() => {
+              this.setState({imageViewerVisible: false})
+            }}/>
 
             </TouchableOpacity>
             </View>
@@ -660,10 +686,18 @@ render() {
             <ChatterInfo
             isVisible = {this.state.photoPopUpIsVisible}
             onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
+            onPressImage = {() => {this.setState({imageViewerVisible: true})}}
             username = {global.receiverUsername}
             bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
             onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
             imgSource = {global.receiverPhoto}/>
+
+            <ImageViewerModal
+            isVisible = {this.state.imageViewerVisible}
+            images = {global.receiverPhoto}
+            onCancel = {() => {
+              this.setState({imageViewerVisible: false})
+            }}/>
 
             </TouchableOpacity>
             </View>

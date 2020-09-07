@@ -32,6 +32,7 @@ export default class ChatterInfo extends Component {
    bio: PropTypes.string,
    onPressCancel: PropTypes.func,
    imgSource: PropTypes.string,
+   onPressImage: PropTypes.func
  }
  static defaultProps = {
    gotItFontSize: 15,
@@ -41,6 +42,7 @@ export default class ChatterInfo extends Component {
    animationIn: "zoomInUp",
    animationOut: "zoomOutUp",
    backdropOpacity: 0.4,
+   onPressImage: null
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
@@ -80,11 +82,13 @@ export default class ChatterInfo extends Component {
 
           </View>
 
-        <View style={{width: this.width*(9/10), height: this.width*(8/10)*(7/6)}}>
+        <TouchableOpacity
+        style={{width: this.width*(9/10), height: this.width*(8/10)*(7/6)}}
+        onPress={this.props.onPressImage}>
         <Image
         source={{uri: this.props.imgSource}}
         style={{ width: this.width*(8/10), height: this.width*(8/10)*(7/6)}}/>
-        </View>
+        </TouchableOpacity>
 
         <View style={{borderBottomLeftRadius: 12, borderBottomRightRadius: 12, paddingTop: 5, paddingBottom: 5, paddingLeft:10, paddingRight: 10}}>
         <Text style={{ textAlign: 'left', color: 'black', fontSize: (this.width*(1/25))}}>

@@ -30,7 +30,7 @@ export default class ProfileBioButton extends Component {
    characterLimit: PropTypes.string,
    characterNo: PropTypes.number,
    onFocus: PropTypes.func,
-   defaultText: PropTypes.defaultText,
+   defaultText: PropTypes.string,
    opacity: PropTypes.number
  }
  static defaultProps = {

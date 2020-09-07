@@ -39,6 +39,7 @@ import ProfileBioButton from './components/ProfileBioButton'
 import CountryPicker from './components/CountryPicker'
 import LogoutButton from './components/LogoutButton'
 import ImageUploadModal from './components/ImageUploadModal'
+import ImageViewerModal from './components/ImageViewerModal'
 import countries from './Countries'
 
 if(Platform.OS === 'android'){
@@ -56,6 +57,7 @@ export default class ProfileScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.state = {
+      imageViewerVisible: false,
       newPhoto: false,
       profilePhoto: "",
       loadingDone: false,
@@ -358,15 +360,16 @@ static navigationOptions = {
         <View
         style={{opacity: this.state.upperComponentsOpacity, width: this.width, height: (this.height-this.width/7 - headerHeight - getStatusBarHeight())/2, flexDirection: "row" }}>
 
-        <View
-        style={{opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}>
+        <TouchableOpacity
+        style={{opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}
+        onPress = {()=> this.setState({imageViewerVisible: true})}>
 
         <Image
         style={{opacity: this.state.upperComponentsOpacity, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius:12, borderBottomRightRadius:12, width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)}}
         source = {{uri:this.state.profilePhoto + '?' + new Date()}}>
         </Image>
 
-        </View>
+        </TouchableOpacity>
 
         <View
         style={{opacity: this.state.upperComponentsOpacity, bottom: 0, position:"absolute", width: this.width/2,
@@ -476,6 +479,13 @@ static navigationOptions = {
         onPressCancel = {()=>this.setState({isVisible: false}) }
         onPressCamera = {this.camera}
         onPressLibrary = {this.library}/>
+
+        <ImageViewerModal
+        isVisible = {this.state.imageViewerVisible}
+        images = {this.state.profilePhoto}
+        onCancel = {() => {
+          this.setState({imageViewerVisible: false})
+        }}/>
 
       </TouchableOpacity>
 
