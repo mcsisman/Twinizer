@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {createStackNavigator, Header} from 'react-navigation-stack';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 import Modal from "react-native-modal";
 import ImageViewer from 'react-native-image-zoom-viewer';
 import PropTypes from 'prop-types';
@@ -59,6 +60,13 @@ export default class ImageViewerModal extends Component {
           onSwipeDown = {this.props.onCancel}
           onCancel = {this.props.onCancel}
           imageUrls={images}/>
+          <TouchableOpacity
+          style={{width: this.width*(2/15), height: this.width*(2/15), right: 0, position:'absolute', top:getStatusBarHeight()}}
+           onPress={this.props.onCancel}>
+           <Image source={{uri: 'cross' + global.themeForImages}}
+             style={{width: '40%', height: '40%', right:'30%', bottom: '30%', position: 'absolute' }}
+           />
+          </TouchableOpacity>
         </View>
       </Modal>
     )

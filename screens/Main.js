@@ -1328,8 +1328,8 @@ async searchDone(value){
   global.deactivateRight= null
   global.deactivationRightDistance= global.width*(2.5/10)
   global.deactivationLeftDistance= global.width*(2.5/10)
-  this.saveSearchPhotoLocally(this.state.photoPath)
-  this.uploadSearchPhoto("file://" + RNFS.DocumentDirectoryPath + "/search-photos/1.jpg")
+  await this.saveSearchPhotoLocally(this.state.photoPath)
+  await this.uploadSearchPhoto("file://" + RNFS.DocumentDirectoryPath + "/search-photos/1.jpg")
 }
 
 async getLastSearchNo(){
@@ -1415,6 +1415,7 @@ uploadSearchPhoto = async (uri) => {
       contentType: 'image/jpeg',
     };
     var ref1 = storageRef.child("Photos/" + auth().currentUser.uid + "/SearchPhotos/" + "search-photo.jpg");
+    console.log("storageref child alındı")
     ref1.put(blob).then(snapshot => {
       const updateRef = firestore().collection('Functions').doc('Embedder');
       var batch = 0
