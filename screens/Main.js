@@ -861,7 +861,7 @@ async sendFirstMessage(){
   global.receiverUid = "p9UY4QQtEnRTWBYDfgG4pyHiyZg2"
   global.receiverMail = "cemil.sisman@ug.bilkent.edu.tr"
   global.receiverGender = "Male"
-  global.receiverCountry = "Azerbaijan"
+  global.receiverCountry = "Australia"
   global.receiverUsername = "cemil ug"
   //global.firstMessage = true
   global.playerIdArray[global.receiverUid] = await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + "playerId")

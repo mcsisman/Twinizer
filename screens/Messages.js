@@ -41,6 +41,7 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
+var testVar = 0
 var syncRef;
 var didSync = false
 var lastDBkey;
@@ -114,7 +115,6 @@ export default class MessagesScreen extends Component<{}>{
     scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight()
   }
 componentDidMount(){
-  console.log("COMPONENT DID MOUNT")
   global.newMsgListenerArray = []
   this._subscribe = this.props.navigation.addListener('focus', async () => {
     this.leftAnimation = new Animated.Value(-this.width*(3/16))
@@ -136,7 +136,6 @@ componentDidMount(){
   })
 };
 componentWillUnmount(){
-  console.log("AFASFAS FAS FAS FASF ASF ASF ASF ASF ASF AF ")
   this.resetVariables()
 }
 
@@ -163,7 +162,6 @@ messageBoxAnimation(){
   }
 }
 updateState = () =>{
-  console.log("LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG")
   this.setState({reRender: "ok"})
   return "TESTTTT"
 }
@@ -274,7 +272,6 @@ async updatePlayerIds(snapshot, index){
   var tempo = await AsyncStorage.getItem(auth().currentUser.uid + conversationUidArray[index] + "o")
   if(tempo != userInfo.o){
     database().ref('/PlayerIds/'+ conversationUidArray[index]).once('value').then(snapshot => {
-      console.log("PLAYER ID READ EDIYO")
       global.playerIdArray[conversationUidArray[index]] = snapshot.val()
       AsyncStorage.setItem(auth().currentUser.uid + conversationUidArray[index] + "playerId", snapshot.val())
       AsyncStorage.setItem(auth().currentUser.uid + conversationUidArray[index] + "o", userInfo.o)
@@ -286,13 +283,12 @@ async getUsernameOfTheUid(){
 
   if(global.messagesFirstTime){
     global.fromChatOfUid = ""
-    console.log("MESSAGESA İLK DEFA GİRDİ")
     var localUsernames = []
     await AsyncStorage.getItem(auth().currentUser.uid + 'message_usernames')
       .then(req => JSON.parse(req))
       .then(json => localUsernames = json)
 
-    for( i = 0; i < noOfConversations; i++){
+    for( let  i = 0; i < noOfConversations; i++){
       var usernameOnceListener = database().ref('Users/' + conversationUidArray[i] + "/i");
       await usernameOnceListener.once('value').then(async snapshot => {
         conversationUsernameArray[i] = snapshot.val()
@@ -304,7 +300,7 @@ async getUsernameOfTheUid(){
     }
 
     if(localUsernames != null){
-      for(i = 0; i < localUsernames.length; i++){
+      for( let i = 0; i < localUsernames.length; i++){
         if(conversationUsernameArray[i].p != localUsernames[i].p){
           var downloadURL;
           var storageRef = storage().ref("Photos/" + conversationUidArray[i] + "/1.jpg")
@@ -328,7 +324,6 @@ async getUsernameOfTheUid(){
   }
   else{
     if(newRequest){
-      console.log("İLK DEĞİL, NEW REQUEST")
       var localUsernames = []
       await AsyncStorage.getItem(auth().currentUser.uid + 'message_usernames')
         .then(req => JSON.parse(req))
@@ -354,7 +349,6 @@ async getUsernameOfTheUid(){
       await AsyncStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
     }
     else{
-      console.log("BAŞKA SAYFADAN GELDİ; İLK DEĞİL")
       if(!global.comingFromChat){
         global.fromChatOfUid = ""
       }
@@ -369,7 +363,6 @@ async getUsernameOfTheUid(){
     }
 }
 createUsernameArray = async (snap, i, conversationUid) => {
-  console.log("CREATE USERNAME ARRAY")
   var localUsernames = []
   await AsyncStorage.getItem(auth().currentUser.uid + 'message_usernames')
     .then(req => JSON.parse(req))
@@ -409,7 +402,7 @@ async createConversationArrays(){
           if(doc.exists){
             conversationUidArray = await doc.data()["UidArray"]
             noOfConversations = conversationUidArray.length
-            for( i = 0; i < noOfConversations; i++){
+            for( let  i = 0; i < noOfConversations; i++){
               global.newMsgListenerArray[i] = {isOpen: false, uid: conversationUidArray[i], listenerID: "" }
             }
             await this.getUsernameOfTheUid()
@@ -458,22 +451,17 @@ async createUidPhotoArrays(){
       if(conversationUidArray.concat().sort().join(',') === localUids.concat().sort().join(',')){
       }
       else {
-        console.log("ÜST TARAF")
-        console.log("LOCAL UIDLER:", localUids)
-        console.log("CONVERSATION UIDLER:", conversationUidArray)
         differenceArray = conversationUidArray.filter(x => !localUids.includes(x))
-        console.log("DIFFERENCE ARRAY:", differenceArray)
         AsyncStorage.setItem(auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
         AsyncStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
-        for(i = 0; i < conversationUidArray.length; i++){
-          for(j = 0; j < differenceArray.length; j++){
+        for( let i = 0; i < conversationUidArray.length; i++){
+          for( let j = 0; j < differenceArray.length; j++){
             if( conversationUidArray[i] == differenceArray[j] ){
               differenceArrayIndexes.push(i)
             }
           }
         }
-        console.log("DIFFERENCE ARRAY INDEXES:", differenceArrayIndexes)
-        for(i = 0; i < differenceArray.length; i++){
+        for( let i = 0; i < differenceArray.length; i++){
           var storageRef = storage().ref("Photos/" + conversationUidArray[differenceArrayIndexes[i]] + "/1.jpg")
           await storageRef.getDownloadURL().then(data =>{
             urlArray.push(data)
@@ -492,22 +480,17 @@ async createUidPhotoArrays(){
       }
     }
     else{
-      console.log("ALT TARAF")
-      console.log("LOCAL UIDLER:", localUids)
-      console.log("CONVERSATION UIDLER:", conversationUidArray)
       differenceArray = conversationUidArray
       AsyncStorage.setItem(auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
       AsyncStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
-      console.log("DIFFERENCE ARRAY:", differenceArray)
-      for(i = 0; i < conversationUidArray.length; i++){
-        for(j = 0; j < differenceArray.length; j++){
+      for( let i = 0; i < conversationUidArray.length; i++){
+        for( let j = 0; j < differenceArray.length; j++){
           if( conversationUidArray[i] == differenceArray[j] ){
             differenceArrayIndexes.push(i)
           }
         }
       }
-      console.log("DIFFERENCE ARRAY INDEXES:", differenceArrayIndexes)
-      for(i = 0; i < differenceArray.length; i++){
+      for( let i = 0; i < differenceArray.length; i++){
         var storageRef = storage().ref("Photos/" + conversationUidArray[i] + "/1.jpg")
         await storageRef.getDownloadURL().then(data =>{
           urlArray.push(data)
@@ -524,7 +507,7 @@ async createUidPhotoArrays(){
         })
       }
     }
-  for(i = 0; i < conversationUidArray.length; i++){
+  for( let i = 0; i < conversationUidArray.length; i++){
       photoArray[i] = "file:///data/user/0/com.twinizer/files/" + conversationUidArray[i] + "y"+ ".jpg"
   }
   return conversationUidArray
@@ -549,7 +532,6 @@ getMessagesData = async callback =>{
 
   var listener23 = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-").limitToLast(1);
   await listener23.once('value').then(async snapshot => {
-      console.log("ONCE A GİRDİ:", snapshot.val())
       var data = "";
       var emptyMessage;
       if(snapshot.val() == null || snapshot.val() == undefined){
@@ -563,7 +545,6 @@ getMessagesData = async callback =>{
             lastDBkey = localMsgs[localMsgs.length - 1]._id
           }
           else{
-            console.log(" database boş, local boş")
             data = { c: "notime", id: "emptymsgid", _id: "emptymsgid", text: "No message", user:{ _id: auth().currentUser.uid, r: uidArray[count]}, image: "" }
           }
       }
@@ -571,6 +552,7 @@ getMessagesData = async callback =>{
         var snapVal = snapshot.val()
         var messageKey = Object.keys(snapVal)[0]
         const user = { _id: uidArray[count], r: auth().currentUser.uid}
+        console.log("messagesta1")
         const { p: p, c: numberStamp, text} = snapVal[messageKey];
         const id = messageKey;
         const _id = messageKey; //needed for giftedchat
@@ -581,7 +563,6 @@ getMessagesData = async callback =>{
         if(p == "t"){
           image = "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + messageKey + ".jpg"
         }
-        console.log(" RESİM MESAJDA OLUŞTURULDU: ", image)
         const message = {
           c,
           id,
@@ -594,19 +575,15 @@ getMessagesData = async callback =>{
         data = message
         lastDBkey = messageKey
       }
-      console.log("DATA:", data)
       //ELSE İN DIŞI
       messageArray.splice(0, messageArray.length)
       requestArray.splice(0, requestArray.length)
 
       if(!fromChat && data != ""){
-        console.log("IS EMPTY=?", isEmpty)
         if( data.user.r == auth().currentUser.uid && !isEmpty){
-          console.log("ÜST")
           await this.setShowMessageBox(data.user._id, "true")
         }
         if( data.user._id == auth().currentUser.uid && !isEmpty){
-          console.log("ALT")
           await this.setShowMessageBox(data.user.r, "true")
         }
         if(dataArray.length < noOfConversations){
@@ -614,13 +591,13 @@ getMessagesData = async callback =>{
         }
         var newMsgIndex;
         if(dataArray.length == noOfConversations){
-          for(i = 0; i < noOfConversations; i++){
+          for( let i = 0; i < noOfConversations; i++){
             if( (data.user.r == dataArray[i].user.r && data.user._id == dataArray[i].user._id) || (data.user.r == dataArray[i].user._id && data.user._id == dataArray[i].user.r) ){
               dataArray[i] = data
               break;
             }
           }
-          for( i = 0; i < noOfConversations; i++){
+          for( let  i = 0; i < noOfConversations; i++){
             var isReq = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[i])
             var kVal;
             var kListener = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[i] + "/k");
@@ -631,8 +608,6 @@ getMessagesData = async callback =>{
             })
 
             var showBox = await AsyncStorage.getItem('ShowMessageBox/' + auth().currentUser.uid + "/" + uidArray[i])
-            console.log("SHOW BOX OF UID?", uidArray[i])
-            console.log("SHOW BOX?", showBox)
             if(kVal == 0){
               isReq = "true"
             }
@@ -657,7 +632,7 @@ getMessagesData = async callback =>{
           messageArray.reverse()
 
           // CHECKING FOR LAST SEEN
-          for( i = 0; i < requestArray.length; i++){
+          for( let  i = 0; i < requestArray.length; i++){
             requestColorArray[i] = "trashgray"
             var key;
             var time;
@@ -675,8 +650,7 @@ getMessagesData = async callback =>{
               }
             }
           }
-          console.log("MESSAGE ARRAY ONCE:", messageArray)
-          for( i = 0; i < messageArray.length; i++){
+          for( let  i = 0; i < messageArray.length; i++){
             messageColorArray[i] = "trashgray"
             var key;
             var time;
@@ -695,17 +669,16 @@ getMessagesData = async callback =>{
               }
             }
           }
-          for( i = 0; i < requestArray.length; i++){
-            for( j = 0; j < photoArray.length; j++){
+          for( let  i = 0; i < requestArray.length; i++){
+            for( let  j = 0; j < photoArray.length; j++){
               if(requestArray[i].user._id == conversationUidArray[j] || requestArray[i].user.r == conversationUidArray[j]){
                 requestPhotoArray[i] = photoArray[j]
                 requestUsernameArray[i] = conversationUsernameArray[j]
               }
             }
           }
-          console.log("REQUEST ARRAY HATADAN ÖNCE:", requestUsernameArray)
-          for( i = 0; i < messageArray.length; i++){
-            for( j = 0; j < photoArray.length; j++){
+          for( let  i = 0; i < messageArray.length; i++){
+            for( let  j = 0; j < photoArray.length; j++){
               if(messageArray[i].user._id == conversationUidArray[j] || messageArray[i].user.r == conversationUidArray[j]){
                 messagePhotoArray[i] = photoArray[j]
                 messageUsernameArray[i] = conversationUsernameArray[j]
@@ -728,10 +701,11 @@ getMessagesData = async callback =>{
 
   var uidCount = count;
   if(!global.newMsgListenerArray[count].isOpen && global.fromChatOfUid != global.newMsgListenerArray[count].uid){
-    console.log("CREATED LISTENER FOR:", global.newMsgListenerArray[count].uid)
     global.newMsgListenerArray[count].isOpen = true
     global.newMsgListenerArray[count].listenerID = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-");
+    testVar = 1
     await global.newMsgListenerArray[count].listenerID.on('value', async snapshot => await this.syncLocalMessages(snapshot, uidCount));
+
   }
 };
 async getLastLocalMessage(){
@@ -752,17 +726,18 @@ async getLastLocalMessage(){
 syncLocalMessages = async (snapshot, uidCount) => {
   // remove k from snapshot data
   if(snapshot.val() != null){
-    console.log("BUNA GİRİYO MU")
     var snapVal = snapshot.val()
-    console.log("MESAJ GELDİ:", snapshot.val())
     var messageKey;
     var noOfNewMsgs = Object.keys(snapVal).length
     if(noOfNewMsgs != 0){
-      for(i = noOfNewMsgs - 1; i >= 0; i--){
+      for( let i = noOfNewMsgs - 1; i >= 0; i--){
         messageKey = Object.keys(snapshot.val())[i]
-        console.log("SNAP VAL: ", snapVal)
 
         const user = { _id: uidArray[uidCount], r: auth().currentUser.uid}
+        console.log("messagesta2")
+        console.log("SNAP VAL:", snapVal)
+        console.log("İ KAÇ?????:", i)
+        console.log("SNAP VAL MESSAGE KEY:", messageKey)
         const { p: p, c: numberStamp, text} = snapVal[messageKey];
         const id = messageKey;
         const _id = messageKey; //needed for giftedchat
@@ -787,7 +762,6 @@ syncLocalMessages = async (snapshot, uidCount) => {
           .fetch('GET', downloadURL, {
             //some headers ..
           })
-          console.log(" RESİM LOCALE KAYDEDİLDİ MESSAGES LISTENERDA: ", image)
         }
         const msg = {
           c,
@@ -801,13 +775,16 @@ syncLocalMessages = async (snapshot, uidCount) => {
 
           if(localMessages[uidCount] == null || localMessages[uidCount].length == 0){
             localMessages[uidCount] = [msg]
-            console.log("Locale kaydedilen mesaj on if: ", msg)
+            global.messages = [msg._id]
+            console.log("LOCALE KAYDEDİLDİ, MESSAGESTA:", msg)
           }
           else{
+            global.messages.push(msg._id)
             localMessages[uidCount].push(msg)
-            console.log("Locale kaydedilen mesaj on else: ", msg)
+            console.log("LOCALE KAYDEDİLDİ, MESSAGESTA:", msg)
           }
       }
+      console.log("REMOVEA GELDİ___________GELDİ___________GELDİ___________GELDİ___________GELDİ___________")
       database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
       var kValue;
       var isRequ = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[uidCount])
@@ -818,10 +795,12 @@ syncLocalMessages = async (snapshot, uidCount) => {
       if(isRequ == "false"){
         kValue = 1
       }
-      console.log("K VALUE:", kValue)
-      console.log("IS REQU??:", isRequ)
       this.setRequestDB(uidArray[uidCount], kValue)
         await AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
+        if(global.newMsgListenerArray[uidCount].isOpen == false){
+          console.log("NAVIGATE TO CHAT")
+          this.props.navigation.navigate("Chat")
+        }
         lastMsgFlag = lastDBkey == localMessages[uidCount][localMessages[uidCount].length - 1]._id
         if(lastMsgFlag || didSync){
           didSync = true
@@ -835,13 +814,13 @@ syncLocalMessages = async (snapshot, uidCount) => {
               dataArray[count] = data
             }
             if(dataArray.length == noOfConversations){
-              for(i = 0; i < noOfConversations; i++){
+              for( let i = 0; i < noOfConversations; i++){
                 if( (data.user.r == dataArray[i].user.r && data.user._id == dataArray[i].user._id) || (data.user.r == dataArray[i].user._id && data.user._id == dataArray[i].user.r) ){
                   dataArray[i] = data
                   break;
                 }
               }
-              for( i = 0; i < noOfConversations; i++){
+              for( let  i = 0; i < noOfConversations; i++){
                 var isReq = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[i])
                 if(isReq == undefined || isReq == null || isReq == ""){
                   var kVal;
@@ -876,7 +855,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
               messageArray.reverse()
 
               // CHECKING FOR LAST SEEN
-              for( i = 0; i < requestArray.length; i++){
+              for( let  i = 0; i < requestArray.length; i++){
                 requestColorArray[i] = "trashgray"
                 var key;
                 var time;
@@ -900,7 +879,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
                 }
               }
 
-              for( i = 0; i < messageArray.length; i++){
+              for( let  i = 0; i < messageArray.length; i++){
                 messageColorArray[i] = "trashgray"
                 var key;
                 var time;
@@ -925,24 +904,22 @@ syncLocalMessages = async (snapshot, uidCount) => {
                 }
               }
 
-              for( i = 0; i < requestArray.length; i++){
-                for( j = 0; j < photoArray.length; j++){
+              for( let  i = 0; i < requestArray.length; i++){
+                for( let  j = 0; j < photoArray.length; j++){
                   if(requestArray[i].user._id == conversationUidArray[j]){
                     requestPhotoArray[i] = photoArray[j]
                     requestUsernameArray[i] = conversationUsernameArray[j]
                   }
                 }
               }
-              for( i = 0; i < messageArray.length; i++){
-                for( j = 0; j < photoArray.length; j++){
+              for( let  i = 0; i < messageArray.length; i++){
+                for( let  j = 0; j < photoArray.length; j++){
                   if(messageArray[i].user._id == conversationUidArray[j] || messageArray[i].user.r == conversationUidArray[j]){
                     messagePhotoArray[i] = photoArray[j]
                     messageUsernameArray[i] = conversationUsernameArray[j]
                   }
                 }
               }
-              console.log("MESSAGE ARRAY: ", messageArray)
-              console.log("REQUEST ARRAY: ", requestArray)
               newRequest = true
 
               this.setState({loadingDone: true, test: "1", loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false, reRender:"oke"})
@@ -1004,12 +981,11 @@ navigateToChat(receiverUid, receiverPhoto, receiverUsername){
   global.receiverCountry = receiverUsername.c
   global.receiverBio = receiverUsername.b
   global.firstMessage = false
-  for( i = 0; i < global.newMsgListenerArray.length; i++){
+  for( let  i = 0; i < global.newMsgListenerArray.length; i++){
     if(global.receiverUid == global.newMsgListenerArray[i].uid){
       global.newMsgListenerArray[i].isOpen = false
       var x = global.newMsgListenerArray[i].listenerID
       x.off()
-      console.log("LISTENER CLOSED FOR:",global.newMsgListenerArray[i].uid)
     }
   }
   fromChat = true
@@ -1201,20 +1177,17 @@ renderRequestBoxes(){
 
 }
 editButtonPressed(){
-    console.log("EDIT BUTTON PRESSED DIŞ")
     if(this.state.editText == "Edit"){
       this.setState({allSelected: false, messageDoneDisabled: true, requestDoneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false, messageBoxDisabled: true})
-      console.log("EDIT BUTTON PRESSED İF")
       this.messageBoxAnimation()
     }
     else{
       this.setState({allSelected: false, messageDoneDisabled: true, requestDoneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true, messageBoxDisabled: false})
-      console.log("EDIT BUTTON PRESSED ELSE")
       this.messageBoxAnimation()
-      for( i = 0; i < requestColorArray.length; i++){
+      for( let  i = 0; i < requestColorArray.length; i++){
         requestColorArray[i] = "trashgray"
       }
-      for( i = 0; i < messageColorArray.length; i++){
+      for( let  i = 0; i < messageColorArray.length; i++){
         messageColorArray[i] = "trashgray"
       }
       doneMessageColor = 'rgba(128,128,128,1)'
@@ -1262,7 +1235,7 @@ switchButtonPressed(whichButtonPressed){
 arrangeDoneColor(){
   var flag1 = false
   var flag2 = false
-  for( i = 0; i < messageColorArray.length; i++){
+  for( let  i = 0; i < messageColorArray.length; i++){
     if( messageColorArray[i] == "trash" + global.themeForImages){
       flag1 = true
       doneMessageColor = global.themeColor
@@ -1274,7 +1247,7 @@ arrangeDoneColor(){
     doneMessageColor = 'rgba(128,128,128,1)'
     this.setState({messageDoneDisabled: true})
   }
-  for( i = 0; i < requestColorArray.length; i++){
+  for( let  i = 0; i < requestColorArray.length; i++){
     if( requestColorArray[i] == "trash" + global.themeForImages){
       flag2 = true
       doneRequestColor = global.themeColor
@@ -1302,7 +1275,6 @@ async deleteMessages(uid, which){
 }
 
 async setShowMessageBox(uid, bool){
-  console.log("DELETED FOR:", uid)
   await AsyncStorage.setItem('ShowMessageBox/' + auth().currentUser.uid + "/" + uid, bool)
 }
 async setLocalIsRequest(uid, bool){
@@ -1314,7 +1286,7 @@ async setRequestDB(uid, value){
   })
 }
 async deleteMessagesPressed(){
-  for( i = 0; i < messageColorArray.length; i++){
+  for( let  i = 0; i < messageColorArray.length; i++){
     if( messageColorArray[i] != "trashgray"){
       if(messageArray[i].user.r == auth().currentUser.uid){
         await this.deleteMessages(messageArray[i].user._id, "messages")
@@ -1328,7 +1300,7 @@ async deleteMessagesPressed(){
 }
 async deleteRequestPressed(){
 
-  for( i = 0; i < requestColorArray.length; i++){
+  for( let  i = 0; i < requestColorArray.length; i++){
     if( requestColorArray[i] != "trashgray"){
       if(requestArray[i].user.r == auth().currentUser.uid){
         await this.deleteMessages(requestArray[i].user._id, "requests")
@@ -1342,7 +1314,7 @@ async deleteRequestPressed(){
 }
 async clearMessagesPressed(){
 
-  for( i = 0; i < messageColorArray.length; i++){
+  for( let  i = 0; i < messageColorArray.length; i++){
     if( messageColorArray[i] != "trashgray"){
       if(messageArray[i].user.r == auth().currentUser.uid){
         await this.clearMessages(messageArray[i].user._id)
@@ -1356,7 +1328,7 @@ async clearMessagesPressed(){
 }
 async clearRequestPressed(){
 
-  for( i = 0; i < requestColorArray.length; i++){
+  for( let  i = 0; i < requestColorArray.length; i++){
     if( requestColorArray[i] != "trashgray"){
       if(requestArray[i].user.r == auth().currentUser.uid){
         await this.clearMessages(requestArray[i].user._id)
@@ -1383,13 +1355,13 @@ messageDonePress(){
 }
 messageSelectAll(){
   if(this.state.allSelected){
-    for( i = 0; i < messageArray.length; i++){
+    for( let  i = 0; i < messageArray.length; i++){
       messageColorArray[i] = "trashgray"
     }
       this.setState({allSelected: !this.state.allSelected, messageDoneDisabled : true})
   }
   else{
-    for( i = 0; i < messageArray.length; i++){
+    for( let  i = 0; i < messageArray.length; i++){
       messageColorArray[i] = "trash" + global.themeForImages
     }
       this.setState({allSelected: !this.state.allSelected, messageDoneDisabled : false})

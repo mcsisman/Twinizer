@@ -137,7 +137,8 @@ if (!global.atob) { global.atob = decode }
       }
     }
   }
-
+console.disableYellowBox = true;
+  global.messages = []
   global.playerIdArray = {}
   global.removeFromFavUser = false
   global.removeFromBlockedUser = false

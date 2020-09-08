@@ -153,7 +153,6 @@ sendMsgWithImage = async (text) =>{
   }
   images = []
   messages[0].image =
-  console.log("ADLKFA:", messages[0])
   this.setState({
     currentIndex: 0,
     msgText: " ",
@@ -207,7 +206,6 @@ imageSelected(){
   var image = { url: this.state.photoPath}
 
   images.push(image)
-  console.log("IMAGES AFTER ADDING:", images)
   this.setState({renderImageChatScreen: true})
 }
 spinAnimation(){
@@ -315,9 +313,7 @@ onChange(){
 async deleteImageFromArray(){
 
   this.setState({renderImageChatScreen: false})
-  console.log("IMAGES BEFORE REMOVE:", images)
   images.splice(this.state.currentIndex, 1)
-  console.log("IMAGES AFTER REMOVE:", images)
   if(images.length != 0){
     if(images.length == this.state.currentIndex){
       await this.setState({currentIndex: this.state.currentIndex - 1, renderImageChatScreen: true})
@@ -392,7 +388,6 @@ render() {
     if(keyboardHeight == undefined){
       keyboardHeight = 0
     }
-    console.log("MESAJLAR:", this.state.messages)
     if(this.state.renderImageChatScreen){
         return(
           <View
