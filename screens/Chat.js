@@ -102,11 +102,14 @@ export default class ChatScreen extends React.Component<Props> {
       });
       if(global.currentProcessUidArray[global.receiverUid]){
         firebaseSvc.removeOn(async message =>{
+          console.log("RETURNNNNNNNNNN")
           console.log("REMOVE ON'A GELEN MESAJ?:", message)
           message.reverse()
           this.setState({messages: message})
         })
+        console.log("OFF ÖNCESİ")
         firebaseSvc.removeOff()
+        console.log("OFF SONRASI")
       }
       firebaseSvc.refOn(async message =>{
         if(message != null){
