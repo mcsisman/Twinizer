@@ -505,8 +505,9 @@ render() {
             <ModifiedStatusBar/>
 
             <KeyboardAvoidingView  behavior="padding"
+              keyboardVerticalOffset={this.state.keyboardOpen && Platform.OS === 'android' ? -this.height+getStatusBarHeight() : 0}
               style = {{  position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
-              width: this.width, bottom: 0, right: 0}}>
+              width: this.width, bottom: 0, right: 0, flex: 1}}>
               <GiftedChat
               onLongPress={this.onLongPress}
               textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
@@ -642,8 +643,9 @@ render() {
             <ModifiedStatusBar/>
 
             <KeyboardAvoidingView  behavior="padding"
+              keyboardVerticalOffset={this.state.keyboardOpen && Platform.OS === 'android' ? -this.height+getStatusBarHeight() : 0}
               style = {{  position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
-              width: this.width, bottom: 0, right: 0}}>
+              width: this.width, bottom: 0, right: 0, flex: 1}}>
               <GiftedChat
               onLongPress={this.onLongPress}
               textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}

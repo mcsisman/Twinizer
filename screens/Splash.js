@@ -32,6 +32,9 @@ if(Platform.OS === 'ios'){
 }
 
 global.messagesFirstTime = true
+var keyboardHeight;
+var keyboardYcord;
+
 export default class SplashScreen extends Component<{}>{
   constructor(props){
     super(props);
@@ -39,6 +42,7 @@ export default class SplashScreen extends Component<{}>{
       splashOver : true,
       isim : "",
       sifre : "",
+      keyboardOpen: false,
       tryagain: 0
     }
     this.height = Math.round(Dimensions.get('screen').height);
@@ -49,6 +53,16 @@ static navigationOptions = {
     header: null,
 };
 componentDidMount(){
+};
+
+_keyboardDidShow = (e) => {
+  const { height, screenX, screenY, width } = e.endCoordinates
+  keyboardYcord = screenY
+  keyboardHeight = height
+  this.setState({keyboardOpen: true})
+};
+_keyboardDidHide = () => {
+  this.setState({keyboardOpen: false})
 };
 
 Login = (email, password) => {
@@ -93,7 +107,8 @@ Login = (email, password) => {
       }
       else{
         return(
-          <KeyboardAvoidingView behavior="padding" enabled
+          <KeyboardAvoidingView behavior="padding"
+            keyboardVerticalOffset={this.state.keyboardOpen && Platform.OS === 'android' ? -(this.height*12)/100 : -3*getStatusBarHeight()}
           style={{width: this.width, height: this.height, flex:1, backgroundColor: 'rgba(255,255,255, 0)'}}>
           <TouchableOpacity
           activeOpacity = {1}
@@ -101,7 +116,7 @@ Login = (email, password) => {
            onPress={()=> Keyboard.dismiss() }>
           <ImageBackground
           source={{uri: 'flare'}}
-          style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}>
+          style={{width: this.width, height: this.height, flex:1, alignItems: 'center'}}>
 
           <Image source={{uri: 'twinizer'}}
             style={{ width: this.width*(7/10), height:this.width*(17.5/100), position: 'absolute', bottom: this.height*(6/10), left: this.width*(15/100) }}
