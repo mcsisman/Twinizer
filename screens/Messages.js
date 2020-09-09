@@ -932,8 +932,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
         }
     }
   }
-
-
+  global.currentProcessUidArray[uidArray[uidCount]] = false
 };
 
 sortByProperty(property){
