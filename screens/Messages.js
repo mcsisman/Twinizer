@@ -789,6 +789,9 @@ syncLocalMessages = async (snapshot, uidCount) => {
             console.log("LOCALE KAYDEDİLDİ, MESSAGESTA:", msg)
           }
       }
+      await AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
+      database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
+      console.log("REMOVEA GELDİ___________GELDİ___________GELDİ___________GELDİ___________GELDİ___________")
       var kValue;
       var isRequ = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[uidCount])
       if(isRequ == undefined || isRequ == null || isRequ == "true"){
@@ -798,9 +801,8 @@ syncLocalMessages = async (snapshot, uidCount) => {
         kValue = 1
       }
       this.setRequestDB(uidArray[uidCount], kValue)
-      await AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
-      database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
-      console.log("REMOVEA GELDİ___________GELDİ___________GELDİ___________GELDİ___________GELDİ___________")
+
+
       global.currentProcessUidArray[uidArray[uidCount]] = false
 
         lastMsgFlag = lastDBkey == localMessages[uidCount][localMessages[uidCount].length - 1]._id
