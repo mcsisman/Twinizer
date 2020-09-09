@@ -975,7 +975,7 @@ spinAnimation(){
 
 
 navigateToChat(receiverUid, receiverPhoto, receiverUsername){
-
+  global.check = false
   global.messageBuffer = []
   global.localMessages = localMessages[count]
   global.receiverUid = receiverUid

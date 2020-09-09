@@ -52,6 +52,7 @@ class FirebaseSvc {
     }
 
   parse = async snapshot => {
+
     if(snapshot.val() != null){
       console.log("PARSE SNAPSHOT:", snapshot.val())
       // remove k from snapshot data
@@ -127,7 +128,10 @@ class FirebaseSvc {
             return message;
           }
           else{
-            global.messageBuffer.push(message)
+            if(global.check){
+              global.messageBuffer.push(message)
+              return null
+            }
             return null
           }
       }
@@ -138,6 +142,7 @@ class FirebaseSvc {
     else{
       return null
     }
+    global.check = true
   };
   refOn = async callback => {
     database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().endAt("A").startAt("-").limitToLast(1)
@@ -279,6 +284,7 @@ class FirebaseSvc {
     database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().equalTo("k").off()
   }
   refOff() {
+    global.check = false
     database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().endAt("A").startAt("-").off();
   }
 }
