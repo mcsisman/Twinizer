@@ -41,6 +41,7 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
+
 var testVar = 0
 var syncRef;
 var didSync = false
@@ -116,6 +117,7 @@ export default class MessagesScreen extends Component<{}>{
   }
 componentDidMount(){
   global.newMsgListenerArray = []
+  global.currentProcessUidArray = {}
   this._subscribe = this.props.navigation.addListener('focus', async () => {
     this.leftAnimation = new Animated.Value(-this.width*(3/16))
     global.fromChatOfUid = ""
@@ -404,6 +406,7 @@ async createConversationArrays(){
             noOfConversations = conversationUidArray.length
             for( let  i = 0; i < noOfConversations; i++){
               global.newMsgListenerArray[i] = {isOpen: false, uid: conversationUidArray[i], listenerID: "" }
+              global.currentProcessUidArray[conversationUidArray[i]] = true
             }
             await this.getUsernameOfTheUid()
             uidArray = await this.createUidPhotoArrays()
@@ -425,6 +428,8 @@ async createConversationArrays(){
           noOfConversations = conversationUidArray.length,
 
           global.newMsgListenerArray[noOfConversations-1] = {isOpen: false, uid: conversationUidArray[noOfConversations-1], listenerID: "" }
+          global.currentProcessUidArray[conversationUidArray[noOfConversations-1]] = true
+
 
           await this.getUsernameOfTheUid()
           uidArray = await this.createUidPhotoArrays()
@@ -705,7 +710,6 @@ getMessagesData = async callback =>{
     global.newMsgListenerArray[count].listenerID = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-");
     testVar = 1
     await global.newMsgListenerArray[count].listenerID.on('value', async snapshot => await this.syncLocalMessages(snapshot, uidCount));
-
   }
 };
 async getLastLocalMessage(){
@@ -730,6 +734,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
     var messageKey;
     var noOfNewMsgs = Object.keys(snapVal).length
     if(noOfNewMsgs != 0){
+      global.currentProcessUidArray[uidArray[uidCount]] = true
       for( let i = noOfNewMsgs - 1; i >= 0; i--){
         messageKey = Object.keys(snapshot.val())[i]
 
@@ -784,11 +789,8 @@ syncLocalMessages = async (snapshot, uidCount) => {
             console.log("LOCALE KAYDEDİLDİ, MESSAGESTA:", msg)
           }
       }
-      console.log("REMOVEA GELDİ___________GELDİ___________GELDİ___________GELDİ___________GELDİ___________")
-      database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
       var kValue;
       var isRequ = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[uidCount])
-
       if(isRequ == undefined || isRequ == null || isRequ == "true"){
         kValue = 0
       }
@@ -796,11 +798,11 @@ syncLocalMessages = async (snapshot, uidCount) => {
         kValue = 1
       }
       this.setRequestDB(uidArray[uidCount], kValue)
-        await AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
-        if(global.newMsgListenerArray[uidCount].isOpen == false){
-          console.log("NAVIGATE TO CHAT")
-          this.props.navigation.navigate("Chat")
-        }
+      await AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
+      database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
+      console.log("REMOVEA GELDİ___________GELDİ___________GELDİ___________GELDİ___________GELDİ___________")
+      global.currentProcessUidArray[uidArray[uidCount]] = false
+
         lastMsgFlag = lastDBkey == localMessages[uidCount][localMessages[uidCount].length - 1]._id
         if(lastMsgFlag || didSync){
           didSync = true
@@ -973,6 +975,7 @@ spinAnimation(){
 
 navigateToChat(receiverUid, receiverPhoto, receiverUsername){
 
+  global.messageBuffer = []
   global.localMessages = localMessages[count]
   global.receiverUid = receiverUid
   global.receiverPhoto = receiverPhoto

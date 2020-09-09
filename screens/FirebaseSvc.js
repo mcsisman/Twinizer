@@ -35,92 +35,101 @@ class FirebaseSvc {
     return database().ref('Messages/' + global.receiverUid + "/" + auth().currentUser.uid);
   }
 
-  getDownload(){
+  removeListener = async snapshot => {
+    console.log("K SİLİNDİ!!!!!!!!!!!!!!")
+    await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+      .then(req => JSON.parse(req))
+      .then(json => localMessages = json)
 
-  }
+    localMessages.concat(global.messageBuffer)
+
+    return localMessages
+  };
+  removeOn = async callback => {
+    console.log("REMOVE LİSTENERI AÇILDI!!!!!")
+      database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().equalTo("k")
+        .on('child_removed', async snapshot => await this.removeListener(snapshot));
+    }
+
   parse = async snapshot => {
     if(snapshot.val() != null){
+      console.log("PARSE SNAPSHOT:", snapshot.val())
       // remove k from snapshot data
       var snapVal = snapshot.val()
-      console.log("PARSE SNAPSHOT:", snapshot.val())
       delete snapVal["k"]
       if(Object.keys(snapVal).length != 0){
         var messageKey = Object.keys(snapVal)[Object.keys(snapVal).length - 1]
-        console.log("PARSE FOR:", messageKey)
-        console.log("GLOBAL MESSAGES:", global.messages)
-        if(!global.messages.includes(messageKey)){
-          await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
-            .then(req => JSON.parse(req))
-            .then(json => localMessages = json)
+        await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+          .then(req => JSON.parse(req))
+          .then(json => localMessages = json)
 
-            const user = { _id: global.receiverUid, r: auth().currentUser.uid}
-            console.log("chatte")
-            const { p: p, c: numberStamp, text} = snapVal[messageKey];
-            const id = messageKey;
-            const _id = messageKey; //needed for giftedchat
-            const createdAt = new Date(numberStamp);
-            const c = numberStamp
+          const user = { _id: global.receiverUid, r: auth().currentUser.uid}
+          const { p: p, c: numberStamp, text} = snapVal[messageKey];
+          const id = messageKey;
+          const _id = messageKey; //needed for giftedchat
+          const createdAt = new Date(numberStamp);
+          const c = numberStamp
 
-            var image ="";
-            if(p == "t"){
-              image = "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + messageKey + ".jpg"
-              var downloadURL;
-              var storageRef = storage().ref("Photos/" + auth().currentUser.uid + "/MessagePhotos/" + messageKey + ".jpg")
-              var fileExists = false
-              while(!fileExists){
-                await storageRef.getDownloadURL().then(data =>{
-                  downloadURL = data
-                  fileExists = true
-                }).catch(function (error) {
-                  console.log(error)
-                })
-              }
-
-              let dirs = RNFetchBlob.fs.dirs
-              await RNFetchBlob
-              .config({
-                fileCache : true,
-                appendExt : 'jpg',
-                path: RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + messageKey + ".jpg"
-              })
-              .fetch('GET', downloadURL, {
-                //some headers ..
+          var image ="";
+          if(p == "t"){
+            image = "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + messageKey + ".jpg"
+            var downloadURL;
+            var storageRef = storage().ref("Photos/" + auth().currentUser.uid + "/MessagePhotos/" + messageKey + ".jpg")
+            var fileExists = false
+            console.log("WHILE ÖNCESİ")
+            while(!fileExists){
+              console.log("WHILEIN BAŞI")
+              await storageRef.getDownloadURL().then(data =>{
+                console.log("THENİN İÇİ")
+                downloadURL = data
+                fileExists = true
+              }).catch(function (error) {
+                console.log("ERROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR")
+                console.log(error)
               })
             }
 
-            const message = {
-              c,
-              id,
-              _id,
-              createdAt,
-              text,
-              user,
-              image
-            };
-            if(!global.messages.includes(messageKey)){
-              if(localMessages == null || localMessages.length == 0){
-                console.log("LOCALE KAYDEDİLDİ, CHATTE:", message)
-                localMessages = [message]
-              }
-              else{
-                console.log("LOCALE KAYDEDİLDİ, CHATTE:", message)
-                localMessages.push(message)
-              }
-            }
+            console.log("ERRORU GEÇTİK")
+            let dirs = RNFetchBlob.fs.dirs
+            await RNFetchBlob
+            .config({
+              fileCache : true,
+              appendExt : 'jpg',
+              path: RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + messageKey + ".jpg"
+            })
+            .fetch('GET', downloadURL, {
+              //some headers ..
+            })
+            console.log(" RESİM LOCALE KAYDEDİLDİ PARSEDA: ", image)
+          }
 
-            database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
+          const message = {
+            c,
+            id,
+            _id,
+            createdAt,
+            text,
+            user,
+            image
+          };
+          database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
+          firstTime = false
 
-            AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
-            firstTime = false
-            if(!global.messages.includes(messageKey)){
-              return message;
+          if(!global.currentProcessUidArray[global.receiverUid]){
+            if(localMessages == null || localMessages.length == 0){
+              localMessages = [message]
             }
             else{
-              return null
+              localMessages.push(message)
             }
+            AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
 
-        }
-
+            return message;
+          }
+          else{
+            global.messageBuffer.push(message)
+            return null
+          }
       }
       else{
         return null
@@ -130,9 +139,8 @@ class FirebaseSvc {
       return null
     }
   };
-
   refOn = async callback => {
-    database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().endAt("A").startAt("-")
+    database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().endAt("A").startAt("-").limitToLast(1)
       .on('value', async snapshot => await callback(await this.parse(snapshot)));
   }
 
@@ -146,6 +154,7 @@ class FirebaseSvc {
     database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).update({
       k:1
     })
+    console.log("SENDE GELEN MESSAGES:", messages)
     if(global.firstMessage){
       var kExists = false
       var kListener = database().ref('Messages/' + global.receiverUid + "/" + auth().currentUser.uid + "/k");
@@ -198,6 +207,7 @@ class FirebaseSvc {
                "include_player_ids": [global.playerIdArray[global.receiverUid]], //global.playerIdArray[global.receiverUid]
                "contents": {"en": global.receiverUsername + ": " + text}})
       }).then((response) => {
+        console.log(response)
       });
       const message = {
         text,
@@ -211,6 +221,7 @@ class FirebaseSvc {
       // RESİMLİ MESAJSA
       var image;
       if( p == "t" ){
+        console.log("IMAGE:", images[index])
         var storageRef = storage().ref();
         var metadata = {
           contentType: 'image/jpeg',
@@ -226,6 +237,7 @@ class FirebaseSvc {
           await RNFS.mkdir(RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid)
           await RNFS.copyFile(images[index].url, RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + pushedKey + ".jpg");
           image = "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + pushedKey + ".jpg"
+          console.log(" RESİM LOCALE KAYDEDİLDİ SENDDE: ", image)
       }
 
       const user = { _id: auth().currentUser.uid, r: global.receiverUid}
@@ -243,20 +255,29 @@ class FirebaseSvc {
         image
       };
       global.msgToDisplay = msg
-      var localMsgs = []
-      await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
-        .then(req => JSON.parse(req))
-        .then(json => localMsgs = json)
-        if(localMsgs == null || localMsgs.length == 0){
-          localMsgs = [msg]
-        }
-        else{
-          localMsgs.push(msg)
-        }
-        await AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMsgs))
+      if(!global.currentProcessUidArray[global.receiverUid]){
+        var localMsgs = []
+        await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+          .then(req => JSON.parse(req))
+          .then(json => localMsgs = json)
+          if(localMsgs == null || localMsgs.length == 0){
+            localMsgs = [msg]
+          }
+          else{
+            localMsgs.push(msg)
+          }
+          await AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMsgs))
+      }
+      else{
+        global.messageBuffer.push(msg)
+      }
+
     }
   };
 
+  removeOff(){
+    database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().equalTo("k").off()
+  }
   refOff() {
     database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().endAt("A").startAt("-").off();
   }

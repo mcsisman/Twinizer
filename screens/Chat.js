@@ -100,7 +100,13 @@ export default class ChatScreen extends React.Component<Props> {
           })
         lastSeenInterval = setInterval(()=> this.updateLastSeenFile(), 100)
       });
-
+      if(global.currentProcessUidArray[global.receiverUid]){
+        firebaseSvc.removeOn(async message =>{
+          message.reverse()
+          this.setState({messages: message})
+        })
+        firebaseSvc.removeOff()
+      }
       firebaseSvc.refOn(async message =>{
         if(message != null){
           if(!firstTime){
