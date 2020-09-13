@@ -37,13 +37,16 @@ class FirebaseSvc {
 
   removeListener = async snapshot => {
     console.log("K SİLİNDİ!!!!!!!!!!!!!!")
+    var localMs;
     await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
       .then(req => JSON.parse(req))
-      .then(json => localMessages = json)
+      .then(json => localMs = json)
 
-    localMessages.concat(global.messageBuffer)
+      console.log("LOCALLERR:", localMs)
+    localMs.concat(global.messageBuffer)
 
-    return localMessages
+    console.log("RETRUN LOCAL:", localMs)
+    return localMs
   };
   removeOn = async callback => {
     console.log("REMOVE LİSTENERI AÇILDI!!!!!")
@@ -124,7 +127,7 @@ class FirebaseSvc {
               localMessages.push(message)
             }
             AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
-
+            console.log("PARSE ÇALIŞTI")
             return message;
           }
           else{
@@ -281,6 +284,7 @@ class FirebaseSvc {
   };
 
   removeOff(){
+    console.log("REMOVE OFF")
     database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().equalTo("k").off()
   }
   refOff() {

@@ -106,10 +106,9 @@ export default class ChatScreen extends React.Component<Props> {
           console.log("REMOVE ON'A GELEN MESAJ?:", message)
           message.reverse()
           this.setState({messages: message})
+          firebaseSvc.removeOff()
         })
-        console.log("OFF ÖNCESİ")
-        firebaseSvc.removeOff()
-        console.log("OFF SONRASI")
+
       }
       firebaseSvc.refOn(async message =>{
         if(message != null){
