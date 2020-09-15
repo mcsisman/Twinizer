@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>635128453022-pg08arjq85321bnp2lbap9lu20puh9s4.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.635128453022-pg08arjq85321bnp2lbap9lu20puh9s4</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>635128453022-dim0qsofmgv9otemtci39tbers1rpmk4.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBi0one9aYmVLGFc8Jr9clEVzZnmtrI67E</string>
+	<key>GCM_SENDER_ID</key>
+	<string>635128453022</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>atc.twinizer.bundle1</string>
+	<key>PROJECT_ID</key>
+	<string>twinizer-6b1c9</string>
+	<key>STORAGE_BUCKET</key>
+	<string>twinizer-6b1c9.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:635128453022:ios:f0bff103c161ebc2aee88f</string>
+	<key>DATABASE_URL</key>
+	<string>https://twinizer-6b1c9.firebaseio.com</string>
+</dict>
+</plist>
