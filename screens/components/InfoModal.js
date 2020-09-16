@@ -91,7 +91,7 @@ export default class InfoModal extends Component {
 
       <View style={{paddingTop: 10, paddingBottom: 10, width: screenWidth*(5.5/10), flex:1}}>
 
-      <Text style={{ color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" ,fontFamily: "Candara", fontSize: this.props.alertFontSize*(screenWidth/360)}}>
+      <Text style={{ color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" ,fontSize: this.props.alertFontSize*(screenWidth/360)}}>
       {this.props.txtAlert}
       </Text>
       </View>
@@ -103,7 +103,7 @@ export default class InfoModal extends Component {
       justifyContent: 'center', alignItems: 'center', backgroundColor: backgroundColor, paddingLeft: 15, paddingRight: 15, paddingTop: 5, paddingBottom:5}}
       onPress={this.props.onPressClose}>
 
-      <Text style={{color: global.themeColor ,fontFamily: "Candara", fontSize: this.props.gotItFontSize*(screenWidth/360)}}>
+      <Text style={{color: global.themeColor ,fontSize: this.props.gotItFontSize*(screenWidth/360)}}>
       {this.props.txtGotIt}
       </Text>
       </TouchableOpacity>

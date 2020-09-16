@@ -84,7 +84,7 @@ export default class PhotoPopUpModal extends Component {
           alignItems: 'center',width: this.width*(8/10), height: this.width*(8/10)*(1/6),
           borderTopLeftRadius: 12, borderTopRightRadius: 12}}>
 
-          <Text style={{ textAlign: 'center', color: global.themeColor ,fontFamily: "Candara", fontSize: (this.width*(1/18))}}>
+          <Text style={{ textAlign: 'center', color: global.themeColor , fontSize: (this.width*(1/18))}}>
             {this.props.username}
           </Text>
           <TouchableOpacity

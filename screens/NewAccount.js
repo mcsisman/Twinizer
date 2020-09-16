@@ -155,7 +155,7 @@ writeUserData(userId, name, email, imageUrl) {
         placeholder= {global.langEmail}
         keyboardType= "email-address"
         //returnKeyType="Next"
-        style={{fontFamily: "Candara", position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*47)/100, right: this.width*(2/10),
+        style={{ position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*47)/100, right: this.width*(2/10),
          backgroundColor: global.isDarkMode ?'rgba(255,255,255,0)': 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
          onChangeText={(text) => this.setState({email: text})}>
         </TextInput>
@@ -163,7 +163,7 @@ writeUserData(userId, name, email, imageUrl) {
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder={global.langUsername}
         //returnKeyType="Next"
-        style={{fontFamily: "Candara", position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*40)/100, right: this.width*(2/10),
+        style={{ position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*40)/100, right: this.width*(2/10),
          backgroundColor: global.isDarkMode ? 'rgba(255,255,255,0)': 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
          onChangeText={(text) => this.setState({isim: text})}>
         </TextInput>
@@ -172,7 +172,7 @@ writeUserData(userId, name, email, imageUrl) {
         placeholder={global.langPassword}
         secureTextEntry
         //returnKeyType="Next"
-        style={{fontFamily: "Candara", position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*33)/100, left: this.width*(2/10),
+        style={{ position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*33)/100, left: this.width*(2/10),
         backgroundColor: global.isDarkMode ? 'rgba(255,255,255,0)': 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
          onChangeText={(text) => this.setState({sifre: text})}>
         </TextInput>
@@ -181,7 +181,7 @@ writeUserData(userId, name, email, imageUrl) {
         placeholder={global.langConfirmPassword}
         secureTextEntry
         //returnKeyType="Next"
-        style={{fontFamily: "Candara", position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*26)/100, left: this.width*(2/10),
+        style={{position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*26)/100, left: this.width*(2/10),
          backgroundColor: global.isDarkMode ? 'rgba(255,255,255,0)': 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
          onChangeText={(text) => this.setState({sifre2: text})}>
         </TextInput>

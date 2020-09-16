@@ -127,7 +127,7 @@ Login = (email, password) => {
             placeholder={global.langEmail}
             keyboardType= "email-address"
 
-            style={{fontSize: 16*(this.width/360), fontFamily: "Candara",position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*40)/100, right: this.width*(2/10),
+            style={{fontSize: 16*(this.width/360),  position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*40)/100, right: this.width*(2/10),
              backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
              onChangeText={(text) => this.setState({isim: text})}>
           </TextInput>
@@ -136,7 +136,7 @@ Login = (email, password) => {
           placeholder={global.langPassword}
           secureTextEntry
 
-          style={{fontSize: 16*(this.width/360), fontFamily: "Candara",position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*33)/100, right: this.width*(2/10),
+          style={{fontSize: 16*(this.width/360),  position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*33)/100, right: this.width*(2/10),
            backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
            onChangeText={(text) => this.setState({sifre: text})}>
         </TextInput>
@@ -147,7 +147,7 @@ Login = (email, password) => {
          width: this.width*(2/10), height: (this.height*6)/100, flex:1, bottom: 0, right: this.width*(2/100)}}
          onPress={()=>navigate("NewAccount") }>
         <Text style={{
-          fontFamily: "Candara",
+
           textAlign: 'center',
           color: 'white',
           fontSize: 18*(this.width/360)
@@ -161,7 +161,7 @@ Login = (email, password) => {
         style={{position: 'absolute', backgroundColor: 'rgba(255,255,255, 0)',
          width: this.width*(4/10), height: (this.height*6)/100, flex:1, bottom: 0, left: this.width*(2/100)}}
          onPress={()=> navigate( "ForgotPassword") }>
-        <Text style={{textAlign: 'center', color: 'white', fontFamily: "Candara", fontSize: 18*(this.width/360)}}>
+        <Text style={{textAlign: 'center', color: 'white',   fontSize: 18*(this.width/360)}}>
           {global.langForgotPassword}
         </Text>
         </TouchableOpacity>
@@ -171,7 +171,7 @@ Login = (email, password) => {
         style={{justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(255,255,255, 0)',
           paddingLeft: 15, paddingRight: 15, height: (this.height*6)/100, flex:1, bottom: (this.height*25)/100}}
          onPress={()=>this.check() }>
-         <Text style={{textAlign: 'center', color: 'white', fontFamily: "Candara", fontSize: 18*(this.width/360)}}>
+         <Text style={{textAlign: 'center', color: 'white',   fontSize: 18*(this.width/360)}}>
 
           {global.langLogin}
         </Text>
