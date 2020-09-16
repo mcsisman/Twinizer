@@ -249,7 +249,14 @@ async startFromLocal(){
   var localUids = []
   localUids.splice(0, localUids.length)
   await AsyncStorage.getItem(auth().currentUser.uid + 'message_uids')
-    .then(req => JSON.parse(req))
+    .then(req => {
+      if(req){
+         return JSON.parse(req)
+      }
+      else{
+        return null
+      }
+    })
     .then(json => localUids = json)
 
   if(localUids != undefined && localUids != null){
@@ -287,7 +294,14 @@ async getUsernameOfTheUid(){
     global.fromChatOfUid = ""
     var localUsernames = []
     await AsyncStorage.getItem(auth().currentUser.uid + 'message_usernames')
-      .then(req => JSON.parse(req))
+      .then(req => {
+        if(req){
+           return JSON.parse(req)
+        }
+        else{
+          return null
+        }
+      })
       .then(json => localUsernames = json)
 
     for( let  i = 0; i < noOfConversations; i++){
@@ -328,7 +342,14 @@ async getUsernameOfTheUid(){
     if(newRequest){
       var localUsernames = []
       await AsyncStorage.getItem(auth().currentUser.uid + 'message_usernames')
-        .then(req => JSON.parse(req))
+        .then(req => {
+          if(req){
+             return JSON.parse(req)
+          }
+          else{
+            return null
+          }
+        })
         .then(json => localUsernames = json)
       conversationUsernameArray = localUsernames
 
@@ -357,7 +378,14 @@ async getUsernameOfTheUid(){
       global.comingFromChat = false
       var localUsernames = []
       await AsyncStorage.getItem(auth().currentUser.uid + 'message_usernames')
-        .then(req => JSON.parse(req))
+        .then(req => {
+          if(req){
+             return JSON.parse(req)
+          }
+          else{
+            return null
+          }
+        })
         .then(json => localUsernames = json)
       conversationUsernameArray = localUsernames
       newRequest = true
@@ -367,7 +395,14 @@ async getUsernameOfTheUid(){
 createUsernameArray = async (snap, i, conversationUid) => {
   var localUsernames = []
   await AsyncStorage.getItem(auth().currentUser.uid + 'message_usernames')
-    .then(req => JSON.parse(req))
+    .then(req => {
+      if(req){
+         return JSON.parse(req)
+      }
+      else{
+        return null
+      }
+    })
     .then(json => localUsernames = json)
   conversationUsernameArray = localUsernames
 
@@ -448,7 +483,14 @@ async createUidPhotoArrays(){
   var localUids = []
   localUids.splice(0, localUids.length)
   await AsyncStorage.getItem(auth().currentUser.uid + 'message_uids')
-    .then(req => JSON.parse(req))
+    .then(req => {
+      if(req){
+         return JSON.parse(req)
+      }
+      else{
+        return null
+      }
+    })
     .then(json => localUids = json)
 
     if(localUids != null && localUids.length != 0){
@@ -543,7 +585,14 @@ getMessagesData = async callback =>{
         isEmpty = true
         var localMsgs = []
         await AsyncStorage.getItem(auth().currentUser.uid + uidArray[count] + '/messages')
-          .then(req => JSON.parse(req))
+          .then(req => {
+            if(req){
+               return JSON.parse(req)
+            }
+            else{
+              return null
+            }
+          })
           .then(json => localMsgs = json)
           if(localMsgs != null && localMsgs != undefined && localMsgs.length != 0){
             data = localMsgs[localMsgs.length - 1]
@@ -716,7 +765,14 @@ async getLastLocalMessage(){
 
   var lastLocalKey;
   await AsyncStorage.getItem(auth().currentUser.uid + otherUserUid + '/messages')
-    .then(req => JSON.parse(req))
+    .then(req => {
+      if(req){
+         return JSON.parse(req)
+      }
+      else{
+        return null
+      }
+    })
     .then(json => localMessages[count] = json)
     if(localMessages[count] != null && localMessages[count].length != 0){
       var key = localMessages[count][localMessages[count].length - 1]._id

@@ -350,7 +350,14 @@ async deleteMessage(message){
   this.setState({messages: messageArray})
 
   await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
-    .then(req => JSON.parse(req))
+    .then(req => {
+      if(req){
+         return JSON.parse(req)
+      }
+      else{
+        return null
+      }
+    })
     .then(json => localMessages = json)
 
   for( i = localMessages.length - 1; i >= 0; i--){
@@ -514,7 +521,7 @@ render() {
             <ModifiedStatusBar/>
 
             <KeyboardAvoidingView  behavior="padding"
-              keyboardVerticalOffset={this.state.keyboardOpen && Platform.OS === 'android' ? -this.height+getStatusBarHeight() : 0}
+              keyboardVerticalOffset={this.state.keyboardOpen ? -this.height+getStatusBarHeight() : 0}
               style = {{  position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
               width: this.width, bottom: 0, right: 0, flex: 1}}>
               <GiftedChat
@@ -724,7 +731,14 @@ async getLastLocalMessages(){
     messageArray = []
     messageArray.splice(0, messageArray.length)
     await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
-      .then(req => JSON.parse(req))
+      .then(req => {
+        if(req){
+           return JSON.parse(req)
+        }
+        else{
+          return null
+        }
+      })
       .then(json => localMessages = json)
     var number;
     if(localMessages != null){

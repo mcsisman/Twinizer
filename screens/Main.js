@@ -197,6 +197,7 @@ async componentDidMount(){
     global.fromMessages = false
     var localMessages = []
     var arr = []
+    this.addToFavoriteUsers("k209WPn6gmfHP3f2PphxyXeb84p1")
     await this.getFavoriteAndBlockedUsers()
     //this.addToFavoriteUsers("k209WPn6gmfHP3f2PphxyXeb84p1")
     //this.addToFavoriteUsers("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1")
@@ -282,17 +283,36 @@ async checkIfAlreadySearching(){
 }
 async getFavoriteAndBlockedUsers(){
   await AsyncStorage.getItem(auth().currentUser.uid + 'favoriteUsers')
-    .then(req => JSON.parse(req))
-    .then(json => favoriteUsers = json)
-    if (favoriteUsers == null){
-      favoriteUsers = []
-    }
+    .then(req => {
+      if(req){
+        return JSON.parse(req)
+      }
+      else{
+        return null
+      }
+    })
+    .then(json => {
+      console.log("JSON DATA: ", json)
+      favoriteUsers = json
+      if (favoriteUsers == null){
+        favoriteUsers = []
+      }
+    })
   await AsyncStorage.getItem(auth().currentUser.uid + 'blockedUsers')
-    .then(req => JSON.parse(req))
-    .then(json => blockedUsers = json)
-    if (blockedUsers == null){
-      blockedUsers = []
-    }
+    .then(req => {
+      if(req){
+         return JSON.parse(req)
+      }
+      else{
+        return null
+      }
+    })
+    .then(json => {
+      blockedUsers = json
+      if (blockedUsers == null){
+        blockedUsers = []
+      }
+    })
 }
 
 
@@ -1374,11 +1394,20 @@ async increaseLastSearchNo(){
 async getHistoryImageArray(){
   var historyArray = []
   await AsyncStorage.getItem('historyArray')
-    .then(req => JSON.parse(req))
-    .then(json => historyArray = json)
-  if(historyArray == null){
-    historyArray = []
-  }
+    .then(req => {
+      if(req){
+         return JSON.parse(req)
+      }
+      else{
+        return null
+      }
+    })
+    .then(json => {
+      historyArray = json
+      if(historyArray == null){
+        historyArray = []
+      }
+    })
   return historyArray
 }
 

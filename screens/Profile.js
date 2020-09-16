@@ -158,7 +158,14 @@ static navigationOptions = {
       currentUserBio = req
     })
     await AsyncStorage.getItem(auth().currentUser.uid + 'userPhotoCount')
-      .then(req => JSON.parse(req))
+      .then(req => {
+        if(req){
+           return JSON.parse(req)
+        }
+        else{
+          return null
+        }
+      })
       .then(json => {
         currentUserPhotoCount = json
       })

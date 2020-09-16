@@ -284,7 +284,14 @@ async getLastSearchNo(){
 async getHistoryImageArray(){
   var historyArray = []
   await AsyncStorage.getItem('historyArray')
-    .then(req => JSON.parse(req))
+    .then(req => {
+      if(req){
+         return JSON.parse(req)
+      }
+      else{
+        return null
+      }
+    })
     .then(json => historyArray = json)
   if(historyArray == null){
     historyArray = []

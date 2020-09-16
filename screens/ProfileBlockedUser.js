@@ -164,7 +164,14 @@ static navigationOptions = {
     listener.off()
     global.removeFromBlockedUser = true
     await AsyncStorage.getItem(auth().currentUser.uid + 'favoriteUsers')
-      .then(req => JSON.parse(req))
+      .then(req => {
+        if(req){
+           return JSON.parse(req)
+        }
+        else{
+          return null
+        }
+      })
       .then(json => favoriteUsers = json)
     favoriteUsers.push(global.selectedBlockedUserUid)
     AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))

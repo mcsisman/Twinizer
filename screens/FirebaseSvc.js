@@ -39,7 +39,14 @@ class FirebaseSvc {
     console.log("K SİLİNDİ!!!!!!!!!!!!!!")
     var localMs;
     await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
-      .then(req => JSON.parse(req))
+      .then(req => {
+        if(req){
+           return JSON.parse(req)
+        }
+        else{
+          return null
+        }
+      })
       .then(json => localMs = json)
 
       console.log("LOCALLERR:", localMs)
@@ -64,7 +71,14 @@ class FirebaseSvc {
       if(Object.keys(snapVal).length != 0){
         var messageKey = Object.keys(snapVal)[Object.keys(snapVal).length - 1]
         await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
-          .then(req => JSON.parse(req))
+          .then(req => {
+            if(req){
+               return JSON.parse(req)
+            }
+            else{
+              return null
+            }
+          })
           .then(json => localMessages = json)
 
           const user = { _id: global.receiverUid, r: auth().currentUser.uid}
@@ -266,7 +280,14 @@ class FirebaseSvc {
       if(!global.currentProcessUidArray[global.receiverUid]){
         var localMsgs = []
         await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
-          .then(req => JSON.parse(req))
+          .then(req => {
+            if(req){
+               return JSON.parse(req)
+            }
+            else{
+              return null
+            }
+          })
           .then(json => localMsgs = json)
           if(localMsgs == null || localMsgs.length == 0){
             localMsgs = [msg]
