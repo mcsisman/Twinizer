@@ -108,7 +108,7 @@ Login = (email, password) => {
       else{
         return(
           <KeyboardAvoidingView behavior="padding"
-            keyboardVerticalOffset={this.state.keyboardOpen && Platform.OS === 'android' ? -(this.height*12)/100 : -3*getStatusBarHeight()}
+            keyboardVerticalOffset={this.state.keyboardOpen ? -(this.height*12)/100 : -3*getStatusBarHeight()}
           style={{width: this.width, height: this.height, flex:1, backgroundColor: 'rgba(255,255,255, 0)'}}>
           <TouchableOpacity
           activeOpacity = {1}
