@@ -52,10 +52,10 @@ export default class ImageUploadScreen extends React.Component {
     super(props);
     this.state = {
       Name: "",
-      photo1: null,
-      photo2: null,
-      photo3: null,
-      photo4: null,
+      photo1: "ground",
+      photo2: "ground",
+      photo3: "ground",
+      photo4: "ground",
       profilePhoto: "",
       opacity: 0.4,
       disabled: true,

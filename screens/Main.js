@@ -163,7 +163,8 @@ constructor(props){
       openProfileIsVisible: false,
       messageButtonOpacity: 0,
       messageButtonDisabled: true,
-      loadingOpacity: 0
+      loadingOpacity: 0,
+      photo: "ground"
     }
     global.swipeCount= 0,
     this.activationCount= 0,

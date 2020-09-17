@@ -53,13 +53,8 @@ export default class SwipeableBigImg extends Component {
        borderTopLeftRadius: 16, borderBottomRightRadius: 16, flex:1, justifyContent: 'center', alignItems: 'center', position: 'absolute'}}
        onPress={this.props.onPress}>
 
-       <Image source={{uri: this.props.imgSource}}
+       <Image source={{uri: this.props.backgroundOpacity === 0 ? this.props.imgSource : "ground"}}
          style={{  width: '100%', height: '100%', position: 'absolute', borderBottomLeftRadius: 16, borderTopRightRadius: 16,
-         borderTopLeftRadius: 16, borderBottomRightRadius: 16 }}
-       />
-
-       <View
-         style={{  width: '100%', height: '100%', position: 'absolute', backgroundColor: "black", opacity: this.props.backgroundOpacity, borderBottomLeftRadius: 16, borderTopRightRadius: 16,
          borderTopLeftRadius: 16, borderBottomRightRadius: 16 }}
        />
        </TouchableOpacity>

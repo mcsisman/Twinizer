@@ -48,7 +48,7 @@ export default class ProfileUploadScreen extends React.Component {
     super(props);
     this.state = {
       Name: "",
-      photo: null,
+      photo: "",
       profilePhoto: "",
       str: "",
       isim : auth().currentUser.displayName,

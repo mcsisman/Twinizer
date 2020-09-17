@@ -39,12 +39,8 @@ export default class SwipeableSmallImg extends Component {
       style={{ justifyContent: 'center', alignItems: 'center', position: 'absolute', backgroundColor: 'rgba(244,92,66,0)', opacity: 1,
        width: this.width*2/10, height: this.width*(2/10)*(7/6), top: this.width*7/40, right: this.props.right, borderBottomLeftRadius: 8, borderTopRightRadius: 8,
        borderTopLeftRadius: 8, borderBottomRightRadius: 8}}>
-       <Image source={{uri: this.props.imgSource}}
+       <Image source={{uri: this.props.backgroundOpacity === 0 ? this.props.imgSource : "ground"}}
          style={{  width: '100%', height: '100%', borderBottomLeftRadius: 16, borderTopRightRadius: 16,
-         borderTopLeftRadius: 16, borderBottomRightRadius: 16 }}
-       />
-       <View
-         style={{  width: '100%', height: '100%', backgroundColor: "black",  position: 'absolute', opacity: this.props.backgroundOpacity, borderBottomLeftRadius: 16, borderTopRightRadius: 16,
          borderTopLeftRadius: 16, borderBottomRightRadius: 16 }}
        />
       </View>
