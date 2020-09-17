@@ -164,7 +164,7 @@ constructor(props){
       messageButtonOpacity: 0,
       messageButtonDisabled: true,
       loadingOpacity: 0,
-      photo: "ground"
+      photo: ""
     }
     global.swipeCount= 0,
     this.activationCount= 0,

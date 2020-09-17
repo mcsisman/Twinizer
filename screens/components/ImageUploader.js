@@ -42,7 +42,7 @@ export default class ImageUploader extends Component {
 
        onPress={this.props.onPress}>
        <Image source={this.props.photo}
-         style={{ opacity: this.props.textOpacity === 1 ? 0:1, width: '100%', height: '100%', borderBottomLeftRadius: this.props.borderRadius, borderTopRightRadius: this.props.borderRadius,
+         style={{ width: '100%', height: '100%', borderBottomLeftRadius: this.props.borderRadius, borderTopRightRadius: this.props.borderRadius,
          borderTopLeftRadius: this.props.borderRadius, borderBottomRightRadius: this.props.borderRadius }}
        />
        <Text style={{color: global.themeColor, bottom: '60%', opacity: this.props.textOpacity, position: 'absolute', textAlign: 'center', fontSize: this.props.fontSize*(screenWidth/360)}}>
