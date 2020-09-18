@@ -139,8 +139,8 @@ async deleteHistory(indexArray){
   console.log("SİLDİKTEN SONRA: ", historyArray)
   noOfSearch = noOfSearch - indexArray.length
 
-  await AsyncStorage.setItem('noOfSearch', noOfSearch.toString())
-  await AsyncStorage.setItem('historyArray', JSON.stringify(historyArray))
+  await AsyncStorage.setItem(auth().currentUser.uid + 'noOfSearch', noOfSearch.toString())
+  await AsyncStorage.setItem(auth().currentUser.uid + 'historyArray', JSON.stringify(historyArray))
   this.setState({historyBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
 }
 async onPressSearch(){
@@ -251,7 +251,7 @@ historyBoxPressed(whichBox){
 }
 async getNoOfSearch(){
   var noOfSearch;
-  noOfSearch = await AsyncStorage.getItem('noOfSearch')
+  noOfSearch = await AsyncStorage.getItem(auth().currentUser.uid + 'noOfSearch')
   if(noOfSearch == null){
     noOfSearch = "0";
   }
@@ -274,7 +274,7 @@ async createDateArray(){
 
 async getLastSearchNo(){
   var lastSearch;
-  lastSearch = await AsyncStorage.getItem('lastSearch')
+  lastSearch = await AsyncStorage.getItem(auth().currentUser.uid + 'lastSearch')
   if(lastSearch == null){
     lastSearch = "0";
   }
@@ -283,7 +283,7 @@ async getLastSearchNo(){
 }
 async getHistoryImageArray(){
   var historyArray = []
-  await AsyncStorage.getItem('historyArray')
+  await AsyncStorage.getItem(auth().currentUser.uid + 'historyArray')
     .then(req => {
       if(req){
          return JSON.parse(req)

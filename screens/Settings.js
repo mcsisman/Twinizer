@@ -90,6 +90,13 @@ export default class SettingsScreen extends Component<{}>{
     AsyncStorage.removeItem(auth().currentUser.uid + 'userName')
     AsyncStorage.removeItem(auth().currentUser.uid + 'userBio')
     AsyncStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
+    AsyncStorage.removeItem(auth().currentUser.uid + 'playerId')
+    database().ref('/PlayerIds/').update({
+      [auth().currentUser.uid]: "x"
+    });
+    database().ref('/Users/'+auth().currentUser.uid + '/i').update({
+      o: -1
+    });
     auth().signOut().then(function() {
       console.log("LOGOUT SUCCESSFUL")
       navigate("Splash")

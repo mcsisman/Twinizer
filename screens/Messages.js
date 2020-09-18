@@ -277,13 +277,13 @@ async startFromLocal(){
 
 async updatePlayerIds(snapshot, index){
   var userInfo = snapshot.val()
-  global.playerIdArray[conversationUidArray[index]] = await AsyncStorage.getItem(auth().currentUser.uid + conversationUidArray[index] + "playerId")
-  var tempo = await AsyncStorage.getItem(auth().currentUser.uid + conversationUidArray[index] + "o")
+  global.playerIdArray[conversationUidArray[index]] = await AsyncStorage.getItem(conversationUidArray[index] + "playerId")
+  var tempo = await AsyncStorage.getItem(conversationUidArray[index] + "o")
   if(tempo != userInfo.o){
     database().ref('/PlayerIds/'+ conversationUidArray[index]).once('value').then(snapshot => {
       global.playerIdArray[conversationUidArray[index]] = snapshot.val()
-      AsyncStorage.setItem(auth().currentUser.uid + conversationUidArray[index] + "playerId", snapshot.val())
-      AsyncStorage.setItem(auth().currentUser.uid + conversationUidArray[index] + "o", userInfo.o)
+      AsyncStorage.setItem(conversationUidArray[index] + "playerId", snapshot.val())
+      AsyncStorage.setItem(conversationUidArray[index] + "o", userInfo.o)
     });
   }
 }

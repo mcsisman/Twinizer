@@ -885,9 +885,9 @@ async sendFirstMessage(){
   global.receiverCountry = "Australia"
   global.receiverUsername = "cemil ug"
   //global.firstMessage = true
-  global.playerIdArray[global.receiverUid] = await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + "playerId")
+  global.playerIdArray[global.receiverUid] = await AsyncStorage.getItem(global.receiverUid + "playerId")
   console.log("global.playerIdArray: ", global.playerIdArray)
-  var tempo = await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + "o")
+  var tempo = await AsyncStorage.getItem(global.receiverUid + "o")
   var realtimeo = 0;
   database().ref('/Users/'+ global.receiverUid + "/i/o").once('value').then(snapshot => {
     realtimeo = snapshot.val()
@@ -896,8 +896,8 @@ async sendFirstMessage(){
     database().ref('/PlayerIds/'+global.receiverUid).once('value').then(snapshot => {
       console.log("PLAYER ID READ EDIYO")
       global.playerIdArray[global.receiverUid] = snapshot.val()
-      AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + "playerId", snapshot.val())
-      AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + "o", realtimeo)
+      AsyncStorage.setItem(global.receiverUid + "playerId", snapshot.val())
+      AsyncStorage.setItem(global.receiverUid + "o", realtimeo)
     });
   }
   this.props.navigation.navigate("Chat")
@@ -1355,7 +1355,7 @@ async searchDone(value){
 
 async getLastSearchNo(){
   var lastSearch;
-  lastSearch = await AsyncStorage.getItem('lastSearch')
+  lastSearch = await AsyncStorage.getItem(auth().currentUser.uid + 'lastSearch')
   if(lastSearch == null){
     lastSearch = "0";
   }
@@ -1364,7 +1364,7 @@ async getLastSearchNo(){
 }
 async getNoOfSearch(){
   var noOfSearch;
-  noOfSearch = await AsyncStorage.getItem('noOfSearch')
+  noOfSearch = await AsyncStorage.getItem(auth().currentUser.uid + 'noOfSearch')
   if(noOfSearch == null){
     noOfSearch = "0";
   }
@@ -1394,7 +1394,7 @@ async increaseLastSearchNo(){
 
 async getHistoryImageArray(){
   var historyArray = []
-  await AsyncStorage.getItem('historyArray')
+  await AsyncStorage.getItem(auth().currentUser.uid + 'historyArray')
     .then(req => {
       if(req){
          return JSON.parse(req)
