@@ -310,14 +310,14 @@ static navigationOptions = {
   onPressDelete(){
     Alert.alert(
     '',
-    "Are you sure you want to logout?" ,
+    "Are you sure you want to delete your account?" ,
     [
       {
         text: 'No',
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      {text: 'Yes', onPress: () => this.onPressLogoutOk()},
+      {text: 'Yes', onPress: () => this.onPressDeleteOk()},
     ],
     {cancelable: true},
   );
@@ -343,7 +343,9 @@ static navigationOptions = {
     AsyncStorage.removeItem(auth().currentUser.uid + 'theme')
     AsyncStorage.removeItem(auth().currentUser.uid + 'mode')
     var messageUidsArray = firestore().collection(auth().currentUser.uid).doc("MessageInformation")
-    messageUidsArray.get(doc =>{
+    console.log("messageuidsarray: ", messageUidsArray)
+    messageUidsArray.get().then( async doc =>{
+      console.log("firestore içi")
       if(doc.exists){
         var conversationUidArray = await doc.data()["UidArray"]
         for(let i = 0; i < conversationUidArray.length; i++){
@@ -369,9 +371,16 @@ static navigationOptions = {
     database().ref('/Users/'+auth().currentUser.uid).remove()
     // storage delete
     storage().ref("Embeddings/" + auth().currentUser.uid + ".pickle").delete()
-    storage().ref("Photos/" + auth().currentUser.uid).delete()
+    storage().ref("Photos/" + auth().currentUser.uid + "/1.jpg").delete()
+    storage().ref("Photos/" + auth().currentUser.uid + "/2.jpg").delete()
+    storage().ref("Photos/" + auth().currentUser.uid + "/3.jpg").delete()
+    storage().ref("Photos/" + auth().currentUser.uid + "/4.jpg").delete()
+    storage().ref("Photos/" + auth().currentUser.uid + "/5.jpg").delete()
+    storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/search-photo.jpg").delete()
+    storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/vec.pickle").delete()
 
-    auth().signOut().then(function() {
+    auth().currentUser.delete().then(function() {
+      const {navigate} = this.props.navigation;
       console.log("LOGOUT SUCCESSFUL")
       navigate("Splash")
     })

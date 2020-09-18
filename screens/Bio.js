@@ -44,6 +44,7 @@ if(Platform.OS === 'ios'){
 var writeDone = false;
 var updateDone = false;
 var listenerStarted = false;
+//var {navigate} = null;
 export default class CountryScreen extends Component<{}>{
   constructor(props){
     super(props);
@@ -65,6 +66,7 @@ export default class CountryScreen extends Component<{}>{
       this.spinValue = new Animated.Value(0)
   }
 componentDidMount(){
+  //navigate = this.props.navigation;
 };
 static navigationOptions = {
     header: null,
@@ -84,6 +86,12 @@ spinAnimation(){
       }
     )).start()
 }
+
+navigateToMain(){
+  const {navigate} = this.props.navigation;
+  navigate("MyTabs")
+}
+
 async writeCountryToDatabase(){
   this.setState({loadingOpacity: 1})
   this.spinAnimation()
@@ -107,33 +115,32 @@ async writeCountryToDatabase(){
           AsyncStorage.setItem(auth().currentUser.uid + 'userCountry', global.globalCountry)
           AsyncStorage.setItem(auth().currentUser.uid + 'userBio', global.globalBio)
           AsyncStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(0))
-          var modelDoneRef = firestore().collection(auth().currentUser.uid).doc('ModelResult');
-          modelDoneRef.onSnapshot(async doc =>{
-            console.log("listenerStarted: ", listenerStarted)
-            if(listenerStarted){
-              var dict = doc.data()
-              console.log("dict: ", dict)
-              if(dict["result"] < 0){
-                Alert.alert("Error!", "Check your photos and be sure that there is a face in each of them.." )
-                updateDone = false;
-              }
-              else{
-                updateDone = true;
-              }
-              this.setState({loadingOpacity: 0})
-              this.spinValue = new Animated.Value(0)
-              if (updateDone){
-                const {navigate} = this.props.navigation;
-                navigate("Tabs")
-              }
-              else {
-                Alert.alert("Upload Failed", "Creating account is failed. Try Again.." )
-              }
-            }
-            listenerStarted = true
-          })
         })
     });
+    var result_ref = firestore().collection(auth().currentUser.uid).doc('ModelResult').onSnapshot(async (doc) =>{
+      console.log("listenerStarted: ", listenerStarted)
+      if(listenerStarted){
+        var dict = doc.data()
+        console.log("dict: ", dict)
+        if(dict["result"] < 0){
+          Alert.alert("Error!", "Check your photos and be sure that there is a face in each of them.." )
+          updateDone = false;
+        }
+        else{
+          updateDone = true;
+        }
+        if (updateDone){
+          this.setState({loadingOpacity: 0})
+          this.spinValue = new Animated.Value(0)
+          const {navigate} = this.props.navigation;
+          navigate("Tabs")
+        }
+        else {
+          Alert.alert("Upload Failed", "Creating account is failed. Try Again.." )
+        }
+      }
+      listenerStarted = true
+    })
   }
   else {
     Alert.alert("Fail", "You exceeded the character limit." )
@@ -177,6 +184,7 @@ valueChange(value){
       pageNo = {4}/>
 
       <OvalButton
+      opacity = {1}
       backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
       width = {this.width*3/10}
       bottom = {(this.height*12)/100}

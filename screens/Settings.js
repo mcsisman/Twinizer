@@ -96,11 +96,13 @@ export default class SettingsScreen extends Component<{}>{
     });
     database().ref('/Users/'+auth().currentUser.uid + '/i').update({
       o: -1
+    }).then(() => {
+      console.log("o güncellendi")
+      auth().signOut().then(function() {
+        console.log("LOGOUT SUCCESSFUL")
+        navigate("Splash")
+      })
     });
-    auth().signOut().then(function() {
-      console.log("LOGOUT SUCCESSFUL")
-      navigate("Splash")
-    })
   }
   render(){
     const {navigate} = this.props.navigation;
