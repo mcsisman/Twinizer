@@ -16,7 +16,7 @@ import {
 
 import SearchButton from './SearchButton'
 import HistoryCircle from './HistoryCircle'
-export default class HistoryBox extends Component {
+export default class DeleteOptionsBox extends Component {
   constructor(props) {
     super(props);
   }

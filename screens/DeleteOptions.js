@@ -27,6 +27,8 @@ import ProfileScreen from './Profile';
 import CustomHeader from './components/CustomHeader'
 import ModifiedStatusBar from './components/ModifiedStatusBar'
 import DeleteOptionsBox from './components/DeleteOptionsBox'
+import OvalButton from './components/OvalButton'
+import AuthenticationModal from './components/AuthenticationModal'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -47,7 +49,8 @@ var textArray = [
   "fifth",
 ]
 var loadingDone = false
-export default class HistoryScreen extends Component<{}>{
+var authenticated = false
+export default class DeleteOptionsScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.height = Math.round(Dimensions.get('screen').height);
@@ -61,7 +64,8 @@ export default class HistoryScreen extends Component<{}>{
       editPressed: false,
       cancelPressed: false,
       editText: "Edit",
-      reRender: "ok"
+      reRender: "ok",
+      authenticationVisible: false
     }
     this.leftAnimation = new Animated.Value(-this.width*(3/16))
     this.spinValue = new Animated.Value(0)
@@ -114,72 +118,109 @@ onPressDelete(){
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      {text: 'Yes', onPress: () => this.deletePress()},
+      {text: 'Yes', onPress: () => this.setState({authenticationVisible: true})},
     ],
     {cancelable: true},
   );
 }
-deletePress(){
-  // async storage remove
-  AsyncStorage.removeItem(auth().currentUser.uid + 'userGender')
-  AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry')
-  AsyncStorage.removeItem(auth().currentUser.uid + 'userName')
-  AsyncStorage.removeItem(auth().currentUser.uid + 'userBio')
-  AsyncStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
-  AsyncStorage.removeItem(auth().currentUser.uid + 'blockedUsers')
-  AsyncStorage.removeItem(auth().currentUser.uid + 'favoriteUsers')
-  AsyncStorage.removeItem(auth().currentUser.uid + 'noOfSearch')
-  AsyncStorage.removeItem(auth().currentUser.uid + 'lastSearch')
-  AsyncStorage.removeItem(auth().currentUser.uid + 'historyArray')
-  AsyncStorage.removeItem(auth().currentUser.uid + 'favShowThisDialog')
-  AsyncStorage.removeItem(auth().currentUser.uid + 'blockShowThisDialog')
-  AsyncStorage.removeItem(auth().currentUser.uid + "o")
-  AsyncStorage.removeItem(auth().currentUser.uid + 'playerId')
-  AsyncStorage.removeItem(auth().currentUser.uid + 'message_uids')
-  AsyncStorage.removeItem(auth().currentUser.uid + 'message_usernames')
-  AsyncStorage.removeItem(auth().currentUser.uid + 'theme')
-  AsyncStorage.removeItem(auth().currentUser.uid + 'mode')
-  var messageUidsArray = firestore().collection(auth().currentUser.uid).doc("MessageInformation")
-  console.log("messageuidsarray: ", messageUidsArray)
-  messageUidsArray.get().then( async doc =>{
-    console.log("firestore içi")
-    if(doc.exists){
-      var conversationUidArray = await doc.data()["UidArray"]
-      for(let i = 0; i < conversationUidArray.length; i++){
-        AsyncStorage.removeItem(auth().currentUser.uid + conversationUidArray[i] + '/messages')
-        AsyncStorage.removeItem('IsRequest/' + auth().currentUser.uid + "/" + conversationUidArray[i])
-        AsyncStorage.removeItem('ShowMessageBox/' + auth().currentUser.uid + "/" + conversationUidArray[i])
-        AsyncStorage.removeItem(auth().currentUser.uid + "" + conversationUidArray[i] + 'lastSeen')
-        // firestore delete
-        firestore().collection(auth().currentUser.uid).doc('MessageInformation').delete().then(() => {
-          console.log('MessageInformation deleted!');
-        });
-        firestore().collection(auth().currentUser.uid).doc('Bios').delete().then(() => {
-          console.log('Bİos deleted!');
-        });
-        firestore().collection(auth().currentUser.uid).doc('Similarity').delete().then(() => {
-          console.log('Similarity deleted!');
-        });
-      }
-    }
-  })
-  // realtime remove
-  database().ref('/PlayerIds/' + auth().currentUser.uid).remove()
-  database().ref('/Users/'+auth().currentUser.uid).remove()
-  // storage delete
-  storage().ref("Embeddings/" + auth().currentUser.uid + ".pickle").delete()
-  storage().ref("Photos/" + auth().currentUser.uid + "/1.jpg").delete()
-  storage().ref("Photos/" + auth().currentUser.uid + "/2.jpg").delete()
-  storage().ref("Photos/" + auth().currentUser.uid + "/3.jpg").delete()
-  storage().ref("Photos/" + auth().currentUser.uid + "/4.jpg").delete()
-  storage().ref("Photos/" + auth().currentUser.uid + "/5.jpg").delete()
-  storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/search-photo.jpg").delete()
-  storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/vec.pickle").delete()
+Login = async (email, password) => {
+    const {navigate} = this.props.navigation;
+          auth()
+           .signInWithEmailAndPassword(email, password)
+           .then(async () => {
+             if(auth().currentUser.emailVerified){
+               var storageRef = storage().ref("Embeddings/" + auth().currentUser.uid + ".pickle")
+               console.log("STORAGE REF: ", storageRef)
+               await storageRef.getDownloadURL().then(data =>{
+                 console.log("EMBEDDING VAR: ", auth().currentUser.uid)
+                 console.log("DATA: ", data)
+                 navigate('Tabs', { screen: 'Main' })
+               }).catch(function(error) {
+                 console.log("EMBEDDING YOK: ", auth().currentUser.uid)
+                 navigate("Gender")
+               });
+             user = auth().currentUser
+             }
+             else{
+               Alert.alert("", global.langEmailNotVerified )
+             }
+        }).catch(error => {
+          Alert.alert(global.langPlsTryAgain, global.langWrongEmailPassword)
+      })
 
-  auth().currentUser.delete().then(function() {
-    console.log("LOGOUT SUCCESSFUL")
-    this.props.navigation.dispatch(StackActions.popToTop());
-  })
+  };
+async deletePress(){
+  await auth()
+   .signInWithEmailAndPassword(email, password)
+   .then(async () => {
+     authenticated = true
+     console.log("authenticated")
+   }).catch(error => {
+     Alert.alert(global.langPlsTryAgain, global.langWrongEmailPassword)
+   })
+   if (authenticated){
+     // async storage remove
+     AsyncStorage.removeItem(auth().currentUser.uid + 'userGender')
+     AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry')
+     AsyncStorage.removeItem(auth().currentUser.uid + 'userName')
+     AsyncStorage.removeItem(auth().currentUser.uid + 'userBio')
+     AsyncStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
+     AsyncStorage.removeItem(auth().currentUser.uid + 'blockedUsers')
+     AsyncStorage.removeItem(auth().currentUser.uid + 'favoriteUsers')
+     AsyncStorage.removeItem(auth().currentUser.uid + 'noOfSearch')
+     AsyncStorage.removeItem(auth().currentUser.uid + 'lastSearch')
+     AsyncStorage.removeItem(auth().currentUser.uid + 'historyArray')
+     AsyncStorage.removeItem(auth().currentUser.uid + 'favShowThisDialog')
+     AsyncStorage.removeItem(auth().currentUser.uid + 'blockShowThisDialog')
+     AsyncStorage.removeItem(auth().currentUser.uid + "o")
+     AsyncStorage.removeItem(auth().currentUser.uid + 'playerId')
+     AsyncStorage.removeItem(auth().currentUser.uid + 'message_uids')
+     AsyncStorage.removeItem(auth().currentUser.uid + 'message_usernames')
+     AsyncStorage.removeItem(auth().currentUser.uid + 'theme')
+     AsyncStorage.removeItem(auth().currentUser.uid + 'mode')
+     var messageUidsArray = firestore().collection(auth().currentUser.uid).doc("MessageInformation")
+     console.log("messageuidsarray: ", messageUidsArray)
+     messageUidsArray.get().then( async doc =>{
+       console.log("firestore içi")
+       if(doc.exists){
+         var conversationUidArray = await doc.data()["UidArray"]
+         for(let i = 0; i < conversationUidArray.length; i++){
+           AsyncStorage.removeItem(auth().currentUser.uid + conversationUidArray[i] + '/messages')
+           AsyncStorage.removeItem('IsRequest/' + auth().currentUser.uid + "/" + conversationUidArray[i])
+           AsyncStorage.removeItem('ShowMessageBox/' + auth().currentUser.uid + "/" + conversationUidArray[i])
+           AsyncStorage.removeItem(auth().currentUser.uid + "" + conversationUidArray[i] + 'lastSeen')
+           // firestore delete
+           firestore().collection(auth().currentUser.uid).doc('MessageInformation').delete().then(() => {
+             console.log('MessageInformation deleted!');
+           });
+           firestore().collection(auth().currentUser.uid).doc('Bios').delete().then(() => {
+             console.log('Bİos deleted!');
+           });
+           firestore().collection(auth().currentUser.uid).doc('Similarity').delete().then(() => {
+             console.log('Similarity deleted!');
+           });
+         }
+       }
+     })
+     // realtime remove
+     database().ref('/PlayerIds/' + auth().currentUser.uid).remove()
+     database().ref('/Users/'+auth().currentUser.uid).remove()
+     // storage delete
+     storage().ref("Embeddings/" + auth().currentUser.uid + ".pickle").delete()
+     storage().ref("Photos/" + auth().currentUser.uid + "/1.jpg").delete()
+     storage().ref("Photos/" + auth().currentUser.uid + "/2.jpg").delete()
+     storage().ref("Photos/" + auth().currentUser.uid + "/3.jpg").delete()
+     storage().ref("Photos/" + auth().currentUser.uid + "/4.jpg").delete()
+     storage().ref("Photos/" + auth().currentUser.uid + "/5.jpg").delete()
+     storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/search-photo.jpg").delete()
+     storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/vec.pickle").delete()
+
+     auth().currentUser.delete().then(function() {
+       console.log("LOGOUT SUCCESSFUL")
+       this.props.navigation.dispatch(StackActions.popToTop());
+     })
+   }
+
 }
 initializeIsSelectedArray(){
   global.selectedOption = null
@@ -267,7 +308,7 @@ render(){
         style = {{left: 0 ,alignItems: 'center', paddingTop: 5, paddingBottom: 5, width: this.width,
         backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", flex: 1}}>
         <Text
-        style = {{ fontSize: 18, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
+        style = {{fontSize: 22, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
         Why are you leaving Twinizer?
         </Text>
         </View>
@@ -280,15 +321,31 @@ render(){
           refreshing = {true}>
         </FlatList>
 
-        <TouchableOpacity
-        style = {{position: "absolute", left: 0 , bottom: this.height*(1/16), alignItems: 'center', width: this.width, height: this.height*(1/16),
-        backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", flex: 1}}
-        onPress = {() => this.onPressDelete()}>
-        <Text
-        style = {{textAlign: "center", fontSize: 18, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
-        Delete
-        </Text>
-        </TouchableOpacity>
+        <View
+        style = {{ alignItems: 'center', width: this.width, height: this.height*(1/16),
+        backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", flex: 1}}>
+        <OvalButton
+        opacity = {1}
+        backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
+        bottom = {(this.height*13)/100}
+        title = {"Delete"}
+        textColor = {global.themeColor}
+        onPress = { ()=> this.onPressDelete()}
+        borderColor = {global.themeColor}/>
+        </View>
+
+        <AuthenticationModal
+        isVisible = {this.state.authenticationVisible}
+        onPressEnter = {async () => {
+          this.setState({authenticationVisible: false})
+          await this.deletePress()
+        }}
+        onPressCancel = {() => {this.setState({authenticationVisible: false})}}
+        onBackdropPress = {() => {
+          this.setState({authenticationVisible: false})
+        }}
+        />
+
       </View>
     );
   }
