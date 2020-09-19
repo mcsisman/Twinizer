@@ -73,6 +73,7 @@ export default class DeleteOptionsScreen extends Component<{}>{
   }
 async componentDidMount(){
   this._subscribe = this.props.navigation.addListener('focus', async () => {
+    this.props.navigation.setOptions({tabBarVisible: false})
     this.setState({reRender: "ok"})
   })
   this._subscribe = this.props.navigation.addListener('blur', async () => {
@@ -123,32 +124,6 @@ onPressDelete(){
     {cancelable: true},
   );
 }
-Login = async (email, password) => {
-    const {navigate} = this.props.navigation;
-          auth()
-           .signInWithEmailAndPassword(email, password)
-           .then(async () => {
-             if(auth().currentUser.emailVerified){
-               var storageRef = storage().ref("Embeddings/" + auth().currentUser.uid + ".pickle")
-               console.log("STORAGE REF: ", storageRef)
-               await storageRef.getDownloadURL().then(data =>{
-                 console.log("EMBEDDING VAR: ", auth().currentUser.uid)
-                 console.log("DATA: ", data)
-                 navigate('Tabs', { screen: 'Main' })
-               }).catch(function(error) {
-                 console.log("EMBEDDING YOK: ", auth().currentUser.uid)
-                 navigate("Gender")
-               });
-             user = auth().currentUser
-             }
-             else{
-               Alert.alert("", global.langEmailNotVerified )
-             }
-        }).catch(error => {
-          Alert.alert(global.langPlsTryAgain, global.langWrongEmailPassword)
-      })
-
-  };
 async deletePress(){
   await auth()
    .signInWithEmailAndPassword(email, password)
@@ -220,7 +195,6 @@ async deletePress(){
        this.props.navigation.dispatch(StackActions.popToTop());
      })
    }
-
 }
 initializeIsSelectedArray(){
   global.selectedOption = null
@@ -251,8 +225,7 @@ deleteOptionsBoxPressed(whichBox){
   }
 }
 
-renderHistoryBoxes(){
-    var scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight();
+renderOptionBoxes(){
     var boxes = [];
       for( i = 0; i < textArray.length; i++){
         const temp = i
@@ -295,7 +268,7 @@ render(){
   else{
       return(
         <View
-        style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
+        style={{alignItems: "center", width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
         <ModifiedStatusBar/>
 
         <CustomHeader
@@ -316,23 +289,19 @@ render(){
         <FlatList
           style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight() - this.height*(2/16),
           width: this.width, right: 0, bottom: this.height*(2/16),  position: 'absolute', flex: 1, flexDirection: 'column'}}
-          renderItem = {()=>this.renderHistoryBoxes()}
+          renderItem = {()=>this.renderOptionBoxes()}
           data = { [{bos:"boş", key: "key"}]}
           refreshing = {true}>
         </FlatList>
 
-        <View
-        style = {{ alignItems: 'center', width: this.width, height: this.height*(1/16),
-        backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", flex: 1}}>
         <OvalButton
         opacity = {1}
         backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
-        bottom = {(this.height*13)/100}
+        bottom = {this.height*(1/16)}
         title = {"Delete"}
         textColor = {global.themeColor}
         onPress = { ()=> this.onPressDelete()}
         borderColor = {global.themeColor}/>
-        </View>
 
         <AuthenticationModal
         isVisible = {this.state.authenticationVisible}
