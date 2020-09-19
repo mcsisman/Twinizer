@@ -846,7 +846,8 @@ syncLocalMessages = async (snapshot, uidCount) => {
           }
       }
       await AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
-      database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
+      
+      await database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
       console.log("REMOVEA GELDİ___________GELDİ___________GELDİ___________GELDİ___________GELDİ___________")
       var kValue;
       var isRequ = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[uidCount])
@@ -857,8 +858,6 @@ syncLocalMessages = async (snapshot, uidCount) => {
         kValue = 1
       }
       this.setRequestDB(uidArray[uidCount], kValue)
-
-
       global.currentProcessUidArray[uidArray[uidCount]] = false
 
         lastMsgFlag = lastDBkey == localMessages[uidCount][localMessages[uidCount].length - 1]._id
@@ -1031,6 +1030,7 @@ spinAnimation(){
 
 
 navigateToChat(receiverUid, receiverPhoto, receiverUsername){
+  global.messageRemoved = false
   global.check = false
   global.messageBuffer = []
   global.localMessages = localMessages[count]

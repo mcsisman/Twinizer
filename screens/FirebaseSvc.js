@@ -48,17 +48,14 @@ class FirebaseSvc {
         }
       })
       .then(json => localMs = json)
-
-      console.log("LOCALLERR:", localMs)
     localMs.concat(global.messageBuffer)
 
-    console.log("RETRUN LOCAL:", localMs)
     return localMs
   };
   removeOn = async callback => {
     console.log("REMOVE LİSTENERI AÇILDI!!!!!")
       database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().equalTo("k")
-        .on('child_removed', async snapshot => await this.removeListener(snapshot));
+        .on('child_removed', async snapshot => await callback(await this.removeListener(snapshot)));
     }
 
   parse = async snapshot => {
@@ -70,16 +67,7 @@ class FirebaseSvc {
       delete snapVal["k"]
       if(Object.keys(snapVal).length != 0){
         var messageKey = Object.keys(snapVal)[Object.keys(snapVal).length - 1]
-        await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
-          .then(req => {
-            if(req){
-               return JSON.parse(req)
-            }
-            else{
-              return null
-            }
-          })
-          .then(json => localMessages = json)
+
 
           const user = { _id: global.receiverUid, r: auth().currentUser.uid}
           const { p: p, c: numberStamp, text} = snapVal[messageKey];
@@ -133,6 +121,16 @@ class FirebaseSvc {
           database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
           firstTime = false
 
+          await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+            .then(req => {
+              if(req){
+                 return JSON.parse(req)
+              }
+              else{
+                return null
+              }
+            })
+            .then(json => localMessages = json)
           if(!global.currentProcessUidArray[global.receiverUid]){
             if(localMessages == null || localMessages.length == 0){
               localMessages = [message]
@@ -146,6 +144,7 @@ class FirebaseSvc {
           }
           else{
             if(global.check){
+              console.log("NAPTIK BİZ AMQ")
               global.messageBuffer.push(message)
               return null
             }
