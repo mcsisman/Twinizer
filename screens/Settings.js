@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
-import { NavigationContainer, navigation } from '@react-navigation/native';
+import { NavigationContainer, StackActions, CommonActions, navigation } from '@react-navigation/native';
 import {navigate, route} from './RootNavigation'
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
@@ -69,7 +69,7 @@ export default class SettingsScreen extends Component<{}>{
     this.setState({reRender: "ok"})
     return "TESTTTT"
   }
-  onPressLogout(){
+  async onPressLogout(){
     Alert.alert(
     '',
     "Are you sure you want to logout?" ,
@@ -79,30 +79,32 @@ export default class SettingsScreen extends Component<{}>{
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      {text: 'Yes', onPress: () => this.onPressLogoutOk()},
+      {text: 'Yes', onPress: async () => await this.onPressLogoutOk()},
     ],
     {cancelable: true},
   );
   }
-  onPressLogoutOk(){
+  async onPressLogoutOk(){
+
     AsyncStorage.removeItem(auth().currentUser.uid + 'userGender')
     AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry')
     AsyncStorage.removeItem(auth().currentUser.uid + 'userName')
     AsyncStorage.removeItem(auth().currentUser.uid + 'userBio')
     AsyncStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
     AsyncStorage.removeItem(auth().currentUser.uid + 'playerId')
-    database().ref('/PlayerIds/').update({
+    await database().ref('/PlayerIds/').update({
       [auth().currentUser.uid]: "x"
     });
-    database().ref('/Users/'+auth().currentUser.uid + '/i').update({
+    await database().ref('/Users/'+auth().currentUser.uid + '/i').update({
       o: -1
-    }).then(() => {
+    }).then( async () => {
       console.log("o güncellendi")
-      auth().signOut().then(function() {
+      await auth().signOut().then(function() {
         console.log("LOGOUT SUCCESSFUL")
-        navigate("Splash")
+        //navigate("Splash")
       })
     });
+    this.props.navigation.dispatch(StackActions.popToTop());
   }
   render(){
     const {navigate} = this.props.navigation;

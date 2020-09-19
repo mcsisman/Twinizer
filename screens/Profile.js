@@ -30,6 +30,7 @@ import {Image,
 
 import MessagesScreen from './Messages';
 import MainScreen from './Main';
+import DeleteOptionsScreen from './DeleteOptions';
 import HistoryScreen from './History';
 import CustomHeader from './components/CustomHeader'
 import RNFetchBlob from 'rn-fetch-blob'
@@ -308,82 +309,8 @@ static navigationOptions = {
   };
 
   onPressDelete(){
-    Alert.alert(
-    '',
-    "Are you sure you want to delete your account?" ,
-    [
-      {
-        text: 'No',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      {text: 'Yes', onPress: () => this.onPressDeleteOk()},
-    ],
-    {cancelable: true},
-  );
-  }
-  onPressDeleteOk(){
-    // async storage remove
-    AsyncStorage.removeItem(auth().currentUser.uid + 'userGender')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'userName')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'userBio')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'blockedUsers')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'favoriteUsers')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'noOfSearch')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'lastSearch')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'historyArray')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'favShowThisDialog')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'blockShowThisDialog')
-    AsyncStorage.removeItem(auth().currentUser.uid + "o")
-    AsyncStorage.removeItem(auth().currentUser.uid + 'playerId')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'message_uids')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'message_usernames')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'theme')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'mode')
-    var messageUidsArray = firestore().collection(auth().currentUser.uid).doc("MessageInformation")
-    console.log("messageuidsarray: ", messageUidsArray)
-    messageUidsArray.get().then( async doc =>{
-      console.log("firestore içi")
-      if(doc.exists){
-        var conversationUidArray = await doc.data()["UidArray"]
-        for(let i = 0; i < conversationUidArray.length; i++){
-          AsyncStorage.removeItem(auth().currentUser.uid + conversationUidArray[i] + '/messages')
-          AsyncStorage.removeItem('IsRequest/' + auth().currentUser.uid + "/" + conversationUidArray[i])
-          AsyncStorage.removeItem('ShowMessageBox/' + auth().currentUser.uid + "/" + conversationUidArray[i])
-          AsyncStorage.removeItem(auth().currentUser.uid + "" + conversationUidArray[i] + 'lastSeen')
-          // firestore delete
-          firestore().collection(auth().currentUser.uid).doc('MessageInformation').delete().then(() => {
-            console.log('MessageInformation deleted!');
-          });
-          firestore().collection(auth().currentUser.uid).doc('Bios').delete().then(() => {
-            console.log('Bİos deleted!');
-          });
-          firestore().collection(auth().currentUser.uid).doc('Similarity').delete().then(() => {
-            console.log('Similarity deleted!');
-          });
-        }
-      }
-    })
-    // realtime remove
-    database().ref('/PlayerIds/' + auth().currentUser.uid).remove()
-    database().ref('/Users/'+auth().currentUser.uid).remove()
-    // storage delete
-    storage().ref("Embeddings/" + auth().currentUser.uid + ".pickle").delete()
-    storage().ref("Photos/" + auth().currentUser.uid + "/1.jpg").delete()
-    storage().ref("Photos/" + auth().currentUser.uid + "/2.jpg").delete()
-    storage().ref("Photos/" + auth().currentUser.uid + "/3.jpg").delete()
-    storage().ref("Photos/" + auth().currentUser.uid + "/4.jpg").delete()
-    storage().ref("Photos/" + auth().currentUser.uid + "/5.jpg").delete()
-    storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/search-photo.jpg").delete()
-    storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/vec.pickle").delete()
-
-    auth().currentUser.delete().then(function() {
-      const {navigate} = this.props.navigation;
-      console.log("LOGOUT SUCCESSFUL")
-      navigate("Splash")
-    })
+    const {navigate} = this.props.navigation;
+    navigate("DeleteOptions")
   }
 
   render(){

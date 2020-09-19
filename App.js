@@ -35,6 +35,7 @@ import MessagesScreen from './screens/Messages';
 import ProfileUploadScreen from './screens/ProfileUpload';
 import BottomBar from './screens/components/BottomBar';
 import HistoryScreen from './screens/History';
+import DeleteOptionsScreen from './screens/DeleteOptions';
 import SettingsScreen from './screens/Settings';
 import AboutScreen from './screens/About';
 import LibraryLicencesScreen from './screens/LibraryLicences';
@@ -64,14 +65,17 @@ if (!global.atob) { global.atob = decode }
     }
 
     async componentDidMount() {
-      const user = auth().currentUser;
-      await this.setTheme(user)
-      if (user) {
-        this.setState({ loading: false, authenticated: true });
+      this._subscribe = this.props.navigation.addListener('focus', async () => {
+        console.log("subscribe")
+        const user = auth().currentUser;
+        await this.setTheme(user)
+        if (user) {
+          this.setState({ loading: false, authenticated: true });
 
-      } else {
-        this.setState({ loading: false, authenticated: false });
-      }
+        } else {
+          this.setState({ loading: false, authenticated: false });
+        }
+      })
     }
 
     async setTheme(user){
@@ -419,6 +423,10 @@ function MyTabs() {
         component={LibraryLicencesScreen}
       />
       <Tab.Screen
+        name="DeleteOptions"
+        component={DeleteOptionsScreen}
+      />
+      <Tab.Screen
         name="DisplayLicence"
         component={DisplayLicenceScreen}
       />
@@ -507,6 +515,13 @@ function MyTabs() {
           },
         }}
         name="Profile" component={ProfileScreen} />
+        <Stack.Screen options={{
+          transitionSpec: {
+            open: config,
+            close: config,
+          },
+        }}
+        name="DeleteOptions" component={DeleteOptionsScreen} />
         <Stack.Screen options={{
           transitionSpec: {
             open: config,
