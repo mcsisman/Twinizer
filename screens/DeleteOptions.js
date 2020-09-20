@@ -124,77 +124,82 @@ onPressDelete(){
     {cancelable: true},
   );
 }
-async deletePress(){
-  await auth()
-   .signInWithEmailAndPassword(email, password)
-   .then(async () => {
-     authenticated = true
-     console.log("authenticated")
-   }).catch(error => {
-     Alert.alert(global.langPlsTryAgain, global.langWrongEmailPassword)
-   })
-   if (authenticated){
-     // async storage remove
-     AsyncStorage.removeItem(auth().currentUser.uid + 'userGender')
-     AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry')
-     AsyncStorage.removeItem(auth().currentUser.uid + 'userName')
-     AsyncStorage.removeItem(auth().currentUser.uid + 'userBio')
-     AsyncStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
-     AsyncStorage.removeItem(auth().currentUser.uid + 'blockedUsers')
-     AsyncStorage.removeItem(auth().currentUser.uid + 'favoriteUsers')
-     AsyncStorage.removeItem(auth().currentUser.uid + 'noOfSearch')
-     AsyncStorage.removeItem(auth().currentUser.uid + 'lastSearch')
-     AsyncStorage.removeItem(auth().currentUser.uid + 'historyArray')
-     AsyncStorage.removeItem(auth().currentUser.uid + 'favShowThisDialog')
-     AsyncStorage.removeItem(auth().currentUser.uid + 'blockShowThisDialog')
-     AsyncStorage.removeItem(auth().currentUser.uid + "o")
-     AsyncStorage.removeItem(auth().currentUser.uid + 'playerId')
-     AsyncStorage.removeItem(auth().currentUser.uid + 'message_uids')
-     AsyncStorage.removeItem(auth().currentUser.uid + 'message_usernames')
-     AsyncStorage.removeItem(auth().currentUser.uid + 'theme')
-     AsyncStorage.removeItem(auth().currentUser.uid + 'mode')
-     var messageUidsArray = firestore().collection(auth().currentUser.uid).doc("MessageInformation")
-     console.log("messageuidsarray: ", messageUidsArray)
-     messageUidsArray.get().then( async doc =>{
-       console.log("firestore içi")
-       if(doc.exists){
-         var conversationUidArray = await doc.data()["UidArray"]
-         for(let i = 0; i < conversationUidArray.length; i++){
-           AsyncStorage.removeItem(auth().currentUser.uid + conversationUidArray[i] + '/messages')
-           AsyncStorage.removeItem('IsRequest/' + auth().currentUser.uid + "/" + conversationUidArray[i])
-           AsyncStorage.removeItem('ShowMessageBox/' + auth().currentUser.uid + "/" + conversationUidArray[i])
-           AsyncStorage.removeItem(auth().currentUser.uid + "" + conversationUidArray[i] + 'lastSeen')
-           // firestore delete
-           firestore().collection(auth().currentUser.uid).doc('MessageInformation').delete().then(() => {
-             console.log('MessageInformation deleted!');
-           });
-           firestore().collection(auth().currentUser.uid).doc('Bios').delete().then(() => {
-             console.log('Bİos deleted!');
-           });
-           firestore().collection(auth().currentUser.uid).doc('Similarity').delete().then(() => {
-             console.log('Similarity deleted!');
-           });
+async deletePress(email, password){
+  if(auth().currentUser.email == global.deleteAuthEmail){
+    await auth()
+     .signInWithEmailAndPassword(email, password)
+     .then(async () => {
+       authenticated = true
+       console.log("authenticated")
+     }).catch(error => {
+       Alert.alert(global.langPlsTryAgain, global.langWrongEmailPassword)
+     })
+     if (authenticated){
+       // async storage remove
+       AsyncStorage.removeItem(auth().currentUser.uid + 'userGender')
+       AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry')
+       AsyncStorage.removeItem(auth().currentUser.uid + 'userName')
+       AsyncStorage.removeItem(auth().currentUser.uid + 'userBio')
+       AsyncStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
+       AsyncStorage.removeItem(auth().currentUser.uid + 'blockedUsers')
+       AsyncStorage.removeItem(auth().currentUser.uid + 'favoriteUsers')
+       AsyncStorage.removeItem(auth().currentUser.uid + 'noOfSearch')
+       AsyncStorage.removeItem(auth().currentUser.uid + 'lastSearch')
+       AsyncStorage.removeItem(auth().currentUser.uid + 'historyArray')
+       AsyncStorage.removeItem(auth().currentUser.uid + 'favShowThisDialog')
+       AsyncStorage.removeItem(auth().currentUser.uid + 'blockShowThisDialog')
+       AsyncStorage.removeItem(auth().currentUser.uid + "o")
+       AsyncStorage.removeItem(auth().currentUser.uid + 'playerId')
+       AsyncStorage.removeItem(auth().currentUser.uid + 'message_uids')
+       AsyncStorage.removeItem(auth().currentUser.uid + 'message_usernames')
+       AsyncStorage.removeItem(auth().currentUser.uid + 'theme')
+       AsyncStorage.removeItem(auth().currentUser.uid + 'mode')
+       var messageUidsArray = firestore().collection(auth().currentUser.uid).doc("MessageInformation")
+       console.log("messageuidsarray: ", messageUidsArray)
+       messageUidsArray.get().then( async doc =>{
+         console.log("firestore içi")
+         if(doc.exists){
+           var conversationUidArray = await doc.data()["UidArray"]
+           for(let i = 0; i < conversationUidArray.length; i++){
+             AsyncStorage.removeItem(auth().currentUser.uid + conversationUidArray[i] + '/messages')
+             AsyncStorage.removeItem('IsRequest/' + auth().currentUser.uid + "/" + conversationUidArray[i])
+             AsyncStorage.removeItem('ShowMessageBox/' + auth().currentUser.uid + "/" + conversationUidArray[i])
+             AsyncStorage.removeItem(auth().currentUser.uid + "" + conversationUidArray[i] + 'lastSeen')
+             // firestore delete
+             firestore().collection(auth().currentUser.uid).doc('MessageInformation').delete().then(() => {
+               console.log('MessageInformation deleted!');
+             });
+             firestore().collection(auth().currentUser.uid).doc('Bios').delete().then(() => {
+               console.log('Bİos deleted!');
+             });
+             firestore().collection(auth().currentUser.uid).doc('Similarity').delete().then(() => {
+               console.log('Similarity deleted!');
+             });
+           }
          }
-       }
-     })
-     // realtime remove
-     database().ref('/PlayerIds/' + auth().currentUser.uid).remove()
-     database().ref('/Users/'+auth().currentUser.uid).remove()
-     // storage delete
-     storage().ref("Embeddings/" + auth().currentUser.uid + ".pickle").delete()
-     storage().ref("Photos/" + auth().currentUser.uid + "/1.jpg").delete()
-     storage().ref("Photos/" + auth().currentUser.uid + "/2.jpg").delete()
-     storage().ref("Photos/" + auth().currentUser.uid + "/3.jpg").delete()
-     storage().ref("Photos/" + auth().currentUser.uid + "/4.jpg").delete()
-     storage().ref("Photos/" + auth().currentUser.uid + "/5.jpg").delete()
-     storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/search-photo.jpg").delete()
-     storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/vec.pickle").delete()
+       })
+       // realtime remove
+       database().ref('/PlayerIds/' + auth().currentUser.uid).remove()
+       database().ref('/Users/'+auth().currentUser.uid).remove()
+       // storage delete
+       storage().ref("Embeddings/" + auth().currentUser.uid + ".pickle").delete()
+       storage().ref("Photos/" + auth().currentUser.uid + "/1.jpg").delete()
+       storage().ref("Photos/" + auth().currentUser.uid + "/2.jpg").delete()
+       storage().ref("Photos/" + auth().currentUser.uid + "/3.jpg").delete()
+       storage().ref("Photos/" + auth().currentUser.uid + "/4.jpg").delete()
+       storage().ref("Photos/" + auth().currentUser.uid + "/5.jpg").delete()
+       storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/search-photo.jpg").delete()
+       storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/vec.pickle").delete()
 
-     auth().currentUser.delete().then(function() {
-       console.log("LOGOUT SUCCESSFUL")
-       this.props.navigation.dispatch(StackActions.popToTop());
-     })
-   }
+       auth().currentUser.delete().then(function() {
+         console.log("LOGOUT SUCCESSFUL")
+         this.props.navigation.dispatch(StackActions.popToTop());
+       })
+     }
+  }
+  else{
+    Alert.alert(global.langPlsTryAgain, global.langWrongEmailPassword)
+  }
 }
 initializeIsSelectedArray(){
   global.selectedOption = null

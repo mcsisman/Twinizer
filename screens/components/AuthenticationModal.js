@@ -89,7 +89,7 @@ export default class AuthenticationModal extends Component {
 
                 style={{fontSize: 16*(this.width/360),  position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*30)/100,
                  backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
-                 onChangeText={(text) => this.setState({isim: text})}>
+                 onChangeText={(text) => global.deleteAuthEmail = text}>
               </TextInput>
               <TextInput
               placeholderTextColor="rgba(255,255,255,0.7)"
@@ -98,7 +98,7 @@ export default class AuthenticationModal extends Component {
 
               style={{fontSize: 16*(this.width/360),  position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*23)/100,
                backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
-               onChangeText={(text) => this.setState({sifre: text})}>
+               onChangeText={(text) => global.deleteAuthPassWord = text}>
             </TextInput>
 
             <TouchableOpacity

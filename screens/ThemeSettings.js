@@ -85,7 +85,7 @@ export default class ThemeSettingsScreen extends Component<{}>{
       themeColor = "Original"
     }
     if(mode == null || mode == undefined){
-      mode = "true"
+      mode = "false"
     }
     if(mode == "true"){
       mode = true
