@@ -1,11 +1,14 @@
 import uuid from 'uuid';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFetchBlob from 'rn-fetch-blob';
+import {renderChat} from './Chat';
 import RNFS from 'react-native-fs';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import { NavigationContainer, navigation } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 
 var firstTime = true
 var localMessages = []
@@ -34,6 +37,7 @@ class FirebaseSvc {
   get ref() {
     return database().ref('Messages/' + global.receiverUid + "/" + auth().currentUser.uid);
   }
+
 
   removeListener = async snapshot => {
     console.log("K SİLİNDİ!!!!!!!!!!!!!!")
@@ -77,34 +81,7 @@ class FirebaseSvc {
           var image ="";
           if(p == "t"){
             image = "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + messageKey + ".jpg"
-            var downloadURL;
-            var storageRef = storage().ref("Photos/" + auth().currentUser.uid + "/MessagePhotos/" + messageKey + ".jpg")
-            var fileExists = false
-            console.log("WHILE ÖNCESİ")
-            while(!fileExists){
-              console.log("WHILEIN BAŞI")
-              await storageRef.getDownloadURL().then(data =>{
-                console.log("THENİN İÇİ")
-                downloadURL = data
-                fileExists = true
-              }).catch(function (error) {
-                console.log("ERROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR")
-                console.log(error)
-              })
-            }
 
-            console.log("ERRORU GEÇTİK")
-            let dirs = RNFetchBlob.fs.dirs
-            await RNFetchBlob
-            .config({
-              fileCache : true,
-              appendExt : 'jpg',
-              path: RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + messageKey + ".jpg"
-            })
-            .fetch('GET', downloadURL, {
-              //some headers ..
-            })
-            console.log(" RESİM LOCALE KAYDEDİLDİ PARSEDA: ", image)
           }
           const message = {
             c,
@@ -130,13 +107,17 @@ class FirebaseSvc {
             .then(json => localMessages = json)
           if(!global.currentProcessUidArray[global.receiverUid]){
             database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
-            if(localMessages == null || localMessages.length == 0){
-              localMessages = [message]
+
+            if(p == "f"){
+              if(localMessages == null || localMessages.length == 0){
+                localMessages = [message]
+              }
+              else{
+                localMessages.push(message)
+              }
+              AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
             }
-            else{
-              localMessages.push(message)
-            }
-            AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
+
             console.log("PARSE ÇALIŞTI")
             return message;
           }
@@ -245,7 +226,7 @@ class FirebaseSvc {
           const response = await fetch(images[index].url);
           const blob = await response.blob();
           var ref1 = storageRef.child("Photos/" + global.receiverUid+ "/MessagePhotos/" + pushedKey + ".jpg");
-          await ref1.put(blob).then(function(snapshot) {}).catch(function(error) {
+          ref1.put(blob).then(function(snapshot) {}).catch(function(error) {
             Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
           });;
 

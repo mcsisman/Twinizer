@@ -1,7 +1,11 @@
 import React from 'react';
 import { InputToolbar, Send, Bubble, Time, GiftedChat } from 'react-native-gifted-chat';
+import RNFetchBlob from 'rn-fetch-blob';
 import firebaseSvc from './FirebaseSvc';
 import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 import AsyncStorage from '@react-native-community/async-storage';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
@@ -17,6 +21,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import ChatSendImgBottomBar from './components/ChatSendImgBottomBar'
 import ChatSendImgTopBar from './components/ChatSendImgTopBar'
 import CustomInputToolbar  from './components/CustomInputToolbar'
+import RNFS from 'react-native-fs';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {Image,
    Text,
@@ -110,18 +115,90 @@ export default class ChatScreen extends React.Component<Props> {
       }
       firebaseSvc.refOn(async message =>{
         if(message != null){
-          if(!firstTime){
-            this.setState(previousState => ({
-              messages: GiftedChat.append(previousState.messages, message),
-            }))
+          if(true){//!firstTime
+            if(message.image == ""){
+
+              this.setState(previousState => ({
+                messages: GiftedChat.append(previousState.messages, message),
+              }))
+            }
+            else{
+              var downloadURL;
+              var storageRef = storage().ref("Photos/" + auth().currentUser.uid + "/MessagePhotos/" + message.id + ".jpg")
+              var fileExists = false
+              while(!fileExists){
+                await storageRef.getDownloadURL().then(data =>{
+                  downloadURL = data
+                  fileExists = true
+                  let dirs = RNFetchBlob.fs.dirs
+                  RNFetchBlob
+                  .config({
+                    fileCache : true,
+                    appendExt : 'jpg',
+                    path: RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg"
+                  })
+                  .fetch('GET', downloadURL, {
+                    //some headers ..
+                  }).then( async data =>{
+                    console.log("THENNNNNNNNNNNNNNNNNNNNNNNN 2")
+                    var localMessages = []
+                    await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+                      .then(req => {
+                        if(req){
+                           return JSON.parse(req)
+                        }
+                        else{
+                          return null
+                        }
+                      })
+                      .then(json => localMessages = json)
+                    if(localMessages == null || localMessages.length == 0){
+                      localMessages = [message]
+                    }
+                    else{
+                      localMessages.push(message)
+                    }
+                    AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
+                    this.setState(previousState => ({
+                      messages: GiftedChat.append(previousState.messages, message),
+                    }))
+                  })
+                }).catch(function (error) {
+                })
+              }
+            }
           }
           else{
             await this.getLastLocalMessages()
             messageArray.reverse()
-            this.setState({
-                messages: messageArray,
-                loadingOpacity: 0
-            })
+            var downloadURL;
+            var storageRef = storage().ref("Photos/" + auth().currentUser.uid + "/MessagePhotos/" + message.id + ".jpg")
+            var fileExists = false
+            while(!fileExists){
+              await storageRef.getDownloadURL().then(data =>{
+                downloadURL = data
+                fileExists = true
+                let dirs = RNFetchBlob.fs.dirs
+                RNFetchBlob
+                .config({
+                  fileCache : true,
+                  appendExt : 'jpg',
+                  path: RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg"
+                })
+                .fetch('GET', downloadURL, {
+                  //some headers ..
+                }).then( data =>{
+                  console.log("THENNNNNNNNNNNNNNNNNNNNNNNN 333")
+
+                  this.setState({
+                      messages: messageArray,
+                      loadingOpacity: 0
+                  })
+                })
+              }).catch(function (error) {
+              })
+            }
+
           }
           firstTime = false
         }
@@ -195,6 +272,7 @@ library = () =>{
     this.imageSelected()
   });
 };
+
 camera = () => {
   ImagePicker.openCamera({
     cropping: true
