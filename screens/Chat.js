@@ -159,7 +159,6 @@ sendMsgWithImage = async (text) =>{
     }))
   }
   images = []
-  messages[0].image =
   this.setState({
     currentIndex: 0,
     msgText: " ",

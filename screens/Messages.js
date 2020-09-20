@@ -810,6 +810,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
           image = "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + messageKey + ".jpg"
           var downloadURL;
           var storageRef = storage().ref("Photos/" + auth().currentUser.uid + "/MessagePhotos/" + messageKey + ".jpg")
+          
           await storageRef.getDownloadURL().then(data =>{
             downloadURL = data
           })

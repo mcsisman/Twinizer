@@ -245,7 +245,7 @@ class FirebaseSvc {
           const response = await fetch(images[index].url);
           const blob = await response.blob();
           var ref1 = storageRef.child("Photos/" + global.receiverUid+ "/MessagePhotos/" + pushedKey + ".jpg");
-          ref1.put(blob).then(function(snapshot) {}).catch(function(error) {
+          await ref1.put(blob).then(function(snapshot) {}).catch(function(error) {
             Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
           });;
 
