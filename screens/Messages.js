@@ -846,7 +846,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
           }
       }
       await AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
-      
+
       await database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
       console.log("REMOVEA GELDİ___________GELDİ___________GELDİ___________GELDİ___________GELDİ___________")
       var kValue;

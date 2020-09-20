@@ -49,7 +49,7 @@ class FirebaseSvc {
       })
       .then(json => localMs = json)
     localMs.concat(global.messageBuffer)
-
+    global.messageBuffer = []
     return localMs
   };
   removeOn = async callback => {
@@ -59,18 +59,15 @@ class FirebaseSvc {
     }
 
   parse = async snapshot => {
-
+    console.log("PARSE", snapshot.key)
     if(snapshot.val() != null){
       console.log("PARSE SNAPSHOT:", snapshot.val())
       // remove k from snapshot data
       var snapVal = snapshot.val()
-      delete snapVal["k"]
-      if(Object.keys(snapVal).length != 0){
-        var messageKey = Object.keys(snapVal)[Object.keys(snapVal).length - 1]
-
+      var messageKey = snapshot.key
 
           const user = { _id: global.receiverUid, r: auth().currentUser.uid}
-          const { p: p, c: numberStamp, text} = snapVal[messageKey];
+          const { p: p, c: numberStamp, text} = snapVal;
           const id = messageKey;
           const _id = messageKey; //needed for giftedchat
           const createdAt = new Date(numberStamp);
@@ -150,10 +147,6 @@ class FirebaseSvc {
             }
             return null
           }
-      }
-      else{
-        return null
-      }
     }
     else{
       return null
@@ -162,7 +155,7 @@ class FirebaseSvc {
   };
   refOn = async callback => {
     database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().endAt("A").startAt("-").limitToLast(1)
-      .on('value', async snapshot => await callback(await this.parse(snapshot)));
+      .on('child_added', async snapshot => await callback(await this.parse(snapshot)));
   }
 
   get timestamp() {
@@ -305,7 +298,7 @@ class FirebaseSvc {
 
   removeOff(){
     console.log("REMOVE OFF")
-    database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().equalTo("k").off()
+    database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().equalTo("k").off("child_removed")
   }
   refOff() {
     global.check = false
