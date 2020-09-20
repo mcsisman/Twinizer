@@ -59,8 +59,9 @@ class FirebaseSvc {
     }
 
   parse = async snapshot => {
-    console.log("PARSE", snapshot.key)
+
     if(snapshot.val() != null){
+      console.log("PARSE KEY:", snapshot.key)
       console.log("PARSE SNAPSHOT:", snapshot.val())
       // remove k from snapshot data
       var snapVal = snapshot.val()
@@ -105,7 +106,6 @@ class FirebaseSvc {
             })
             console.log(" RESİM LOCALE KAYDEDİLDİ PARSEDA: ", image)
           }
-
           const message = {
             c,
             id,
@@ -115,7 +115,7 @@ class FirebaseSvc {
             user,
             image
           };
-          database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
+
           firstTime = false
 
           await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
@@ -129,6 +129,7 @@ class FirebaseSvc {
             })
             .then(json => localMessages = json)
           if(!global.currentProcessUidArray[global.receiverUid]){
+            database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
             if(localMessages == null || localMessages.length == 0){
               localMessages = [message]
             }
