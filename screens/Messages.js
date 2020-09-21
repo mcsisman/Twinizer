@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
-import { NavigationContainer, navigation } from '@react-navigation/native';
+import { NavigationContainer, CommonActions, navigation } from '@react-navigation/native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { NavigationEvents} from 'react-navigation';
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFetchBlob from 'rn-fetch-blob'
+
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
@@ -45,8 +46,6 @@ if(Platform.OS === 'ios'){
 var testVar = 0
 var syncRef;
 var didSync = false
-var lastDBkey;
-var lastMsgFlag = false
 var afterDelete = false
 var scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight();
 var doneMessageColor = 'rgba(128,128,128,1)'
@@ -128,7 +127,12 @@ componentDidMount(){
       this.initializeMessageScreen()
     }
     else{
-      this.startFromLocal()
+      if(global.fromChat){
+        this.startFromLocal()
+      }
+      else{
+        this.setState({loadingDone: true, loadingOpacity: 0, editPressed: false, cancelPressed: false, editText: "Edit", messageBoxDisabled: false})
+      }
     }
   })
 
@@ -169,9 +173,6 @@ updateState = () =>{
 }
 resetVariables(){
   if(!newRequest){
-    didSync = false
-    lastDBkey;
-    lastMsgFlag = false
     afterDelete = false
     doneRequestColor = 'rgba(128,128,128,1)'
     doneMessageColor = 'rgba(128,128,128,1)'
@@ -596,7 +597,6 @@ getMessagesData = async callback =>{
           .then(json => localMsgs = json)
           if(localMsgs != null && localMsgs != undefined && localMsgs.length != 0){
             data = localMsgs[localMsgs.length - 1]
-            lastDBkey = localMsgs[localMsgs.length - 1]._id
           }
           else{
             data = { c: "notime", id: "emptymsgid", _id: "emptymsgid", text: "No message", user:{ _id: auth().currentUser.uid, r: uidArray[count]}, image: "" }
@@ -627,7 +627,6 @@ getMessagesData = async callback =>{
           image
         };
         data = message
-        lastDBkey = messageKey
       }
       //ELSE İN DIŞI
       messageArray.splice(0, messageArray.length)
@@ -749,12 +748,10 @@ getMessagesData = async callback =>{
 
   })
   var lastLocalKey = await this.getLastLocalMessage()
-  if(lastLocalKey == lastDBkey + "z"){
-    didSync = true
-  }
 
   var uidCount = count;
   if(!global.newMsgListenerArray[count].isOpen && global.fromChatOfUid != global.newMsgListenerArray[count].uid){
+    global.listenersCreated = true
     global.newMsgListenerArray[count].isOpen = true
     global.newMsgListenerArray[count].listenerID = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-");
     testVar = 1
@@ -790,9 +787,12 @@ syncLocalMessages = async (snapshot, uidCount) => {
     var messageKey;
     var noOfNewMsgs = Object.keys(snapVal).length
     if(noOfNewMsgs != 0){
-      global.currentProcessUidArray[uidArray[uidCount]] = true
+
       for( let i = noOfNewMsgs - 1; i >= 0; i--){
         messageKey = Object.keys(snapshot.val())[i]
+        await database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
+        global.currentProcessUidArray[uidArray[uidCount]] = true
+        console.log("REMOVEA GELDİ___________GELDİ___________GELDİ___________GELDİ___________GELDİ___________")
 
         const user = { _id: uidArray[uidCount], r: auth().currentUser.uid}
         console.log("messagesta2")
@@ -823,6 +823,16 @@ syncLocalMessages = async (snapshot, uidCount) => {
               console.log(error)
             })
           }
+          const msg2 = {
+            c,
+            id,
+            _id,
+            createdAt,
+            text,
+            user,
+            image
+          };
+
           let dirs = RNFetchBlob.fs.dirs
           RNFetchBlob
           .config({
@@ -832,6 +842,9 @@ syncLocalMessages = async (snapshot, uidCount) => {
           })
           .fetch('GET', downloadURL, {
             //some headers ..
+          }).then( data => {
+            console.log("MESSAGESTA GELDİ")
+            global.callback(msg2)
           })
         }
         const msg = {
@@ -843,7 +856,6 @@ syncLocalMessages = async (snapshot, uidCount) => {
           user,
           image
         };
-
           if(localMessages[uidCount] == null || localMessages[uidCount].length == 0){
             localMessages[uidCount] = [msg]
             global.messages = [msg._id]
@@ -856,9 +868,8 @@ syncLocalMessages = async (snapshot, uidCount) => {
           }
       }
       await AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
+      console.log("DEVAMKE")
 
-      await database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
-      console.log("REMOVEA GELDİ___________GELDİ___________GELDİ___________GELDİ___________GELDİ___________")
       var kValue;
       var isRequ = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[uidCount])
       if(isRequ == undefined || isRequ == null || isRequ == "true"){
@@ -869,132 +880,127 @@ syncLocalMessages = async (snapshot, uidCount) => {
       }
       this.setRequestDB(uidArray[uidCount], kValue)
       global.currentProcessUidArray[uidArray[uidCount]] = false
-
-        lastMsgFlag = lastDBkey == localMessages[uidCount][localMessages[uidCount].length - 1]._id
-        if(lastMsgFlag || didSync){
-          didSync = true
-
-          // CREATE DATA ARRAY PART
-          messageArray.splice(0, messageArray.length)
-          requestArray.splice(0, requestArray.length)
-          if(!fromChat){
-            const data = localMessages[uidCount][localMessages[uidCount].length - 1]
-            if(dataArray.length < noOfConversations){
-              dataArray[count] = data
-            }
-            if(dataArray.length == noOfConversations){
-              for( let i = 0; i < noOfConversations; i++){
-                if( (data.user.r == dataArray[i].user.r && data.user._id == dataArray[i].user._id) || (data.user.r == dataArray[i].user._id && data.user._id == dataArray[i].user.r) ){
-                  dataArray[i] = data
-                  break;
-                }
-              }
-              for( let  i = 0; i < noOfConversations; i++){
-                var isReq = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[i])
-                if(isReq == undefined || isReq == null || isReq == ""){
-                  var kVal;
-                  var kListener = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[i] + "/k");
-                  await kListener.once('value').then(async snapshot => {
-                    if(snapshot.val() != null){
-                      kVal = snapshot.val()
-                    }
-                  })
-
-                  if(kVal == 0){
-                    isReq = "true"
-                  }
-
-                  else{
-                    isReq = "false"
-                  }
-                  this.setLocalIsRequest(uidArray[i], isReq)
-                }
-
-                if(isReq == "false"){
-                  messageArray.push(dataArray[i])
-                  noOfNonRequests++;
-                }
-                else{
-                  requestArray.push(dataArray[i])
-                }
-              }
-              requestArray.sort(this.sortByProperty("c"));
-              requestArray.reverse()
-              messageArray.sort(this.sortByProperty("c"));
-              messageArray.reverse()
-
-              // CHECKING FOR LAST SEEN
-              for( let  i = 0; i < requestArray.length; i++){
-                requestColorArray[i] = "trashgray"
-                var key;
-                var time;
-                if(requestArray[i].user._id == auth().currentUser.uid){
-                  requestLastSeenArray[i] = 0
-                }
-                else{
-                  key = auth().currentUser.uid + "" + requestArray[i].user._id
-                  time = await AsyncStorage.getItem(key + 'lastSeen')
-                  if(requestArray[i].c == "notime"){
-                    requestLastSeenArray[i] = 0
-                  }
-                  else{
-                    if(requestArray[i].c > time){
-                      requestLastSeenArray[i] = 1
-                    }
-                    else{
-                      requestLastSeenArray[i] = 0
-                    }
-                  }
-                }
-              }
-
-              for( let  i = 0; i < messageArray.length; i++){
-                messageColorArray[i] = "trashgray"
-                var key;
-                var time;
-
-                if(messageArray[i].user._id == auth().currentUser.uid){
-                  messageLastSeenArray[i] = 0
-                }
-                else{
-                  key = auth().currentUser.uid + "" + messageArray[i].user._id
-                  time = await AsyncStorage.getItem(key + 'lastSeen')
-                  if(messageArray[i].c == "notime"){
-                    messageLastSeenArray[i] = 0
-                  }
-                  else{
-                    if(messageArray[i].c > time){
-                      messageLastSeenArray[i] = 1
-                    }
-                    else{
-                      messageLastSeenArray[i] = 0
-                    }
-                  }
-                }
-              }
-
-              for( let  i = 0; i < requestArray.length; i++){
-                for( let  j = 0; j < photoArray.length; j++){
-                  if(requestArray[i].user._id == conversationUidArray[j]){
-                    requestPhotoArray[i] = photoArray[j]
-                    requestUsernameArray[i] = conversationUsernameArray[j]
-                  }
-                }
-              }
-              for( let  i = 0; i < messageArray.length; i++){
-                for( let  j = 0; j < photoArray.length; j++){
-                  if(messageArray[i].user._id == conversationUidArray[j] || messageArray[i].user.r == conversationUidArray[j]){
-                    messagePhotoArray[i] = photoArray[j]
-                    messageUsernameArray[i] = conversationUsernameArray[j]
-                  }
-                }
-              }
-              newRequest = true
-
-              this.setState({loadingDone: true, test: "1", loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false, reRender:"oke"})
+      console.log("IF 0")
+      // CREATE DATA ARRAY PART
+      messageArray.splice(0, messageArray.length)
+      requestArray.splice(0, requestArray.length)
+      if(!fromChat){
+        console.log("IF 2")
+        const data = localMessages[uidCount][localMessages[uidCount].length - 1]
+        if(dataArray.length < noOfConversations){
+          console.log("IF 3")
+          dataArray[count] = data
+        }
+        if(dataArray.length == noOfConversations){
+          console.log("IF 4")
+          for( let i = 0; i < noOfConversations; i++){
+            if( (data.user.r == dataArray[i].user.r && data.user._id == dataArray[i].user._id) || (data.user.r == dataArray[i].user._id && data.user._id == dataArray[i].user.r) ){
+              dataArray[i] = data
+              break;
             }
           }
+          for( let  i = 0; i < noOfConversations; i++){
+            var isReq = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[i])
+            if(isReq == undefined || isReq == null || isReq == ""){
+              var kVal;
+              var kListener = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[i] + "/k");
+              await kListener.once('value').then(async snapshot => {
+                if(snapshot.val() != null){
+                  kVal = snapshot.val()
+                }
+              })
+
+              if(kVal == 0){
+                isReq = "true"
+              }
+              else{
+                isReq = "false"
+              }
+              this.setLocalIsRequest(uidArray[i], isReq)
+            }
+            if(isReq == "false"){
+              messageArray.push(dataArray[i])
+              noOfNonRequests++;
+            }
+            else{
+              requestArray.push(dataArray[i])
+            }
+          }
+          requestArray.sort(this.sortByProperty("c"));
+          requestArray.reverse()
+          messageArray.sort(this.sortByProperty("c"));
+          messageArray.reverse()
+
+          // CHECKING FOR LAST SEEN
+          for( let  i = 0; i < requestArray.length; i++){
+            requestColorArray[i] = "trashgray"
+            var key;
+            var time;
+            if(requestArray[i].user._id == auth().currentUser.uid){
+              requestLastSeenArray[i] = 0
+            }
+            else{
+              key = auth().currentUser.uid + "" + requestArray[i].user._id
+              time = await AsyncStorage.getItem(key + 'lastSeen')
+              if(requestArray[i].c == "notime"){
+                requestLastSeenArray[i] = 0
+              }
+              else{
+                if(requestArray[i].c > time){
+                  requestLastSeenArray[i] = 1
+                }
+                else{
+                  requestLastSeenArray[i] = 0
+                }
+              }
+            }
+          }
+          for( let  i = 0; i < messageArray.length; i++){
+            messageColorArray[i] = "trashgray"
+            var key;
+            var time;
+
+            if(messageArray[i].user._id == auth().currentUser.uid){
+              messageLastSeenArray[i] = 0
+            }
+            else{
+              key = auth().currentUser.uid + "" + messageArray[i].user._id
+              time = await AsyncStorage.getItem(key + 'lastSeen')
+              if(messageArray[i].c == "notime"){
+                messageLastSeenArray[i] = 0
+              }
+              else{
+                if(messageArray[i].c > time){
+                  messageLastSeenArray[i] = 1
+                }
+                else{
+                  messageLastSeenArray[i] = 0
+                }
+              }
+            }
+          }
+
+          for( let  i = 0; i < requestArray.length; i++){
+            for( let  j = 0; j < photoArray.length; j++){
+              if(requestArray[i].user._id == conversationUidArray[j]){
+                requestPhotoArray[i] = photoArray[j]
+                requestUsernameArray[i] = conversationUsernameArray[j]
+              }
+            }
+          }
+          for( let  i = 0; i < messageArray.length; i++){
+            for( let  j = 0; j < photoArray.length; j++){
+              if(messageArray[i].user._id == conversationUidArray[j] || messageArray[i].user.r == conversationUidArray[j]){
+                messagePhotoArray[i] = photoArray[j]
+                messageUsernameArray[i] = conversationUsernameArray[j]
+              }
+            }
+          }
+          newRequest = true
+          this.setState({loadingDone: true, test: "1", loadingOpacity: 0, backgroundColor: "white", editPressed: false, cancelPressed: false, reRender:"oke"})
         }
+      }
+
     }
   }
   global.currentProcessUidArray[uidArray[uidCount]] = false
@@ -1040,6 +1046,7 @@ spinAnimation(){
 
 
 navigateToChat(receiverUid, receiverPhoto, receiverUsername){
+  global.fromChat = true
   global.messageRemoved = false
   global.check = false
   global.messageBuffer = []

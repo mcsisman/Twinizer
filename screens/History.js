@@ -66,6 +66,7 @@ export default class HistoryScreen extends Component<{}>{
 async componentDidMount(){
   this._subscribe = this.props.navigation.addListener('focus', async () => {
     this.leftAnimation = new Animated.Value(-this.width*(3/16))
+    global.fromChat = false
     this.setState({reRender: "ok"})
   })
   this._subscribe = this.props.navigation.addListener('blur', async () => {

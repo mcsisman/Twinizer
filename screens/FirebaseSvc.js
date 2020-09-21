@@ -95,19 +95,19 @@ class FirebaseSvc {
 
           firstTime = false
 
-          await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
-            .then(req => {
-              if(req){
-                 return JSON.parse(req)
-              }
-              else{
-                return null
-              }
-            })
-            .then(json => localMessages = json)
+
           if(!global.currentProcessUidArray[global.receiverUid]){
             database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
-
+            await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+              .then(req => {
+                if(req){
+                   return JSON.parse(req)
+                }
+                else{
+                  return null
+                }
+              })
+              .then(json => localMessages = json)
             if(p == "f"){
               if(localMessages == null || localMessages.length == 0){
                 localMessages = [message]

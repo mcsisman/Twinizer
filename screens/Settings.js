@@ -61,6 +61,7 @@ export default class SettingsScreen extends Component<{}>{
     console.log("SETTINGS COMPONENT DID MOUNT")
     this._subscribe = this.props.navigation.addListener('focus', () => {
       console.log("subscribe")
+      global.fromChat = false
       this.setState({reRender: "ok"})
     })
   }

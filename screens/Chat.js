@@ -8,7 +8,7 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import AsyncStorage from '@react-native-community/async-storage';
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer, navigation } from '@react-navigation/native';
+import { NavigationContainer, CommonActions, navigation } from '@react-navigation/native';
 import { Header } from 'react-navigation-stack';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import ModifiedStatusBar from './components/ModifiedStatusBar'
@@ -81,6 +81,7 @@ export default class ChatScreen extends React.Component<Props> {
       test: "",
       photoPopUpIsVisible: false,
       keyboardOpen: false,
+      test123: "123"
     }
 
     this.statusBarHeaderTotalHeight = getStatusBarHeight() + headerHeight
@@ -95,6 +96,13 @@ export default class ChatScreen extends React.Component<Props> {
     this.keyboardDidHideListener = Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
       this._subscribe = this.props.navigation.addListener('focus', async () => {
 
+        global.callback = (data) => {
+          console.log("HANGİ MESAJ GELDİ:", data)
+          this.setState(previousState => ({
+            messages: GiftedChat.append(previousState.messages, data),
+          }))
+        }
+        
         this.resetVariables()
         this.spinAnimation()
         await this.getLastLocalMessages()

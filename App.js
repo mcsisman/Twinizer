@@ -52,7 +52,7 @@ import themes from './screens/Themes';
 if (!global.btoa) { global.btoa = encode }
 
 if (!global.atob) { global.atob = decode }
-
+global.fromChat = false
 
   class Appp extends React.Component {
 

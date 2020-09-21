@@ -207,6 +207,7 @@ async componentDidMount(){
     //this.addToBlockedUsers("JtfxB5eiDvSzOM4dbhgGeU7PXVC2")
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.setState({reRender: "ok"})
+      global.fromChat = false
       if(global.fromHistorySearch){
         await this.setSearchPhotoFromHistory(global.historyPhotoUri)
       }
