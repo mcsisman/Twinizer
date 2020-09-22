@@ -44,7 +44,7 @@ export default class SwipeableBigImg extends Component {
     this.width = Math.round(Dimensions.get('screen').width);
     return(
       <Animated.View
-      style={{ position: 'absolute', backgroundColor: 'rgba(244,92,66,0)',
+      style={{opacity: global.isDarkMode && this.props.backgroundOpacity !== 0 ? 0.2:1,  position: 'absolute', backgroundColor: 'rgba(244,92,66,0)',
        width: this.props.width, height: this.props.height, top: this.props.top, right: this.props.right , borderBottomLeftRadius: 16, borderTopRightRadius: 16,
        borderTopLeftRadius: 16, borderBottomRightRadius: 16}}>
        <TouchableOpacity

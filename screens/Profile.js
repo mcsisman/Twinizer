@@ -354,7 +354,7 @@ static navigationOptions = {
         whichScreen = {"Profile"}
         onPress = {()=> this.props.navigation.goBack()}
         isFilterVisible = {this.state.showFilter}
-        title = "Edit Profile">
+        title = "Profile">
         </CustomHeader>
 
         <KeyboardAvoidingView

@@ -8,6 +8,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-community/async-storage';
+import OneSignal from 'react-native-onesignal'
 import {Image,
    Text,
    View,
@@ -85,7 +86,9 @@ export default class SettingsScreen extends Component<{}>{
     {cancelable: true},
   );
   }
+
   async onPressLogoutOk(){
+    OneSignal.clearOneSignalNotifications();
 
     AsyncStorage.removeItem(auth().currentUser.uid + 'userGender')
     AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry')
@@ -146,7 +149,7 @@ export default class SettingsScreen extends Component<{}>{
       style = {{height: this.width/9}}/>
       <SettingsButton
       onPress = {()=> this.props.navigation.navigate("About", {update: this.updateState})}
-      text = {"About Twinizer"}/>
+      text = {"About"}/>
       <View
       style = {{height: this.width/9}}/>
       <LogoutButton

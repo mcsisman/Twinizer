@@ -69,6 +69,7 @@ export default class AuthenticationModal extends Component {
           <ImageBackground source={{uri: "flare"}}
             style={{ alignItems: "center", borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,
               width: this.width*(8/10), height: this.width*(12/10)}}>
+
               <TouchableOpacity
               activeOpacity = {1}
               style={{width: this.width*(8/10), height: this.width*(12/10), flex:1, alignItems: 'center',}}
@@ -110,6 +111,13 @@ export default class AuthenticationModal extends Component {
              Enter
             </Text>
             </TouchableOpacity>
+            </TouchableOpacity>
+            <TouchableOpacity
+            style={{width: this.width*(2/15), height: this.width*(2/15), right: 0, position:'absolute', top:0}}
+             onPress={this.props.onPressCancel}>
+             <Image source={{uri: 'cross' + global.themeForImages}}
+               style={{width: '40%', height: '40%', right:'30%', bottom: '30%', position: 'absolute' }}
+             />
             </TouchableOpacity>
           </ImageBackground>
         </View>

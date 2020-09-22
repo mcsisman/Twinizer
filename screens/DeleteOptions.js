@@ -4,6 +4,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
+import OneSignal from 'react-native-onesignal'
 import AsyncStorage from '@react-native-community/async-storage';
 import {Image,
    Text,
@@ -108,7 +109,20 @@ async componentDidMount(){
     this.setState({reRender: "ok"})
     return "TESTTTT"
   }
+onReceived(notification) {
+  console.log("Notification received: ", notification);
+}
 
+onOpened(openResult) {
+  console.log('Message: ', openResult.notification.payload.body);
+  console.log('Data: ', openResult.notification.payload.additionalData);
+  console.log('isActive: ', openResult.notification.isAppInFocus);
+  console.log('openResult: ', openResult);
+}
+
+onIds(device) {
+  console.log('Device info: ', device);
+}
 onPressDelete(){
     Alert.alert(
     '',
@@ -135,6 +149,9 @@ async deletePress(email, password){
        Alert.alert(global.langPlsTryAgain, global.langWrongEmailPassword)
      })
      if (authenticated){
+       OneSignal.removeEventListener('received', this.onReceived);
+       OneSignal.removeEventListener('opened', this.onOpened);
+       OneSignal.removeEventListener('ids', this.onIds);
        // async storage remove
        AsyncStorage.removeItem(auth().currentUser.uid + 'userGender')
        AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry')
@@ -258,7 +275,7 @@ render(){
       <ModifiedStatusBar/>
 
       <CustomHeader
-      whichScreen = {"History"}
+      whichScreen = {"Profile"}
       isFilterVisible = {this.state.showFilter}
       title = {"Delete Account"}>
       </CustomHeader>
@@ -277,8 +294,9 @@ render(){
         <ModifiedStatusBar/>
 
         <CustomHeader
-        whichScreen = {"History"}
+        whichScreen = {"Profile"}
         isFilterVisible = {this.state.showFilter}
+        onPress = {()=> this.props.navigation.goBack()}
         title = {"Delete Account"}>
         </CustomHeader>
 
