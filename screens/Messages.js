@@ -867,7 +867,9 @@ syncLocalMessages = async (snapshot, uidCount) => {
             localMessages[uidCount].push(msg)
             console.log("LOCALE KAYDEDİLDİ, MESSAGESTA:", msg)
           }
+
       }
+
       await AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
       console.log("DEVAMKE")
 

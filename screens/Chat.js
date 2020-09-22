@@ -96,17 +96,30 @@ export default class ChatScreen extends React.Component<Props> {
     this.keyboardDidHideListener = Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
       this._subscribe = this.props.navigation.addListener('focus', async () => {
 
-        global.callback = (data) => {
+        global.callback = async (data) => {
           console.log("HANGİ MESAJ GELDİ:", data)
-          this.setState(previousState => ({
-            messages: GiftedChat.append(previousState.messages, data),
-          }))
+          var localMessages = []
+          await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+            .then(req => {
+              if(req){
+                 return JSON.parse(req)
+              }
+              else{
+                return null
+              }
+            })
+            .then(json => localMessages = json)
+          localMessages.reverse()
+          this.setState({
+            messages: localMessages
+          })
         }
-        
+
         this.resetVariables()
         this.spinAnimation()
         await this.getLastLocalMessages()
         messageArray.reverse()
+        console.log("MESSAGE ARRAY:", messageArray)
           this.setState({
               messages: messageArray,
               loadingOpacity: 0
@@ -131,6 +144,24 @@ export default class ChatScreen extends React.Component<Props> {
               }))
             }
             else{
+              var localMessages = []
+              await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+                .then(req => {
+                  if(req){
+                     return JSON.parse(req)
+                  }
+                  else{
+                    return null
+                  }
+                })
+                .then(json => localMessages = json)
+              if(localMessages == null || localMessages.length == 0){
+                localMessages = [message]
+              }
+              else{
+                localMessages.push(message)
+              }
+              AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
               var downloadURL;
               var storageRef = storage().ref("Photos/" + auth().currentUser.uid + "/MessagePhotos/" + message.id + ".jpg")
               var fileExists = false
@@ -149,26 +180,9 @@ export default class ChatScreen extends React.Component<Props> {
                     //some headers ..
                   }).then( async data =>{
                     console.log("THENNNNNNNNNNNNNNNNNNNNNNNN 2")
-                    var localMessages = []
-                    await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
-                      .then(req => {
-                        if(req){
-                           return JSON.parse(req)
-                        }
-                        else{
-                          return null
-                        }
-                      })
-                      .then(json => localMessages = json)
-                    if(localMessages == null || localMessages.length == 0){
-                      localMessages = [message]
-                    }
-                    else{
-                      localMessages.push(message)
-                    }
-                    AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
+                    localMessages.reverse()
                     this.setState(previousState => ({
-                      messages: GiftedChat.append(previousState.messages, message),
+                      messages: localMessages
                     }))
                   })
                 }).catch(function (error) {
