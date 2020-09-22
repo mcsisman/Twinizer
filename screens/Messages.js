@@ -281,9 +281,10 @@ async updatePlayerIds(snapshot, index){
   global.playerIdArray[conversationUidArray[index]] = await AsyncStorage.getItem(conversationUidArray[index] + "playerId")
   var tempo = await AsyncStorage.getItem(conversationUidArray[index] + "o")
   if(tempo != userInfo.o){
-    database().ref('/PlayerIds/'+ conversationUidArray[index]).once('value').then(snapshot => {
-      global.playerIdArray[conversationUidArray[index]] = snapshot.val()
-      AsyncStorage.setItem(conversationUidArray[index] + "playerId", snapshot.val())
+    database().ref('/PlayerIds/'+ conversationUidArray[index]).on('value').then(snap => {
+      console.log("PLAYER ID DEGISTI LISTENERI")
+      global.playerIdArray[conversationUidArray[index]] = snap.val()
+      AsyncStorage.setItem(conversationUidArray[index] + "playerId", snap.val())
       AsyncStorage.setItem(conversationUidArray[index] + "o", userInfo.o)
     });
   }
