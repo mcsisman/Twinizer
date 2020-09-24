@@ -12,6 +12,7 @@ import { navigationRef } from './screens/RootNavigation';
 import {
   SafeAreaView,
   StyleSheet,
+  Animated,
   ScrollView,
   ImageBackground,
   View,
@@ -301,6 +302,58 @@ console.disableYellowBox = true;
     restSpeedThreshold: 0.01,
   },
 };
+const config2 = {
+animation: 'spring',
+config: {
+  duration: 1000,
+  stiffness: 1000,
+  damping: 500,
+  mass: 3,
+  overshootClamping: true,
+  restDisplacementThreshold: 0.01,
+  restSpeedThreshold: 0.01,
+},
+};
+export function forHorizontalModal({
+  current,
+  next,
+  inverted,
+  layouts: { screen }
+}: StackCardInterpolationProps): StackCardInterpolatedStyle {
+  const translateFocused = Animated.multiply(
+    current.progress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [screen.width, 0],
+      extrapolate: "clamp"
+    }),
+    inverted
+  );
+
+  const overlayOpacity = current.progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.07],
+    extrapolate: "clamp"
+  });
+
+  const shadowOpacity = current.progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 0.3],
+    extrapolate: "clamp"
+  });
+
+  return {
+    cardStyle: {
+      transform: [
+        // Translation for the animation of the current card
+        { translateX: translateFocused },
+        // Translation for the animation of the card in back
+        { translateX: 0 }
+      ]
+    },
+    overlayStyle: { opacity: overlayOpacity },
+    shadowStyle: { shadowOpacity }
+  };
+}
 function MyTabBar({ state, descriptors, navigation }) {
   const focusedOptions = descriptors[state.routes[state.index].key].options;
 
@@ -410,42 +463,6 @@ function MyTabs() {
           tabBarLabel: 'Settings',
         }}
       />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-      />
-      <Tab.Screen
-        name="About"
-        component={AboutScreen}
-      />
-      <Tab.Screen
-        name="LibraryLicences"
-        component={LibraryLicencesScreen}
-      />
-      <Tab.Screen
-        name="DeleteOptions"
-        component={DeleteOptionsScreen}
-      />
-      <Tab.Screen
-        name="DisplayLicence"
-        component={DisplayLicenceScreen}
-      />
-      <Tab.Screen
-        name="FavoriteUsers"
-        component={FavoriteUsersScreen}
-      />
-      <Tab.Screen
-        name="BlockedUsers"
-        component={BlockedUsersScreen}
-      />
-      <Tab.Screen
-        name="ProfileFavUser"
-        component={ProfileFavUserScreen}
-      />
-      <Tab.Screen
-        name="ProfileBlockedUser"
-        component={ProfileBlockedUserScreen}
-      />
     </Tab.Navigator>
   );
 }
@@ -463,12 +480,13 @@ function MyTabs() {
     return (
       <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
+
         headerMode = {"none"}>
 
         <Stack.Screen options={{
           transitionSpec: {
-            open: config,
-            close: config,
+            open: config2,
+            close: config2,
           },
         }}
         name="Appp" component={Appp} />
@@ -495,9 +513,11 @@ function MyTabs() {
         }}
         name="Tabs" component={MyTabs} />
         <Stack.Screen options={{
+          gestureEnabled: true, gestureDirection: "horizontal",
+          cardStyleInterpolator: forHorizontalModal,
           transitionSpec: {
-            open: config,
-            close: config,
+            open: config2,
+            close: config2,
           },
         }}
         name="ThemeSettings" component={ThemeSettingsScreen} />
@@ -509,9 +529,11 @@ function MyTabs() {
         }}
         name="NewAccount" component={NewAccountScreen} />
         <Stack.Screen options={{
+          gestureEnabled: true, gestureDirection: "horizontal",
+          cardStyleInterpolator: forHorizontalModal,
           transitionSpec: {
-            open: config,
-            close: config,
+            open: config2,
+            close: config2,
           },
         }}
         name="Profile" component={ProfileScreen} />
@@ -523,16 +545,20 @@ function MyTabs() {
         }}
         name="DeleteOptions" component={DeleteOptionsScreen} />
         <Stack.Screen options={{
+          gestureEnabled: true, gestureDirection: "horizontal",
+          cardStyleInterpolator: forHorizontalModal,
           transitionSpec: {
-            open: config,
-            close: config,
+            open: config2,
+            close: config2,
           },
         }}
         name="ProfileFavUser" component={ProfileFavUserScreen} />
         <Stack.Screen options={{
+          gestureEnabled: true, gestureDirection: "horizontal",
+          cardStyleInterpolator: forHorizontalModal,
           transitionSpec: {
-            open: config,
-            close: config,
+            open: config2,
+            close: config2,
           },
         }}
         name="ProfileBlockedUser" component={ProfileBlockedUserScreen} />
@@ -551,9 +577,11 @@ function MyTabs() {
         }}
         name="Gender" component={GenderScreen} />
         <Stack.Screen options={{
+          gestureEnabled: true, gestureDirection: "horizontal",
+          cardStyleInterpolator: forHorizontalModal,
           transitionSpec: {
-            open: config,
-            close: config,
+            open: config2,
+            close: config2,
           },
         }}
         name="Chat" component={ChatScreen} />
@@ -572,19 +600,50 @@ function MyTabs() {
         }}
         name="ImageUpload" component={ImageUploadScreen} />
         <Stack.Screen options={{
+          gestureEnabled: true, gestureDirection: "horizontal",
+          cardStyleInterpolator: forHorizontalModal,
           transitionSpec: {
-            open: config,
-            close: config,
+            open: config2,
+            close: config2,
           },
         }}
         name="FavoriteUsers" component={FavoriteUsersScreen} />
         <Stack.Screen options={{
+          gestureEnabled: true, gestureDirection: "horizontal",
+          cardStyleInterpolator: forHorizontalModal,
           transitionSpec: {
-            open: config,
-            close: config,
+            open: config2,
+            close: config2,
           },
         }}
         name="BlockedUsers" component={BlockedUsersScreen} />
+        <Stack.Screen options={{
+          gestureEnabled: true, gestureDirection: "horizontal",
+          cardStyleInterpolator: forHorizontalModal,
+          transitionSpec: {
+            open: config2,
+            close: config2,
+          },
+        }}
+        name="About" component={AboutScreen} />
+        <Stack.Screen options={{
+          gestureEnabled: true, gestureDirection: "horizontal",
+          cardStyleInterpolator: forHorizontalModal,
+          transitionSpec: {
+            open: config2,
+            close: config2,
+          },
+        }}
+        name="LibraryLicences" component={LibraryLicencesScreen} />
+        <Stack.Screen options={{
+          gestureEnabled: true, gestureDirection: "horizontal",
+          cardStyleInterpolator: forHorizontalModal,
+          transitionSpec: {
+            open: config2,
+            close: config2,
+          },
+        }}
+        name="DisplayLicence" component={DisplayLicenceScreen} />
       </Stack.Navigator>
       </NavigationContainer>
     );
