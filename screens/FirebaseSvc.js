@@ -38,30 +38,6 @@ class FirebaseSvc {
     return database().ref('Messages/' + global.receiverUid + "/" + auth().currentUser.uid);
   }
 
-
-  removeListener = async snapshot => {
-    console.log("K SİLİNDİ!!!!!!!!!!!!!!")
-    var localMs;
-    await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
-      .then(req => {
-        if(req){
-           return JSON.parse(req)
-        }
-        else{
-          return null
-        }
-      })
-      .then(json => localMs = json)
-    localMs.concat(global.messageBuffer)
-    global.messageBuffer = []
-    return localMs
-  };
-  removeOn = async callback => {
-    console.log("REMOVE LİSTENERI AÇILDI!!!!!")
-      database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().equalTo("k")
-        .on('child_removed', async snapshot => await callback(await this.removeListener(snapshot)));
-    }
-
   parse = async snapshot => {
 
     if(snapshot.val() != null){
@@ -92,10 +68,7 @@ class FirebaseSvc {
             user,
             image
           };
-
           firstTime = false
-
-
           if(!global.currentProcessUidArray[global.receiverUid]){
             database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
             await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
@@ -108,24 +81,41 @@ class FirebaseSvc {
                 }
               })
               .then(json => localMessages = json)
-            if(p == "f"){
+            if(localMessages == null || localMessages.length == 0){
+              localMessages = [message]
+            }
+            else{
+              localMessages.push(message)
+            }
+            console.log("IFDE LOCALE KOYDU:", localMessages)
+            AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
+
+            console.log("IF RETURN:", message)
+            return message;
+          }
+          else{
+            if(!global.addedMsgs[global.receiverUid].includes(message.id)){
+              database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
+              await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+                .then(req => {
+                  if(req){
+                     return JSON.parse(req)
+                  }
+                  else{
+                    return null
+                  }
+                })
+                .then(json => localMessages = json)
               if(localMessages == null || localMessages.length == 0){
                 localMessages = [message]
               }
               else{
                 localMessages.push(message)
               }
+              console.log("ELSEDE LOCALE KOYDU:", localMessages)
               AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
-            }
-
-            console.log("PARSE ÇALIŞTI")
-            return message;
-          }
-          else{
-            if(global.check){
-              console.log("NAPTIK BİZ AMQ")
-              global.messageBuffer.push(message)
-              return null
+              console.log("ELSE RETURN:", message)
+              return message;
             }
             return null
           }
@@ -278,10 +268,6 @@ class FirebaseSvc {
     }
   };
 
-  removeOff(){
-    console.log("REMOVE OFF")
-    database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().equalTo("k").off("child_removed")
-  }
   refOff() {
     global.check = false
     database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().endAt("A").startAt("-").off();

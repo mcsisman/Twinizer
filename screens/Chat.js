@@ -1,5 +1,5 @@
 import React from 'react';
-import { InputToolbar, Send, Bubble, Time, GiftedChat } from 'react-native-gifted-chat';
+import { MessageImage, InputToolbar, Send, Bubble, Time, GiftedChat } from 'react-native-gifted-chat';
 import RNFetchBlob from 'rn-fetch-blob';
 import firebaseSvc from './FirebaseSvc';
 import auth from '@react-native-firebase/auth';
@@ -76,7 +76,7 @@ export default class ChatScreen extends React.Component<Props> {
       bigViewerOpacity: 1,
       smallViewerOpacity:0,
       isVisible1: false,
-      reRender: "ok",
+      reRender: false,
       renderImageChatScreen: false,
       test: "",
       photoPopUpIsVisible: false,
@@ -96,7 +96,7 @@ export default class ChatScreen extends React.Component<Props> {
     this.keyboardDidHideListener = Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
       this._subscribe = this.props.navigation.addListener('focus', async () => {
 
-        global.callback = async (data) => {
+        global.callback = async (data, noOfNewMsgs) => {
           console.log("HANGİ MESAJ GELDİ:", data)
           var localMessages = []
           await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
@@ -109,12 +109,18 @@ export default class ChatScreen extends React.Component<Props> {
               }
             })
             .then(json => localMessages = json)
-          localMessages.reverse()
-          this.setState({
-            messages: localMessages
-          })
-        }
 
+          if( noOfNewMsgs == 1){
+            this.setState( {reRender: !this.state.reRender})
+          }
+          else{
+            localMessages.reverse()
+            this.setState({
+              messages: localMessages
+            })
+            this.setState( {reRender: !this.state.reRender})
+          }
+        }
         this.resetVariables()
         this.spinAnimation()
         await this.getLastLocalMessages()
@@ -126,14 +132,6 @@ export default class ChatScreen extends React.Component<Props> {
           })
         lastSeenInterval = setInterval(()=> this.updateLastSeenFile(), 100)
       });
-      if(global.currentProcessUidArray[global.receiverUid]){
-        firebaseSvc.removeOn(async message =>{
-          message.reverse()
-          this.setState({messages: message})
-          firebaseSvc.removeOff()
-        })
-
-      }
       firebaseSvc.refOn(async message =>{
         if(message != null){
           if(true){//!firstTime
@@ -155,13 +153,7 @@ export default class ChatScreen extends React.Component<Props> {
                   }
                 })
                 .then(json => localMessages = json)
-              if(localMessages == null || localMessages.length == 0){
-                localMessages = [message]
-              }
-              else{
-                localMessages.push(message)
-              }
-              AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
+
               var downloadURL;
               var storageRef = storage().ref("Photos/" + auth().currentUser.uid + "/MessagePhotos/" + message.id + ".jpg")
               var fileExists = false
@@ -179,11 +171,14 @@ export default class ChatScreen extends React.Component<Props> {
                   .fetch('GET', downloadURL, {
                     //some headers ..
                   }).then( async data =>{
-                    console.log("THENNNNNNNNNNNNNNNNNNNNNNNN 2")
+                    console.log("THENNNNNNNNNNNNNNNNNNNNNNNN 2:", message.id)
+
                     localMessages.reverse()
                     this.setState(previousState => ({
                       messages: localMessages
                     }))
+
+                    this.setState( {reRender: !this.state.reRender})
                   })
                 }).catch(function (error) {
                 })
@@ -378,6 +373,15 @@ renderBubble (props) {
       />
     )
   }
+  renderMessageImage = (props) => {
+    let image = props.currentMessage.image;
+
+    return (
+        <MessageImage
+            {...props}
+            imageProps={{key: this.state.reRender}}
+        />)
+}
 renderSend(props) {
       return (
           <Send
@@ -414,7 +418,7 @@ closeImageMessage(){
   this.setState({renderImageChatScreen: false})
 }
 onChange(){
-  this.setState({reRender: "ok"})
+  this.setState({reRender: !this.state.reRender})
 }
 async deleteImageFromArray(){
 
@@ -556,6 +560,7 @@ render() {
               width: this.width, bottom: 0, right: 0}}>
               <GiftedChat
               onLongPress={this.onLongPress}
+              renderMessageImage={this.renderMessageImage}
               textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
               renderInputToolbar={(props) => this.messengerBarContainer(props)}
                 scrollToBottom = {true}
@@ -623,6 +628,7 @@ render() {
               width: this.width, bottom: 0, right: 0, flex: 1}}>
               <GiftedChat
               onLongPress={this.onLongPress}
+              renderMessageImage={this.renderMessageImage}
               textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
               renderInputToolbar={(props) => this.messengerBarContainer(props)}
                 scrollToBottom = {true}
@@ -691,6 +697,7 @@ render() {
               width: this.width, bottom: 0, right: 0}}>
               <GiftedChat
               onLongPress={this.onLongPress}
+              renderMessageImage={this.renderMessageImage}
               textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
               renderInputToolbar={(props) => this.messengerBarContainer(props)}
                 scrollToBottom = {true}
@@ -761,6 +768,7 @@ render() {
               width: this.width, bottom: 0, right: 0, flex: 1}}>
               <GiftedChat
               onLongPress={this.onLongPress}
+              renderMessageImage={this.renderMessageImage}
               textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
               renderInputToolbar={(props) => this.messengerBarContainer(props)}
                 scrollToBottom = {true}

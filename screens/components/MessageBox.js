@@ -45,7 +45,6 @@ export default class MessageBox extends Component {
     this.width = Math.round(Dimensions.get('screen').width);
 
     var messageText
-    console.log("IS PHOTO:", this.props.isPhoto)
     if (this.props.isPhoto && this.props.lastMsg == " ") {
       messageText = "Photo"
     }

@@ -55,6 +55,7 @@ if (!global.btoa) { global.btoa = encode }
 if (!global.atob) { global.atob = decode }
 global.fromChat = false
 
+global.addedMsgs = {}
   class Appp extends React.Component {
 
     constructor() {

@@ -138,7 +138,7 @@ componentDidMount(){
 
   this._subscribe = this.props.navigation.addListener('blur', async () => {
     this.spinAnimation()
-    this.setState({loadingDone: false, loadingOpacity: 1, editPressed: false, cancelPressed: false, editText: "Edit", messageBoxDisabled: false})
+    this.setState({editPressed: false, cancelPressed: false, editText: "Edit", messageBoxDisabled: false})
   })
 };
 componentWillUnmount(){
@@ -442,6 +442,7 @@ async createConversationArrays(){
             conversationUidArray = await doc.data()["UidArray"]
             noOfConversations = conversationUidArray.length
             for( let  i = 0; i < noOfConversations; i++){
+              global.addedMsgs[conversationUidArray[i]] = []
               global.newMsgListenerArray[i] = {isOpen: false, uid: conversationUidArray[i], listenerID: "" }
               global.currentProcessUidArray[conversationUidArray[i]] = true
             }
@@ -464,6 +465,7 @@ async createConversationArrays(){
           conversationUidArray = await doc.data()["UidArray"]
           noOfConversations = conversationUidArray.length,
 
+          global.addedMsgs[conversationUidArray[noOfConversations-1]] = []
           global.newMsgListenerArray[noOfConversations-1] = {isOpen: false, uid: conversationUidArray[noOfConversations-1], listenerID: "" }
           global.currentProcessUidArray[conversationUidArray[noOfConversations-1]] = true
 
@@ -787,18 +789,18 @@ syncLocalMessages = async (snapshot, uidCount) => {
     var snapVal = snapshot.val()
     var messageKey;
     var noOfNewMsgs = Object.keys(snapVal).length
+    global.addedMsgs[uidArray[uidCount]] = Object.keys(snapVal)
+    var tempMsgs = localMessages
     if(noOfNewMsgs != 0){
 
       for( let i = noOfNewMsgs - 1; i >= 0; i--){
         messageKey = Object.keys(snapshot.val())[i]
-        await database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
+        database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[uidCount]).remove();
         global.currentProcessUidArray[uidArray[uidCount]] = true
-        console.log("REMOVEA GELDİ___________GELDİ___________GELDİ___________GELDİ___________GELDİ___________")
+        console.log("REMOVEA GELDİ MESSAGESTA")
 
         const user = { _id: uidArray[uidCount], r: auth().currentUser.uid}
-        console.log("messagesta2")
         console.log("SNAP VAL:", snapVal)
-        console.log("İ KAÇ?????:", i)
         console.log("SNAP VAL MESSAGE KEY:", messageKey)
         const { p: p, c: numberStamp, text} = snapVal[messageKey];
         const id = messageKey;
@@ -807,21 +809,42 @@ syncLocalMessages = async (snapshot, uidCount) => {
         const createdAt = new Date(numberStamp);
 
         var image = "";
-        if(p == "t"){
+        if( p == "t"){
           image = "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + messageKey + ".jpg" + '#' + new Date()
+        }
+
+        const msg = {
+          c,
+          id,
+          _id,
+          createdAt,
+          text,
+          user,
+          image
+        };
+          if(localMessages[uidCount] == null || localMessages[uidCount].length == 0){
+            localMessages[uidCount] = [msg]
+            global.messages = [msg._id]
+            console.log("LOCALE KAYDEDİLDİ, MESSAGESTA:", localMessages)
+          }
+          else{
+            global.messages.push(msg._id)
+            localMessages[uidCount].push(msg)
+            console.log("LOCALE KAYDEDİLDİ, MESSAGESTA:", localMessages)
+          }
+          if(noOfNewMsgs == 1){
+            AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
+          }
+        if(p == "t"){
           var downloadURL;
           var storageRef = storage().ref("Photos/" + auth().currentUser.uid + "/MessagePhotos/" + messageKey + ".jpg")
           var fileExists = false
-          console.log("WHILE ÖNCESİ")
           while(!fileExists){
-            console.log("WHILEIN BAŞI")
             await storageRef.getDownloadURL().then(data =>{
-              console.log("THENİN İÇİ")
               downloadURL = data
               fileExists = true
             }).catch(function (error) {
-              console.log("ERROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR")
-              console.log(error)
+              console.log("error")
             })
           }
           const msg2 = {
@@ -844,33 +867,16 @@ syncLocalMessages = async (snapshot, uidCount) => {
           .fetch('GET', downloadURL, {
             //some headers ..
           }).then( data => {
-            console.log("MESSAGESTA GELDİ")
-            global.callback(msg2)
+            global.callback(msg2, noOfNewMsgs)
           })
         }
-        const msg = {
-          c,
-          id,
-          _id,
-          createdAt,
-          text,
-          user,
-          image
-        };
-          if(localMessages[uidCount] == null || localMessages[uidCount].length == 0){
-            localMessages[uidCount] = [msg]
-            global.messages = [msg._id]
-            console.log("LOCALE KAYDEDİLDİ, MESSAGESTA:", msg)
-          }
-          else{
-            global.messages.push(msg._id)
-            localMessages[uidCount].push(msg)
-            console.log("LOCALE KAYDEDİLDİ, MESSAGESTA:", msg)
-          }
-
+      }
+      if(noOfNewMsgs > 1){
+        await AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
       }
 
-      await AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
+      global.currentProcessUidArray[uidArray[uidCount]] = false
+
       console.log("DEVAMKE")
 
       var kValue;
@@ -882,7 +888,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
         kValue = 1
       }
       this.setRequestDB(uidArray[uidCount], kValue)
-      global.currentProcessUidArray[uidArray[uidCount]] = false
+
       console.log("IF 0")
       // CREATE DATA ARRAY PART
       messageArray.splice(0, messageArray.length)
@@ -1069,7 +1075,7 @@ navigateToChat(receiverUid, receiverPhoto, receiverUsername){
     }
   }
   fromChat = true
-  this.setState({loadingDone: false, loadingOpacity: 1, editPressed: false, cancelPressed: false, editText: "Edit", messageBoxDisabled: false,})
+  this.setState({ editPressed: false, cancelPressed: false, editText: "Edit", messageBoxDisabled: false,})
   global.fromChatOfUid = global.receiverUid
   this.props.navigation.navigate("Chat")
 }
