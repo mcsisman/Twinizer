@@ -88,7 +88,7 @@ class FirebaseSvc {
               localMessages.push(message)
             }
             console.log("IFDE LOCALE KOYDU:", localMessages)
-            AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
+            await AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
 
             console.log("IF RETURN:", message)
             return message;

@@ -97,7 +97,6 @@ export default class ChatScreen extends React.Component<Props> {
       this._subscribe = this.props.navigation.addListener('focus', async () => {
 
         global.callback = async (data, noOfNewMsgs) => {
-          console.log("HANGİ MESAJ GELDİ:", data)
           var localMessages = []
           await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
             .then(req => {
@@ -109,11 +108,17 @@ export default class ChatScreen extends React.Component<Props> {
               }
             })
             .then(json => localMessages = json)
-
           if( noOfNewMsgs == 1){
+            console.log("HANGİ MESAJ GELDİ İF:", data)
+            localMessages.reverse()
+            this.setState({
+              messages: localMessages
+            })
             this.setState( {reRender: !this.state.reRender})
           }
           else{
+            console.log("HANGİ MESAJ GELDİ ELSE:", data)
+
             localMessages.reverse()
             this.setState({
               messages: localMessages
@@ -182,7 +187,7 @@ export default class ChatScreen extends React.Component<Props> {
                         }
                       })
                       .then(json => localMessages = json)
-                      
+
                     localMessages.reverse()
                     this.setState(previousState => ({
                       messages: localMessages

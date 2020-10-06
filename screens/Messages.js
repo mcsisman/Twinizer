@@ -887,7 +887,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
       if(isRequ == "false"){
         kValue = 1
       }
-      this.setRequestDB(uidArray[uidCount], kValue)
+      await this.setRequestDB(uidArray[uidCount], kValue)
 
       console.log("IF 0")
       // CREATE DATA ARRAY PART
@@ -1367,7 +1367,8 @@ async setLocalIsRequest(uid, bool){
   await AsyncStorage.setItem('IsRequest/' + auth().currentUser.uid + "/" + uid, bool)
 }
 async setRequestDB(uid, value){
-  database().ref('Messages/' + auth().currentUser.uid + "/" + uid).update({
+  console.log("set requestDB:", uid)
+  await database().ref('Messages/' + auth().currentUser.uid + "/" + uid).update({
     k: value
   })
 }
