@@ -125,7 +125,6 @@ export default class ChatScreen extends React.Component<Props> {
         this.spinAnimation()
         await this.getLastLocalMessages()
         messageArray.reverse()
-        console.log("MESSAGE ARRAY:", messageArray)
           this.setState({
               messages: messageArray,
               loadingOpacity: 0
@@ -173,6 +172,17 @@ export default class ChatScreen extends React.Component<Props> {
                   }).then( async data =>{
                     console.log("THENNNNNNNNNNNNNNNNNNNNNNNN 2:", message.id)
 
+                    await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+                      .then(req => {
+                        if(req){
+                           return JSON.parse(req)
+                        }
+                        else{
+                          return null
+                        }
+                      })
+                      .then(json => localMessages = json)
+                      
                     localMessages.reverse()
                     this.setState(previousState => ({
                       messages: localMessages
