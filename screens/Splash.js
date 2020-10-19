@@ -144,11 +144,10 @@ Login = (email, password) => {
         <TouchableOpacity
         activeOpacity = {1}
         style={{position: 'absolute', backgroundColor: 'rgba(255,255,255, 0)',
-         width: this.width*(2/10), height: (this.height*6)/100, flex:1, bottom: 0, right: this.width*(2/100)}}
+         width: this.width*(48/100), height: (this.height*6)/100, flex:1, bottom: 0, right: this.width*(2/100)}}
          onPress={()=>navigate("NewAccount") }>
         <Text style={{
-
-          textAlign: 'center',
+          textAlign: 'right',
           color: 'white',
           fontSize: 18*(this.width/360)
           }}>
@@ -159,9 +158,9 @@ Login = (email, password) => {
         <TouchableOpacity
         activeOpacity = {1}
         style={{position: 'absolute', backgroundColor: 'rgba(255,255,255, 0)',
-         width: this.width*(4/10), height: (this.height*6)/100, flex:1, bottom: 0, left: this.width*(2/100)}}
+         width: this.width*(48/100), height: (this.height*6)/100, flex:1, bottom: 0, left: this.width*(2/100)}}
          onPress={()=> navigate( "ForgotPassword") }>
-        <Text style={{textAlign: 'center', color: 'white',   fontSize: 18*(this.width/360)}}>
+        <Text style={{textAlign: 'left', color: 'white',   fontSize: 18*(this.width/360)}}>
           {global.langForgotPassword}
         </Text>
         </TouchableOpacity>
@@ -172,7 +171,6 @@ Login = (email, password) => {
           paddingLeft: 15, paddingRight: 15, height: (this.height*6)/100, flex:1, bottom: (this.height*25)/100}}
          onPress={()=>this.check() }>
          <Text style={{textAlign: 'center', color: 'white',   fontSize: 18*(this.width/360)}}>
-
           {global.langLogin}
         </Text>
         </TouchableOpacity>

@@ -187,7 +187,7 @@ console.disableYellowBox = true;
     global.langCountry = "Ülke"
     global.langNext = "İLERİ"
     //Gender
-    global.langSelectGender = "Lütfen Cinsiyetini Seç."
+    global.langSelectGender = "Lütfen Bilgilerini Gir."
     global.langMale = "ERKEK"
     global.langFemale = "KADIN"
     //ProfileUpload
@@ -248,7 +248,7 @@ console.disableYellowBox = true;
     global.langCountry = "Country"
     global.langNext = "NEXT"
     //Gender
-    global.langSelectGender = "Please Select Your Gender."
+    global.langSelectGender = "Please Enter Your Information."
     global.langMale = "MALE"
     global.langFemale = "FEMALE"
     //ProfileUpload

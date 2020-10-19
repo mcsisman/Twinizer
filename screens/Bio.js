@@ -104,6 +104,7 @@ async writeCountryToDatabase(){
       g: global.globalGender,
       c: global.globalCountry,
       b: global.globalBio,
+      d: global.globalGender,
       p: 0
     }).then(async function() {
         var randFloat = Math.random()
