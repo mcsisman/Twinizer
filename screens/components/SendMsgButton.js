@@ -30,12 +30,14 @@ export default class SendMsgButton extends Component {
    onPress: PropTypes.func,
    disabled: PropTypes.bool,
    opacity: PropTypes.number,
+   image: PropTypes.string,
    width: PropTypes.number,
    height: PropTypes.number
  }
  static defaultProps = {
    width: screenWidth/6,
    height: screenWidth/10,
+   image: "msgblue"
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
@@ -47,7 +49,7 @@ export default class SendMsgButton extends Component {
         onPress={this.props.onPress}
         disabled = {this.props.disabled}>
 
-        <Image source={{uri: "msgblue"}}
+        <Image source={{uri: this.props.image}}
           style={{ height: this.width/10*(7/10), width: this.width/10*(7/10) }}
         />
 

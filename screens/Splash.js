@@ -118,8 +118,12 @@ Login = (email, password) => {
           source={{uri: 'flare'}}
           style={{width: this.width, height: this.height, flex:1, alignItems: 'center'}}>
 
-          <Image source={{uri: 'twinizer'}}
-            style={{ width: this.width*(7/10), height:this.width*(17.5/100), position: 'absolute', bottom: this.height*(6/10), left: this.width*(15/100) }}
+
+          <Image source={{uri: 'slogan'}}
+            style={{ width: this.width*(0.8/10)*(1243/203), height:this.width*(0.8/10), position: 'absolute', bottom: this.height*(5.4/10), left: (this.width-this.width*(0.8/10)*(1243/203))/2 }}
+          />
+          <Image source={{uri: 'logo2'}}
+            style={{ width: this.width*(5/10), height:this.width*(5/10), position: 'absolute', bottom: this.height*(5.5/10), left: this.width*(2.5/10) }}
           />
 
             <TextInput
