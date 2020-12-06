@@ -32,12 +32,14 @@ export default class BlockUserButton extends Component {
    opacity: PropTypes.number,
    image: PropTypes.string,
    width: PropTypes.number,
-   height: PropTypes.number
+   height: PropTypes.number,
+   isSelected: PropTypes.bool
  }
  static defaultProps = {
    width: screenWidth/6,
    height: screenWidth/10,
-   image: "block"
+   image: "block",
+   isSelected: false
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
@@ -45,7 +47,9 @@ export default class BlockUserButton extends Component {
     return(
       <TouchableOpacity // SEND MESSAGE BUTONU
         activeOpacity = {1}
-        style={{ opacity: this.props.opacity, justifyContent: 'center', alignItems: 'center', width: this.props.width, height: this.props.height}}
+        style={{ opacity: this.props.opacity, justifyContent: 'center', backgroundColor: this.props.isSelected ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0)",
+        alignItems: 'center', width: this.props.width, height: this.props.height,
+        borderBottomRightRadius: 16, borderTopRightRadius: 16}}
         onPress={this.props.onPress}
         disabled = {this.props.disabled}>
 

@@ -42,14 +42,16 @@ export default class CountryPicker extends Component {
    borderBottomWidth: PropTypes.number,
    placeHolder: PropTypes.bool,
    backgroundColor: PropTypes.string,
-   selectedValue: PropTypes.string
+   selectedValue: PropTypes.string,
+   borderRadius: PropTypes.number
  }
  static defaultProps = {
    selectedValue: "Select Something",
    borderBottomWidth: 2,
    borderBottomColor: global.themeColor,
    placeHolder: true,
-   backgroundColor: 'rgba(0,0,0,0)'
+   backgroundColor: 'rgba(0,0,0,0)',
+   borderRadius: 0
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
@@ -57,7 +59,8 @@ export default class CountryPicker extends Component {
 
     if(this.props.placeHolder){
       return(
-        <View style = {{paddingLeft: 5, opacity: this.props.opacity, justifyContent: 'center', backgroundColor: this.props.backgroundColor,  width:this.props.width ,
+        <View style = {{paddingLeft: 5, opacity: this.props.opacity, justifyContent: 'center',
+        backgroundColor: this.props.backgroundColor,  width:this.props.width , borderRadius: this.props.borderRadius,
         height: this.props.height, position: 'absolute', right: this.props.right, bottom: this.props.bottom, borderBottomColor: this.props.borderBottomColor, borderColor: this.props.borderColor,
         borderBottomWidth: this.props.borderBottomWidth, borderTopWidth: this.props.borderWidth, borderRightWidth: this.props.borderWidth, borderLeftWidth: this.props.borderWidth }}>
         <ModalSelector
@@ -70,7 +73,8 @@ export default class CountryPicker extends Component {
         cancelButtonAccessibilityLabel={'Cancel Button'}>
 
         <TextInput
-        style={{ height: 40, fontSize: 18, color: this.props.selectedValue == "Select a Country" ||  this.props.selectedValue == "Select a Gender" ? "gray" : global.themeColor }}
+        style={{ height: 40, fontSize: 18, color: this.props.selectedValue == "Select a Country" ||  this.props.selectedValue == "Select a Gender" ? "gray" : global.themeColor,
+         borderRadius: this.props.borderRadius}}
         editable={false}
         placeholderTextColor={"black"}
         value = {this.props.selectedValue} />
@@ -80,7 +84,8 @@ export default class CountryPicker extends Component {
     }
     else{
       return(
-        <View style = {{paddingLeft: 5, opacity: this.props.opacity, justifyContent: 'center', backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)",  width:this.props.width ,
+        <View style = {{paddingLeft: 5, opacity: this.props.opacity, justifyContent: 'center',  borderRadius: this.props.borderRadius,
+        backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)",  width:this.props.width ,
         height: this.props.height, right: this.props.right, bottom: this.props.bottom, borderBottomColor: this.props.borderBottomColor, borderColor: this.props.borderColor,
         borderBottomWidth: this.props.borderBottomWidth, borderTopWidth: this.props.borderWidth, borderRightWidth: this.props.borderWidth, borderLeftWidth: this.props.borderWidth }}>
         <ModalSelector
@@ -93,7 +98,7 @@ export default class CountryPicker extends Component {
         cancelButtonAccessibilityLabel={'Cancel Button'}>
 
         <TextInput
-        style={{ height: 40, fontSize: 14*(this.width/360), color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
+        style={{ height: 40, borderRadius: this.props.borderRadius, fontSize: 14*(this.width/360), color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
         editable={false}
         placeholderTextColor={"black"}
         value = {this.props.selectedValue} />

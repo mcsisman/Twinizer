@@ -39,7 +39,8 @@ export default class FavBlockModal extends Component {
    animationOut: PropTypes.string,
    backdropOpacity: PropTypes.number,
    onPressTick: PropTypes.func,
-   tickIsVisible: PropTypes.bool
+   tickIsVisible: PropTypes.bool,
+   image: PropTypes.string
  }
  static defaultProps = {
    addFontSize: 15,
@@ -133,15 +134,9 @@ export default class FavBlockModal extends Component {
 
       <View
       style={{width: screenWidth*(3/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
-      <ImgModalOvalButton
-      activeOpacity = {0.7}
-      title = {'ADD'}
-      textColor = {global.themeColor}
-      onPress = {this.props.onPressAdd}
-      borderColor = {'rgba(241,51,18,0)'}
-      borderRadius = {0}
-      textFontSize = {this.props.addFontSize}
-      borderWidth = {0}/>
+      <Image source={{uri: this.props.image}}
+        style={{width: screenWidth*(1.5/20), height:screenWidth*(1.5/20)}}
+      />
       </View>
 
       </View>

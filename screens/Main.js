@@ -100,6 +100,8 @@ var addingToWhichList = "";
 var listToAdd = ""
 var favoriteUsers = []
 var blockedUsers = []
+var favoriteUsersSet = new Set();
+var blockedUsersSet = new Set();
 var favShowThisDialog = "true"
 var blockShowThisDialog = "true"
 export default class MainScreen extends Component<{}>{
@@ -198,8 +200,9 @@ async componentDidMount(){
     global.fromMessages = false
     var localMessages = []
     var arr = []
-    this.addToFavoriteUsers("k209WPn6gmfHP3f2PphxyXeb84p1")
-    await this.getFavoriteAndBlockedUsers()
+    //this.addToFavoriteUsers("k209WPn6gmfHP3f2PphxyXeb84p1")
+    await this.getBlockedUsers()
+    await this.getFavoriteUsers()
     //this.addToFavoriteUsers("k209WPn6gmfHP3f2PphxyXeb84p1")
     //this.addToFavoriteUsers("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1")
     //this.addToFavoriteUsers("JtfxB5eiDvSzOM4dbhgGeU7PXVC2")
@@ -208,8 +211,17 @@ async componentDidMount(){
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.setState({reRender: "ok"})
       global.fromChat = false
+      if(global.removedFromFavList){
+        await this.getFavoriteUsers()
+      }
+      if(global.removedFromBlockedList){
+        await this.getBlockedUsers()
+      }
       if(global.fromHistorySearch){
         await this.setSearchPhotoFromHistory(global.historyPhotoUri)
+      }
+      if(this.state.uri2_username != "" && this.state.uri2_username != null && this.state.uri2_username != undefined){
+        this.checkUri2FavOrBlocked()
       }
     })
     // WHOLE ONESIGNAL THINGS
@@ -283,7 +295,23 @@ async checkIfAlreadySearching(){
     }
   })
 }
-async getFavoriteAndBlockedUsers(){
+
+checkUri2FavOrBlocked(){
+  if (favoriteUsers != null && favoriteUsers.length != 0 && favoriteUsersSet.has(emailArray[global.swipeCount])){
+    isFav = true
+  }
+  else{
+    isFav = false
+    if (blockedUsers != null && blockedUsers.length != 0 && blockedUsersSet.has(emailArray[global.swipeCount])){
+      isBlock = true
+    }
+    else{
+      isBlock = false
+    }
+  }
+  this.setState({reRender: "okeyyy"})
+}
+async getFavoriteUsers(){
   await AsyncStorage.getItem(auth().currentUser.uid + 'favoriteUsers')
     .then(req => {
       if(req){
@@ -299,7 +327,10 @@ async getFavoriteAndBlockedUsers(){
       if (favoriteUsers == null){
         favoriteUsers = []
       }
+      favoriteUsersSet = new Set(favoriteUsers)
     })
+}
+async getBlockedUsers(){
   await AsyncStorage.getItem(auth().currentUser.uid + 'blockedUsers')
     .then(req => {
       if(req){
@@ -314,9 +345,9 @@ async getFavoriteAndBlockedUsers(){
       if (blockedUsers == null){
         blockedUsers = []
       }
+      blockedUsersSet = new Set(blockedUsers)
     })
 }
-
 
 spinAnimation(){
   console.log("SPIN ANIMATION")
@@ -380,6 +411,7 @@ swipeStart(){
   }
 }
 swipeRelease(){
+  this.checkUri2FavOrBlocked()
   if(!this.state.swipeableDisabled){
     if(!this.complete || this.activationCount == 0){
       if(!this.releasedAfterRightD2 || !this.releasedAfterLeftD2){
@@ -880,6 +912,7 @@ async sendFirstMessage(){
   //global.receiverGender = genderArray[global.swipeCount]
   //global.receiverCountry = countryArray[global.swipeCount]
   //global.receiverUsername = usernameArray[global.swipeCount]
+  global.msgFromMain = true
   global.receiverUid = "p9UY4QQtEnRTWBYDfgG4pyHiyZg2"
   global.receiverMail = "cemil.sisman@ug.bilkent.edu.tr"
   global.receiverGender = "Male"
@@ -905,21 +938,41 @@ async sendFirstMessage(){
 }
 
 addToFavButtonClicked(){
-  if(favShowThisDialog == "true" || favShowThisDialog == null){
-    this.setState({addToFavVisible:true})
+  if (isFav){
+    var index = favoriteUsers.indexOf(emailArray[global.swipeCount])
+    favoriteUsers.splice(index,1)
+    AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
+    favoriteUsersSet.delete(emailArray[global.swipeCount])
+    isFav = false
+    this.setState({addToFavVisible:false})
   }
   else{
-    this.favModalButtonClicked(emailArray[global.swipeCount])
-    this.setState({addToFavVisible:false})
+    if(favShowThisDialog == "true" || favShowThisDialog == null){
+      this.setState({addToFavVisible:true})
+    }
+    else{
+      this.favModalButtonClicked(emailArray[global.swipeCount])
+      this.setState({addToFavVisible:false})
+    }
   }
 }
 addToBlockButtonClicked(){
-  if(blockShowThisDialog == "true" || blockShowThisDialog == null){
-    this.setState({addToBlockVisible:true})
+  if (isBlock){
+    var index = blockedUsers.indexOf(emailArray[global.swipeCount])
+    blockedUsers.splice(index,1)
+    AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+    blockedUsersSet.delete(emailArray[global.swipeCount])
+    isBlock = false
+    this.setState({addToBlockVisible:false})
   }
   else{
-    this.blockModalButtonClicked(emailArray[global.swipeCount])
-    this.setState({addToBlockVisible:false})
+    if(blockShowThisDialog == "true" || blockShowThisDialog == null){
+      this.setState({addToBlockVisible:true})
+    }
+    else{
+      this.blockModalButtonClicked(emailArray[global.swipeCount])
+      this.setState({addToBlockVisible:false})
+    }
   }
 }
 
@@ -947,34 +1000,39 @@ blockModalButtonClicked(uid){
 addToFavoriteUsers(uid){
   console.log("favoriteUsers: ", favoriteUsers)
   if (favoriteUsers == null){
-    if (blockedUsers.includes(uid)){
+    if (blockedUsersSet.has(uid)){
       var index = blockedUsers.indexOf(uid)
       blockedUsers.splice(index,1)
       AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+      blockedUsersSet.delete(uid)
     }
     favoriteUsers.push(uid)
+    favoriteUsersSet.add(uid)
     AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
   }
-  else if (favoriteUsers.length == 0 || !favoriteUsers.includes(uid)) {
+  else if (favoriteUsers.length == 0 || !favoriteUsersSet.has(uid)) {
     if (favoriteUsers.length <= 15){
-      if (blockedUsers.includes(uid)){
+      if (blockedUsersSet.has(uid)){
         var index = blockedUsers.indexOf(uid)
         blockedUsers.splice(index,1)
         AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+        blockedUsersSet.delete(uid)
       }
       favoriteUsers.push(uid)
+      favoriteUsersSet.add(uid)
       AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
     }
   }
 }
 addToBlockedUsers(uid){
-  if (blockedUsers == null || blockedUsers.length == 0 || !blockedUsers.includes(uid)){
-    if (favoriteUsers.includes(uid)){
+  if (blockedUsers == null || blockedUsers.length == 0 || !blockedUsersSet.has(uid)){
+    if (favoriteUsersSet.has(uid)){
       var index = favoriteUsers.indexOf(uid)
       favoriteUsers.splice(index,1)
       AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
     }
     blockedUsers.push(uid)
+    blockedUsersSet.add(uid)
     AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
   }
 }
@@ -1042,7 +1100,7 @@ async createEmailDistanceArrays(gender, country, fn){
      var length = Object.keys(dict).length;
      console.log(length);
      for(let i = 0; i < length; i++){
-       if (blockedUsers == null || blockedUsers.length == 0 || blockedUsers.includes(((items[i][0]).split("_"))[2]) == false){
+       if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(((items[i][0]).split("_"))[2]) == false){
          countryArray.push(((items[i][0]).split("_"))[1]);
          genderArray.push(((items[i][0]).split("_"))[0]);
          emailArray.push(((items[i][0]).split("_"))[2]);
@@ -1202,6 +1260,7 @@ async checkFunction(){
               showFilter: true,
               loadingOpacity: 0
             })
+            this.checkUri2FavOrBlocked()
             this.spinValue = new Animated.Value(0)
             console.log(photoArray)
             console.log(emailArray)
@@ -1301,7 +1360,25 @@ async filterDone(){
 }
 
 async searchDone(value){
-  this.setState({showFilter: false, loadingOpacity: 1, backgroundOpacity: 0.2})
+  this.setState({showFilter: false,
+    loadingOpacity: 1,
+    backgroundOpacity: 0.2,
+    messageButtonDisabled: true,
+    messageButtonOpacity: 0,
+    isVisible2: false,
+    uri0: null,
+    uri1: null,
+    uri2: null,
+    uri3: null,
+    uri4: null,
+    uri5: null,
+    imagePath: null,
+    swipeableDisabled: true,
+    uri2_username: "",
+    uri2_country: "",
+    uri2_bio: "",
+    uri2_gender: "",
+  })
   this.spinAnimation()
   this.inSearchDone = true;
   photoArray.splice(0, photoArray.length)
@@ -1381,7 +1458,7 @@ async increaseNoOfSearch(){
   if(noOfSearch < 20){
     noOfSearch = noOfSearch + 1;
     flagIs20 = false;
-    await AsyncStorage.setItem('noOfSearch', noOfSearch.toString())
+    await AsyncStorage.setItem(auth().currentUser.uid + 'noOfSearch', noOfSearch.toString())
   }
   return noOfSearch;
 }
@@ -1389,7 +1466,7 @@ async increaseLastSearchNo(){
   var lastSearch;
   lastSearch = await this.getLastSearchNo()
   lastSearch = lastSearch + 1
-  await AsyncStorage.setItem('lastSearch', lastSearch.toString())
+  await AsyncStorage.setItem(auth().currentUser.uid + 'lastSearch', lastSearch.toString())
   return lastSearch;
 }
 
@@ -1426,7 +1503,7 @@ async arrangeSearchImageArray(lastSearch, noOfSearch){
   var date = day + "." + month + "." + year;
   historyArray[noOfSearch-1] = {lastSearch: lastSearch, searchDate: date}
   console.log("GET HISTORY ARRAY2: ", historyArray)
-  await AsyncStorage.setItem('historyArray', JSON.stringify(historyArray))
+  await AsyncStorage.setItem(auth().currentUser.uid + 'historyArray', JSON.stringify(historyArray))
 }
 
 async saveSearchPhotoLocally(photoPath){
@@ -1536,18 +1613,6 @@ render(){
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg']
     })
-    if (favoriteUsers != null && favoriteUsers.length != 0 && favoriteUsers.includes(emailArray[global.swipeCount])){
-      isFav = true
-    }
-    else{
-      isFav = false
-      if (blockedUsers != null && blockedUsers.length != 0 && blockedUsers.includes(emailArray[global.swipeCount])){
-        isBlock = true
-      }
-      else{
-        isBlock = false
-      }
-    }
     return(
       <View
       style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
@@ -1656,7 +1721,7 @@ render(){
 
       <InfoModal
       isVisible={this.state.notifIsVisible}
-      txtAlert = {"Your Twinizing process has started. We will notify you when the Twinizing is completed."}
+      txtAlert = {"Your Twinizing process has started."}
       txtGotIt = {global.langGotIt}
       onPressClose = {()=>this.setState({notifIsVisible:false})}/>
 
@@ -1664,6 +1729,7 @@ render(){
       tickIsVisible = {this.state.favTickVisible}
       onPressTick = {()=> this.setState({favTickVisible: this.state.favTickVisible ? 0 : 1})}
       isVisible = {this.state.addToFavVisible}
+      image = {"star"}
       txtAlert= {"You are adding " +this.state.uri2_username+ " to favorite users. Are you sure?"}
       onPressAdd= {()=>this.favModalButtonClicked(emailArray[global.swipeCount])}
       onPressClose = {()=>this.setState({addToFavVisible:false})}/>
@@ -1672,6 +1738,7 @@ render(){
       tickIsVisible = {this.state.blockTickVisible}
       onPressTick = {()=> this.setState({blockTickVisible: this.state.blockTickVisible ? 0 : 1})}
       isVisible = {this.state.addToBlockVisible}
+      image = {"block"}
       txtAlert= {"You are blocking " +this.state.uri2_username + ". Are you sure?"}
       onPressAdd= {()=>this.blockModalButtonClicked(emailArray[global.swipeCount])}
       onPressClose = {()=>this.setState({addToBlockVisible:false})}/>
@@ -1717,7 +1784,7 @@ render(){
       <Animated.Image source={{uri: 'loading' + global.themeForImages}}
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
         position: 'absolute', bottom: (this.height)*(20/100) - (getStatusBarHeight()) + (this.width*3/10*(7/6)) + this.width/30 - this.width/7, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
-        
+
       <View
       style = {{opacity: this.state.messageButtonOpacity, backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
       borderBottomLeftRadius: 16, borderBottomRightRadius: 16, borderTopLeftRadius: 16, borderTopRightRadius: 16,
@@ -1725,7 +1792,8 @@ render(){
       <FavoriteUserButton
       disabled = {this.state.messageButtonDisabled}
       onPress = {()=>this.addToFavButtonClicked()}
-      opacity = {1}/>
+      opacity = {1}
+      isSelected = {isFav}/>
       <SendMsgButton
       disabled = {this.state.messageButtonDisabled}
       onPress = {()=>this.sendFirstMessage()}
@@ -1733,7 +1801,8 @@ render(){
       <BlockUserButton
       disabled = {this.state.messageButtonDisabled}
       onPress = {()=>this.addToBlockButtonClicked()}
-      opacity = {1}/>
+      opacity = {1}
+      isSelected = {isBlock}/>
       </View>
 
 

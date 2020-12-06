@@ -56,6 +56,7 @@ if (!global.atob) { global.atob = decode }
 global.fromChat = false
 
 global.addedMsgs = {}
+global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,1)", "rgba(255,255,255,1)"]
   class Appp extends React.Component {
 
     constructor() {
@@ -145,9 +146,12 @@ global.addedMsgs = {}
   }
 console.disableYellowBox = true;
   global.messages = []
+  global.msgFromMain = false
   global.playerIdArray = {}
   global.removeFromFavUser = false
   global.removeFromBlockedUser = false
+  global.removedFromBlockedList = false
+  global.removedFromFavList = false
   global.selectedFavUserIndex = null
   global.selectedBlockedUserIndex = null
   global.favoriteUsersListeners = 0

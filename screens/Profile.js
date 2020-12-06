@@ -218,7 +218,7 @@ static navigationOptions = {
       })
       .then((res) => {
         console.log('The file saved to ', res.path())
-        this.setState({profilePhoto:  "file://" + res.path() + '?' + new Date()})
+        this.setState({profilePhoto:  "file://" + res.path()})
       })
     }
 
@@ -375,12 +375,13 @@ static navigationOptions = {
         style={{opacity: this.state.upperComponentsOpacity, width: this.width, height: (this.height-this.width/7 - headerHeight - getStatusBarHeight())/2, flexDirection: "row" }}>
 
         <TouchableOpacity
+        activeOpacity = {1}
         style={{opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}
         onPress = {()=> this.setState({imageViewerVisible: true})}>
 
         <Image
         style={{opacity: this.state.upperComponentsOpacity, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius:12, borderBottomRightRadius:12, width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)}}
-        source = {{uri:this.state.profilePhoto + '?' + new Date()}}>
+        source = {{uri:this.state.profilePhoto}}>
         </Image>
 
         </TouchableOpacity>
@@ -415,7 +416,7 @@ static navigationOptions = {
         selection={this.state.selection}
         numberOfLines={1}
         style={{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)",opacity: this.state.upperComponentsOpacity, paddingTop: 0, paddingBottom: 0, paddingLeft: 12, paddingRight: 12, textAlign: "left",
-        backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)", borderWidth: 0.4, borderColor:"gray",
+        backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)", borderWidth: 0.4, borderRadius: 8, borderColor:"gray",
         fontSize: 14*(this.width/360), width: this.width/2*(8/10), height:this.width/2*(8/10)*(7/6)/5 }}
         onChangeText={(text) => this.setState({userUsername: text})}>
         </TextInput>
@@ -429,6 +430,7 @@ static navigationOptions = {
         backgroundColor = {"white"}
         placeHolder = {false}
         borderWidth = {0.4}
+        borderRadius = {8}
         borderBottomWidth = {0.4}
         borderColor = {"gray"}
         borderBottomColor = {"gray"}
@@ -450,6 +452,7 @@ static navigationOptions = {
         backgroundColor = {"white"}
         placeHolder = {false}
         borderWidth = {0.4}
+        borderRadius = {8}
         borderBottomWidth = {0.4}
         borderColor = {"gray"}
         borderBottomColor = {"gray"}

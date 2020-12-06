@@ -68,19 +68,19 @@ async componentDidMount(){
   this._subscribe = this.props.navigation.addListener('focus', async () => {
     this.leftAnimation = new Animated.Value(-this.width*(3/16))
     global.fromChat = false
+    this.spinAnimation()
+    noOfSearch = await this.getNoOfSearch()
+    await this.createUriArray()
+    await this.createDateArray()
+    isSelectedArray = []
+    this.initializeIsSelectedArray()
+    loadingDone = true
     this.setState({reRender: "ok"})
   })
   this._subscribe = this.props.navigation.addListener('blur', async () => {
     this.setState({editPressed: false, cancelPressed: false, editText: "Edit", messageBoxDisabled: false})
   })
   console.log("COMPONENT DID MOUNT")
-  this.spinAnimation()
-  noOfSearch = await this.getNoOfSearch()
-  await this.createUriArray()
-  await this.createDateArray()
-  isSelectedArray = []
-  this.initializeIsSelectedArray()
-  loadingDone = true
   this.setState({reRender: "ok"})
 }
   static navigationOptions = {
@@ -191,6 +191,7 @@ initializeIsSelectedArray(){
   for(i = 0; i < noOfSearch; i++){
     isSelectedArray[i] = false
   }
+  console.log("history initializeIsSelectedArray", isSelectedArray)
     this.setState({reRender: "ok"})
 }
 editButtonPressed(){
@@ -258,6 +259,7 @@ async getNoOfSearch(){
     noOfSearch = "0";
   }
   noOfSearch = parseInt(noOfSearch)
+  console.log("history getNoOfSearch", noOfSearch)
   return noOfSearch
 }
 
@@ -265,12 +267,14 @@ async createUriArray(){
   for( i = 0; i < noOfSearch; i++){
     uriArray[i] = await this.getHistoryPhotoPath(i)
   }
+  console.log("history createUriArray", uriArray)
   this.setState({reRender: "ok"})
 }
 async createDateArray(){
   for( i = 0; i < noOfSearch; i++){
     dateArray[i] = await this.getHistoryDate(i)
   }
+  console.log("history createDateArray", dateArray)
   this.setState({reRender: "ok"})
 }
 

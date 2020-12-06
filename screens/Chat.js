@@ -340,9 +340,14 @@ spinAnimation(){
       )).start()
   }
 goBackOnPress(){
+  if(global.msgFromMain){
+    global.msgFromMain = false
+    this.props.navigation.navigate("Main")
+  }
+  else{
     global.comingFromChat = true
-
     this.props.navigation.navigate("Messages")
+  }
   }
 renderTime(props) {
       return (

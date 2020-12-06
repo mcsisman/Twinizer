@@ -41,14 +41,14 @@ export default class ProfileBioButton extends Component {
     this.width = Math.round(Dimensions.get('screen').width);
     return(
       <View
-        style={{ opacity: this.props.opacity, top: "52%", position:"absolute", borderColor:"gray", borderWidth: 0.4,
+        style={{ opacity: this.props.opacity, top: "52%", position:"absolute", borderColor:"gray", borderWidth: 0.4, borderRadius: 8,
         backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)",flexDirection: 'column', alignItems: 'center'}}>
       <TextInput
         onFocus = {this.props.onFocus}
         defaultValue = {this.props.defaultText}
         multiline = {true}
         maxLength = {100}
-        style={{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", paddingLeft: 10, fontSize: 16*(this.width/360), width: this.width*(7/10), }}
+        style={{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", paddingLeft: 10, borderRadius: 8, fontSize: 16*(this.width/360), width: this.width*(7/10), }}
         onChangeText={this.props.onChangeText}>
       </TextInput>
 

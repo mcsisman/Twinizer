@@ -131,6 +131,7 @@ static navigationOptions = {
   remove(){
     listener.off()
     global.removeFromFavUser = true
+    global.removedFromFavList = true
     this.props.navigation.navigate("FavoriteUsers")
   }
   async block(){
@@ -235,7 +236,7 @@ static navigationOptions = {
         style={{opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}>
 
         <View
-        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderColor:"gray"}}>
+        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderColor:"gray", borderRadius: 8}}>
         <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
         {this.state.userUsername}
         </Text>
@@ -246,7 +247,7 @@ static navigationOptions = {
         </View>
 
         <View
-        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderColor:"gray"}}>
+        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderColor:"gray", borderRadius: 8}}>
         <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
         {this.state.userCountry}
         </Text>
@@ -257,7 +258,7 @@ static navigationOptions = {
         </View>
 
         <View
-        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderColor:"gray"}}>
+        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderColor:"gray", borderRadius: 8}}>
         <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
         {this.state.userGender}
         </Text>
@@ -268,8 +269,8 @@ static navigationOptions = {
         </View>
 
         <View
-        style={{width: this.width*4/6, height: this.height*2/10,  borderWidth: 0.9, borderColor:"gray"}}>
-        <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
+        style={{width: this.width*4/6, height: this.height*2/10,  borderWidth: 0.9, borderColor:"gray", borderRadius: 8}}>
+        <Text style={{color: global.themeColor, fontSize: 15*(this.width/360), paddingLeft: 10, paddingRight: 10, paddingTop: 3}}>
         {this.state.userBio}
         </Text>
         </View>
