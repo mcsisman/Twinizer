@@ -69,7 +69,7 @@ export default class FavBlockModal extends Component {
       animationOutTiming = {500}
       isVisible={this.props.isVisible}>
       <View style={{
-      borderBottomLeftRadius: 8, borderTopRightRadius: 8,
+      borderBottomLeftRadius: 8, borderTopRightRadius: 8, borderColor: "rgba(0,0,0,4)",
       borderTopLeftRadius: 8, borderBottomRightRadius: 8,
       backgroundColor: global.isDarkMode ? global.darkModeColors[0] : "rgba(255,255,255,1)",
       width: screenWidth*(6.5/10),
@@ -132,12 +132,14 @@ export default class FavBlockModal extends Component {
       borderWidth = {0}/>
       </View>
 
-      <View
-      style={{width: screenWidth*(3/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
+      <TouchableOpacity
+      activeOpacity = {1}
+      style={{width: screenWidth*(3/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}
+      onPress = {this.props.onPressAdd}>
       <Image source={{uri: this.props.image}}
         style={{width: screenWidth*(1.5/20), height:screenWidth*(1.5/20)}}
       />
-      </View>
+      </TouchableOpacity>
 
       </View>
 

@@ -78,7 +78,7 @@ export default class InfoModal extends Component {
       animationOutTiming = {500}
       isVisible={this.props.isVisible}>
       <View style={{
-      borderRadius: 8, borderWidth: 0.3, borderColor: "rgba(0,0,0,2)",
+      borderRadius: 8, borderWidth: 0.3, borderColor: "rgba(0,0,0,4)",
       backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
       width: screenWidth*(6.5/10),
       paddingTop: 10,

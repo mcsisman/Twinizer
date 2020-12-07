@@ -33,13 +33,17 @@ export default class BlockUserButton extends Component {
    image: PropTypes.string,
    width: PropTypes.number,
    height: PropTypes.number,
-   isSelected: PropTypes.bool
+   isSelected: PropTypes.bool,
+   borderBottomRightRadius: PropTypes.number,
+   borderTopRightRadius: PropTypes.number
  }
  static defaultProps = {
    width: screenWidth/6,
    height: screenWidth/10,
    image: "block",
-   isSelected: false
+   isSelected: false,
+   borderBottomRightRadius: 16,
+   borderTopRightRadius: 16
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
@@ -49,7 +53,7 @@ export default class BlockUserButton extends Component {
         activeOpacity = {1}
         style={{ opacity: this.props.opacity, justifyContent: 'center', backgroundColor: this.props.isSelected ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0)",
         alignItems: 'center', width: this.props.width, height: this.props.height,
-        borderBottomRightRadius: 16, borderTopRightRadius: 16}}
+        borderBottomRightRadius: this.props.borderBottomRightRadius, borderTopRightRadius: this.props.borderTopRightRadius}}
         onPress={this.props.onPress}
         disabled = {this.props.disabled}>
 

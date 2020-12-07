@@ -67,7 +67,7 @@ export default class ImageUploadModal extends Component {
       isVisible = {this.props.isVisible}>
 
       <View style={{
-      borderBottomLeftRadius: 4, borderTopRightRadius:4,
+      borderBottomLeftRadius: 4, borderTopRightRadius:4, borderColor: "rgba(0,0,0,4)",
       borderTopLeftRadius: 4, borderBottomRightRadius: 4,
       backgroundColor: global.isDarkMode ? global.darkModeColors[0] : "rgba(255,255,255,1)",
       width: screenWidth*(6/10),

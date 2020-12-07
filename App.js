@@ -197,6 +197,7 @@ console.disableYellowBox = true;
     //ProfileUpload
     global.langProfileScreen = "Lütfen bir Profil Fotoğrafı Yükleyin."
     global.langProfileAlert = "Lütfen sadece sizin yüzünüzün olduğu bir fotoğraf yükleyin. Bu profil fotoğrafı diğer kullanıcılar tarafından görülebilir."
+    global.langBioAlert = "Lütfen buraya bir mesaj girin. Bu mesaj, sizi görüntüleyen insanlar tarafından görüntülenebilir."
     global.langGotIt = "ANLADIM!"
     global.langTapHere = "Buraya Dokun"
     global.langUploadPhoto = "Bir Fotoğraf Yükle"
@@ -258,6 +259,7 @@ console.disableYellowBox = true;
     //ProfileUpload
     global.langProfileScreen = "Please Upload a Profile Photo."
     global.langProfileAlert = "Please make sure to choose a photo that includes your face only. Your profile photo can be seen by other users."
+    global.langBioAlert = "Please write your message here. This message can be seen by people displaying you."
     global.langGotIt = "GOT IT!"
     global.langTapHere = "Tap Here"
     global.langUploadPhoto = "Upload a Photo"

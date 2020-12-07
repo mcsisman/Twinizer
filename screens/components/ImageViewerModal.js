@@ -53,7 +53,7 @@ export default class ImageViewerModal extends Component {
         isVisible={this.props.isVisible}
         >
         <View
-        style={{width: this.width, height: this.height, right: 0, top: 0, backgroundColor:"rgba(255,255,255,0.3)"}}>
+        style={{width: this.width, height: this.height, right: 0, top: 0, backgroundColor:"rgba(255,255,255,0.3)", borderColor: "rgba(0,0,0,4)",}}>
           <ImageViewer
           renderIndicator={() => null}
           enableSwipeDown = {true}

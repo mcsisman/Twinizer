@@ -1120,17 +1120,8 @@ async createEmailDistanceArrays(gender, country, fn){
   }
   else if (fn == "filterDone with all") {
 
-    emailArray = mainEmailArray;
-    usernameArray = mainUsernameArray;
-    countryArray = mainCountryArray;
-    genderArray = mainGenderArray;
-    distanceArray = mainDistanceArray;
-    photoArray = mainPhotoArray;
-  }
-  else if (fn == "filterDone with all genders") {
-
     for (let i = 0; i < mainEmailArray.length; i++){
-      if (mainCountryArray[i] == country){
+      if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
         emailArray.push(mainEmailArray[i]);
         usernameArray.push(mainUsernameArray[i]);
         countryArray.push(mainCountryArray[i]);
@@ -1138,6 +1129,23 @@ async createEmailDistanceArrays(gender, country, fn){
         distanceArray.push(mainDistanceArray[i]);
         if (i < mainPhotoArray.length){
           photoArray.push(mainPhotoArray[i]);
+        }
+      }
+    }
+  }
+  else if (fn == "filterDone with all genders") {
+
+    for (let i = 0; i < mainEmailArray.length; i++){
+      if (mainCountryArray[i] == country){
+        if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
+          emailArray.push(mainEmailArray[i]);
+          usernameArray.push(mainUsernameArray[i]);
+          countryArray.push(mainCountryArray[i]);
+          genderArray.push(mainGenderArray[i]);
+          distanceArray.push(mainDistanceArray[i]);
+          if (i < mainPhotoArray.length){
+            photoArray.push(mainPhotoArray[i]);
+          }
         }
       }
     }
@@ -1146,14 +1154,16 @@ async createEmailDistanceArrays(gender, country, fn){
 
     for (let i = 0; i < mainEmailArray.length; i++){
       if (mainGenderArray[i] == gender){
-        emailArray.push(mainEmailArray[i]);
-        usernameArray.push(mainUsernameArray[i]);
-        countryArray.push(mainCountryArray[i]);
-        genderArray.push(mainGenderArray[i]);
-        distanceArray.push(mainDistanceArray[i]);
-        if (i < mainPhotoArray.length){
-          photoArray.push(mainPhotoArray[i]);
-          console.log("photoArray.length for = ", i, photoArray.length)
+        if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
+          emailArray.push(mainEmailArray[i]);
+          usernameArray.push(mainUsernameArray[i]);
+          countryArray.push(mainCountryArray[i]);
+          genderArray.push(mainGenderArray[i]);
+          distanceArray.push(mainDistanceArray[i]);
+          if (i < mainPhotoArray.length){
+            photoArray.push(mainPhotoArray[i]);
+            console.log("photoArray.length for = ", i, photoArray.length)
+          }
         }
       }
     }
@@ -1162,13 +1172,15 @@ async createEmailDistanceArrays(gender, country, fn){
 
     for (let i = 0; i < mainEmailArray.length; i++){
       if (mainCountryArray[i] == country && mainGenderArray[i] == gender){
-        emailArray.push(mainEmailArray[i]);
-        usernameArray.push(mainUsernameArray[i]);
-        countryArray.push(mainCountryArray[i]);
-        genderArray.push(mainGenderArray[i]);
-        distanceArray.push(mainDistanceArray[i]);
-        if (i < mainPhotoArray.length){
-          photoArray.push(mainPhotoArray[i]);
+        if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
+          emailArray.push(mainEmailArray[i]);
+          usernameArray.push(mainUsernameArray[i]);
+          countryArray.push(mainCountryArray[i]);
+          genderArray.push(mainGenderArray[i]);
+          distanceArray.push(mainDistanceArray[i]);
+          if (i < mainPhotoArray.length){
+            photoArray.push(mainPhotoArray[i]);
+          }
         }
       }
     }
@@ -1280,6 +1292,8 @@ async filterDone(){
   this.setState({loadingOpacity: 1})
   this.spinAnimation()
   this.inSearchDone = false;
+  isFav = false
+  isBlock = false
   emailArray = [];
   usernameArray = [];
   countryArray = [];
@@ -1354,12 +1368,15 @@ async filterDone(){
     messageButtonDisabled: false,
     messageButtonOpacity: 1
   })
+  this.checkUri2FavOrBlocked()
   console.log(this.state.uri2_bio);
   console.log(this.state.uri2);
   this.setState({loadingOpacity: 0})
 }
 
 async searchDone(value){
+  isFav = false
+  isBlock = false
   this.setState({showFilter: false,
     loadingOpacity: 1,
     backgroundOpacity: 0.2,
@@ -1621,7 +1638,7 @@ render(){
       <CustomHeader
       whichScreen = {"Main"}
       onPress = {()=> this.setState({isVisible2: true})}
-      isFilterVisible = {true}
+      isFilterVisible = {this.state.showFilter}
       title = {"Twinizer"}>
       </CustomHeader>
 
@@ -1779,6 +1796,10 @@ render(){
       bio = {this.state.uri2_bio}
       onPressCancel = {()=>this.setState({openProfileIsVisible:false}) }
       imgSource = {this.state.uri2}
+      isFavorite = {isFav}
+      isBlocked = {isBlock}
+      onPressFav = {()=>this.addToFavButtonClicked()}
+      onPressBlock = {()=>this.addToBlockButtonClicked()}
       onPressSendMsg = {()=>this.sendFirstMessage()}/>
 
       <Animated.Image source={{uri: 'loading' + global.themeForImages}}
@@ -1793,6 +1814,8 @@ render(){
       disabled = {this.state.messageButtonDisabled}
       onPress = {()=>this.addToFavButtonClicked()}
       opacity = {1}
+      borderBottomLeftRadius = {16}
+      borderTopLeftRadius = {16}
       isSelected = {isFav}/>
       <SendMsgButton
       disabled = {this.state.messageButtonDisabled}
@@ -1801,6 +1824,8 @@ render(){
       <BlockUserButton
       disabled = {this.state.messageButtonDisabled}
       onPress = {()=>this.addToBlockButtonClicked()}
+      borderBottomRightRadius = {16}
+      borderTopRightRadius = {16}
       opacity = {1}
       isSelected = {isBlock}/>
       </View>

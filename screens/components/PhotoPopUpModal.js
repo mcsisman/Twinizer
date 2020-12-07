@@ -39,7 +39,9 @@ export default class PhotoPopUpModal extends Component {
    onPressSendMsg: PropTypes.func,
    onPressFav: PropTypes.func,
    onPressBlock: PropTypes.func,
-   onPressImage: PropTypes.func
+   onPressImage: PropTypes.func,
+   isFavorite: PropTypes.bool,
+   isBlocked: PropTypes.bool
 
  }
  static defaultProps = {
@@ -50,7 +52,9 @@ export default class PhotoPopUpModal extends Component {
    animationIn: "zoomInUp",
    animationOut: "zoomOutUp",
    backdropOpacity: 0.4,
-   onPressImage: null
+   onPressImage: null,
+   isFavorite: false,
+   isBlocked: false
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
@@ -71,7 +75,7 @@ export default class PhotoPopUpModal extends Component {
         isVisible={this.props.isVisible}
         >
         <View style={{
-          borderBottomLeftRadius: 12, borderTopRightRadius: 12,
+          borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderColor: "rgba(0,0,0,4)",
           borderTopLeftRadius: 12, borderBottomRightRadius: 12,
           backgroundColor: 'white',
           width: this.width*(8/10),
@@ -99,7 +103,7 @@ export default class PhotoPopUpModal extends Component {
 
           <View style={{ paddingTop: 5, paddingBottom: 5, paddingLeft:10, paddingRight: 10, backgroundColor:  global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
           <Text style={{ textAlign: 'left', color: global.themeColor, fontSize: (this.width*(1/25))}}>
-            {this.props.bio}
+            "{this.props.bio}"
           </Text>
           </View>
 
@@ -116,6 +120,9 @@ export default class PhotoPopUpModal extends Component {
           borderBottomLeftRadius: 12, borderBottomRightRadius: 12}}>
           <FavoriteUserButton
           disabled = {false}
+          borderBottomLeftRadius = {12}
+          borderTopLeftRadius = {0}
+          isSelected = {this.props.isFavorite}
           width = {this.width*(8/30)}
           height = {this.width*(8/10)*(1/6)}
           onPress = {this.props.onPressFav}
@@ -128,6 +135,9 @@ export default class PhotoPopUpModal extends Component {
           opacity = {1}/>
           <BlockUserButton
           disabled = {false}
+          borderBottomRightRadius = {12}
+          borderTopRightRadius = {0}
+          isSelected = {this.props.isBlocked}
           width = {this.width*(8/30)}
           height = {this.width*(8/10)*(1/6)}
           onPress = {this.props.onPressBlock}

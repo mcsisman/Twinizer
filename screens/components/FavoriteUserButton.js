@@ -33,13 +33,17 @@ export default class FavoriteUserButton extends Component {
    image: PropTypes.string,
    width: PropTypes.number,
    height: PropTypes.number,
-   isSelected: PropTypes.bool
+   isSelected: PropTypes.bool,
+   borderBottomLeftRadius: PropTypes.number,
+   borderTopLeftRadius: PropTypes.number
  }
  static defaultProps = {
    width: screenWidth/6,
    height: screenWidth/10,
    image: "star",
-   isSelected: false
+   isSelected: false,
+   borderBottomLeftRadius: 16,
+   borderTopLeftRadius: 16
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
@@ -49,7 +53,7 @@ export default class FavoriteUserButton extends Component {
         activeOpacity = {1}
         style={{ opacity: this.props.opacity, justifyContent: 'center', alignItems: 'center', backgroundColor: this.props.isSelected ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0)",
         width: this.props.width, height: this.props.height, borderRightWidth: 0.7, borderColor: "white",
-        borderBottomLeftRadius: 16, borderTopLeftRadius: 16}}
+        borderBottomLeftRadius: this.props.borderBottomLeftRadius, borderTopLeftRadius: this.props.borderTopLeftRadius}}
         onPress={this.props.onPress}
         disabled = {this.props.disabled}>
 

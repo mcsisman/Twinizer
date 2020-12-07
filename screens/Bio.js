@@ -201,7 +201,7 @@ valueChange(value){
 
       <InfoModal
       isVisible = {this.state.isVisible2}
-      txtAlert = {global.langProfileAlert}
+      txtAlert = {global.langBioAlert}
       txtGotIt = {global.langGotIt}
       onPressClose = {()=>this.setState({isVisible2:false}) }/>
 
