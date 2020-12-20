@@ -8,7 +8,8 @@ import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { navigationRef } from './screens/RootNavigation';
+import { navigationRef } from './source/RootNavigation';
+import AsyncStorage from '@react-native-community/async-storage';
 import {
   SafeAreaView,
   StyleSheet,
@@ -24,31 +25,29 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native';
-import SplashScreen from './screens/Splash';
-import MainScreen from './screens/Main';
-import NewAccountScreen from './screens/NewAccount';
-import ForgotPasswordScreen from './screens/ForgotPassword';
-import ImageUploadScreen from './screens/ImageUpload';
-import ChatScreen from './screens/Chat';
-import GenderScreen from './screens/Gender';
-import BioScreen from './screens/Bio';
-import MessagesScreen from './screens/Messages';
-import ProfileUploadScreen from './screens/ProfileUpload';
-import BottomBar from './screens/components/BottomBar';
-import HistoryScreen from './screens/History';
-import DeleteOptionsScreen from './screens/DeleteOptions';
-import SettingsScreen from './screens/Settings';
-import AboutScreen from './screens/About';
-import LibraryLicencesScreen from './screens/LibraryLicences';
-import DisplayLicenceScreen from './screens/DisplayLicence';
-import FavoriteUsersScreen from './screens/FavoriteUsers';
-import BlockedUsersScreen from './screens/BlockedUsers';
-import ThemeSettingsScreen from './screens/ThemeSettings';
-import ProfileScreen from './screens/Profile';
-import ProfileFavUserScreen from './screens/ProfileFavUser';
-import ProfileBlockedUserScreen from './screens/ProfileBlockedUser';
-import AsyncStorage from '@react-native-community/async-storage';
-import themes from './screens/Themes';
+import SplashScreen from './source/Login/Splash';
+import NewAccountScreen from './source/Login/NewAccount';
+import ForgotPasswordScreen from './source/Login/ForgotPassword';
+import MainScreen from './source/Main/Main';
+import ImageUploadScreen from './source/ProfileSteps/ImageUpload';
+import ChatScreen from './source/Messaging/Chat';
+import UserInfoScreen from './source/ProfileSteps/UserInfo';
+import BioScreen from './source/ProfileSteps/Bio';
+import MessagesScreen from './source/Messaging/Messages';
+import ProfileUploadScreen from './source/ProfileSteps/ProfileUpload';
+import HistoryScreen from './source/History/History';
+import DeleteOptionsScreen from './source/Settings/DeleteOptions';
+import SettingsScreen from './source/Settings/Settings';
+import AboutScreen from './source/Settings/About';
+import LibraryLicencesScreen from './source/Settings/LibraryLicences';
+import DisplayLicenceScreen from './source/Settings/DisplayLicence';
+import FavoriteUsersScreen from './source/Settings/FavoriteUsers';
+import BlockedUsersScreen from './source/Settings/BlockedUsers';
+import ThemeSettingsScreen from './source/Settings/ThemeSettings';
+import ProfileScreen from './source/Settings/Profile';
+import ProfileFavUserScreen from './source/Settings/ProfileFavUser';
+import ProfileBlockedUserScreen from './source/Settings/ProfileBlockedUser';
+import themes from './source/Settings/Themes';
 
 if (!global.btoa) { global.btoa = encode }
 
@@ -129,7 +128,7 @@ global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,
             navigate("Tabs")
           }).catch(function(error) {
             console.log("EMBEDDING YOK: ", auth().currentUser.uid)
-            navigate("Gender")
+            navigate("UserInfo")
           });
         }
         else{
@@ -583,7 +582,7 @@ function MyTabs() {
             close: config,
           },
         }}
-        name="Gender" component={GenderScreen} />
+        name="UserInfo" component={UserInfoScreen} />
         <Stack.Screen options={{
           gestureEnabled: true, gestureDirection: "horizontal",
           cardStyleInterpolator: forHorizontalModal,
