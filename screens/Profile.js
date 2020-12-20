@@ -54,6 +54,7 @@ var currentUserCountry;
 var currentUserUsername;
 var currentUserBio;
 var currentUserPhotoCount;
+var updateImage;
 export default class ProfileScreen extends Component<{}>{
   constructor(props){
     super(props);
@@ -93,7 +94,7 @@ export default class ProfileScreen extends Component<{}>{
       this.spinAnimation()
       await this.checkIfUserDataExistsInLocalAndSaveIfNot()
       console.log("subscribe")
-      this.setState({reRender: "ok"})
+      this.setState({reRender: "ok", profilePhoto: this.state.profilePhoto + '?' + new Date()})
     })
     this._subscribe = this.props.navigation.addListener('blur', async () => {
       this.setState({loadingDone: false})
@@ -234,7 +235,7 @@ static navigationOptions = {
       var ref1 = storageRef.child("Photos/" + auth().currentUser.uid + "/1.jpg");
       await ref1.put(blob)
       RNFS.copyFile(this.state.profilePhoto, RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg");
-      this.setState({userPhotoCount: this.state.userPhotoCount + 1})
+      this.setState({profilePhoto: this.state.profilePhoto + '?' + new Date(), userPhotoCount: this.state.userPhotoCount + 1})
     }
     AsyncStorage.setItem(auth().currentUser.uid + 'userGender', this.state.userGender)
     AsyncStorage.setItem(auth().currentUser.uid + 'userCountry', this.state.userCountry)
@@ -242,7 +243,6 @@ static navigationOptions = {
     AsyncStorage.setItem(auth().currentUser.uid + 'userBio', this.state.userBio)
     await AsyncStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
 
-    var database = database();
     await database().ref('Users/' + auth().currentUser.uid + "/i").update({
       g: this.state.userGender,
       c: this.state.userCountry,

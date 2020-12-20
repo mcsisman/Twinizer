@@ -369,7 +369,7 @@ async getUsernameOfTheUid(){
           conversationUsernameArray.push(snapshot.val())
         }
         await this.updatePlayerIds(snapshot, conversationUsernameArray.length-1)
-        conversationUsernameArray
+
       })
       await AsyncStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
     }
@@ -560,7 +560,7 @@ async createUidPhotoArrays(){
       }
     }
   for( let i = 0; i < conversationUidArray.length; i++){
-      photoArray[i] = "file:///data/user/0/com.twinizer/files/" + conversationUidArray[i] + "y"+ ".jpg"
+      photoArray[i] = "file:///data/user/0/com.twinizer/files/" + conversationUidArray[i] + "y"+ ".jpg" + '?' + new Date();
   }
   return conversationUidArray
 }

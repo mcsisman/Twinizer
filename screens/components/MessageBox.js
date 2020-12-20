@@ -79,7 +79,7 @@ export default class MessageBox extends Component {
         style = {{height: this.msgBoxHeight, width: this.width*(2.5/10), alignItems: 'center', justifyContent: 'center'}}>
         <Image
         style={{width: this.width*(1.6/10), height: this.width*(1.6/10)*(7/6), borderBottomLeftRadius: 13, borderTopRightRadius: 13, borderTopLeftRadius: 13, borderBottomRightRadius: 13}}
-        source = {{uri: this.props.avatarSource + '?' + new Date()}}>
+        source = {{uri: this.props.avatarSource}}>
         </Image>
         </View>
 
