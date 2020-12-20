@@ -1584,8 +1584,10 @@ uploadSearchPhoto = async (uri) => {
               if (this.probabilityDoneCheck == false){
                 this.checkFunction();
               }
-            }).catch(function(error) {
+            }).catch(error => {
+              console.log("buraya mı geldi")
               this.setState({loadingOpacity: 0})
+              console.log("buraya mı geldi evet")
               this.spinValue = new Animated.Value(0)
               console.log("User2 update olmadı")
               Alert.alert("Connection Failed", "Please try Again.." )
@@ -1624,21 +1626,21 @@ uploadSearchPhoto = async (uri) => {
                  if (this.probabilityDoneCheck == false){
                    this.checkFunction();
                  }
-               }).catch(function(error) {
+               }).catch(error => {
                  this.setState({loadingOpacity: 0})
                  this.spinValue = new Animated.Value(0)
                  console.log("User2 update olmadı")
                  Alert.alert("Connection Failed", "Please try Again.." )
                });
          }
-       }).catch(function(error) {
+       }).catch(error => {
          this.setState({loadingOpacity: 0})
          this.spinValue = new Animated.Value(0)
          console.log("Function number catchi")
          Alert.alert("Connection Failed", "Please try Again.." )
        });
       }
-      }).catch(function(error) {
+      }).catch(error => {
         this.setState({loadingOpacity: 0})
         this.spinValue = new Animated.Value(0)
         console.log("Search fotosu upload olmadı")
