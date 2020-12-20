@@ -106,7 +106,6 @@ export default class SettingsScreen extends Component<{}>{
       console.log("o güncellendi")
       await auth().signOut().then(function() {
         console.log("LOGOUT SUCCESSFUL")
-        //navigate("Splash")
       })
     });
     this.props.navigation.dispatch(StackActions.popToTop());

@@ -636,12 +636,7 @@ getMessagesData = async callback =>{
       requestArray.splice(0, requestArray.length)
 
       if(!fromChat && data != ""){
-        if( data.user.r == auth().currentUser.uid && !isEmpty){
-          await this.setShowMessageBox(data.user._id, "true")
-        }
-        if( data.user._id == auth().currentUser.uid && !isEmpty){
-          await this.setShowMessageBox(data.user.r, "true")
-        }
+
         if(dataArray.length < noOfConversations){
           dataArray[count] = data
         }
@@ -671,6 +666,7 @@ getMessagesData = async callback =>{
               isReq = "false"
             }
             this.setLocalIsRequest(uidArray[i], isReq)
+            console.log("SHOW?:", showBox)
             if(showBox == "true" || showBox == undefined || showBox == null){
               if(isReq == "false"){
                 messageArray.push(dataArray[i])
@@ -790,6 +786,8 @@ syncLocalMessages = async (snapshot, uidCount) => {
     var messageKey;
     var noOfNewMsgs = Object.keys(snapVal).length
     global.addedMsgs[uidArray[uidCount]] = Object.keys(snapVal)
+
+    await this.setShowMessageBox(uidArray[uidCount], "true")
     var tempMsgs = localMessages
     if(noOfNewMsgs != 0){
 

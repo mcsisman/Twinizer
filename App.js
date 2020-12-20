@@ -25,7 +25,7 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native';
-import SplashScreen from './source/Login/Splash';
+import LoginScreen from './source/Login/Login';
 import NewAccountScreen from './source/Login/NewAccount';
 import ForgotPasswordScreen from './source/Login/ForgotPassword';
 import MainScreen from './source/Main/Main';
@@ -132,7 +132,7 @@ global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,
           });
         }
         else{
-          navigate("Splash")
+          navigate("Login")
         }
         return (
           <ImageBackground
@@ -504,7 +504,7 @@ function MyTabs() {
             close: config,
           },
         }}
-        name="Splash" component={SplashScreen} />
+        name="Login" component={LoginScreen} />
         <Stack.Screen options={{
           transitionSpec: {
             open: config,

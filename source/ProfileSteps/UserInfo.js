@@ -116,7 +116,6 @@ valueChange(value){
 async goBack(){
   await auth().signOut().then(function() {
     console.log("LOGOUT SUCCESSFUL")
-    //navigate("Splash")
   })
   this.props.navigation.dispatch(StackActions.popToTop());
 }

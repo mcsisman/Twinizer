@@ -18,7 +18,7 @@ import {Image,
    Platform,
    Keyboard
   } from 'react-native';
-import SplashScreen from './Splash';
+import LoginScreen from './Login';
 import CustomHeader from '../Components/Common/Header/CustomHeader'
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 import OvalButton from '../Components/Common/OvalButton/OvalButton'
@@ -50,7 +50,7 @@ static navigationOptions = {
     const {navigate} = this.props.navigation;
     auth().sendPasswordResetEmail(this.state.email)
       .then(function (user) {
-        navigate('Splash')
+        navigate('Login')
         Alert.alert("", global.langPlsCheckEmail)
       }).catch(error => {
         Alert.alert(global.langPlsTryAgain, global.langEmailNotRegistered)

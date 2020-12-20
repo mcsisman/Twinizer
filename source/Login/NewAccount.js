@@ -22,7 +22,7 @@ import {Image,
    Platform,
    Keyboard
   } from 'react-native';
-import SplashScreen from './Splash';
+import LoginScreen from './Login';
 import CustomHeader from '../Components/Common/Header/CustomHeader'
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 import OvalButton from '../Components/Common/OvalButton/OvalButton'
@@ -84,7 +84,7 @@ writeUserData(userId, name, email, imageUrl) {
                     });
                     AsyncStorage.setItem(auth().currentUser.uid + 'userName', this.state.isim)
                     auth().currentUser.sendEmailVerification();
-                    navigate('Splash')
+                    navigate('Login')
                     Alert.alert('',global.langVerificationSent);
                 })
                 .catch(error => {

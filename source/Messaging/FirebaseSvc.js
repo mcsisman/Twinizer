@@ -140,6 +140,8 @@ class FirebaseSvc {
     database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).update({
       k:1
     })
+    //If sending a msg to previously deleted person on main page
+    AsyncStorage.setItem('ShowMessageBox/' + auth().currentUser.uid + "/" + global.receiverUid, "true")
     console.log("SENDE GELEN MESSAGES:", messages)
     if(global.firstMessage){
       var kExists = false

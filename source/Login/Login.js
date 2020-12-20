@@ -35,7 +35,7 @@ global.messagesFirstTime = true
 var keyboardHeight;
 var keyboardYcord;
 
-export default class SplashScreen extends Component<{}>{
+export default class LoginScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.state = {
