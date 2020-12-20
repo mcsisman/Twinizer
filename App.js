@@ -145,6 +145,7 @@ global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,
     }
   }
 console.disableYellowBox = true;
+  global.functionNumber = -1
   global.messages = []
   global.msgFromMain = false
   global.playerIdArray = {}

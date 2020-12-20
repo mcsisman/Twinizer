@@ -254,6 +254,7 @@ donePress(){
       noOfBlockedUsers = noOfBlockedUsers - 1
     }
   }
+  global.removedFromBlockedList = true
   for( let i = 0; i < noOfBlockedUsers; i++){
     colorArray[i] = "trashgray"
   }

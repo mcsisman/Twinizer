@@ -94,6 +94,7 @@ var currentUserCountry;
 var playerId;
 var currentUserUsername;
 var currentUserBio;
+var resultCounter;
 var isFav = false;
 var isBlock = false;
 var addingToWhichList = "";
@@ -213,9 +214,11 @@ async componentDidMount(){
       global.fromChat = false
       if(global.removedFromFavList){
         await this.getFavoriteUsers()
+        global.removedFromFavList = false
       }
       if(global.removedFromBlockedList){
         await this.getBlockedUsers()
+        global.removedFromBlockedList = false
       }
       if(global.fromHistorySearch){
         await this.setSearchPhotoFromHistory(global.historyPhotoUri)
@@ -235,25 +238,7 @@ async componentDidMount(){
     });
     OneSignal.addEventListener('received', this.onReceived);
     OneSignal.addEventListener('opened', this.onOpened);
-    OneSignal.addEventListener('ids', this.onIds);
-    // Check playerId from local and change if it is changed
-    playerId = await AsyncStorage.getItem(auth().currentUser.uid + 'playerId')
-    if(playerId != global.playerId){
-      var temp = 0;
-      database().ref('/Users/'+auth().currentUser.uid + '/i/o').once('value').then(snapshot => {
-        if(snapshot.val()){
-          temp = snapshot.val()
-        }
-        console.log("temp: ", temp)
-        database().ref('/Users/'+auth().currentUser.uid + '/i').update({
-          o: temp + 1
-        });
-      });
-      database().ref('/PlayerIds/').update({
-        [auth().currentUser.uid]: global.playerId
-      });
-      AsyncStorage.setItem(auth().currentUser.uid + 'playerId', global.playerId)
-    }
+    OneSignal.addEventListener('ids', await this.onIds);
     global.swipeCount = 0
     // this.checkIfAlreadySearching()
     this.welcome = {uri: 'twinizermain'}
@@ -282,7 +267,22 @@ onOpened(openResult) {
     //navigate("Messages")
 }
 
-onIds(device) {
+async onIds(device) {
+    // Check playerId from local and change if it is changed
+    playerId = await AsyncStorage.getItem(auth().currentUser.uid + 'playerId')
+    global.playerId = device["userId"]
+    console.log("playerId from storage: ", playerId)
+    console.log("playerId from onesignal", global.playerId)
+    if(playerId != global.playerId){
+      var randO = Math.random()
+      database().ref('/Users/'+auth().currentUser.uid + '/i').update({
+        o: randO
+      });
+      database().ref('/PlayerIds/').update({
+        [auth().currentUser.uid]: global.playerId
+      });
+      AsyncStorage.setItem(auth().currentUser.uid + 'playerId', global.playerId)
+    }
     console.log('Device info: ', device);
 }
 
@@ -1231,61 +1231,74 @@ async getImageURL(imageIndex){
 }
 
 async checkFunction(){
-    var docRef1 = firestore().collection(auth().currentUser.uid).doc("Similarity").onSnapshot(async doc =>{
+  resultCounter = 1
+  var similaritylisteners = []
+  for(let c = 1; c <= global.functionNumber; c++){
+    var docRef1 = firestore().collection(auth().currentUser.uid).doc("Similarity" + c.toString())
+    similaritylisteners.push(docRef1)
+    similaritylisteners[similaritylisteners.length-1].onSnapshot(async doc => {
       console.log("CHECK FUNCTION: ", doc.data())
       if(doc.exists){
         if (this.probabilityDoneCheck) {
           // createEmailDistanceArrays KISMI ////////////////////////////////////////
-          dict = doc.data();
+          var tempdict = doc.data();
+          dict = Object.assign({}, tempdict, dict)
           console.log("DICT SONUCU: ", dict)
-          if(dict["noface"] != null){
-            this.setState({
-              loadingOpacity: 0
-            })
-            this.spinValue = new Animated.Value(0)
-            Alert.alert("Error!", "There is no face in your search photo.." )
-          }
-          else{
-            await this.createEmailDistanceArrays("All Genders","All Countries","searchDone");
-            ////////////////////////////////////////////////////////////////////////////////
-            for(let i = 0; i < 10; i++){
-              // resim indirme KISMI /////////////////////////////////////////////////
-              await this.getImageURL(i);
-              //await this.downloadImages(i);
+          resultCounter = resultCounter + 1
+          if (resultCounter == global.functionNumber){
+            resultCounter = 1
+            if(dict["noface"] != null){
+              this.setState({
+                loadingOpacity: 0
+              })
+              this.spinValue = new Animated.Value(0)
+              Alert.alert("Error!", "There is no face in your search photo.." )
             }
-            console.log("biyere geldik, mainPhotoArray.length ", mainPhotoArray.length)
-            this.setState({
-              uri0: null,
-              uri1: null,
-              uri2: photoArray[0],
-              uri3: photoArray[1],
-              uri4: photoArray[2],
-              uri5: photoArray[3],
-              uri2_username: usernameArray[0],
-              uri2_country: countryArray[0],
-              uri2_gender: genderArray[0],
-              uri2_bio: bioDict[emailArray[0]],
-              backgroundOpacity: 0,
-              swipeableDisabled: false,
-              messageButtonDisabled: false,
-              messageButtonOpacity: 1,
-              showFilter: true,
-              loadingOpacity: 0
-            })
-            this.checkUri2FavOrBlocked()
-            this.spinValue = new Animated.Value(0)
-            console.log(photoArray)
-            console.log(emailArray)
-            console.log(genderArray)
-            console.log(countryArray)
-            console.log(distanceArray)
-            console.log(bioDict)
+            else{
+              await this.createEmailDistanceArrays("All Genders","All Countries","searchDone");
+              ////////////////////////////////////////////////////////////////////////////////
+              for(let i = 0; i < 10; i++){
+                // resim indirme KISMI /////////////////////////////////////////////////
+                await this.getImageURL(i);
+                //await this.downloadImages(i);
+              }
+              console.log("biyere geldik, mainPhotoArray.length ", mainPhotoArray.length)
+              this.setState({
+                uri0: null,
+                uri1: null,
+                uri2: photoArray[0],
+                uri3: photoArray[1],
+                uri4: photoArray[2],
+                uri5: photoArray[3],
+                uri2_username: usernameArray[0],
+                uri2_country: countryArray[0],
+                uri2_gender: genderArray[0],
+                uri2_bio: bioDict[emailArray[0]],
+                backgroundOpacity: 0,
+                swipeableDisabled: false,
+                messageButtonDisabled: false,
+                messageButtonOpacity: 1,
+                showFilter: true,
+                loadingOpacity: 0
+              })
+              this.checkUri2FavOrBlocked()
+              this.spinValue = new Animated.Value(0)
+              console.log(photoArray)
+              console.log(emailArray)
+              console.log(genderArray)
+              console.log(countryArray)
+              console.log(distanceArray)
+              console.log(bioDict)
+            }
           }
-          }
+        }
+        if(c == global.functionNumber){
           this.probabilityDoneCheck = true;
+        }
       }
       console.log(this.state.uri2);
     });
+  }
 }
 
 async filterDone(){
@@ -1542,40 +1555,89 @@ uploadSearchPhoto = async (uri) => {
     var ref1 = storageRef.child("Photos/" + auth().currentUser.uid + "/SearchPhotos/" + "search-photo.jpg");
     console.log("storageref child alındı")
     ref1.put(blob).then(snapshot => {
-      const updateRef = firestore().collection('Functions').doc('Embedder');
-      var batch = 0
-      var randFloat = Math.random()
-      updateRef.set({
-      name: auth().currentUser.uid + "_" + batch.toString() + "_" + randFloat.toString()
-      }).then(() => {
-            this.setState({
-              messageButtonDisabled: true,
-              messageButtonOpacity: 0,
-              isVisible2: false,
-              uri0: null,
-              uri1: null,
-              uri2: null,
-              uri3: null,
-              uri4: null,
-              uri5: null,
-              notifIsVisible: true,
-              imagePath: null,
-              swipeableDisabled: true,
-              uri2_username: "",
-              uri2_country: "",
-              uri2_bio: "",
-              uri2_gender: "",
+      if(global.functionNumber != -1){
+        const updateRef = firestore().collection('Functions').doc('Embedder');
+        var batch = 1
+        var randFloat = Math.random()
+        updateRef.set({
+        name: auth().currentUser.uid + "_" + batch.toString() + "_" + randFloat.toString() + "_" + global.functionNumber.toString()
+        }).then(() => {
+              this.setState({
+                messageButtonDisabled: true,
+                messageButtonOpacity: 0,
+                isVisible2: false,
+                uri0: null,
+                uri1: null,
+                uri2: null,
+                uri3: null,
+                uri4: null,
+                uri5: null,
+                notifIsVisible: true,
+                imagePath: null,
+                swipeableDisabled: true,
+                uri2_username: "",
+                uri2_country: "",
+                uri2_bio: "",
+                uri2_gender: "",
 
+              });
+              if (this.probabilityDoneCheck == false){
+                this.checkFunction();
+              }
+            }).catch(function(error) {
+              this.setState({loadingOpacity: 0})
+              this.spinValue = new Animated.Value(0)
+              console.log("User2 update olmadı")
+              Alert.alert("Connection Failed", "Please try Again.." )
             });
-            if (this.probabilityDoneCheck == false){
-              this.checkFunction();
-            }
-          }).catch(function(error) {
-            this.setState({loadingOpacity: 0})
-            this.spinValue = new Animated.Value(0)
-            console.log("User2 update olmadı")
-            Alert.alert("Connection Failed", "Please try Again.." )
-          });
+      }
+      else{
+        const num_ref = firestore().collection('Functions').doc('Number');
+        num_ref.get().then(doc => {
+         if (doc.exists) {
+           global.functionNumber = doc.data()["key"]
+           const updateRef = firestore().collection('Functions').doc('Embedder');
+           var batch = 1
+           var randFloat = Math.random()
+           updateRef.set({
+           name: auth().currentUser.uid + "_" + batch.toString() + "_" + randFloat.toString() + "_" + global.functionNumber.toString()
+           }).then(() => {
+                 this.setState({
+                   messageButtonDisabled: true,
+                   messageButtonOpacity: 0,
+                   isVisible2: false,
+                   uri0: null,
+                   uri1: null,
+                   uri2: null,
+                   uri3: null,
+                   uri4: null,
+                   uri5: null,
+                   notifIsVisible: true,
+                   imagePath: null,
+                   swipeableDisabled: true,
+                   uri2_username: "",
+                   uri2_country: "",
+                   uri2_bio: "",
+                   uri2_gender: "",
+
+                 });
+                 if (this.probabilityDoneCheck == false){
+                   this.checkFunction();
+                 }
+               }).catch(function(error) {
+                 this.setState({loadingOpacity: 0})
+                 this.spinValue = new Animated.Value(0)
+                 console.log("User2 update olmadı")
+                 Alert.alert("Connection Failed", "Please try Again.." )
+               });
+         }
+       }).catch(function(error) {
+         this.setState({loadingOpacity: 0})
+         this.spinValue = new Animated.Value(0)
+         console.log("Function number catchi")
+         Alert.alert("Connection Failed", "Please try Again.." )
+       });
+      }
       }).catch(function(error) {
         this.setState({loadingOpacity: 0})
         this.spinValue = new Animated.Value(0)

@@ -426,6 +426,7 @@ createUsernameArray = async (snap, i, conversationUid) => {
     })
 
   }
+  await this.updatePlayerIds(snap, i)
   conversationUsernameArray[i] = snap.val()
 
   AsyncStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))

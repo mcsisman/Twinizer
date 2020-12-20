@@ -99,8 +99,9 @@ export default class SettingsScreen extends Component<{}>{
     await database().ref('/PlayerIds/').update({
       [auth().currentUser.uid]: "x"
     });
+    var randO = Math.random()
     await database().ref('/Users/'+auth().currentUser.uid + '/i').update({
-      o: -1
+      o: randO
     }).then( async () => {
       console.log("o güncellendi")
       await auth().signOut().then(function() {

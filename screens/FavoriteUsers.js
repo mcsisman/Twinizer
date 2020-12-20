@@ -254,6 +254,7 @@ donePress(){
       noOfFavUsers = noOfFavUsers - 1
     }
   }
+  global.removedFromFavList = true
   for( let i = 0; i < noOfFavUsers; i++){
     colorArray[i] = "trashgray"
   }
