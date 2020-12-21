@@ -33,7 +33,8 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
-
+var keyboardHeight;
+var keyboardYcord;
 
 export default class NewAccountScreen extends Component<{}>{
   constructor(props){
@@ -52,9 +53,13 @@ export default class NewAccountScreen extends Component<{}>{
     this.height = Math.round(Dimensions.get('screen').height);
     global.globalUsername = "";
     this.width = Math.round(Dimensions.get('screen').width);
+    this.windowHeight = Math.round(Dimensions.get('window').height);
+    this.navBarHeight = this.height - this.windowHeight
 
   }
   componentDidMount(){
+    this.keyboardDidShowListener = Keyboard.addListener("keyboardDidHide", this._keyboardDidHide);
+    this.keyboardDidHideListener = Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       console.log("subscribe")
       this.setState({reRender: "ok"})
@@ -63,7 +68,18 @@ export default class NewAccountScreen extends Component<{}>{
   static navigationOptions = {
       header: null,
   };
+  _keyboardDidShow = (e) => {
+    const { height, screenX, screenY, width } = e.endCoordinates
+    keyboardYcord = screenY
+    keyboardHeight = height
 
+    console.log("keyboard açıldı")
+    this.setState({keyboardOpen: true})
+  };
+  _keyboardDidHide = () => {
+    console.log("keyboard kapandı")
+    this.setState({keyboardOpen: false})
+  };
 writeUserData(userId, name, email, imageUrl) {
   database().ref('users/' + userId).set({
     username: name,
@@ -126,19 +142,13 @@ writeUserData(userId, name, email, imageUrl) {
     }
   }
   render(){
+    var keyboardAvoidingHeight = keyboardHeight + this.navBarHeight;
     const {navigate} = this.props.navigation;
       return(
 
-
-
-        <KeyboardAvoidingView behavior= "padding"
-        enabled
-        keyboardVerticalOffset = {-(this.height*12)/100}
-        style={{flex:1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1]: 'rgba(255,255,255,1)'}}>
-
         <TouchableOpacity
         activeOpacity = {1}
-        style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
+        style={{width: this.width, height: this.height, flex:1, alignItems: 'center',bottom: this.state.keyboardOpen ? keyboardAvoidingHeight - ((this.height - getStatusBarHeight() - headerHeight)-this.height/2)/2: 0}}
          onPress={()=> Keyboard.dismiss() }>
 
         <ModifiedStatusBar/>
@@ -148,56 +158,71 @@ writeUserData(userId, name, email, imageUrl) {
         onPress = {()=> this.props.navigation.goBack()}/>
 
         <View
-        style={{backgroundColor: global.isDarkMode ? global.darkModeColors[1]: 'rgba(255,255,255,1)', width: this.width, height: this.height - getStatusBarHeight() - headerHeight, alignItems: 'center', flex:1}}>
+        style={{backgroundColor: "rgba(255,255,255,1)", width: this.width, height: this.height - getStatusBarHeight() - headerHeight, alignItems: 'center', justifyContent: "center", flex:1}}>
+        <View
+        style={{width: this.width, height: this.height/2, alignItems: 'center',}}>
+        <View
+        style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder= {global.langEmail}
         keyboardType= "email-address"
         //returnKeyType="Next"
-        style={{ position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*47)/100, right: this.width*(2/10),
-         backgroundColor: global.isDarkMode ?'rgba(255,255,255,0)': 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
+        style={{ fontSize: 20*(this.width/360), paddingBottom: 0, position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100,
+         backgroundColor: 'rgba(255,255,255,0.2)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
          onChangeText={(text) => this.setState({email: text})}>
         </TextInput>
+        </View>
+        <View
+        style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder={global.langUsername}
         //returnKeyType="Next"
-        style={{ position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*40)/100, right: this.width*(2/10),
+        style={{fontSize: 20*(this.width/360), paddingBottom: 0, position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100,
          backgroundColor: global.isDarkMode ? 'rgba(255,255,255,0)': 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
          onChangeText={(text) => this.setState({isim: text})}>
         </TextInput>
+        </View>
+        <View
+        style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder={global.langPassword}
         secureTextEntry
         //returnKeyType="Next"
-        style={{ position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*33)/100, left: this.width*(2/10),
+        style={{fontSize: 20*(this.width/360), paddingBottom: 0, position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100,
         backgroundColor: global.isDarkMode ? 'rgba(255,255,255,0)': 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
          onChangeText={(text) => this.setState({sifre: text})}>
         </TextInput>
+        </View>
+        <View
+        style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder={global.langConfirmPassword}
         secureTextEntry
         //returnKeyType="Next"
-        style={{position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*26)/100, left: this.width*(2/10),
+        style={{fontSize: 20*(this.width/360), paddingBottom: 0,position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100,
          backgroundColor: global.isDarkMode ? 'rgba(255,255,255,0)': 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
          onChangeText={(text) => this.setState({sifre2: text})}>
         </TextInput>
-
-
+        </View>
+        <View
+        style={{width: this.width, height: "36%", alignItems: 'center', justifyContent: "center"}}>
         <OvalButton
         opacity = {1}
         backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
-        bottom = {(this.height*13)/100}
         title = {global.langCreate}
         textColor = {global.themeColor}
         onPress = { ()=> this.check()}
         borderColor = {global.themeColor}/>
+        </View>
+
 
         </View>
+        </View>
         </TouchableOpacity>
-        </KeyboardAvoidingView>
 
       );
   }

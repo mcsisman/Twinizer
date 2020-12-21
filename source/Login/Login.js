@@ -46,22 +46,29 @@ export default class LoginScreen extends Component<{}>{
       tryagain: 0
     }
     this.height = Math.round(Dimensions.get('screen').height);
+    this.windowHeight = Math.round(Dimensions.get('window').height);
     this.width = Math.round(Dimensions.get('screen').width);
+    this.navBarHeight = this.height - this.windowHeight
   }
 
 static navigationOptions = {
     header: null,
 };
 componentDidMount(){
+  this.keyboardDidShowListener = Keyboard.addListener("keyboardDidHide", this._keyboardDidHide);
+  this.keyboardDidHideListener = Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
 };
 
 _keyboardDidShow = (e) => {
   const { height, screenX, screenY, width } = e.endCoordinates
   keyboardYcord = screenY
   keyboardHeight = height
+
+  console.log("keyboard açıldı")
   this.setState({keyboardOpen: true})
 };
 _keyboardDidHide = () => {
+  console.log("keyboard kapandı")
   this.setState({keyboardOpen: false})
 };
 
@@ -97,6 +104,10 @@ Login = (email, password) => {
 
   render(){
     const {navigate} = this.props.navigation;
+    var keyboardAvoidingHeight = keyboardHeight + this.navBarHeight;
+    if( keyboardHeight + this.navBarHeight > this.height/2){
+      keyboardAvoidingHeight = this.height/2
+    }
       if(!this.state.splashOver){
         return(
           <ImageBackground
@@ -106,45 +117,70 @@ Login = (email, password) => {
         );
       }
       else{
+        console.log("KEYBOARD:", this.state.keyboardOpen)
         return(
-          <KeyboardAvoidingView behavior="padding"
-            keyboardVerticalOffset={this.state.keyboardOpen ? -(this.height*12)/100 : -3*getStatusBarHeight()}
-          style={{width: this.width, height: this.height, flex:1, backgroundColor: 'rgba(255,255,255, 0)'}}>
+
           <TouchableOpacity
           activeOpacity = {1}
-          style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
+          style={{flex:1, alignItems: 'center',width: "100%", height: "100%",bottom: this.state.keyboardOpen ? keyboardAvoidingHeight: 0 }}
            onPress={()=> Keyboard.dismiss() }>
           <ImageBackground
           source={{uri: 'flare'}}
-          style={{width: this.width, height: this.height, flex:1, alignItems: 'center'}}>
+          style={{width: "100%", height: "100%", flex:1, flexDirection: "column", alignItems: 'center', }}>
 
-
-          <Image source={{uri: 'slogan'}}
-            style={{ width: this.width*(0.8/10)*(1243/203), height:this.width*(0.8/10), position: 'absolute', bottom: this.height*(5.4/10), left: (this.width-this.width*(0.8/10)*(1243/203))/2 }}
-          />
+          <View style = {{ opacity: this.state.keyboardOpen ? 0 : 1, width: "100%", height: "50%", alignItems: "center", justifyContent: "center"}}>
+          <View style = {{ position: "absolute", width: "100%", height: this.width*(5.8/10) + this.height*(0.1/10),
+          flexDirection: "column", flex:1, alignItems: "center"}}>
           <Image source={{uri: 'logo2'}}
-            style={{ width: this.width*(5/10), height:this.width*(5/10), position: 'absolute', bottom: this.height*(5.5/10), left: this.width*(2.5/10) }}
+            style={{ width: this.width*(5/10), height:this.width*(5/10) }}
           />
+          <Image source={{uri: 'slogan'}}
+            style={{ width: this.width*(0.8/10)*(1243/203), height:this.width*(0.8/10) }}
+          />
+          </View>
+          </View>
 
-            <TextInput
-            placeholderTextColor="rgba(255,255,255,0.7)"
-            placeholder={global.langEmail}
-            keyboardType= "email-address"
+          <View style = {{  width:"100%", height: "50%", alignItems: "center",  flex:1, flexDirection: "column"}}>
+          <View style = {{  width:"100%", height: "50%", alignItems: "center", justifyContent: "center",  flexDirection: "column"}}>
 
-            style={{fontSize: 16*(this.width/360),  position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*40)/100, right: this.width*(2/10),
-             backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
-             onChangeText={(text) => this.setState({isim: text})}>
+          <View style = {{ width:"100%", height: "33%", alignItems: "center", justifyContent: "center"}}>
+          <TextInput
+          placeholderTextColor="rgba(255,255,255,0.7)"
+          placeholder={global.langEmail}
+          keyboardType= "email-address"
+
+          style={{paddingBottom: 0, fontSize: 20*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
+           borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
+           onChangeText={(text) => this.setState({isim: text})}>
           </TextInput>
+          </View>
+
+          <View style = {{ width:"100%", height: "33%", alignItems: "center", justifyContent: "center"}}>
           <TextInput
           placeholderTextColor="rgba(255,255,255,0.7)"
           placeholder={global.langPassword}
           secureTextEntry
 
-          style={{fontSize: 16*(this.width/360),  position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*33)/100, right: this.width*(2/10),
+          style={{paddingBottom: 0, fontSize: 20*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
            backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
            onChangeText={(text) => this.setState({sifre: text})}>
         </TextInput>
+        </View>
 
+        <View style = {{ width:"100%", height: "34%", alignItems: "center", justifyContent: "center"}}>
+        <TouchableOpacity
+        activeOpacity = {1}
+        style={{justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(255,255,255, 0)',
+          paddingLeft: 15, paddingRight: 15, height: (this.height*6)/100, flex:1}}
+        onPress={()=>this.check() }>
+        <Text style={{textAlign: 'center', color: 'white', fontSize: 20*(this.width/360)}}>
+          {global.langLogin}
+        </Text>
+        </TouchableOpacity>
+        </View>
+
+
+        </View>
         <TouchableOpacity
         activeOpacity = {1}
         style={{position: 'absolute', backgroundColor: 'rgba(255,255,255, 0)',
@@ -169,19 +205,10 @@ Login = (email, password) => {
         </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-        activeOpacity = {1}
-        style={{justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(255,255,255, 0)',
-          paddingLeft: 15, paddingRight: 15, height: (this.height*6)/100, flex:1, bottom: (this.height*25)/100}}
-         onPress={()=>this.check() }>
-         <Text style={{textAlign: 'center', color: 'white',   fontSize: 18*(this.width/360)}}>
-          {global.langLogin}
-        </Text>
-        </TouchableOpacity>
+        </View>
 
         </ImageBackground>
         </TouchableOpacity>
-        </KeyboardAvoidingView>
         );
       }
   }

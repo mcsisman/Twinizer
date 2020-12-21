@@ -242,8 +242,8 @@ console.disableYellowBox = true;
     global.langEmail = "email"
     global.langPassword = "password"
     //Sign Up
-    global.langUsername = "Username"
-    global.langConfirmPassword = "Confirm Password"
+    global.langUsername = "username"
+    global.langConfirmPassword = "confirm password"
     global.langCreate = "CREATE"
     //Forgot Password
     global.langSendEmail = "SEND EMAIL"
