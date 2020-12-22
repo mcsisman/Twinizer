@@ -132,47 +132,67 @@ async goBack(){
       <CustomHeader
       title = {global.langCompleteYourProfile}
       onPress = {async ()=> await this.goBack()}/>
+
+      <View
+      style={{width: this.width, height: this.height-getStatusBarHeight() - headerHeight, bottom: 0,flexDirection: 'column', alignItems: 'center', }}>
+
+      <View
+      style={{width: this.width, height: "33%", flexDirection: 'column', flex:1, alignItems: 'center',}}>
+
+      <View
+      style={{width: this.width, height: "50%", flexDirection: 'column', flex:1, alignItems: 'center', justifyContent: "center"}}>
+      <TextBox
+      text = {global.langSelectGender}/>
+      </View>
+
+      <View
+      style={{width: this.width, height: "50%", flexDirection: 'row', flex:1, alignItems: 'center', justifyContent: "center"}}>
+
+      <View
+      style={{width: "50%", height: "100%",  flexDirection: 'column', flex:1, alignItems: 'center', justifyContent: "center"}}>
       <OvalButton
       opacity = {1}
       width = {this.width*3/10}
-      bottom = {(this.height*60)/100}
-      right = {this.width*(1.5/10)}
       borderColor = {global.themeColor}
       title = {global.langMale}
       backgroundColor = {this.state.maleBG}
       textColor = {this.state.maleText}
       onPress = { ()=> this.maleSelected()}/>
+      </View>
 
+      <View
+      style={{width: "50%", height: "100%",  flexDirection: 'column', flex:1, alignItems: 'center', justifyContent: "center"}}>
       <OvalButton
       opacity = {1}
-      width = {this.width*3/10}
-      bottom = {(this.height*60)/100}
-      right = {this.width*(5.5/10)}
       borderColor = {global.themeColor}
       title = {global.langFemale}
       backgroundColor = {this.state.femaleBG}
       textColor = {this.state.femaleText}
       onPress = { ()=> this.femaleSelected()}/>
+      </View>
+      </View>
 
-      <TextBox
-      text = {global.langSelectGender}/>
+      </View>
 
+      <View
+      style={{width: this.width, height: "33%", flexDirection: 'column', flex:1, alignItems: 'center',}}>
+      <View
+      style={{width: this.width, height: "50%", flexDirection: 'column', flex:1, alignItems: 'center', justifyContent: "center"}}>
       <CustomPicker
       borderBottomColor = {global.themeColor}
       width = {this.width*(60/100)}
       height = {this.width*(12/100)}
-      right = {this.width*(20/100)}
-      bottom = {this.height*(4.5/10)}
       onValueChange = {(value) => this.valueChange(value)}
       items = {countries.newGenderItems}
       label = {global.langCountry}
       textColor = {this.state.pickerTextColor}
       selectedValue = {this.state.selectedValue}/>
-
+      </View>
       <View
-      style={{alignItems: "flex-start", width: this.width*(60/100) + this.width*(1/13), height: this.width*(12/100), bottom: -this.height*(5/10), left:-this.width*(5/100)}}>
+      style={{width: this.width, height: "50%", flexDirection: 'column', flex:1, alignItems: 'center', justifyContent:"center"}}>
+
       <DatePicker
-        style={{width: this.width*(60/100) + this.width*(1/9), height: this.width*(12/100)}}
+        style={{borderBottomWidth: 2, borderBottomColor: global.themeColor, activeOpacity: 1, width: this.width*(60/100), height: this.width*(12/100), alignItems: "center",}}
         date={this.state.date}
         mode="date"
         androidMode="spinner"
@@ -186,31 +206,29 @@ async goBack(){
         cancelBtnText="Cancel"
         customStyles={{
           placeholderText:{
-            justifyContent: 'flex-start',
-            alignItems: 'flex-start',
-            fontSize: 18,
-            left: "3%",
-            color:this.state.dateTextColor
+            justifyContent: 'center',
+            alignItems: 'center',
+            fontSize: 20*(this.width/360),
+            color:this.state.dateTextColor,
+            paddingBottom: 0,
           },
           dateText:{
-            justifyContent: 'flex-start',
-            alignItems: 'flex-start',
-            fontSize: 18,
-            left: "3%",
-            color:this.state.dateTextColor
+            justifyContent: 'center',
+            alignItems: 'center',
+            fontSize: 20*(this.width/360),
+            color:this.state.dateTextColor,
+            paddingBottom: 0,
           },
           dateIcon: {
             width: 0,
             height: 0,
-            marginLeft: 0
+            marginLeft: 0,
+            paddingBottom: 0,
           },
           dateInput: {
-            justifyContent: 'flex-start',
+            justifyContent: 'center',
             alignItems: 'flex-start',
             borderWidth: 0,
-            borderBottomWidth: 2,
-            borderBottomColor: global.themeColor,
-            marginLeft: 36
           }
         }}
         onDateChange={(date) => {
@@ -224,21 +242,40 @@ async goBack(){
         }}
       />
       </View>
+      </View>
 
-      <PageDots
-      pageNo = {1}/>
 
+      <View
+      style={{width: this.width, height: "34%", flexDirection: 'column', flex:1, alignItems: 'center', justifyContent: "center"}}>
+
+      <View
+      style={{width: this.width, height: "33%", flexDirection: 'column', flex:1, alignItems: 'center', justifyContent: "center"}}>
+      </View>
+
+      <View
+      style={{width: this.width, height: "33%", flexDirection: 'column', flex:1, alignItems: 'center', justifyContent: "center"}}>
       <OvalButton
       backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
       width = {this.width*3/10}
-      bottom = {(this.height*12)/100}
-      right = {this.width*(3.5/10)}
       title = {global.langNext}
       textColor = {this.state.buttonOpacity}
       opacity = {this.state.opacity}
       onPress = { ()=> this.writeGenderToDatabase()}
       disabled = {this.state.disabled}
       borderColor = {this.state.buttonOpacity}/>
+
+      </View>
+
+      <View
+      style={{width: this.width, height: "34%", flexDirection: 'column', flex:1, alignItems: 'center', justifyContent: "center"}}>
+
+      <PageDots
+      pageNo = {1}/>
+      </View>
+
+      </View>
+      </View>
+
 
       </View>
 

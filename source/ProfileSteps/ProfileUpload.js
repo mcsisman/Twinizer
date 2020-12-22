@@ -161,7 +161,7 @@ camera = () => {
     })
     const { photo } = this.state;
     return (
-      <View style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex:1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
+      <View style={{width: this.width, height: this.height, top: 0, alignItems: 'center',flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
 
       <ModifiedStatusBar/>
 
@@ -169,10 +169,20 @@ camera = () => {
       title = {global.langCompleteYourProfile}
       onPress = {()=> this.props.navigation.goBack()}/>
 
+      <View
+      style={{width: this.width, height: this.height-getStatusBarHeight() - headerHeight, bottom: 0,flexDirection: 'column', alignItems: 'center', }}>
+
+      <View
+      style={{width: this.width, height: "16.5%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
+      <TextBox
+      text = {global.langProfileScreen}/>
+      </View>
+
+      <View
+      style={{width: this.width, height: "49.5%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
+
       <ImageUploader
       width = {this.width*(5/10)}
-      bottom = {(this.height*36)/100}
-      right = {this.width*(2.5/10)}
       borderRadius = {16}
       borderOpacity = {this.state.borderOpacity}
       onPress = {()=>this.setState({ isVisible1: true})}
@@ -180,23 +190,41 @@ camera = () => {
       fontSize = {20}
       photo = {this.state.photo}/>
 
-      <TextBox
-      text = {global.langProfileScreen}/>
+      </View>
+      <View
+      style={{width: this.width, height: "34%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
 
-      <PageDots
-      pageNo = {2}/>
+      <View
+      style={{width: this.width, height: "33%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
 
+      <InfoButton
+      onPress = {()=> this.setState({isVisible2: true})}
+      opacity = {this.state.loadingOpacity == 1 ? 0 : 1}/>
+      <Animated.Image source={{uri: 'loading' + global.themeForImages}}
+        style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
+        position: 'absolute',  left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
+
+      </View>
+      <View
+      style={{width: this.width, height: "33%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
       <OvalButton
       backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
       width = {this.width*3/10}
-      bottom = {(this.height*12)/100}
-      right = {this.width*(3.5/10)}
       title = {global.langNext}
       opacity = {this.state.btnOpacity}
       textColor = {global.themeColor}
       onPress = { ()=> this.uploadPhoto(this.state.profilePhoto)}
       disabled = {this.state.disabled}
       borderColor = {global.themeColor}/>
+      </View>
+      <View
+      style={{width: this.width, height: "34%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
+      <PageDots
+      pageNo = {2}/>
+      </View>
+
+      </View>
+      </View>
 
       <ImageUploadModal
       isVisible = {this.state.isVisible1}
@@ -208,9 +236,8 @@ camera = () => {
       onPressCamera = {this.camera}
       onPressLibrary = {this.library}/>
 
-      <Animated.Image source={{uri: 'loading' + global.themeForImages}}
-        style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
-        position: 'absolute', bottom: this.height*12/100 + headerHeight + getStatusBarHeight()-this.width*(1/10), left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
+
+
 
       <InfoModal
       isVisible = {this.state.isVisible2}
@@ -218,10 +245,7 @@ camera = () => {
       txtGotIt = {global.langGotIt}
       onPressClose = {()=>this.setState({isVisible2:false}) }/>
 
-      <InfoButton
-      onPress = {()=> this.setState({isVisible2: true})}
-      bottom = {(this.height*12)/100 + headerHeight + getStatusBarHeight()}
-      right = {this.width*(4.6/10)}/>
+
 
       </View>
     );

@@ -70,14 +70,14 @@ export default class ImageUploadModal extends Component {
       borderBottomLeftRadius: 4, borderTopRightRadius:4, borderColor: "rgba(0,0,0,4)",
       borderTopLeftRadius: 4, borderBottomRightRadius: 4,
       backgroundColor: global.isDarkMode ? global.darkModeColors[0] : "rgba(255,255,255,1)",
-      width: screenWidth*(6/10),
+
       height: screenWidth*(2.5/10),
       flexDirection: 'column',
       bottom: this.props.bottom
       }}>
 
       <View
-      style = {{alignItems: 'center', borderTopLeftRadius: 4, borderTopRightRadius: 4, height: screenWidth*(1/10), width: screenWidth*(6/10),
+      style = {{alignItems: 'center', borderTopLeftRadius: 4, borderTopRightRadius: 4, height: screenWidth*(1/10),
       justifyContent: 'center', }}>
       <View
       style={{ paddingTop: 0, paddingBottom: 4, paddingLeft: 15, paddingRight: 15, borderBottomWidth: 1, borderBottomColor: global.isDarkMode ? global.darkModeColors[3] : "rgba(128,128,128,1)"}}>
@@ -96,10 +96,10 @@ export default class ImageUploadModal extends Component {
       </View>
 
       <View
-      style={{ flexDirection: 'row', left: 0, width: screenWidth*(6/10), height:screenWidth*(2/10), flex:1, justifyContent: 'center'}}>
+      style={{width:"80%",flexDirection: 'row', left: 0, height:screenWidth*(1.5/10), justifyContent:"center", }}>
 
       <View
-      style={{flex:1, width: screenWidth*(3/10), height:screenWidth*(1.5/10), flex:1, justifyContent: 'center', alignItems:'center'}}>
+      style={{width: "50%",height:screenWidth*(1.5/10),justifyContent: 'center', alignItems:'center',}}>
 
       <ImgModalOvalButton
       title = {'LIBRARY'}
@@ -113,7 +113,7 @@ export default class ImageUploadModal extends Component {
       </View>
 
       <View
-      style={{flex:1, width: screenWidth*(3/10), height:screenWidth*(1.5/10), flex:1, justifyContent: 'center', alignItems:'center'}}>
+      style={{width: "50%",height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center',}}>
 
       <ImgModalOvalButton
       title = {'CAMERA'}

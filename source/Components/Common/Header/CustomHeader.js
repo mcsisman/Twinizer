@@ -59,7 +59,7 @@ export default class CustomHeader extends Component {
           <View
           style = {{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', height: headerHeight,
           width: this.width, right: 0, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
-          <Text style = {{fontSize: 24, color: global.themeColor, fontWeight: 'bold'}}>
+          <Text style = {{fontSize: 24*this.width/360, color: global.themeColor, fontWeight: 'bold'}}>
           {this.props.title}
           </Text>
           </View>
@@ -82,7 +82,7 @@ export default class CustomHeader extends Component {
           </Image>
           </TouchableOpacity>
 
-          <Text style = {{fontSize: 24,color: global.themeColor, fontWeight: 'bold'}}>
+          <Text style = {{fontSize: 24*this.width/360,color: global.themeColor, fontWeight: 'bold'}}>
           {this.props.title}
           </Text>
 
@@ -112,7 +112,7 @@ export default class CustomHeader extends Component {
           <View
           style = {{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', height: headerHeight,
           width: this.width, right: 0, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
-          <Text style = {{fontSize: 30,color: global.themeColor, fontWeight: 'bold'}}>
+          <Text style = {{fontSize: 30*this.width/360,color: global.themeColor, fontWeight: 'bold'}}>
           {this.props.title}
           </Text>
           </View>
@@ -138,7 +138,7 @@ export default class CustomHeader extends Component {
             <View
             style = {{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', height: headerHeight,
             width: this.width, right: 0, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
-            <Text style = {{fontSize: 24,color: global.themeColor, fontWeight: 'bold'}}>
+            <Text style = {{fontSize: 24*this.width/360,color: global.themeColor, fontWeight: 'bold'}}>
             {this.props.title}
             </Text>
             </View>
@@ -161,7 +161,7 @@ export default class CustomHeader extends Component {
             </Image>
             </TouchableOpacity>
 
-            <Text style = {{fontSize: 24,color: global.themeColor, fontWeight: 'bold'}}>
+            <Text style = {{fontSize: 24*this.width/360,color: global.themeColor, fontWeight: 'bold'}}>
             {this.props.title}
             </Text>
             </View>

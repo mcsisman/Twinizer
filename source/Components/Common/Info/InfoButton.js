@@ -29,7 +29,8 @@ export default class InfoButton extends Component {
   static propTypes = {
    onPress: PropTypes.func,
    bottom: PropTypes.number,
-   right: PropTypes.number
+   right: PropTypes.number,
+   opacity: PropTypes.number,
  }
  static defaultProps = {
  }
@@ -39,11 +40,11 @@ export default class InfoButton extends Component {
     return(
       <TouchableOpacity
       activeOpacity = {1}
-      style={{ alignItems:'center', justifyContent: 'center', position: 'absolute', width: this.width*(0.8/10), height: this.width*(0.8/10),
+      style={{ opacity: this.props.opacity, alignItems:'center', justifyContent: 'center', position: 'absolute', width: this.width*(0.8/10), height: this.width*(0.8/10),
       bottom: this.props.bottom, right: this.props.right, borderBottomLeftRadius: 65, borderTopRightRadius: 65, borderTopLeftRadius: 65, borderBottomRightRadius: 65}}
       onPress={this.props.onPress}>
       <Image source={{uri: 'question'}}
-      style={{width: '100%', height: '100%',  position: 'absolute', flex:1 }}/>
+      style={{opacity: this.props.opacity, width: '100%', height: '100%',  position: 'absolute', flex:1 }}/>
       </TouchableOpacity>
     )
   }

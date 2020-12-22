@@ -300,71 +300,112 @@ camera = (selectedPhoto) => {
       title = {global.langCompleteYourProfile}
       onPress = {()=> this.props.navigation.goBack()}/>
 
+      <View
+      style={{width: this.width, height: this.height-getStatusBarHeight() - headerHeight, bottom: 0,flexDirection: 'column', alignItems: 'center', }}>
+
+      <View
+      style={{width: this.width, height: "16.5%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
+      <TextBox
+      text = {global.langImageUploadScreen}/>
+      </View>
+
+      <View
+      style={{width: this.width, height: "49.5%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
+
+      <View
+      style={{width: this.width, height: "50%", flexDirection: 'row', alignItems: 'center', justifyContent: "center"}}>
+
+      <View
+      style={{width: "50%", height: "100%", alignItems: 'center', justifyContent: "center"}}>
       <ImageUploader
       width = {this.width*(2.5/10)}
-      bottom = {(this.height*56)/100}
-      right = {this.width*(5.5/10)}
       borderRadius = {16}
       borderOpacity = {this.state.borderOpacity1}
       onPress={()=> this.setState({isVisible1: true, selectedPhoto: 1}) }
       textOpacity = {this.state.opacity1}
       fontSize = {12.5}
       photo = {this.state.photo1}/>
+      </View>
 
+      <View
+      style={{width: "50%", height: "100%",  alignItems: 'center', justifyContent: "center"}}>
       <ImageUploader
       width = {this.width*(2.5/10)}
-      bottom = {(this.height*56)/100}
-      right = {this.width*(2/10)}
       borderRadius = {16}
       borderOpacity = {this.state.borderOpacity2}
       onPress={()=> this.setState({isVisible1: true, selectedPhoto: 2}) }
       textOpacity = {this.state.opacity2}
       fontSize = {12.5}
       photo = {this.state.photo2}/>
+      </View>
 
+      </View>
+
+      <View
+      style={{width: this.width, height: "50%", flexDirection: 'row', alignItems: 'center', justifyContent: "center"}}>
+      <View
+      style={{width: "50%", height: "100%", alignItems: 'center', justifyContent: "center"}}>
       <ImageUploader
       width = {this.width*(2.5/10)}
-      bottom = {(this.height*36)/100}
-      right = {this.width*(5.5/10)}
       borderRadius = {16}
       borderOpacity = {this.state.borderOpacity3}
       onPress={()=> this.setState({isVisible1: true, selectedPhoto: 3}) }
       textOpacity = {this.state.opacity3}
       fontSize = {12.5}
       photo = {this.state.photo3}/>
+      </View>
 
+      <View
+      style={{width: "50%", height: "100%",  alignItems: 'center', justifyContent: "center"}}>
       <ImageUploader
       width = {this.width*(2.5/10)}
-      bottom = {(this.height*36)/100}
-      right = {this.width*(2/10)}
       borderRadius = {16}
       borderOpacity = {this.state.borderOpacity4}
       onPress={()=> this.setState({isVisible1: true, selectedPhoto: 4}) }
       textOpacity = {this.state.opacity4}
       fontSize = {12.5}
       photo = {this.state.photo4}/>
+      </View>
+      </View>
 
+      </View>
+
+      <View
+      style={{width: this.width, height: "34%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
+
+      <View
+      style={{width: this.width, height: "33%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
+
+      <InfoButton
+      onPress = {()=> this.setState({isVisible2: true})}
+      opacity = {this.state.loadingOpacity == 1 ? 0 : 1}/>
       <Animated.Image source={{uri: 'loading' + global.themeForImages}}
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
-        position: 'absolute', bottom: this.height*12/100 + headerHeight + getStatusBarHeight()-this.width*(1/10), left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
+        position: 'absolute', left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 
-      <TextBox
-      text = {global.langImageUploadScreen}/>
+      </View>
 
-      <PageDots
-      pageNo = {3}/>
-
+      <View
+      style={{width: this.width, height: "33%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
       <OvalButton
       backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
       width = {this.width*3/10}
-      bottom = {(this.height*12)/100}
-      right = {this.width*(3.5/10)}
       title = {global.langNext}
       opacity = {this.state.opacity}
       textColor = {global.themeColor}
       onPress = { ()=> this.uploadPhoto(this.state.profilePhoto1,this.state.profilePhoto2,this.state.profilePhoto3,this.state.profilePhoto4 ) }
       disabled = {this.state.disabled}
       borderColor = {global.themeColor}/>
+      </View>
+
+      <View
+      style={{width: this.width, height: "34%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
+      <PageDots
+      pageNo = {3}/>
+      </View>
+
+      </View>
+      </View>
 
       <ImageUploadModal
       isVisible = {this.state.isVisible1}
@@ -382,10 +423,6 @@ camera = (selectedPhoto) => {
       txtGotIt = {global.langGotIt}
       onPressClose = {()=>this.setState({isVisible2:false}) }/>
 
-      <InfoButton
-      onPress = {()=> this.setState({isVisible2: true})}
-      bottom = {(this.height*12)/100 + headerHeight + getStatusBarHeight()}
-      right = {this.width*(4.6/10)}/>
 
       </View>
     );

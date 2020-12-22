@@ -83,7 +83,8 @@ Login = (email, password) => {
                await storageRef.getDownloadURL().then(data =>{
                  console.log("EMBEDDING VAR: ", auth().currentUser.uid)
                  console.log("DATA: ", data)
-                 navigate('Tabs', { screen: 'Main' })
+                 //navigate('Tabs', { screen: 'Main' })
+                 navigate("UserInfo")
                }).catch(function(error) {
                  console.log("EMBEDDING YOK: ", auth().currentUser.uid)
                  navigate("UserInfo")
@@ -149,7 +150,7 @@ Login = (email, password) => {
           placeholder={global.langEmail}
           keyboardType= "email-address"
 
-          style={{paddingBottom: 0, fontSize: 20*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
+          style={{paddingLeft: 0, paddingBottom: 0, fontSize: 20*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
            borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
            onChangeText={(text) => this.setState({isim: text})}>
           </TextInput>
@@ -161,7 +162,7 @@ Login = (email, password) => {
           placeholder={global.langPassword}
           secureTextEntry
 
-          style={{paddingBottom: 0, fontSize: 20*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
+          style={{paddingLeft: 0, paddingBottom: 0, fontSize: 20*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
            backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
            onChangeText={(text) => this.setState({sifre: text})}>
         </TextInput>

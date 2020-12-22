@@ -178,42 +178,63 @@ valueChange(value){
       title = {global.langCompleteYourProfile}
       onPress = {()=> this.props.navigation.goBack()}/>
 
+      <View
+      style={{width: this.width, height: this.height-getStatusBarHeight() - headerHeight, bottom: 0,flexDirection: 'column', alignItems: 'center', }}>
+
+      <View
+      style={{width: this.width, height: "16.5%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
+      <TextBox
+      text = {"Enter your bio here."}/>
+      </View>
+
+      <View
+      style={{width: this.width, height: "49.5%", flexDirection: 'column', alignItems: 'center', justifyContent: "flex-start"}}>
+
       <MultilineTextInput
       onChangeText = {(text) => this.valueChange(text)}
       characterNo = {this.state.bioLimit}/>
+      </View>
 
-      <PageDots
-      pageNo = {4}/>
+      <View
+      style={{width: this.width, height: "34%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
 
+      <View
+      style={{width: this.width, height: "33%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
+
+      <InfoButton
+      onPress = {()=> this.setState({isVisible2: true})}
+      opacity = {this.state.loadingOpacity == 1 ? 0 : 1}/>
+      <Animated.Image source={{uri: 'loading' + global.themeForImages}}
+        style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
+        position: 'absolute', left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
+
+      </View>
+      <View
+      style={{width: this.width, height: "33%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
       <OvalButton
       opacity = {1}
       backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
       width = {this.width*3/10}
-      bottom = {(this.height*12)/100}
-      right = {this.width*(3.5/10)}
       title = {global.langDone}
       textColor = {this.state.buttonOpacity}
       onPress = { ()=> this.writeCountryToDatabase()}
       disabled = {this.state.disabled}
       borderColor = {this.state.buttonOpacity}/>
+      </View>
+      <View
+      style={{width: this.width, height: "34%", flexDirection: 'column', alignItems: 'center', justifyContent: "center"}}>
+      <PageDots
+      pageNo = {4}/>
+      </View>
 
-      <TextBox
-      text = {"Enter your bio here."}/>
+      </View>
+      </View>
 
       <InfoModal
       isVisible = {this.state.isVisible2}
       txtAlert = {global.langBioAlert}
       txtGotIt = {global.langGotIt}
       onPressClose = {()=>this.setState({isVisible2:false}) }/>
-
-      <Animated.Image source={{uri: 'loading' + global.themeForImages}}
-        style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
-        position: 'absolute', bottom: this.height*12/100 + headerHeight + getStatusBarHeight()-this.width*(1/10), left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
-
-      <InfoButton
-      onPress = {()=> this.setState({isVisible2: true})}
-      bottom = {(this.height*16)/100 + headerHeight + getStatusBarHeight()}
-      right = {this.width*(4.6/10)}/>
 
       </TouchableOpacity>
     </View>

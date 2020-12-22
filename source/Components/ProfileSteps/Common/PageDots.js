@@ -29,7 +29,7 @@ export default class PageDots extends Component {
       colorArray[i] = global.themeColor
     }
     return(
-      <View style={{position: 'absolute', width: this.width, height: this.width*(4/100), flex:1, bottom: (this.height*5)/100, right: 0}}>
+      <View style={{position: 'absolute', width: this.width, height: this.width*(4/100), flex:1,}}>
 
       <View style={{position: 'absolute', width: this.width*(4/100), height: this.width*(4/100), flex:1, bottom: 0, right: this.width*(66/100),
        backgroundColor: colorArray[0],  borderColor: global.themeColor, borderBottomLeftRadius: this.width*(10/100), borderTopRightRadius: this.width*(10/100),

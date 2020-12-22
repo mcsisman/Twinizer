@@ -40,13 +40,13 @@ export default class MultilineTextInput extends Component {
     this.width = Math.round(Dimensions.get('screen').width);
     return(
       <View
-        style={{flexDirection: 'column', position: 'absolute', bottom: this.height/2.1, right: this.width*(1.5/10), width: this.width*(7/10), alignItems: 'center'}}>
+        style={{flexDirection: 'column', position: 'absolute', width: this.width*(7/10), alignItems: 'center'}}>
       <TextInput
         multiline = {true}
         maxLength = {100}
         placeholderTextColor = {global.isDarkMode ? "rgba(255,255,255,0.4)": "rgba(0,0,0,0.4)"}
         placeholder= {"Hello World!"}
-        style={{ color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: 18*(this.width/360), width: this.width*(7/10), flex:1, borderColor: global.themeColor, borderBottomWidth: 2}}
+        style={{ paddingLeft: 0, paddingBottom: 0, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: 18*(this.width/360), width: this.width*(9/10), flex:1, borderColor: global.themeColor, borderBottomWidth: 2}}
         onChangeText={this.props.onChangeText}>
       </TextInput>
 
