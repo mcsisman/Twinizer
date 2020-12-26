@@ -154,6 +154,8 @@ export default class SettingsScreen extends Component<{}>{
       style = {{height: this.width/9}}/>
       <LogoutButton
       onPress = {()=>this.onPressLogout()}/>
+      <View
+      style = {{height: this.width/9}}/>
 
       </ScrollView>
 

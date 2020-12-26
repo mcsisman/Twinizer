@@ -39,6 +39,8 @@ import CustomPicker from '../Components/Common/Pickers/CustomPicker'
 import LogoutButton from '../Components/Settings/Common/LogoutButton'
 import ImageUploadModal from '../Components/Common/ImageUpload/ImageUploadModal'
 import ImageViewerModal from '../Components/Common/ImageViewer/ImageViewerModal'
+import GoBackInfoModal from '../Components/Common/Info/GoBackInfoModal'
+import InfoModal from '../Components/Common/Info/InfoModal'
 import countries from '../Utils/Countries';
 
 if(Platform.OS === 'android'){
@@ -53,14 +55,18 @@ var currentUserUsername;
 var currentUserBio;
 var currentUserPhotoCount;
 var updateImage;
+var infoChanged = false;
 export default class ProfileScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.state = {
+      saveInfoModalVisible: false,
       imageViewerVisible: false,
+      goBackInfoModalVisible: false,
       newPhoto: false,
       profilePhoto: "",
       loadingDone: false,
+      loadingOpacity: 0,
       userUsername: "",
       userGender: "",
       userCountry: "",
@@ -88,14 +94,16 @@ export default class ProfileScreen extends Component<{}>{
     this.setState({loadingDone: false})
     this.spinAnimation()
     this._subscribe = this.props.navigation.addListener('focus', async () => {
-      this.setState({loadingDone: false})
+      infoChanged = false
+      this.setState({loadingDone: false, goBackInfoModalVisible:false})
       this.spinAnimation()
       await this.checkIfUserDataExistsInLocalAndSaveIfNot()
       console.log("subscribe")
       this.setState({reRender: "ok", profilePhoto: this.state.profilePhoto + '?' + new Date()})
     })
     this._subscribe = this.props.navigation.addListener('blur', async () => {
-      this.setState({loadingDone: false})
+      infoChanged = false
+      this.setState({loadingDone: false, goBackInfoModalVisible:false})
       this.spinAnimation()
     })
     console.log("PROFİL COMP")
@@ -222,6 +230,7 @@ static navigationOptions = {
     }
 
   async onPressSave(){
+    this.setState({loadingOpacity: 1})
     if(this.state.newPhoto){
       var uploadDone = false
       var storageRef = storage().ref();
@@ -247,15 +256,34 @@ static navigationOptions = {
       b: this.state.userBio,
       u: this.state.userUsername,
       p: this.state.userPhotoCount
+    }).then(() => {
+      infoChanged = false
+      this.setState({saveInfoModalVisible:true, loadingOpacity:0})
+      this.spinValue = new Animated.Value(0)
     })
   }
   onCountryValueChange(value){
+    if(this.state.userCountry != value.label){
+      infoChanged = true
+    }
     this.setState({userCountry: value.label})
   }
   onValueChangeGender(value){
+    if(this.state.userGender != value.label){
+      infoChanged = true
+    }
     this.setState({userGender: value.label})
   }
+  onValueChangeUsername(text){
+    if(this.state.userUsername != text){
+      infoChanged = true
+    }
+    this.setState({userUsername: text})
+  }
   valueChange(value){
+    if(this.state.userBio != value){
+      infoChanged = true
+    }
     if(this.state.bioLimit <= 100){
       this.setState({userBio: value})
       global.globalBio = value;
@@ -310,6 +338,14 @@ static navigationOptions = {
     const {navigate} = this.props.navigation;
     navigate("DeleteOptions")
   }
+  onPressGoBack(){
+    if(infoChanged){
+      this.setState({goBackInfoModalVisible:true})
+    }
+    else{
+      this.props.navigation.goBack()
+    }
+  }
 
   render(){
     const spin = this.spinValue.interpolate({
@@ -350,7 +386,7 @@ static navigationOptions = {
 
         <CustomHeader
         whichScreen = {"Profile"}
-        onPress = {()=> this.props.navigation.goBack()}
+        onPress = {()=> this.onPressGoBack()}
         isFilterVisible = {this.state.showFilter}
         title = "Profile">
         </CustomHeader>
@@ -374,6 +410,7 @@ static navigationOptions = {
 
         <TouchableOpacity
         activeOpacity = {1}
+        disabled = {this.state.upperComponentsDisabled}
         style={{opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}
         onPress = {()=> this.setState({imageViewerVisible: true})}>
 
@@ -409,6 +446,7 @@ static navigationOptions = {
 
         <TextInput
         defaultValue = {this.state.userUsername}
+        editable = {!this.state.upperComponentsDisabled}
         onBlur={() => {this.setState({selection: {start: 0,end: 0}})}}
         onFocus={() => {this.setState({bioOpacity: 0, selection: {start: this.state.userUsername.length, end:this.state.userUsername.length}}, () => {this.setState({ selection: null })})  }}
         selection={this.state.selection}
@@ -416,7 +454,7 @@ static navigationOptions = {
         style={{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)",opacity: this.state.upperComponentsOpacity, paddingTop: 0, paddingBottom: 0, paddingLeft: 12, paddingRight: 12, textAlign: "left",
         backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)", borderWidth: 0.4, borderRadius: 8, borderColor:"gray",
         fontSize: 14*(this.width/360), width: this.width/2*(8/10), height:this.width/2*(8/10)*(7/6)/5 }}
-        onChangeText={(text) => this.setState({userUsername: text})}>
+        onChangeText={(text) => this.onValueChangeUsername(text)}>
         </TextInput>
 
 
@@ -502,6 +540,25 @@ static navigationOptions = {
         onCancel = {() => {
           this.setState({imageViewerVisible: false})
         }}/>
+
+        <GoBackInfoModal
+        isVisible = {this.state.goBackInfoModalVisible}
+        txtAlert = {"Your changes have not been saved. Are you sure you want to go back?"}
+        txtOk = {"Go Back Anyway"}
+        txtCancel = {"Cancel"}
+        onPressOk = {()=>this.props.navigation.goBack()}
+        onPressClose = {()=>this.setState({goBackInfoModalVisible:false}) }/>
+
+        <InfoModal
+        isVisible = {this.state.saveInfoModalVisible}
+        txtAlert = {"Your changes have been saved."}
+        txtGotIt = {global.langGotIt}
+        onPressClose = {()=>this.setState({saveInfoModalVisible:false}) }/>
+
+        <Animated.Image source={{uri: 'loading' + global.themeForImages}}
+          style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
+          position: 'absolute', bottom: (this.height)*(20/100) - (getStatusBarHeight()) + (this.width*3/10*(7/6)) + this.width/30 - this.width/7,
+          left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 
       </TouchableOpacity>
 
