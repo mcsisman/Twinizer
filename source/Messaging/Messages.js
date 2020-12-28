@@ -32,6 +32,7 @@ import CustomHeader from '../Components/Common/Header/CustomHeader'
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 
 import MessageBox from '../Components/Messaging/Messages/MessageBox/MessageBox'
+import EditBox from '../Components/Messaging/Messages/EditBox/EditBox'
 import MessageSwitchButton from '../Components/Messaging/Messages/MessageSwitchButton/MessageSwitchButton'
 import DeleteMessageModal from '../Components/Messaging/Messages/DeleteMessage/DeleteMessageModal'
 
@@ -1455,300 +1456,75 @@ messageSelectAll(){
 }
 render(){
   const {navigate} = this.props.navigation;
-  var showEditMessage = true
-  if(messageArray.length == 0){
-    showEditMessage = false
-  }
-  if(messageArray.length > 0){
-    showEditMessage = true
-  }
 
-  var showEditRequest = true
-  if(requestArray.length == 0){
-    showEditRequest = false
-  }
-  if(requestArray.length > 0){
-    showEditRequest = true
-  }
   scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight();
   const spin = this.spinValue.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg']
   })
-  if(this.state.editPressed){
-    if(!this.state.loadingDone){
-      if(this.state.whichScreen == "left"){
-        return(
-          <View
-          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
-                  <ModifiedStatusBar/>
-                  <CustomHeader
-                  editPressed = {this.state.editText}
-                  onPress = {()=> this.switchButtonPressed("left")}
-                  whichScreen = {"Messages"}
-                  title = {"Requests"}/>
+  
+  if(!this.state.loadingDone){ // IF PAGE IS LOADING
+      return(
+        <View
+        style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
 
-                  <Animated.Image source={{uri: 'loading' + global.themeForImages}}
-                    style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
-                  />
+        <ModifiedStatusBar/>
+        <CustomHeader
+        editPressed = {this.state.editText}
+        onPress = {()=> this.switchButtonPressed(this.state.whichScreen == "left" ? "right" : "left")}
+        whichScreen = {"Messages"}
+        title = {this.state.whichScreen == "left" ? "Messages" : "Requests"}/>
+
+        <Animated.Image source={{uri: 'loading' + global.themeForImages}}
+          style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
+        />
+
         </View>
-        )
-      }
-      else{
-        return(
-          <View
-          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
-                  <ModifiedStatusBar/>
-                  <CustomHeader
-                  editPressed = {this.state.editText}
-                  onPress = {()=> this.switchButtonPressed("left")}
-                  whichScreen = {"Messages"}
-                  editText = {this.state.editText}
-                  title = {"Requests"}/>
-
-                  <Animated.Image source={{uri: 'loading' + global.themeForImages}}
-                    style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
-                  />
-        </View>
-        )
-      }
-    }
-    else{
-      if(this.state.whichScreen == "left"){
-        return(
-          <View
-          style={{width: this.width, height: this.height, flex:1, flexDirection: 'column', alignItems: 'center', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
-                  <ModifiedStatusBar/>
-
-                  <CustomHeader
-                  editPressed = {this.state.editText}
-                  onPress = {()=> this.switchButtonPressed("right")}
-                  whichScreen = {"Messages"}
-                  editText = {this.state.editText}
-                  title = {"Messages"}/>
-
-                  <View style = {{borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
-                  <TouchableOpacity
-                    activeOpacity = {1}
-                    style={{backgroundColor: "purple",position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-                    onPress={()=>this.editButtonPressed()}
-                    disabled = {false}>
-
-                  <Text style = {{fontSize: 20, color: global.themeColor}}>
-                  {this.state.editText}
-                  </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    activeOpacity = {1}
-                    style={{width: this.width/3,  left: this.width/3, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-                    onPress = {()=> this.messageSelectAll()}>
-                  <Text style = {{fontSize: 20, color: global.themeColor}}>
-                  {this.state.allSelected ? "Deselect All" : "Select All"}
-                  </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    activeOpacity = {1}
-                    disabled = {this.state.messageDoneDisabled}
-                    style={{opacity: this.state.messageDoneDisabled ? 0 : 1, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-                    onPress = {()=> this.messageDonePress()}>
-                  <Text style = {{fontSize: 20, color: global.themeColor}}>
-                  Done
-                  </Text>
-                  </TouchableOpacity>
-                  </View>
-
-
-                  <FlatList
-                    style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
-                    renderItem = {()=>this.renderMessageBoxes()}
-                    data = { [{bos:"boş", key: "key"}]}>
-                  </FlatList>
-
-                  <DeleteMessageModal
-                  onPressClose = {()=> this.setState({deleteModalVisible: false})}
-                  isVisible = {this.state.deleteModalVisible}
-                  onPressClear = {()=> this.clearMessagesPressed()}
-                  onPressDelete = {()=> this.deleteMessagesPressed()}
-                  txtAlert = {""}/>
-        </View>
-            )
-      }
-      else{
-        return(
-          <View
-          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
-                  <ModifiedStatusBar/>
-                  <CustomHeader
-                  editPressed = {this.state.editText}
-                  onPress = {()=> this.switchButtonPressed("left")}
-                  whichScreen = {"Messages"}
-                  editText = {this.state.editText}
-                  title = {"Requests"}
-                  />
-
-                  <View style = {{borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
-                  <TouchableOpacity
-                    activeOpacity = {1}
-                    style={{backgroundColor: "purple",position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-                    onPress={()=>this.editButtonPressed()}
-                    disabled = {false}>
-
-                  <Text style = {{fontSize: 20, color: global.themeColor}}>
-                  {this.state.editText}
-                  </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    activeOpacity = {1}
-                    style={{ width: this.width/3, left: this.width/3, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-                    onPress = {()=> this.requestSelectAll()}>
-                  <Text style = {{fontSize: 20, color: global.themeColor}}>
-                  {this.state.allSelected ? "Deselect All" : "Select All"}
-                  </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    disabled = {this.state.requestDoneDisabled}
-                    style={{position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-                    onPress = {()=> this.requestDonePress()}>
-                  <Text style = {{fontSize: 20, color: global.themeColor}}>
-                  Done
-                  </Text>
-                  </TouchableOpacity>
-
-                  </View>
-
-                  <FlatList
-                  style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
-                  renderItem = {()=>this.renderRequestBoxes()}
-                  data = { [{bos:"boş", key: "key"}]}>
-                  </FlatList>
-                  <DeleteMessageModal
-                  onPressClose = {()=> this.setState({deleteModalVisible: false})}
-                  onPressClear = {()=> this.clearRequestPressed()}
-                  onPressDelete = {()=> this.deleteRequestPressed()}
-                  isVisible = {this.state.deleteModalVisible}
-                  txtAlert = {""}/>
-        </View>
-        )
-      }
-    }
+      )
   }
-  else{ // IF EDIT IS NOT PRESSED
-    if(!this.state.loadingDone){ // IF PAGE IS LOADED
-      if(this.state.whichScreen == "left"){ // IF SCREEN IS LEFT
-        return(
-          <View
-          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
-                  <ModifiedStatusBar/>
-                  <CustomHeader
-                  editPressed = {this.state.editText}
-                  onPress = {()=> this.switchButtonPressed("right")}
-                  whichScreen = {"Messages"}
-                  title = {"Messages"}
-                  />
+  else{ // PAGE IS LOADED
+    return(
+      <View
+      style={{width: this.width, height: this.height, flex:1, flexDirection: 'column', alignItems: 'center', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
+      <ModifiedStatusBar/>
 
-                  <Animated.Image source={{uri: 'loading' + global.themeForImages}}
-                    style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
-                  />
-        </View>
-        )
-      }
-      else{
-        return(
-          <View
-          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
-                  <ModifiedStatusBar/>
-                  <CustomHeader
-                  onPress = {()=> this.switchButtonPressed("left")}
-                  whichScreen = {"Messages"}
-                  editPressed = {this.state.editText}
-                  title = {"Requests"}
-                  />
+      <CustomHeader
+      editPressed = {this.state.editText}
+      onPress = {()=> this.switchButtonPressed(this.state.whichScreen == "left" ? "right" : "left")}
+      whichScreen = {"Messages"}
+      title = {this.state.whichScreen == "left" ? "Messages" : "Requests"}/>
 
-                  <Animated.Image source={{uri: 'loading' + global.themeForImages}}
-                    style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
-                  />
-        </View>
-        )
-      }
-    }
-    else{
-      if(this.state.whichScreen == "left"){
-        return(
-          <View
-          style={{width: this.width, height: this.height, flex:1, flexDirection: 'column', alignItems: 'center', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
-                  <ModifiedStatusBar/>
+      <EditBox
+      editButtonPressed = {()=>this.editButtonPressed()}
+      messageSelectAll = {()=> this.messageSelectAll()}
+      messageDoneDisabled = {this.state.messageDoneDisabled}
+      messageDonePress = {()=> this.messageDonePress()}
+      editText = {this.state.editText}
+      allSelected = {this.state.allSelected}
+      requestSelectAll = {()=> this.requestSelectAll()}
+      requestDoneDisabled = {this.state.requestDoneDisabled}
+      requestDonePress = {()=> this.messageDonePress()}
+      messageArray = {messageArray}
+      requestArray = {requestArray}
+      whichScreen = {this.state.whichScreen}
+      editPressed = {this.state.editPressed}
+      />
 
-                  <CustomHeader
-                  onPress = {()=> this.switchButtonPressed("right")}
-                  whichScreen = {"Messages"}
-                  editPressed = {this.state.editText}
-                  title = {"Messages"}
-                  />
+      <FlatList
+        style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+        renderItem =  {this.state.whichScreen == "left" ? ()=> this.renderMessageBoxes() : ()=> this.renderRequestBoxes()}
+        data = { [{bos:"boş", key: "key"}]}>
+      </FlatList>
 
-                  <View style = {{opacity: messageArray.length == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
-                  <TouchableOpacity
-                    activeOpacity = {1}
-                    style={{backgroundColor: "purple",position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-                    onPress={()=>this.editButtonPressed()}
-                    disabled = {messageArray.length == 0 ? true : false}>
+      <DeleteMessageModal
+      onPressClose = {()=> this.setState({deleteModalVisible: false})}
+      isVisible = {this.state.deleteModalVisible}
+      onPressClear = {this.state.whichScreen == "left" ? ()=> this.clearMessagesPressed() : ()=> this.clearRequestPressed()}
+      onPressDelete = {this.state.whichScreen == "left" ? ()=> this.deleteMessagesPressed() : ()=> this.deleteRequestPressed()}
+      txtAlert = {""}/>
 
-                  <Text style = {{fontSize: 20, color: global.themeColor}}>
-                  {this.state.editText}
-                  </Text>
-                  </TouchableOpacity>
-                  </View>
-
-                  <FlatList
-                  style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
-                  renderItem = {()=> this.renderMessageBoxes()}
-                  data = { [{bos:"boş", key: "key"}]}>
-                  </FlatList>
-
-        </View>
-            )
-      }
-      else{
-        return(
-          <View
-          style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
-                  <ModifiedStatusBar/>
-                  <CustomHeader
-                  onPress = {()=> this.switchButtonPressed("left")}
-                  whichScreen = {"Messages"}
-                  editPressed = {this.state.editText}
-                  title = {"Requests"}/>
-
-                  <View style = {{opacity: requestArray.length == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
-                  <TouchableOpacity
-                    activeOpacity = {1}
-                    style={{backgroundColor: "purple",position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-                    onPress={()=>this.editButtonPressed()}
-                    disabled = {requestArray.length == 0 ? true : false}>
-
-                  <Text style = {{fontSize: 20, color: global.themeColor}}>
-                  {this.state.editText}
-                  </Text>
-                  </TouchableOpacity>
-                  </View>
-
-                  <FlatList
-                  style = {{height: scrollViewHeight, width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
-                  renderItem = {()=>this.renderRequestBoxes()}
-                  data = { [{bos:"boş", key: "key"}]}>
-                  </FlatList>
-
-
-        </View>
-        )
-      }
-    }
+      </View>
+    )
   }
-
-
-  ;
-}
+  };
 }

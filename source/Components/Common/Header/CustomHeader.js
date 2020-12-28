@@ -68,36 +68,48 @@ export default class CustomHeader extends Component {
       else{
         return(
           <View
-          style = {{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', height: headerHeight,
-          width: this.width, right: 0, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
+          style = {{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', height: headerHeight, flexDirection: "row",
+          width: this.width, right: 0, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)',}}>
+
+          <View
+          style={{width: this.width/5, height: "100%", justifyContent: 'center', alignItems: 'center',
+          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', }}>
           <TouchableOpacity
           activeOpacity = {1}
           onPress = {this.props.onPress}
           disabled = {messageDisabled}
-          style={{position: 'absolute', left: this.width*3/100, width: headerHeight*9/10, height: headerHeight*9/10, justifyContent: 'center', alignItems: 'center',
-          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)'}}>
+          style={{position: 'absolute',  width: Math.min(this.width/6, headerHeight*4/5), height: Math.min(this.width/6, headerHeight*4/5), justifyContent: 'center', alignItems: 'center',
+          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', }}>
           <Image
-          style={{position: 'absolute', width: '50%', height: '50%'}}
+          style={{position: 'absolute', width: '70%', height: '70%'}}
           source={{uri: messageColor}}>
           </Image>
           </TouchableOpacity>
+          </View>
 
+          <View
+          style={{width: this.width*3/5, height: "100%", justifyContent: 'center', alignItems: 'center',
+          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', }}>
           <Text style = {{fontSize: 24*this.width/360,color: global.themeColor, fontWeight: 'bold'}}>
           {this.props.title}
           </Text>
+          </View>
 
+          <View
+          style={{width: this.width/5, height: "100%", justifyContent: 'center', alignItems: 'center',
+          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', }}>
           <TouchableOpacity
           activeOpacity = {1}
           onPress = {this.props.onPress}
           disabled = {requestDisabled}
-          style={{position: 'absolute', right: this.width*2/100, width: headerHeight*9/10, height: headerHeight*9/10, justifyContent: 'center', alignItems: 'center',
-          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)'}}>
+          style={{position: 'absolute',  width: Math.min(this.width/6, headerHeight*4/5), height: Math.min(this.width/6, headerHeight*4/5), justifyContent: 'center', alignItems: 'center',
+          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', }}>
           <Image
-          style={{position: 'absolute', width: '50%', height: '50%'}}
+          style={{position: 'absolute', width: '70%', height: '70%'}}
           source={{uri: requestColor}}>
           </Image>
           </TouchableOpacity>
-
+          </View>
           </View>
         )
       }
@@ -121,7 +133,7 @@ export default class CustomHeader extends Component {
           activeOpacity = {1}
           onPress = {this.props.onPress}
           disabled = {!this.props.isFilterVisible}
-          style={{opacity: filterOpacity, position: 'absolute', right: this.width*2/100, width: headerHeight*9/10*(196/211), height: headerHeight*9/10, justifyContent: 'center', alignItems: 'center',
+          style={{opacity: 1, position: 'absolute', right: this.width*2/100, width: headerHeight*9/10*(196/211), height: headerHeight*9/10, justifyContent: 'center', alignItems: 'center',
           backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', borderRadius: 8}}>
           <Image
           style={{position: 'absolute', width: '50%', height: '50%', borderRadius: 8}}

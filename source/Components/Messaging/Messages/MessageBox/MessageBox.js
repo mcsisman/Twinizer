@@ -90,7 +90,7 @@ export default class MessageBox extends Component {
         <View
         style = {{height: this.msgBoxHeight*2/6, justifyContent: 'center', width: this.width*45/80,}}>
         <Text
-        style = {{fontSize: 18, color: global.isDarkMode ? global.themeColor : "rgba(0,0,0,1)"}}>
+        style = {{fontSize: 18*this.width/360, color: global.isDarkMode ? global.themeColor : "rgba(0,0,0,1)"}}>
           {this.props.senderName}
         </Text>
         </View>
@@ -107,7 +107,7 @@ export default class MessageBox extends Component {
 
           <Text
           numberOfLines={2}
-          style = {{fontStyle: messageText == "No message" ? "italic" : "normal" ,fontSize: 16, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(128,128,128,1)", width: this.props.isPhoto ? this.width*36/80 : this.width*45/80}}>
+          style = {{fontStyle: messageText == "No message" ? "italic" : "normal" ,fontSize: 16*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(128,128,128,1)", width: this.props.isPhoto ? this.width*36/80 : this.width*45/80}}>
             {messageText}
           </Text>
         </View>
