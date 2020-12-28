@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 var leftAnim = new Animated.Value(-this.width*(3/16))
-export default class MessageBox extends Component {
+export default class EditBox extends Component {
   constructor(props) {
     super(props);
   }
@@ -133,4 +133,4 @@ export default class MessageBox extends Component {
   }
 }
 
-export * from './MessageBox';
+export * from './EditBox';

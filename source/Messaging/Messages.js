@@ -1137,12 +1137,12 @@ renderMessageBoxes(){
       <View style = {{flex: 1, flexDirection: "column", width: this.width, height: scrollViewHeight}}>
       <View style = {{ alignItems: 'center', justifyContent: 'center', width: this.width, height: scrollViewHeight/2}}>
       <Image source={{uri: 'sadface' + global.themeForImages}}
-        style={{width: scrollViewHeight/4, height: scrollViewHeight/4, opacity: 0.4}}/>
+        style={{width: this.width/2.5, height: this.width/2.5, opacity: 0.4}}/>
       </View>
 
-      <View style = {{opacity: 0.7, alignItems: 'center', width: this.width, height: scrollViewHeight/4}}>
+      <View style = {{justifyContent: "center", opacity: 0.7, alignItems: 'center', width: this.width, height: scrollViewHeight/4}}>
       <Text
-        style = {{fontSize: 25, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" }}>
+        style = {{fontSize: 25*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" }}>
         No messages, sorry...
       </Text>
       </View>
@@ -1202,12 +1202,12 @@ renderRequestBoxes(){
       <View style = {{flex: 1, flexDirection: "column", width: this.width, height: scrollViewHeight}}>
       <View style = {{ alignItems: 'center', justifyContent: 'center', width: this.width, height: scrollViewHeight/2}}>
       <Image source={{uri: 'sadface' + global.themeForImages}}
-        style={{width: scrollViewHeight/4, height: scrollViewHeight/4, opacity: 0.4}}/>
+        style={{width: this.width/2.5, height: this.width/2.5, opacity: 0.4}}/>
       </View>
 
-      <View style = {{opacity: 0.7, alignItems: 'center', width: this.width, height: scrollViewHeight/4}}>
+      <View style = {{justifyContent: "center", opacity: 0.7, alignItems: 'center', width: this.width, height: scrollViewHeight/4}}>
       <Text
-        style = {{fontSize: 25, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
+        style = {{fontSize: 25*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
         No requests, sorry...
       </Text>
       </View>
@@ -1530,7 +1530,7 @@ render(){
                   <View style = {{borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
                   <TouchableOpacity
                     activeOpacity = {1}
-                    style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+                    style={{backgroundColor: "purple",position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
                     onPress={()=>this.editButtonPressed()}
                     disabled = {false}>
 
@@ -1591,7 +1591,7 @@ render(){
                   <View style = {{borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
                   <TouchableOpacity
                     activeOpacity = {1}
-                    style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+                    style={{backgroundColor: "purple",position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
                     onPress={()=>this.editButtonPressed()}
                     disabled = {false}>
 
@@ -1692,7 +1692,7 @@ render(){
                   <View style = {{opacity: messageArray.length == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
                   <TouchableOpacity
                     activeOpacity = {1}
-                    style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+                    style={{backgroundColor: "purple",position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
                     onPress={()=>this.editButtonPressed()}
                     disabled = {messageArray.length == 0 ? true : false}>
 
@@ -1725,7 +1725,7 @@ render(){
                   <View style = {{opacity: requestArray.length == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
                   <TouchableOpacity
                     activeOpacity = {1}
-                    style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
+                    style={{backgroundColor: "purple",position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
                     onPress={()=>this.editButtonPressed()}
                     disabled = {requestArray.length == 0 ? true : false}>
 
