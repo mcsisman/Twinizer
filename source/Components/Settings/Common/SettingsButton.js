@@ -30,8 +30,10 @@ export default class SettingsButton extends Component {
    onPress: PropTypes.func,
    bottom: PropTypes.number,
    text: PropTypes.string,
+   noBottomBorder: PropTypes.bool,
  }
  static defaultProps = {
+   noBottomBorder: false
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
@@ -39,7 +41,7 @@ export default class SettingsButton extends Component {
     return(
       <TouchableOpacity
       activeOpacity = {1}
-      style={{ borderTopWidth:1, borderBottomWidth:1, borderColor: global.isDarkMode ? global.darkModeColors[2] : 'rgba(128,128,128,0.3)' ,
+      style={{ borderTopWidth:1, borderBottomWidth: this.props.noBottomBorder ? 0 : 1, borderColor: global.isDarkMode ? global.darkModeColors[2] : 'rgba(128,128,128,0.3)' ,
       backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)", flexDirection: "row", flex:1, justifyContent: 'center', width: this.width, height: this.width/8}}
       onPress={this.props.onPress}>
       <View

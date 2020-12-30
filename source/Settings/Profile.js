@@ -56,10 +56,13 @@ var currentUserBio;
 var currentUserPhotoCount;
 var updateImage;
 var infoChanged = false;
+var keyboardHeight;
+var keyboardYcord;
 export default class ProfileScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.state = {
+      keyboardOpen: false,
       saveInfoModalVisible: false,
       imageViewerVisible: false,
       goBackInfoModalVisible: false,
@@ -122,16 +125,17 @@ static navigationOptions = {
   };
   _keyboardDidHide = () => {
     if(this.state.bioOpacity == 1){
-      this.setState({upperComponentsOpacity: 1, upperComponentsDisabled: false})
+      this.setState({upperComponentsOpacity: 1, upperComponentsDisabled: false, keyboardOpen: false})
     }
     else{
-      this.setState({bioOpacity: 1})
+      this.setState({bioOpacity: 1, keyboardOpen: false})
     }
   };
   _keyboardDidShow = (e) => {
     const { height, screenX, screenY, width } = e.endCoordinates
     console.log(height)
     console.log("y:", screenY)
+    this.setState({keyboardOpen: true})
     if(this.state.bioOpacity == 1){
       this.setState({upperComponentsOpacity: 0, upperComponentsDisabled: true})
     }
@@ -391,27 +395,18 @@ static navigationOptions = {
         title = "Profile">
         </CustomHeader>
 
-        <KeyboardAvoidingView
-        behavior= "height"
-        keyboardVerticalOffset = {(this.height*20)/100}
-        style={{justifyContent: "center", alignItems: "center", width: this.width, position:"absolute", top: headerHeight + getStatusBarHeight(),
-        height: (this.height-this.width/7 - headerHeight - getStatusBarHeight()), flexDirection: "row" }}>
-
-        <ProfileBioButton
-        opacity = {this.state.bioOpacity}
-        defaultText = {this.state.userBio}
-        onChangeText = {(text) => this.valueChange(text)}
-        characterNo = {this.state.bioLimit}/>
-
-        </KeyboardAvoidingView>
+        <View
+        style={{ bottom: this.state.keyboardOpen ? (this.height - headerHeight - getStatusBarHeight())/2 : 0, width: this.width, height: this.height - headerHeight - getStatusBarHeight(), flexDirection: "column", alignItems: "center" }}>
 
         <View
-        style={{opacity: this.state.upperComponentsOpacity, width: this.width, height: (this.height-this.width/7 - headerHeight - getStatusBarHeight())/2, flexDirection: "row" }}>
+        style={{opacity: this.state.upperComponentsOpacity, width: this.width, height: (this.height - headerHeight - getStatusBarHeight())/2, flexDirection: "row" }}>
 
+        <View
+        style={{opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}>
         <TouchableOpacity
         activeOpacity = {1}
         disabled = {this.state.upperComponentsDisabled}
-        style={{opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}
+        style={{opacity: this.state.upperComponentsOpacity, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius:12, borderBottomRightRadius:12, width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)}}
         onPress = {()=> this.setState({imageViewerVisible: true})}>
 
         <Image
@@ -422,8 +417,8 @@ static navigationOptions = {
         </TouchableOpacity>
 
         <View
-        style={{opacity: this.state.upperComponentsOpacity, bottom: 0, position:"absolute", width: this.width/2,
-        height: (this.height-this.width/7 - headerHeight - getStatusBarHeight())/4 - this.width/2*(8/10)*(7/6)/2, justifyContent: "center", alignItems: "center"}}>
+        style={{opacity: this.state.upperComponentsOpacity, top: this.width/2*(8/10)*(7/6) + ((this.height - headerHeight - getStatusBarHeight())/2 - this.width/2*(8/10)*(7/6))/2,
+        position:"absolute", width: this.width/2, height: this.width/2*(8/10)*(1/6), justifyContent: "center", alignItems: "center"}}>
 
         <TouchableOpacity
         activeOpacity = {1}
@@ -439,6 +434,8 @@ static navigationOptions = {
         </TouchableOpacity>
 
         </View>
+        </View>
+
 
         <View
         style={{ opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}>
@@ -452,7 +449,7 @@ static navigationOptions = {
         selection={this.state.selection}
         numberOfLines={1}
         style={{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)",opacity: this.state.upperComponentsOpacity, paddingTop: 0, paddingBottom: 0, paddingLeft: 12, paddingRight: 12, textAlign: "left",
-        backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)", borderWidth: 0.4, borderRadius: 8, borderColor:"gray",
+        backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)", borderWidth: 0.4, borderColor:"gray",
         fontSize: 14*(this.width/360), width: this.width/2*(8/10), height:this.width/2*(8/10)*(7/6)/5 }}
         onChangeText={(text) => this.onValueChangeUsername(text)}>
         </TextInput>
@@ -466,7 +463,6 @@ static navigationOptions = {
         backgroundColor = {"white"}
         placeHolder = {false}
         borderWidth = {0.4}
-        borderRadius = {8}
         borderBottomWidth = {0.4}
         borderColor = {"gray"}
         borderBottomColor = {"gray"}
@@ -488,7 +484,6 @@ static navigationOptions = {
         backgroundColor = {"white"}
         placeHolder = {false}
         borderWidth = {0.4}
-        borderRadius = {8}
         borderBottomWidth = {0.4}
         borderColor = {"gray"}
         borderBottomColor = {"gray"}
@@ -507,9 +502,23 @@ static navigationOptions = {
 
         </View>
 
+        <View
+        style={{alignItems: "center", justifyContent: "flex-start", width: this.width,
+        height: (this.height - headerHeight - getStatusBarHeight())/2, flexDirection: "column" }}>
+        <View
+        style = {{height: this.width/20}}/>
+        <ProfileBioButton
+        opacity = {this.state.bioOpacity}
+        defaultText = {this.state.userBio}
+        onChangeText = {(text) => this.valueChange(text)}
+        characterNo = {this.state.bioLimit}/>
+
+        <View
+        style = {{height: this.width/20}}/>
+
         <TouchableOpacity
         activeOpacity = {1}
-        style={{ top: "80%", position: "absolute", borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,
+        style={{ borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,
         justifyContent: 'center', alignItems: 'center', backgroundColor: backgroundColor, paddingLeft: 15, paddingRight: 15, paddingTop: 5, paddingBottom:5}}
         onPress={()=> this.onPressSave()}>
 
@@ -517,12 +526,15 @@ static navigationOptions = {
         SAVE
         </Text>
         </TouchableOpacity>
-
+        <View
+        style = {{height: this.width/20}}/>
         <LogoutButton
-        top = {"88%"}
         text = {"Delete My Account"}
-        onPress = {()=>this.onPressDelete()}
-        position = {"absolute"}/>
+        onPress = {()=>this.onPressDelete()}/>
+
+        </View>
+
+        </View>
 
         <ImageUploadModal
         isVisible={this.state.isVisible}

@@ -135,6 +135,7 @@ export default class SettingsScreen extends Component<{}>{
       style = {{height: this.width/9}}/>
       <SettingsButton
       onPress = {()=> navigate("FavoriteUsers")}
+      noBottomBorder = {true}
       text = {"Favorite Users"}/>
       <SettingsButton
       onPress = {()=> navigate("BlockedUsers")}

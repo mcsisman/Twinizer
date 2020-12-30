@@ -129,17 +129,22 @@ export default class CustomHeader extends Component {
           </Text>
           </View>
 
+          <View
+          style={{opacity: filterOpacity, position: 'absolute', right: this.width*2/100, width: headerHeight*9/10*(196/211), height: headerHeight*9/10, justifyContent: 'center', alignItems: 'center',
+          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)'}}>
+
           <TouchableOpacity
           activeOpacity = {1}
           onPress = {this.props.onPress}
           disabled = {!this.props.isFilterVisible}
-          style={{opacity: 1, position: 'absolute', right: this.width*2/100, width: headerHeight*9/10*(196/211), height: headerHeight*9/10, justifyContent: 'center', alignItems: 'center',
-          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', borderRadius: 8}}>
+          style={{opacity: filterOpacity, width: Math.min(this.width/6, headerHeight *4/5)*(196/211), height: Math.min(this.width/6, headerHeight *4/5), justifyContent: 'center', alignItems: 'center',
+          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)'}}>
           <Image
-          style={{position: 'absolute', width: '50%', height: '50%', borderRadius: 8}}
+          style={{position: 'absolute', width: '70%', height: '70%'}}
           source={{uri: "filter" + global.themeForImages}}>
           </Image>
           </TouchableOpacity>
+          </View>
 
           </View>
         )

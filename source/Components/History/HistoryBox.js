@@ -45,12 +45,12 @@ export default class HistoryBox extends Component {
 
     return(
       <Animated.View
-        style = {{borderBottomWidth: 1, borderBottomColor: "rgba(181,181,181,0.7)", left: this.props.left ,alignItems: 'center', paddingTop: 5, paddingBottom: 5, width: this.width + this.width*(3/16),
+        style = {{borderBottomWidth: 1, borderBottomColor: "rgba(181,181,181,0.7)", left: this.props.left ,alignItems: 'center', height: this.width/3, width: this.width + this.width*(3/16),
         backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", flexDirection: "row", flex: 1}}>
 
         <TouchableOpacity
         activeOpacity = {1}
-        style = {{alignItems: 'center', justifyContent: 'center', width: this.width*(3/16), height: this.height/5}}
+        style = {{alignItems: 'center', justifyContent: 'center', width: this.width*(3/16), height: "100%"}}
         onPress = {this.props.trashOnPress}>
           <Image
           style={{width: this.width*(3/16)*(4/10), height: this.width*(3/16)*(4/10)*(328/302)}}
@@ -60,14 +60,13 @@ export default class HistoryBox extends Component {
 
         <TouchableOpacity
           activeOpacity = {1}
-          style = {{ alignItems: "center", flex: 1, flexDirection: "row",  paddingTop: 5, paddingBottom: 5, width: this.width + this.width*(3/16)}}
+          style = {{alignItems: "center", flex: 1, flexDirection: "row",  height: "100%", width: this.width + this.width*(3/16)}}
           onPress = {this.props.onPress}
           disabled = {this.props.disabled}>
-
         <View
-        style={{justifyContent: "center", alignItems:"center", width: this.width/3, borderBottomLeftRadius: 8, borderTopRightRadius: 8, borderTopLeftRadius: 8, borderBottomRightRadius: 8}}>
+        style={{height: "100%",justifyContent: "center", alignItems:"center", width: this.width/3,}}>
         <Image
-        style={{width: this.width/4, height: this.width/4*(7/6), borderBottomLeftRadius: 8, borderTopRightRadius: 8, borderTopLeftRadius: 8, borderBottomRightRadius: 8}}
+        style={{width: this.width/4.5, height: this.width/4.5*(7/6), borderBottomLeftRadius: 8, borderTopRightRadius: 8, borderTopLeftRadius: 8, borderBottomRightRadius: 8}}
         source = {{uri: this.props.photoSource}}>
         </Image>
         </View>
@@ -75,17 +74,16 @@ export default class HistoryBox extends Component {
         <View
         style = {{justifyContent: 'center', width: this.width/3, alignItems: 'center'}}>
         <Text
-        style = {{textAlign: "center", fontSize: 18, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
+        style = {{textAlign: "center", fontSize: 18*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
         {this.props.searchDate}
         </Text>
         </View>
 
         <View
-        style = {{position: "absolute", right: 0, justifyContent: 'center', width: this.width*(3/16),alignItems: 'center'}}>
+        style = {{height: "100%",position: "absolute", right: 0, justifyContent: 'center', width: this.width*(3/16),alignItems: 'center'}}>
         <HistoryCircle
         width = {this.width/16}
         height = {this.width/16}
-        right = {"50%"}
         isSelected = {this.props.isSelected}/>
         </View>
 

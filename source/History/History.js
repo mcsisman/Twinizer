@@ -28,6 +28,7 @@ import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 
 import SearchButton from '../Components/Common/SearchButton/SearchButton'
 import HistoryBox from '../Components/History/HistoryBox'
+import EditBox from '../Components/Messaging/Messages/EditBox/EditBox'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -78,7 +79,8 @@ async componentDidMount(){
     this.setState({reRender: "ok"})
   })
   this._subscribe = this.props.navigation.addListener('blur', async () => {
-    this.setState({editPressed: false, cancelPressed: false, editText: "Edit", messageBoxDisabled: false})
+    isSelectedArray = [];
+    this.setState({opacity: 0.4, editPressed: false, cancelPressed: false, editText: "Edit", messageBoxDisabled: false})
   })
   console.log("COMPONENT DID MOUNT")
   this.setState({reRender: "ok"})
@@ -343,7 +345,7 @@ renderHistoryBoxes(){
         <View style = {{flex: 1, flexDirection: "column", width: this.width, height: scrollViewHeight}}>
         <View style = {{opacity: 0.7, alignItems: 'center', width: this.width, height: scrollViewHeight/4}}>
         <Text
-          style = {{fontSize: 25, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
+          style = {{fontSize: 25*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
           No recent activity
         </Text>
         </View>
@@ -399,115 +401,53 @@ render(){
     )
   }
   else{
-    if(this.state.editPressed){
-      return(
-        <View
-        style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
-        <ModifiedStatusBar/>
+    return(
+      <View
+      style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
+      <ModifiedStatusBar/>
 
-        <CustomHeader
-        whichScreen = {"History"}
-        isFilterVisible = {this.state.showFilter}
-        title = {"History"}>
-        </CustomHeader>
+      <CustomHeader
+      whichScreen = {"History"}
+      isFilterVisible = {this.state.showFilter}
+      title = {"History"}>
+      </CustomHeader>
 
-        <View style = {{opacity: noOfSearch == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
-        <TouchableOpacity
-          activeOpacity = {1}
-          style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-          onPress={()=>this.editButtonPressed()}
-          disabled = {noOfSearch == 0 ? true : false}>
+      <EditBox
+      editButtonPressed = {()=>this.editButtonPressed()}
+      messageSelectAll = {()=> this.selectAll()}
+      messageDoneDisabled = {this.state.doneDisabled}
+      messageDonePress = {()=> this.donePress()}
+      editText = {this.state.editText}
+      allSelected = {this.state.allSelected}
+      messageArray = {noOfSearch == 0 ? [] : [1]}
+      whichScreen = {"left"}
+      editPressed = {this.state.editPressed}
+      />
 
-        <Text style = {{fontSize: 20, color: global.themeColor}}>
-        {this.state.editText}
-        </Text>
-        </TouchableOpacity>
+      <FlatList
+        style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
+        width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
+        renderItem = {()=>this.renderHistoryBoxes()}
+        data = { [{bos:"boş", key: "key"}]}
+        refreshing = {true}>
+      </FlatList>
 
-        <TouchableOpacity
-          activeOpacity = {1}
-          style={{width: this.width/3,  left: this.width/3, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-          onPress = {()=> this.selectAll()}>
-        <Text style = {{fontSize: 20, color: global.themeColor}}>
-        {this.state.allSelected ? "Deselect All" : "Select All"}
-        </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity = {1}
-          disabled = {this.state.doneDisabled}
-          style={{opacity: this.state.doneDisabled ? 0 : 1, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-          onPress = {()=> this.donePress()}>
-        <Text style = {{fontSize: 20, color: global.themeColor}}>
-        Done
-        </Text>
-        </TouchableOpacity>
-
-        </View>
-
-        <FlatList
-          style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
-          width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
-          renderItem = {()=>this.renderHistoryBoxes()}
-          data = { [{bos:"boş", key: "key"}]}
-          refreshing = {true}>
-        </FlatList>
-
-
+      <View
+      style= {{ opacity: this.state.editPressed || noOfSearch == 0 ? 0 : 1, width: this.width/7, height:this.width/7, bottom: this.width/20, borderBottomLeftRadius: 555, borderTopRightRadius: 555,
+      borderTopLeftRadius: 555, borderBottomRightRadius: 555, right: this.width/20, flex: 1, alignItems:'center',
+      justifyContent: 'center', position: 'absolute',}}>
+      <SearchButton
+      opacity = {this.state.opacity}
+      onPress={()=>this.onPressSearch()}
+      disabled = {this.state.disabled}
+      width = {this.width/7}
+      height ={this.width/7}
+      backgroundColor = {global.themeColor}/>
       </View>
+
+    </View>
 
     );
-    }
-    else{
-      return(
-        <View
-        style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
-        <ModifiedStatusBar/>
-
-        <CustomHeader
-        whichScreen = {"History"}
-        isFilterVisible = {this.state.showFilter}
-        title = {"History"}>
-        </CustomHeader>
-
-        <View style = {{opacity: noOfSearch == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
-        <TouchableOpacity
-          activeOpacity = {1}
-          style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-          onPress={()=>this.editButtonPressed()}
-          disabled = {noOfSearch == 0 ? true : false}>
-
-        <Text style = {{fontSize: 20, color: global.themeColor}}>
-        {this.state.editText}
-        </Text>
-        </TouchableOpacity>
-
-        </View>
-
-        <FlatList
-          style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
-          width: this.width, right: 0, bottom: 0,  position: 'absolute', flex: 1, flexDirection: 'column'}}
-          renderItem = {()=>this.renderHistoryBoxes()}
-          data = { [{bos:"boş", key: "key"}]}
-          refreshing = {true}>
-        </FlatList>
-
-        <View
-        style= {{width: this.width/7, height:this.width/7, bottom: this.width/20, borderBottomLeftRadius: 555, borderTopRightRadius: 555,
-        borderTopLeftRadius: 555, borderBottomRightRadius: 555, right: this.width/20, backgroundColor: "white", flex: 1, alignItems:'center',
-        justifyContent: 'center', position: 'absolute',}}>
-        <SearchButton
-        opacity = {this.state.opacity}
-        onPress={()=>this.onPressSearch()}
-        disabled = {this.state.disabled}
-        width = {this.width/7}
-        height ={this.width/7}
-        backgroundColor = {global.themeColor}/>
-        </View>
-
-      </View>
-
-      );
-    }
   }
 
 
