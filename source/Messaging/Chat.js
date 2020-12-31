@@ -580,7 +580,7 @@ render() {
         <ModifiedStatusBar/>
 
         <View
-          style = {{ position: 'absolute', height: this.state.giftedChatHeight,
+          style = {{backgroundColor: "purple", position: 'absolute', height: Platform.OS === 'android' ? this.state.giftedChatHeight : this.height - this.statusBarHeaderTotalHeight,
           width: this.width, top: this.statusBarHeaderTotalHeight, right: 0}}>
           <GiftedChat
           onLongPress={this.onLongPress}
