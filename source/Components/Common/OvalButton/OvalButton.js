@@ -40,14 +40,15 @@ export default class OvalButton extends Component {
    height: screenWidth*(1.2/10),
    title: "TITLE",
    disabled: false,
-   borderRadius: 24
+   borderRadius: 24,
+   position: "absolute",
  }
   render(){
 
     return(
       <TouchableOpacity
       activeOpacity = {this.props.opacity}
-      style={{ opacity: this.props.opacity, justifyContent: 'center', alignItems: 'center', position: 'absolute',
+      style={{ opacity: this.props.opacity, justifyContent: 'center', alignItems: 'center', position: this.props.position,
       backgroundColor: this.props.backgroundColor, paddingLeft: 15, paddingRight: 15,
        width: this.props.width, height: this.props.height,  bottom: this.props.bottom, right: this.props.right,
        borderBottomLeftRadius: this.props.borderRadius, borderTopRightRadius: this.props.borderRadius,

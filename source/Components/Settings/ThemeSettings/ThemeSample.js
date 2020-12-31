@@ -55,7 +55,7 @@ export default class ThemeSample extends Component {
       <TouchableOpacity
       activeOpacity = {1}
       style={{backgroundColor: backgroundColor, justifyContent: 'flex-start', alignItems: 'center', position: 'absolute',
-       width: 0.4*this.width, height: 0.4*this.width, bottom: this.props.bottom, right: this.props.right, borderBottomWidth: this.props.borderBottomWidth,
+       width: 0.35*this.width, height: 0.35*this.width, bottom: this.props.bottom, right: this.props.right, borderBottomWidth: this.props.borderBottomWidth,
        borderTopWidth: this.props.borderTopWidth, borderRightWidth: this.props.borderRightWidth, borderLeftWidth: this.props.borderLeftWidth, borderTopRightRadius: this.props.borderTopRightRadius,
        borderTopLeftRadius: this.props.borderTopLeftRadius, borderBottomRightRadius: this.props.borderBottomRightRadius, borderBottomLeftRadius: this.props.borderBottomLeftRadius, borderColor: "gray" }}
        onPress={this.props.onPress}>
