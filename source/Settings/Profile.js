@@ -62,6 +62,7 @@ export default class ProfileScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.state = {
+      whichInput: null,
       keyboardOpen: false,
       saveInfoModalVisible: false,
       imageViewerVisible: false,
@@ -135,9 +136,11 @@ static navigationOptions = {
     const { height, screenX, screenY, width } = e.endCoordinates
     console.log(height)
     console.log("y:", screenY)
-    this.setState({keyboardOpen: true})
-    if(this.state.bioOpacity == 1){
-      this.setState({upperComponentsOpacity: 0, upperComponentsDisabled: true})
+    if(this.state.whichInput == "bio"){
+      this.setState({keyboardOpen: true})
+      if(this.state.bioOpacity == 1){
+        this.setState({upperComponentsOpacity: 0, upperComponentsDisabled: true})
+      }
     }
   };
   spinAnimation(){
@@ -445,7 +448,7 @@ static navigationOptions = {
         defaultValue = {this.state.userUsername}
         editable = {!this.state.upperComponentsDisabled}
         onBlur={() => {this.setState({selection: {start: 0,end: 0}})}}
-        onFocus={() => {this.setState({bioOpacity: 0, selection: {start: this.state.userUsername.length, end:this.state.userUsername.length}}, () => {this.setState({ selection: null })})  }}
+        onFocus={() => {this.setState({whichInput: "username", selection: {start: this.state.userUsername.length, end:this.state.userUsername.length}}, () => {this.setState({ selection: null })})  }}
         selection={this.state.selection}
         numberOfLines={1}
         style={{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)",opacity: this.state.upperComponentsOpacity, paddingTop: 0, paddingBottom: 0, paddingLeft: 12, paddingRight: 12, textAlign: "left",
@@ -508,6 +511,7 @@ static navigationOptions = {
         <View
         style = {{height: this.width/20}}/>
         <ProfileBioButton
+        onFocus = { () => this.setState({whichInput: "bio", keyboardOpen: true, upperComponentsOpacity: 0, upperComponentsDisabled:true})}
         opacity = {this.state.bioOpacity}
         defaultText = {this.state.userBio}
         onChangeText = {(text) => this.valueChange(text)}
