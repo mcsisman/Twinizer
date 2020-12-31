@@ -72,9 +72,7 @@ export default class ChatScreen extends React.Component<Props> {
     this.onLongPress = this.onLongPress.bind(this);
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
-    this.statusBarHeaderTotalHeight = getStatusBarHeight() + headerHeight
     this.state = {
-      giftedChatHeight: this.height - this.statusBarHeaderTotalHeight,
       imageViewerVisible: false,
       msgText: " ",
       currentIndex: 0,
@@ -90,7 +88,7 @@ export default class ChatScreen extends React.Component<Props> {
       test123: "123"
     }
 
-
+    this.statusBarHeaderTotalHeight = getStatusBarHeight() + headerHeight
 
     this.windowHeight = Math.round(Dimensions.get('window').height);
     this.navbarHeight = this.height - this.windowHeight
@@ -288,10 +286,10 @@ _keyboardDidShow = (e) => {
   const { height, screenX, screenY, width } = e.endCoordinates
   keyboardYcord = screenY
   keyboardHeight = height
-  this.setState({keyboardOpen: true, bigViewerOpacity: 0, smallViewerOpacity:1, enableSwipeDown: false, giftedChatHeight: this.state.giftedChatHeight - keyboardHeight - this.navbarHeight})
+  this.setState({keyboardOpen: true, bigViewerOpacity: 0, smallViewerOpacity:1, enableSwipeDown: false,})
 };
 _keyboardDidHide = () => {
-  this.setState({keyboardOpen: false, bigViewerOpacity: 1, smallViewerOpacity:0, enableSwipeDown: false, giftedChatHeight: this.state.giftedChatHeight + keyboardHeight + this.navbarHeight})
+  this.setState({keyboardOpen: false, bigViewerOpacity: 1, smallViewerOpacity:0, enableSwipeDown: false, })
 };
 
 onPressCamera(){
@@ -438,7 +436,6 @@ get user() {
 }
 onPressPlus(){
   this.setState({isVisible1: true})
-  Keyboard.dismiss()
 }
 closeImageMessage(){
   images = []
@@ -556,6 +553,7 @@ render() {
             onChangeText = {(text) => this.setState({msgText: text})}
             onPressSend = {()=>this.sendMsgWithImage(this.state.msgText)}/>
           <ImageUploadModal
+          bottom = {keyboardHeight/2}
           isVisible={this.state.isVisible1}
           txtUploadPhoto = {global.langUploadPhoto}
           txtCancel = {global.langCancel}
@@ -568,75 +566,286 @@ render() {
         )
     }
     else{
-      return(
-        <View
-        style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
+      if(global.firstMessage){
+        if(Platform.OS === 'ios'){
+          return(
+            <View
+            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
 
-        <TouchableOpacity
-        activeOpacity = {1}
-        style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
-         onPress={()=> Keyboard.dismiss() }>
+            <TouchableOpacity
+            activeOpacity = {1}
+            style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
+             onPress={()=> Keyboard.dismiss() }>
 
-        <ModifiedStatusBar/>
+            <ModifiedStatusBar/>
 
-        <View
-          style = {{ position: 'absolute', height: this.state.giftedChatHeight,
-          width: this.width, top: this.statusBarHeaderTotalHeight, right: 0}}>
-          <GiftedChat
-          onLongPress={this.onLongPress}
-          renderMessageImage={this.renderMessageImage}
-          textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
-          renderInputToolbar={(props) => this.messengerBarContainer(props)}
-            scrollToBottom = {true}
-            messages={this.state.messages}
-            onSend={this.sendMsg}
-            user={this.user}
-            loadEarlier = {true}
-            renderTime = {this.renderTime}
-            renderBubble={this.renderBubble}
-            renderSend = {this.renderSend}
-            renderAvatar={null}
-          />
-        </View>
-        <Animated.Image source={{uri: 'loading' + global.themeForImages}}
-          style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', bottom: this.height/2, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
-        />
+            <View
+              style = {{ position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
+              width: this.width, bottom: 0, right: 0}}>
+              <GiftedChat
+              onLongPress={this.onLongPress}
+              renderMessageImage={this.renderMessageImage}
+              textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
+              renderInputToolbar={(props) => this.messengerBarContainer(props)}
+                scrollToBottom = {true}
+                messages={this.state.messages}
+                onSend={this.sendMsg}
+                user={this.user}
+                loadEarlier = {true}
+                renderTime = {this.renderTime}
+                renderBubble={this.renderBubble}
+                renderSend = {this.renderSend}
+                renderAvatar={null}
+              />
+            </View>
 
-        <ChatHeader
-        onPressBack = {()=> this.goBackOnPress()}
-        onPressInfo = {()=> this.onPressInfo()}
-        onPressCamera = {()=> this.onPressCamera()}/>
+            <ChatHeader
+            onPressBack = {()=> this.goBackOnPress()}
+            onPressInfo = {()=> this.onPressInfo()}
+            onPressCamera = {()=> this.onPressCamera()}/>
 
-        <ImageUploadModal
-        isVisible={this.state.isVisible1}
-        txtUploadPhoto = {global.langUploadPhoto}
-        txtCancel = {global.langCancel}
-        txtTakePhoto = {global.langTakePhoto}
-        txtOpenLibrary = {global.langLibrary}
-        onPressCancel = {()=>this.setState({ isVisible1: false}) }
-        onPressCamera = {this.camera}
-        onPressLibrary = {this.library}/>
+            <ImageUploadModal
+            isVisible={this.state.isVisible1}
+            txtUploadPhoto = {global.langUploadPhoto}
+            txtCancel = {global.langCancel}
+            txtTakePhoto = {global.langTakePhoto}
+            txtOpenLibrary = {global.langLibrary}
+            onPressCancel = {()=>this.setState({ isVisible1: false}) }
+            onPressCamera = {this.camera}
+            onPressLibrary = {this.library}/>
 
-        <ChatterInfo
-        isVisible = {this.state.photoPopUpIsVisible}
-        onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
-        onPressImage = {() => {this.setState({imageViewerVisible: true})}}
-        username = {global.receiverUsername}
-        bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
-        onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
-        imgSource = {global.receiverPhoto}/>
+            <ChatterInfo
+            isVisible = {this.state.photoPopUpIsVisible}
+            onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
+            onPressImage = {() => {this.setState({imageViewerVisible: true})}}
+            username = {global.receiverUsername}
+            bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
+            onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
+            imgSource = {global.receiverPhoto}/>
 
-        <ImageViewerModal
-        isVisible = {this.state.imageViewerVisible}
-        images = {global.receiverPhoto}
-        onCancel = {() => {
-          this.setState({imageViewerVisible: false})
-        }}/>
+            <ImageViewerModal
+            isVisible = {this.state.imageViewerVisible}
+            images = {global.receiverPhoto}
+            onCancel = {() => {
+              this.setState({imageViewerVisible: false})
+            }}/>
 
-        </TouchableOpacity>
-        </View>
-      )
+            </TouchableOpacity>
+            </View>
+          )
+        }
+        else{
+          return(
+            <View
+            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
 
+            <TouchableOpacity
+            activeOpacity = {1}
+            style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
+             onPress={()=> Keyboard.dismiss() }>
+
+            <ModifiedStatusBar/>
+
+            <KeyboardAvoidingView  behavior="padding"
+              keyboardVerticalOffset={this.state.keyboardOpen ? -this.height+getStatusBarHeight() : 0}
+              style = {{  position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
+              width: this.width, bottom: 0, right: 0, flex: 1}}>
+              <GiftedChat
+              onLongPress={this.onLongPress}
+              renderMessageImage={this.renderMessageImage}
+              textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
+              renderInputToolbar={(props) => this.messengerBarContainer(props)}
+                scrollToBottom = {true}
+                messages={this.state.messages}
+                onSend={this.sendMsg}
+                user={this.user}
+                loadEarlier = {true}
+                renderTime = {this.renderTime}
+                renderBubble={this.renderBubble}
+                renderSend = {this.renderSend}
+                renderAvatar={null}
+              />
+            </KeyboardAvoidingView>
+
+            <ChatHeader
+            onPressBack = {()=> this.goBackOnPress()}
+            onPressInfo = {()=> this.onPressInfo()}
+            onPressCamera = {()=> this.onPressCamera()}/>
+
+            <ImageUploadModal
+            isVisible={this.state.isVisible1}
+            txtUploadPhoto = {global.langUploadPhoto}
+            txtCancel = {global.langCancel}
+            txtTakePhoto = {global.langTakePhoto}
+            txtOpenLibrary = {global.langLibrary}
+            onPressCancel = {()=>this.setState({ isVisible1: false}) }
+            onPressCamera = {this.camera}
+            onPressLibrary = {this.library}/>
+
+            <ChatterInfo
+            isVisible = {this.state.photoPopUpIsVisible}
+            onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
+            onPressImage = {() => {this.setState({imageViewerVisible: true})}}
+            username = {global.receiverUsername}
+            bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
+            onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
+            imgSource = {global.receiverPhoto}/>
+
+            <ImageViewerModal
+            isVisible = {this.state.imageViewerVisible}
+            images = {global.receiverPhoto}
+            onCancel = {() => {
+              this.setState({imageViewerVisible: false})
+            }}/>
+
+            </TouchableOpacity>
+            </View>
+          )
+        }
+      }
+      else{
+        if(Platform.OS === 'ios'){
+          return(
+            <View
+            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
+
+            <TouchableOpacity
+            activeOpacity = {1}
+            style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
+             onPress={()=> Keyboard.dismiss() }>
+
+            <ModifiedStatusBar/>
+
+            <View
+              style = {{ position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
+              width: this.width, bottom: 0, right: 0}}>
+              <GiftedChat
+              onLongPress={this.onLongPress}
+              renderMessageImage={this.renderMessageImage}
+              textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
+              renderInputToolbar={(props) => this.messengerBarContainer(props)}
+                scrollToBottom = {true}
+                messages={this.state.messages}
+                onSend={this.sendMsg}
+                user={this.user}
+                loadEarlier = {true}
+                renderTime = {this.renderTime}
+                renderBubble={this.renderBubble}
+                renderSend = {this.renderSend}
+                renderAvatar={null}
+              />
+            </View>
+            <Animated.Image source={{uri: 'loading' + global.themeForImages}}
+              style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', bottom: this.height/2, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
+            />
+
+            <ChatHeader
+            onPressBack = {()=> this.goBackOnPress()}
+            onPressInfo = {()=> this.onPressInfo()}
+            onPressCamera = {()=> this.onPressCamera()}/>
+
+            <ImageUploadModal
+            isVisible={this.state.isVisible1}
+            txtUploadPhoto = {global.langUploadPhoto}
+            txtCancel = {global.langCancel}
+            txtTakePhoto = {global.langTakePhoto}
+            txtOpenLibrary = {global.langLibrary}
+            onPressCancel = {()=>this.setState({ isVisible1: false}) }
+            onPressCamera = {this.camera}
+            onPressLibrary = {this.library}/>
+
+            <ChatterInfo
+            isVisible = {this.state.photoPopUpIsVisible}
+            onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
+            onPressImage = {() => {this.setState({imageViewerVisible: true})}}
+            username = {global.receiverUsername}
+            bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
+            onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
+            imgSource = {global.receiverPhoto}/>
+
+            <ImageViewerModal
+            isVisible = {this.state.imageViewerVisible}
+            images = {global.receiverPhoto}
+            onCancel = {() => {
+              this.setState({imageViewerVisible: false})
+            }}/>
+
+            </TouchableOpacity>
+            </View>
+          )
+        }
+        else{
+          return(
+            <View
+            style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
+
+            <TouchableOpacity
+            activeOpacity = {1}
+            style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
+             onPress={()=> Keyboard.dismiss() }>
+
+            <ModifiedStatusBar/>
+
+            <KeyboardAvoidingView  behavior="padding"
+              keyboardVerticalOffset={this.state.keyboardOpen && Platform.OS === 'android' ? -this.height+getStatusBarHeight() : 0}
+              style = {{  position: 'absolute', height: this.height-this.statusBarHeaderTotalHeight,
+              width: this.width, bottom: 0, right: 0, flex: 1}}>
+              <GiftedChat
+              onLongPress={this.onLongPress}
+              renderMessageImage={this.renderMessageImage}
+              textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
+              renderInputToolbar={(props) => this.messengerBarContainer(props)}
+                scrollToBottom = {true}
+                messages={this.state.messages}
+                onSend={this.sendMsg}
+                user={this.user}
+                loadEarlier = {true}
+                renderTime = {this.renderTime}
+                renderBubble={this.renderBubble}
+                renderSend = {this.renderSend}
+                renderAvatar={null}
+              />
+            </KeyboardAvoidingView>
+            <Animated.Image source={{uri: 'loading' + global.themeForImages}}
+              style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', bottom: this.height/2, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
+            />
+
+            <ChatHeader
+            onPressBack = {()=> this.goBackOnPress()}
+            onPressInfo = {()=> this.onPressInfo()}
+            onPressCamera = {()=> this.onPressCamera()}/>
+
+            <ImageUploadModal
+            isVisible={this.state.isVisible1}
+            txtUploadPhoto = {global.langUploadPhoto}
+            txtCancel = {global.langCancel}
+            txtTakePhoto = {global.langTakePhoto}
+            txtOpenLibrary = {global.langLibrary}
+            onPressCancel = {()=>this.setState({ isVisible1: false}) }
+            onPressCamera = {this.camera}
+            onPressLibrary = {this.library}/>
+
+            <ChatterInfo
+            isVisible = {this.state.photoPopUpIsVisible}
+            onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
+            onPressImage = {() => {this.setState({imageViewerVisible: true})}}
+            username = {global.receiverUsername}
+            bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
+            onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
+            imgSource = {global.receiverPhoto}/>
+
+            <ImageViewerModal
+            isVisible = {this.state.imageViewerVisible}
+            images = {global.receiverPhoto}
+            onCancel = {() => {
+              this.setState({imageViewerVisible: false})
+            }}/>
+
+            </TouchableOpacity>
+            </View>
+          )
+        }
+      }
     }
 
   }

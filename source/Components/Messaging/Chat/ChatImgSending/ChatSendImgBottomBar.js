@@ -51,14 +51,14 @@ export default class ChatSendImgBottomBar extends Component {
     }
     return(
       <View
-      style={{ width: this.width, height: this.height/8, justifyContent: "center", bottom: bottom, position:"absolute", alignItems:"center"}}>
+      style={{width: this.width, height: this.width/5, justifyContent: "center", bottom: bottom, position:"absolute", alignItems:"center"}}>
 
       <View
       style={{ width: this.width, left: 0, height: this.width/10, bottom: "25%",
       position: "absolute", justifyContent:"flex-start", alignItems:"flex-end", flexDirection: "row"}}>
 
       <View
-      style={{left: this.width *0.25/10, width: this.width*0.87/10, height: this.width*0.87/10, justifyContent:"flex-end", alignItems: "flex-end"}}>
+      style={{ left: this.width *0.25/10, width: this.width*0.87/10, height: this.width*0.87/10, justifyContent:"flex-end", alignItems: "flex-end"}}>
       <TouchableOpacity
       onPress = {this.props.onPressPlus}
       activeOpacity = {1}
@@ -73,14 +73,13 @@ export default class ChatSendImgBottomBar extends Component {
       </View>
 
       <View
-        style={{backgroundColor:"white", width: this.width*6.5/10, borderTopLeftRadius: 24, position:"absolute", right: this.width*2.125/10,
-        borderTopRightRadius: 24, borderBottomLeftRadius: 24, paddingTop: 0, paddingBottom: 0, borderBottomRightRadius: 24,}}>
+        style={{ backgroundColor:"white", width: this.width*6.5/10, borderTopLeftRadius: 24, position:"absolute", right: this.width*2.125/10,
+        borderTopRightRadius: 24, borderBottomLeftRadius: 24, paddingTop: 0, paddingBottom: 0, borderBottomRightRadius: 24, }}>
       <TextInput
-        style={{paddingLeft: 10, paddingRight: 10,  fontSize: 15*(this.width/360) , paddingTop: 3.5, paddingBottom: 3.5}}
-        multiline = {true}
-        maxLength = {100}
+        style={{height: this.width*0.87/10,paddingLeft: 10, paddingRight: 10,  fontSize: 15*(this.width/360) , paddingTop: 3.5, paddingBottom: 3.5}}
+
         placeholderTextColor='rgba(0,0,0,0.5)'
-        placeholder= {"Type your message ."}
+        placeholder= {"Type your message"}
         onChangeText={this.props.onChangeText}>
       </TextInput>
       </View>

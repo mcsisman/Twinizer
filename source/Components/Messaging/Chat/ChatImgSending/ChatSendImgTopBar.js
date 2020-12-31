@@ -41,7 +41,7 @@ export default class ChatSendImgTopBar extends Component {
 
     return(
       <View
-      style={{width: this.width, height: this.width/10, justifyContent: "center", top: getStatusBarHeight()*2.2, position:"absolute", alignItems:"center"}}>
+      style={{width: this.width, height: this.width/10, justifyContent: "center", top: getStatusBarHeight()*2, position:"absolute", alignItems:"center"}}>
 
       <TouchableOpacity
       activeOpacity = {1}
