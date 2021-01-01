@@ -88,6 +88,7 @@ var mainCountryArray = [];
 var mainPhotoArray = [];
 var dict = {};
 var bioDict = {};
+var usersDict = {};
 var hepsi = true;
 var flagIs20 = false;
 var currentUserGender;
@@ -96,6 +97,7 @@ var playerId;
 var currentUserUsername;
 var currentUserBio;
 var resultCounter;
+var funcnumval = 0;
 var isFav = false;
 var isBlock = false;
 var addingToWhichList = "";
@@ -1091,6 +1093,12 @@ async createEmailDistanceArrays(gender, country, fn){
        bioDict = doc.data();
      }
    });
+   usersDict_ref = firestore().collection(auth().currentUser.uid).doc("Users")
+   await usersDict_ref.get().then(doc => {
+    if (doc.exists) {
+      usersDict = doc.data();
+    }
+  });
     var items = Object.keys(dict).map(function(key) {
        return [key, dict[key]];
      });
@@ -1101,16 +1109,16 @@ async createEmailDistanceArrays(gender, country, fn){
      var length = Object.keys(dict).length;
      console.log(length);
      for(let i = 0; i < length; i++){
-       if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(((items[i][0]).split("_"))[2]) == false){
-         countryArray.push(((items[i][0]).split("_"))[1]);
-         genderArray.push(((items[i][0]).split("_"))[0]);
-         emailArray.push(((items[i][0]).split("_"))[2]);
-         usernameArray.push(((items[i][0]).split("_"))[3]);
+       if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(items[i][0]) == false){
+         countryArray.push(((usersDict[items[i][0]]).split("_"))[1]);
+         genderArray.push(((usersDict[items[i][0]]).split("_"))[0]);
+         emailArray.push(items[i][0]);
+         usernameArray.push(((usersDict[items[i][0]]).split("_"))[2]);
          distanceArray.push(items[i][1]);
-         mainCountryArray.push(((items[i][0]).split("_"))[1]);
-         mainGenderArray.push(((items[i][0]).split("_"))[0]);
-         mainEmailArray.push(((items[i][0]).split("_"))[2]);
-         mainUsernameArray.push(((items[i][0]).split("_"))[3]);
+         mainCountryArray.push(((usersDict[items[i][0]]).split("_"))[1]);
+         mainGenderArray.push(((usersDict[items[i][0]]).split("_"))[0]);
+         mainEmailArray.push(items[i][0]);
+         mainUsernameArray.push(((usersDict[items[i][0]]).split("_"))[2]);
          mainDistanceArray.push(items[i][1]);
        }
      }
@@ -1231,75 +1239,90 @@ async getImageURL(imageIndex){
     });
 }
 
-async checkFunction(){
-  resultCounter = 1
-  var similaritylisteners = []
-  for(let c = 1; c <= global.functionNumber; c++){
-    var docRef1 = firestore().collection(auth().currentUser.uid).doc("Similarity" + c.toString())
-    similaritylisteners.push(docRef1)
-    similaritylisteners[similaritylisteners.length-1].onSnapshot(async doc => {
-      console.log("CHECK FUNCTION: ", doc.data())
-      if(doc.exists){
-        if (this.probabilityDoneCheck) {
-          // createEmailDistanceArrays KISMI ////////////////////////////////////////
-          var tempdict = doc.data();
-          dict = Object.assign({}, tempdict, dict)
-          console.log("DICT SONUCU: ", dict)
-          resultCounter = resultCounter + 1
-          if (resultCounter == global.functionNumber){
-            resultCounter = 1
-            if(dict["noface"] != null){
-              this.setState({
-                loadingOpacity: 0
-              })
-              this.spinValue = new Animated.Value(0)
-              Alert.alert("Error!", "There is no face in your search photo.." )
-            }
-            else{
-              await this.createEmailDistanceArrays("All Genders","All Countries","searchDone");
-              ////////////////////////////////////////////////////////////////////////////////
-              for(let i = 0; i < 10; i++){
-                // resim indirme KISMI /////////////////////////////////////////////////
-                await this.getImageURL(i);
-                //await this.downloadImages(i);
-              }
-              console.log("biyere geldik, mainPhotoArray.length ", mainPhotoArray.length)
-              this.setState({
-                uri0: null,
-                uri1: null,
-                uri2: photoArray[0],
-                uri3: photoArray[1],
-                uri4: photoArray[2],
-                uri5: photoArray[3],
-                uri2_username: usernameArray[0],
-                uri2_country: countryArray[0],
-                uri2_gender: genderArray[0],
-                uri2_bio: bioDict[emailArray[0]],
-                backgroundOpacity: 0,
-                swipeableDisabled: false,
-                messageButtonDisabled: false,
-                messageButtonOpacity: 1,
-                showFilter: true,
-                loadingOpacity: 0
-              })
-              this.checkUri2FavOrBlocked()
-              this.spinValue = new Animated.Value(0)
-              console.log(photoArray)
-              console.log(emailArray)
-              console.log(genderArray)
-              console.log(countryArray)
-              console.log(distanceArray)
-              console.log(bioDict)
-            }
+async allFunctionsCompleted(){
+  var docRef1 = firestore().collection(auth().currentUser.uid).doc("Similarity")
+  docRef1.get().then(async doc => {
+    console.log("allFunctionsCompleted: ", doc.data())
+    if(doc.exists){
+        // createEmailDistanceArrays KISMI ////////////////////////////////////////
+        var tempdict = doc.data();
+        dict = Object.assign({}, tempdict, dict)
+        console.log("DICT SONUCU: ", dict)
+          if(dict["noface"] != null){
+            this.setState({
+              loadingOpacity: 0
+            })
+            this.spinValue = new Animated.Value(0)
+            Alert.alert("Error!", "There is no face in your search photo.." )
           }
-        }
-        if(c == global.functionNumber){
-          this.probabilityDoneCheck = true;
+          else{
+            await this.createEmailDistanceArrays("All Genders","All Countries","searchDone");
+            ////////////////////////////////////////////////////////////////////////////////
+            for(let i = 0; i < 10; i++){
+              // resim indirme KISMI /////////////////////////////////////////////////
+              await this.getImageURL(i);
+              //await this.downloadImages(i);
+            }
+            console.log("biyere geldik, mainPhotoArray.length ", mainPhotoArray.length)
+            this.setState({
+              uri0: null,
+              uri1: null,
+              uri2: photoArray[0],
+              uri3: photoArray[1],
+              uri4: photoArray[2],
+              uri5: photoArray[3],
+              uri2_username: usernameArray[0],
+              uri2_country: countryArray[0],
+              uri2_gender: genderArray[0],
+              uri2_bio: bioDict[emailArray[0]],
+              backgroundOpacity: 0,
+              swipeableDisabled: false,
+              messageButtonDisabled: false,
+              messageButtonOpacity: 1,
+              showFilter: true,
+              loadingOpacity: 0
+            })
+            this.checkUri2FavOrBlocked()
+            this.spinValue = new Animated.Value(0)
+            console.log(photoArray)
+            console.log(emailArray)
+            console.log(genderArray)
+            console.log(countryArray)
+            console.log(distanceArray)
+            console.log(bioDict)
+          }
+    }
+    console.log(this.state.uri2);
+  });
+}
+
+async checkFunction(){
+  var docReffuncdone = firestore().collection(auth().currentUser.uid).doc("Funcdone")
+  docReffuncdone.onSnapshot(async doc => {
+    console.log("CHECK FUNCTION: ", doc.data())
+    console.log("doc.exists: ", doc.exists)
+    console.log("this.probabilityDoneCheck: ", this.probabilityDoneCheck)
+    if(doc.exists){
+      if (this.probabilityDoneCheck) {
+        var completedfuncs = parseInt(doc.data()["key"])
+        console.log("completedfuncs: ", completedfuncs)
+        console.log("global.functionNumber: ", global.functionNumber)
+        console.log("funcnumval: ", funcnumval)
+        if(completedfuncs == funcnumval + global.functionNumber){
+          await this.allFunctionsCompleted()
+          funcnumval = completedfuncs
         }
       }
-      console.log(this.state.uri2);
-    });
-  }
+      else{
+        console.log("funcnumval - doc.data[key]: ", doc.data()["key"])
+        funcnumval = doc.data()["key"]
+      }
+    }
+    else{
+      funcnumval = 0
+    }
+    this.probabilityDoneCheck = true;
+  })
 }
 
 async filterDone(){
@@ -1556,43 +1579,72 @@ uploadSearchPhoto = async (uri) => {
     var ref1 = storageRef.child("Photos/" + auth().currentUser.uid + "/SearchPhotos/" + "search-photo.jpg");
     console.log("storageref child alındı")
     ref1.put(blob).then(snapshot => {
+      console.log("global.functionNumber ", global.functionNumber)
       if(global.functionNumber != -1){
         const updateRef = firestore().collection('Functions').doc('Embedder');
         var batch = 1
         var randFloat = Math.random()
-        updateRef.set({
-        name: auth().currentUser.uid + "_" + batch.toString() + "_" + randFloat.toString() + "_" + global.functionNumber.toString()
-        }).then(() => {
-              this.setState({
-                messageButtonDisabled: true,
-                messageButtonOpacity: 0,
-                isVisible2: false,
-                uri0: null,
-                uri1: null,
-                uri2: null,
-                uri3: null,
-                uri4: null,
-                uri5: null,
-                notifIsVisible: true,
-                imagePath: null,
-                swipeableDisabled: true,
-                uri2_username: "",
-                uri2_country: "",
-                uri2_bio: "",
-                uri2_gender: "",
+        const simRef = firestore().collection('Functions').doc('Similarity');
+        const bioRef = firestore().collection('Functions').doc('Bios');
+        const infoRef = firestore().collection('Functions').doc('Users');
+        simRef.set({
+          start: "start"
+        }).then(()=> {
+          console.log("Similarity updated")
+          bioRef.set({
+            start: "start"
+          }).then(()=> {
+            console.log("Bios updated")
+            infoRef.set({
+              start: "start"
+            }).then(()=> {
+              console.log("Users updated")
+              updateRef.set({
+              name: auth().currentUser.uid + "_" + batch.toString() + "_" + randFloat.toString() + "_" + global.functionNumber.toString()
+              }).then(() => {
+                console.log("Embedder updated")
+                    this.setState({
+                      messageButtonDisabled: true,
+                      messageButtonOpacity: 0,
+                      isVisible2: false,
+                      uri0: null,
+                      uri1: null,
+                      uri2: null,
+                      uri3: null,
+                      uri4: null,
+                      uri5: null,
+                      notifIsVisible: true,
+                      imagePath: null,
+                      swipeableDisabled: true,
+                      uri2_username: "",
+                      uri2_country: "",
+                      uri2_bio: "",
+                      uri2_gender: "",
 
-              });
-              if (this.probabilityDoneCheck == false){
-                this.checkFunction();
-              }
+                    });
+                    if (this.probabilityDoneCheck == false){
+                      this.checkFunction();
+                    }
+                  }).catch(error => {
+                    console.log("buraya mı geldi")
+                    this.setState({loadingOpacity: 0})
+                    console.log("buraya mı geldi evet")
+                    this.spinValue = new Animated.Value(0)
+                    console.log("User2 update olmadı")
+                    Alert.alert("Connection Failed", "Please try Again.." )
+                  });
             }).catch(error => {
-              console.log("buraya mı geldi")
-              this.setState({loadingOpacity: 0})
-              console.log("buraya mı geldi evet")
-              this.spinValue = new Animated.Value(0)
-              console.log("User2 update olmadı")
+              console.log(error)
               Alert.alert("Connection Failed", "Please try Again.." )
-            });
+            })
+          }).catch(error => {
+            console.log(error)
+            Alert.alert("Connection Failed", "Please try Again.." )
+          })
+        }).catch(error => {
+          console.log(error)
+          Alert.alert("Connection Failed", "Please try Again.." )
+        })
       }
       else{
         const num_ref = firestore().collection('Functions').doc('Number');
@@ -1602,37 +1654,65 @@ uploadSearchPhoto = async (uri) => {
            const updateRef = firestore().collection('Functions').doc('Embedder');
            var batch = 1
            var randFloat = Math.random()
-           updateRef.set({
-           name: auth().currentUser.uid + "_" + batch.toString() + "_" + randFloat.toString() + "_" + global.functionNumber.toString()
-           }).then(() => {
-                 this.setState({
-                   messageButtonDisabled: true,
-                   messageButtonOpacity: 0,
-                   isVisible2: false,
-                   uri0: null,
-                   uri1: null,
-                   uri2: null,
-                   uri3: null,
-                   uri4: null,
-                   uri5: null,
-                   notifIsVisible: true,
-                   imagePath: null,
-                   swipeableDisabled: true,
-                   uri2_username: "",
-                   uri2_country: "",
-                   uri2_bio: "",
-                   uri2_gender: "",
+           const simRef = firestore().collection('Functions').doc('Similarity');
+           const bioRef = firestore().collection('Functions').doc('Bios');
+           const infoRef = firestore().collection('Functions').doc('Users');
+           simRef.set({
+             start: "start"
+           }).then(()=> {
+             console.log("Similarity updated")
+             bioRef.set({
+               start: "start"
+             }).then(()=> {
+               console.log("Bios updated")
+               infoRef.set({
+                 start: "start"
+               }).then(()=> {
+                 console.log("Users updated")
+                 updateRef.set({
+                 name: auth().currentUser.uid + "_" + batch.toString() + "_" + randFloat.toString() + "_" + global.functionNumber.toString()
+                 }).then(() => {
+                   console.log("Embedder updated")
+                       this.setState({
+                         messageButtonDisabled: true,
+                         messageButtonOpacity: 0,
+                         isVisible2: false,
+                         uri0: null,
+                         uri1: null,
+                         uri2: null,
+                         uri3: null,
+                         uri4: null,
+                         uri5: null,
+                         notifIsVisible: true,
+                         imagePath: null,
+                         swipeableDisabled: true,
+                         uri2_username: "",
+                         uri2_country: "",
+                         uri2_bio: "",
+                         uri2_gender: "",
 
-                 });
-                 if (this.probabilityDoneCheck == false){
-                   this.checkFunction();
-                 }
+                       });
+                       if (this.probabilityDoneCheck == false){
+                         this.checkFunction();
+                       }
+                     }).catch(error => {
+                       this.setState({loadingOpacity: 0})
+                       this.spinValue = new Animated.Value(0)
+                       console.log("User2 update olmadı")
+                       Alert.alert("Connection Failed", "Please try Again.." )
+                     });
                }).catch(error => {
-                 this.setState({loadingOpacity: 0})
-                 this.spinValue = new Animated.Value(0)
-                 console.log("User2 update olmadı")
+                 console.log(error)
                  Alert.alert("Connection Failed", "Please try Again.." )
-               });
+               })
+             }).catch(error => {
+               console.log(error),
+               Alert.alert("Connection Failed", "Please try Again.." )
+             })
+           }).catch(error => {
+             console.log(error)
+             Alert.alert("Connection Failed", "Please try Again.." )
+           })
          }
        }).catch(error => {
          this.setState({loadingOpacity: 0})
