@@ -31,9 +31,11 @@ export default class GoBackInfoModal extends Component {
    gotItFontSize: PropTypes.number,
    txtAlert: PropTypes.string,
    txtOk: PropTypes.string,
+   txtSave: PropTypes.string,
    txtCancel: PropTypes.string,
    onPressClose: PropTypes.func,
    onPressOk: PropTypes.func,
+   onPressSave: PropTypes.func,
    animationInTiming: PropTypes.number,
    animationOutTiming: PropTypes.number,
    animationIn: PropTypes.string,
@@ -99,6 +101,7 @@ export default class GoBackInfoModal extends Component {
       </Text>
       </View>
 
+      <View style={{justifyContent: 'center', alignItems: 'center', flexDirection: "column", flex:1}}>
       <View style={{justifyContent: 'center', alignItems: 'center', flexDirection: "row", flex:1}}>
       <TouchableOpacity
       activeOpacity = {1}
@@ -110,6 +113,17 @@ export default class GoBackInfoModal extends Component {
       {this.props.txtOk}
       </Text>
       </TouchableOpacity>
+      <TouchableOpacity
+      activeOpacity = {1}
+      style={{ borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,
+      justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15, paddingTop: 5, paddingBottom:5}}
+      onPress={this.props.onPressSave}>
+
+      <Text style={{color: global.themeColor ,fontSize: this.props.gotItFontSize*(screenWidth/360)}}>
+      {this.props.txtSave}
+      </Text>
+      </TouchableOpacity>
+      </View>
       <TouchableOpacity
       activeOpacity = {1}
       style={{ borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,

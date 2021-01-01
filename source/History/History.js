@@ -170,10 +170,10 @@ donePress(){
     }
     var alertMsg;
     if(deleteCount == 1){
-      alertMsg = "If you proceed to delete this conversation, you can't access it until you receive a new message request."
+      alertMsg = "You are deleting 1 image that you searched before. Are you sure?"
     }
     else{
-      alertMsg = "If you proceed to delete these " + deleteCount + " conversations, you can't access them until you receive a new message request. "
+      alertMsg = "You are deleting " + deleteCount + " images that you searched before. Are you sure?"
     }
     Alert.alert(
     'Warning!',
@@ -184,7 +184,7 @@ donePress(){
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      {text: 'Delete Anyways', onPress: () => this.deleteHistory(indexArray)},
+      {text: 'Delete', onPress: () => this.deleteHistory(indexArray)},
     ],
     {cancelable: false},
   );

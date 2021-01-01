@@ -561,8 +561,13 @@ static navigationOptions = {
         isVisible = {this.state.goBackInfoModalVisible}
         txtAlert = {"Your changes have not been saved. Are you sure you want to go back?"}
         txtOk = {"Go Back Anyway"}
+        txtSave = {"Save"}
         txtCancel = {"Cancel"}
         onPressOk = {()=>this.props.navigation.goBack()}
+        onPressSave = {()=>{
+          this.setState({goBackInfoModalVisible:false})
+          this.onPressSave()
+        }}
         onPressClose = {()=>this.setState({goBackInfoModalVisible:false}) }/>
 
         <InfoModal
