@@ -117,6 +117,7 @@ constructor(props){
     global.deactivationDistanceLeft = this.width*(2.5/10)
     global.activationDistanceRight = this.width*(2.5/10)
     global.deactivationDistanceRight = this.width*(2.5/10)
+
     this.state = {
       imageViewerVisible: false,
       favTickVisible: false,
@@ -1770,6 +1771,7 @@ camera = () => {
 };
 
 render(){
+    var emptyScreenHeight = this.height -( getStatusBarHeight() + headerHeight + this.width/6 + this.width/2*(7/6) + this.width/10 + this.width*(3/10)*(7/6) + this.width/10 + this.width/7)
     const {navigate} = this.props.navigation;
     const spin = this.spinValue.interpolate({
       inputRange: [0, 1],
@@ -1787,9 +1789,14 @@ render(){
       title = {"Twinizer"}>
       </CustomHeader>
 
+      <BigImgInfo
+      opacity = {this.state.messageButtonOpacity}
+      username = {this.state.uri2_username}
+      country = {this.state.uri2_country}/>
+
       <Swipeable
-      style = {{position: 'absolute',width: this.width*501, left: -this.width*250,
-      height: this.width*(5/10)*(7/6), top: (this.height)*(20/100) + (getStatusBarHeight()) }}
+      style = {{width: this.width*501, left: -this.width*250,
+      height: this.width*(5/10)*(7/6) }}
       disabled = {this.state.swipeableDisabled}
       rightContent={this.noRight()}
       leftContent={this.noLeft()}
@@ -1852,28 +1859,57 @@ render(){
 
       </Swipeable>
 
+      <View
+      style = {{opacity: this.state.messageButtonOpacity, backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
+      borderBottomLeftRadius: 16, borderBottomRightRadius: 16, borderTopLeftRadius: 16, borderTopRightRadius: 16,
+      }}>
+      <FavoriteUserButton
+      disabled = {this.state.messageButtonDisabled}
+      onPress = {()=>this.addToFavButtonClicked()}
+      opacity = {1}
+      borderBottomLeftRadius = {16}
+      borderTopLeftRadius = {16}
+      isSelected = {isFav}/>
+      <SendMsgButton
+      disabled = {this.state.messageButtonDisabled}
+      onPress = {()=>this.sendFirstMessage()}
+      opacity = {1}/>
+      <BlockUserButton
+      disabled = {this.state.messageButtonDisabled}
+      onPress = {()=>this.addToBlockButtonClicked()}
+      borderBottomRightRadius = {16}
+      borderTopRightRadius = {16}
+      opacity = {1}
+      isSelected = {isBlock}/>
+      </View>
+
+      <View
+      style = {{justifyContent: "center", alignItems:"center",height: emptyScreenHeight/2}}/>
+
+      <View
+      style = {{justifyContent: "center", alignItems:"center",height: this.width*3/10*7/6}}>
       <ImageUploader
+      position = {"relative"}
       width = {this.width*3/10}
-      bottom = {(this.height)*(20/100) - (getStatusBarHeight()) - this.width/7}
-      right = {this.width*(3.5/10)}
       borderRadius = {16}
       borderOpacity = {this.state.borderOpacity}
       onPress={()=>this.setState({ isVisible1: true})}
       textOpacity = {this.state.opacity}
       fontSize = {14}
       photo = {this.state.photo}/>
+      </View>
 
+      <View
+      style = {{justifyContent: "center", alignItems:"center",height: emptyScreenHeight/4}}/>
+      <View
+      style = {{justifyContent: "center", alignItems:"center",height: this.width/10}}>
       <SearchButton
+      position = "relative"
       onPress={()=>this.searchDone()}
       disabled = {this.state.disabled}
-      bottom = {((this.height)*(20/100) - (getStatusBarHeight()) + this.width/7 )/2 - this.width/7 - this.width*(0.5/10)}
-      right = {this.width*(4.5/10)}
       opacity = {this.state.btnOpacity}/>
+      </View>
 
-      <BigImgInfo
-      opacity = {this.state.messageButtonOpacity}
-      username = {this.state.uri2_username}
-      country = {this.state.uri2_country}/>
 
       <InfoModal
       isVisible = {this.state.searchOnIsVisible}
@@ -1949,31 +1985,9 @@ render(){
 
       <Animated.Image source={{uri: 'loading' + global.themeForImages}}
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
-        position: 'absolute', bottom: (this.height)*(20/100) - (getStatusBarHeight()) + (this.width*3/10*(7/6)) + this.width/30 - this.width/7, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
+        position: 'absolute', top: getStatusBarHeight() + headerHeight + this.width/6+(this.width/2)*(7/6)/2-this.width/30, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 
-      <View
-      style = {{opacity: this.state.messageButtonOpacity, backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
-      borderBottomLeftRadius: 16, borderBottomRightRadius: 16, borderTopLeftRadius: 16, borderTopRightRadius: 16,
-      position: "absolute", top: this.width*(5/10)*(7/6) + (this.height)*(20/100) + getStatusBarHeight()}}>
-      <FavoriteUserButton
-      disabled = {this.state.messageButtonDisabled}
-      onPress = {()=>this.addToFavButtonClicked()}
-      opacity = {1}
-      borderBottomLeftRadius = {16}
-      borderTopLeftRadius = {16}
-      isSelected = {isFav}/>
-      <SendMsgButton
-      disabled = {this.state.messageButtonDisabled}
-      onPress = {()=>this.sendFirstMessage()}
-      opacity = {1}/>
-      <BlockUserButton
-      disabled = {this.state.messageButtonDisabled}
-      onPress = {()=>this.addToBlockButtonClicked()}
-      borderBottomRightRadius = {16}
-      borderTopRightRadius = {16}
-      opacity = {1}
-      isSelected = {isBlock}/>
-      </View>
+
 
 
 

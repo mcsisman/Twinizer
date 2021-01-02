@@ -37,16 +37,16 @@ export default class BigImgInfo extends Component {
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     return(
-      <View style={{opacity: this.props.opacity ,flex:1, flexDirection: 'column', position: 'absolute',
-      width: this.width, height: this.height*(20/100) - headerHeight, top: headerHeight + getStatusBarHeight(), left: 0}}>
+      <View style={{opacity: this.props.opacity , flexDirection: 'column',
+      width: this.width, height: this.width/6, left: 0}}>
 
-      <View style={{alignItems: 'center', width: this.width, height: (this.height*(20/100) - headerHeight)/2, justifyContent: 'center'}}>
+      <View style={{alignItems: 'center', width: this.width, height: "50%", justifyContent: 'center'}}>
       <Text style={{ color: global.isDarkMode ? "white":"black", fontSize: 22*(this.width/360)}}>
         {this.props.username}
         </Text>
       </View>
 
-      <View style={{alignItems: 'center', width: this.width, height: (this.height*(20/100) - headerHeight)/2, justifyContent: 'center'}}>
+      <View style={{alignItems: 'center', width: this.width, height: "50%", justifyContent: 'center'}}>
       <Text style={{ color: global.isDarkMode ? "white":"black", fontSize: 16*(this.width/360)}}>
         {this.props.country}
         </Text>

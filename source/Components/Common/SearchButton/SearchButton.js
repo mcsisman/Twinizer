@@ -33,11 +33,13 @@ export default class SearchButton extends Component {
     bottom: PropTypes.number,
     right: PropTypes.number,
     disabled: PropTypes.bool,
-    opacity: PropTypes.number
+    opacity: PropTypes.number,
+    position: PropTypes.string
  }
  static defaultProps = {
    width: screenWidth/10,
-   height: screenWidth/10
+   height: screenWidth/10,
+   position: "absolute"
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
@@ -59,7 +61,7 @@ export default class SearchButton extends Component {
     return(
       <TouchableOpacity
       activeOpacity = {this.props.opacity}
-      style={{ flex: 1, alignItems:'center', justifyContent: 'center', position: 'absolute', backgroundColor: backgroundColor,
+      style={{ flex: 1, alignItems:'center', justifyContent: 'center', position: this.props.position, backgroundColor: backgroundColor,
        width: this.props.width, height: this.props.height, bottom: this.props.bottom, right: this.props.right, borderBottomLeftRadius: 65, borderTopRightRadius: 65,
        borderTopLeftRadius: 65, borderBottomRightRadius: 65}}
        disabled = {this.props.disabled}
