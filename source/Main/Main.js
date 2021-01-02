@@ -1585,19 +1585,17 @@ uploadSearchPhoto = async (uri) => {
         const updateRef = firestore().collection('Functions').doc('Embedder');
         var batch = 1
         var randFloat = Math.random()
-        const simRef = firestore().collection('Functions').doc('Similarity');
-        const bioRef = firestore().collection('Functions').doc('Bios');
-        const infoRef = firestore().collection('Functions').doc('Users');
+        console.log(auth().currentUser.uid)
+        const simRef = firestore().collection(auth().currentUser.uid).doc('Similarity');
+        const bioRef = firestore().collection(auth().currentUser.uid).doc('Bios');
+        const infoRef = firestore().collection(auth().currentUser.uid).doc('Users');
         simRef.set({
-          start: "start"
         }).then(()=> {
           console.log("Similarity updated")
           bioRef.set({
-            start: "start"
           }).then(()=> {
             console.log("Bios updated")
             infoRef.set({
-              start: "start"
             }).then(()=> {
               console.log("Users updated")
               updateRef.set({
@@ -1655,19 +1653,16 @@ uploadSearchPhoto = async (uri) => {
            const updateRef = firestore().collection('Functions').doc('Embedder');
            var batch = 1
            var randFloat = Math.random()
-           const simRef = firestore().collection('Functions').doc('Similarity');
-           const bioRef = firestore().collection('Functions').doc('Bios');
-           const infoRef = firestore().collection('Functions').doc('Users');
+           const simRef = firestore().collection(auth().currentUser.uid).doc('Similarity');
+           const bioRef = firestore().collection(auth().currentUser.uid).doc('Bios');
+           const infoRef = firestore().collection(auth().currentUser.uid).doc('Users');
            simRef.set({
-             start: "start"
            }).then(()=> {
              console.log("Similarity updated")
              bioRef.set({
-               start: "start"
              }).then(()=> {
                console.log("Bios updated")
                infoRef.set({
-                 start: "start"
                }).then(()=> {
                  console.log("Users updated")
                  updateRef.set({

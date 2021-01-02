@@ -101,6 +101,15 @@ async writeCountryToDatabase(){
       global.globalBio = " ";
     }
     console.log(writeDone)
+    const funcdone_Ref = firestore().collection(auth().currentUser.uid).doc('Funcdone');
+    await funcdone_Ref.set({
+      key: 0
+    }).then(()=>{
+      console.log("funcdone was initialized")
+    }).catch(error => {
+      console.log(error)
+      Alert.alert("Connection Failed", "Please try Again.." )
+    })
     await database().ref('Users/' + auth().currentUser.uid + "/i").update({
       g: global.globalGender,
       c: global.globalCountry,
