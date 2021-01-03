@@ -287,6 +287,10 @@ goBack(){
   this.props.navigation.navigate("Settings")
 }
 select(url, uid, listener, index){
+  console.log(url)
+  console.log(uid)
+  console.log(listener)
+  console.log(index)
   var storageRef = storage().ref("Photos/" + uid + "/1.jpg")
   storageRef.getDownloadURL().then(data =>{
     imageUrls[index] = data
@@ -297,7 +301,7 @@ select(url, uid, listener, index){
     global.selectedFavUserUid = uid
     //global.selectedFavUserUrl = url
     global.selectedFavUserIndex = index
-    navigate("ProfileFavUser")
+    this.props.navigation.navigate("ProfileFavUser")
   }).catch(function(error) {
     // Handle any errors
   });

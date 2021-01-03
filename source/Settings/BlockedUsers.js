@@ -284,11 +284,15 @@ async trashButtonPressed(i){
 }
 
 select(url, uid, listener, index){
+  console.log(url)
+  console.log(uid)
+  console.log(listener)
+  console.log(index)
   listener.off()
   global.selectedBlockedUserUid = uid
   global.selectedBlockedUserUrl = url
   global.selectedBlockedUserIndex = index
-  navigate("ProfileBlockedUser")
+  this.props.navigation.navigate("ProfileBlockedUser")
 }
 
 goBack(){

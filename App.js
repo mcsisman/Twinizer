@@ -561,11 +561,9 @@ function MyTabs() {
         }}
         name="ProfileFavUser" component={ProfileFavUserScreen} />
         <Stack.Screen options={{
-          gestureEnabled: true, gestureDirection: "horizontal",
-          cardStyleInterpolator: forHorizontalModal,
           transitionSpec: {
-            open: config2,
-            close: config2,
+            open: config,
+            close: config,
           },
         }}
         name="ProfileBlockedUser" component={ProfileBlockedUserScreen} />

@@ -68,24 +68,13 @@ var usernameArray = [];
 var emailArray = [];
 var genderArray = [];
 var countryArray = [];
-var photoArray = [
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null
-];
+var photoArray = {};
 var mainDistanceArray = [];
 var mainUsernameArray = [];
 var mainEmailArray = [];
 var mainGenderArray = [];
 var mainCountryArray = [];
-var mainPhotoArray = [];
+var mainPhotoArray = {};
 var dict = {};
 var bioDict = {};
 var usersDict = {};
@@ -415,7 +404,7 @@ swipeStart(){
   }
 }
 swipeRelease(){
-  this.checkUri2FavOrBlocked()
+  //this.checkUri2FavOrBlocked()
   if(!this.state.swipeableDisabled){
     if(!this.complete || this.activationCount == 0){
       if(!this.releasedAfterRightD2 || !this.releasedAfterLeftD2){
@@ -601,8 +590,8 @@ leftActionComplete(){
     uri4: this.state.uri2,
     uri3: this.state.uri1,
     uri2: this.state.uri0,
-    uri1: photoArray[global.swipeCount - 1],
-    uri0: photoArray[global.swipeCount - 2],
+    uri1: photoArray[emailArray[global.swipeCount - 1]],
+    uri0: photoArray[emailArray[global.swipeCount - 2]],
     uri2_username: usernameArray[global.swipeCount],
     uri2_country: countryArray[global.swipeCount],
     uri2_gender: genderArray[global.swipeCount],
@@ -636,7 +625,7 @@ leftActionComplete(){
       uri3: this.state.uri2,
       uri2: this.state.uri1,
       uri1: this.state.uri0,
-      uri0: photoArray[global.swipeCount - 2],
+      uri0: photoArray[emailArray[global.swipeCount - 2]],
       uri2_username: usernameArray[global.swipeCount],
       uri2_country:countryArray[global.swipeCount],
       uri2_gender:genderArray[global.swipeCount],
@@ -650,6 +639,7 @@ leftActionComplete(){
       console.log("LeftActionCompleted tek")
       console.log(this.state.uri2_bio);
     }
+    this.checkUri2FavOrBlocked()
 }
 async rightActionComplete(){
   global.flag1 = true; //Left A1
@@ -707,9 +697,9 @@ async rightActionComplete(){
     uri0: this.state.uri2,
     uri1: this.state.uri3,
     uri2: this.state.uri4,
-    uri3: photoArray[global.swipeCount + 1],
-    uri4: photoArray[global.swipeCount + 2],
-    uri5: photoArray[global.swipeCount + 3],
+    uri3: photoArray[emailArray[global.swipeCount + 1]],
+    uri4: photoArray[emailArray[global.swipeCount + 2]],
+    uri5: photoArray[emailArray[global.swipeCount + 3]],
     uri2_username: usernameArray[global.swipeCount],
     uri2_country:countryArray[global.swipeCount],
     uri2_gender:genderArray[global.swipeCount],
@@ -717,11 +707,13 @@ async rightActionComplete(){
     messageButtonDisabled: false,
     messageButtonOpacity: 1
   })
-  if (photoArray.length < emailArray.length){
-    await this.getImageURL(photoArray.length)
-    //await this.downloadImages(photoArray.length)
-    await this.getImageURL(photoArray.length)
-    //await this.downloadImages(photoArray.length)
+  if (global.swipeCount+10 < emailArray.length){
+    await this.getImageURL(global.swipeCount+10)
+    await this.downloadImages(global.swipeCount+10)
+  }
+  if (global.swipeCount+11 < emailArray.length){
+    await this.getImageURL(global.swipeCount+11)
+    await this.downloadImages(global.swipeCount+11)
   }
   global.deactivationDistanceRight = global.deactivationDistanceRight + this.width*(5/10)
   global.activationDistanceLeft = global.activationDistanceLeft - this.width*(10/10)
@@ -748,8 +740,8 @@ async rightActionComplete(){
     uri1: this.state.uri2,
     uri2: this.state.uri3,
     uri3: this.state.uri4,
-    uri4: photoArray[global.swipeCount + 2],
-    uri5: photoArray[global.swipeCount + 3],
+    uri4: photoArray[emailArray[global.swipeCount + 2]],
+    uri5: photoArray[emailArray[global.swipeCount + 3]],
     uri2_username: usernameArray[global.swipeCount],
     uri2_country:countryArray[global.swipeCount],
     uri2_gender:genderArray[global.swipeCount],
@@ -757,9 +749,9 @@ async rightActionComplete(){
     messageButtonDisabled: false,
     messageButtonOpacity: 1
   })
-  if (photoArray.length < emailArray.length){
-    await this.getImageURL(photoArray.length)
-    //await this.downloadImages(photoArray.length)
+  if (global.swipeCount+10 < emailArray.length){
+    await this.getImageURL(global.swipeCount+10)
+    await this.downloadImages(global.swipeCount+10)
   }
   global.deactivationDistanceRight = global.deactivationDistanceRight + this.width*(5/10)
   global.activationDistanceLeft = global.activationDistanceLeft - this.width*(5/10)
@@ -767,6 +759,7 @@ async rightActionComplete(){
   console.log("RightActionCompleted tek")
   console.log(this.state.uri2_bio);
   }
+  this.checkUri2FavOrBlocked()
 }
 leftActionIncomplete(){
   if(this.releasedAfterLeftD2){
@@ -824,7 +817,7 @@ leftActionIncomplete(){
     uri3: this.state.uri2,
     uri2: this.state.uri1,
     uri1: this.state.uri0,
-    uri0: photoArray[global.swipeCount - 2],
+    uri0: photoArray[emailArray[global.swipeCount - 2]],
     uri2_username: usernameArray[global.swipeCount],
     uri2_country:genderArray[global.swipeCount],
     uri2_gender:genderArray[global.swipeCount],
@@ -838,6 +831,7 @@ leftActionIncomplete(){
   console.log("LeftActionIncomplete")
   console.log(this.state.uri2_bio);
   }
+  this.checkUri2FavOrBlocked()
 }
 rightActionIncomplete(){
   if(this.releasedAfterRightD2 ){
@@ -894,8 +888,8 @@ rightActionIncomplete(){
     uri1: this.state.uri2,
     uri2: this.state.uri3,
     uri3: this.state.uri4,
-    uri4: photoArray[global.swipeCount - 2],
-    uri5: photoArray[global.swipeCount - 3],
+    uri4: photoArray[emailArray[global.swipeCount - 2]],
+    uri5: photoArray[emailArray[global.swipeCount - 3]],
     uri2_username: usernameArray[global.swipeCount],
     uri2_country:countryArray[global.swipeCount],
     uri2_gender:genderArray[global.swipeCount],
@@ -909,6 +903,7 @@ rightActionIncomplete(){
   console.log("RightActionIncomplete")
   console.log(this.state.uri2_bio);
   }
+  this.checkUri2FavOrBlocked()
 }
 
 async sendFirstMessage(){
@@ -1051,7 +1046,7 @@ noLeft(){
 
 }
 noRight(){
-  if(this.state.swipeableDisabled || global.swipeCount == photoArray.length+1){ // this.state.swipeableDisabled
+  if(this.state.swipeableDisabled || global.swipeCount == usernameArray.length+1){ // this.state.swipeableDisabled
     return false
   }
   else{
@@ -1087,7 +1082,9 @@ valueChangeGender(value){
 }
 
 async createEmailDistanceArrays(gender, country, fn){
+  console.log("fn: ", fn)
   if (fn == "searchDone"){
+    console.log("searchDone")
     bioDict_ref = firestore().collection(auth().currentUser.uid).doc("Bios")
     bioDict_ref.get().then(doc => {
      if (doc.exists) {
@@ -1129,7 +1126,7 @@ async createEmailDistanceArrays(gender, country, fn){
      //console.log(distanceArray);
   }
   else if (fn == "filterDone with all") {
-
+    console.log("filterDone with all")
     for (let i = 0; i < mainEmailArray.length; i++){
       if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
         emailArray.push(mainEmailArray[i]);
@@ -1137,14 +1134,15 @@ async createEmailDistanceArrays(gender, country, fn){
         countryArray.push(mainCountryArray[i]);
         genderArray.push(mainGenderArray[i]);
         distanceArray.push(mainDistanceArray[i]);
-        if (i < mainPhotoArray.length){
-          photoArray.push(mainPhotoArray[i]);
+        if (mainEmailArray[i] in mainPhotoArray){
+          console.log("mainEmailArray[i] in mainPhotoArray: ", mainEmailArray[i] in mainPhotoArray, mainEmailArray[i])
+          photoArray[mainEmailArray[i]] = mainPhotoArray[mainEmailArray[i]]
         }
       }
     }
   }
   else if (fn == "filterDone with all genders") {
-
+    console.log("filterDone with all genders")
     for (let i = 0; i < mainEmailArray.length; i++){
       if (mainCountryArray[i] == country){
         if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
@@ -1153,15 +1151,16 @@ async createEmailDistanceArrays(gender, country, fn){
           countryArray.push(mainCountryArray[i]);
           genderArray.push(mainGenderArray[i]);
           distanceArray.push(mainDistanceArray[i]);
-          if (i < mainPhotoArray.length){
-            photoArray.push(mainPhotoArray[i]);
+          if (mainEmailArray[i] in mainPhotoArray){
+            console.log("mainEmailArray[i] in mainPhotoArray: ", mainEmailArray[i] in mainPhotoArray, mainEmailArray[i])
+            photoArray[mainEmailArray[i]] = mainPhotoArray[mainEmailArray[i]]
           }
         }
       }
     }
   }
   else if (fn == "filterDone with all countries") {
-
+    console.log("filterDone with all countries")
     for (let i = 0; i < mainEmailArray.length; i++){
       if (mainGenderArray[i] == gender){
         if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
@@ -1170,26 +1169,29 @@ async createEmailDistanceArrays(gender, country, fn){
           countryArray.push(mainCountryArray[i]);
           genderArray.push(mainGenderArray[i]);
           distanceArray.push(mainDistanceArray[i]);
-          if (i < mainPhotoArray.length){
-            photoArray.push(mainPhotoArray[i]);
-            console.log("photoArray.length for = ", i, photoArray.length)
+          if (mainEmailArray[i] in mainPhotoArray){
+            console.log("mainEmailArray[i] in mainPhotoArray: ", mainEmailArray[i] in mainPhotoArray, mainEmailArray[i])
+            photoArray[mainEmailArray[i]] = mainPhotoArray[mainEmailArray[i]]
+            console.log("photoArray.length for = ", i, Object.keys(photoArray).length)
           }
         }
       }
     }
   }
   else if (fn == "filterDone") {
-
+    console.log("filterDone")
     for (let i = 0; i < mainEmailArray.length; i++){
       if (mainCountryArray[i] == country && mainGenderArray[i] == gender){
         if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
+          console.log("country, gender: ", mainEmailArray[i], country, mainCountryArray[i], gender, mainGenderArray[i])
           emailArray.push(mainEmailArray[i]);
           usernameArray.push(mainUsernameArray[i]);
           countryArray.push(mainCountryArray[i]);
           genderArray.push(mainGenderArray[i]);
           distanceArray.push(mainDistanceArray[i]);
-          if (i < mainPhotoArray.length){
-            photoArray.push(mainPhotoArray[i]);
+          if (mainEmailArray[i] in mainPhotoArray){
+            console.log("mainEmailArray[i] in mainPhotoArray: ", mainEmailArray[i] in mainPhotoArray, mainEmailArray[i])
+            photoArray[mainEmailArray[i]] = mainPhotoArray[mainEmailArray[i]]
           }
         }
       }
@@ -1219,21 +1221,23 @@ async downloadImages(imageIndex){
         })
         .catch(() => { })
       }
-      photoArray.push("file://" + res.path())
+      photoArray[emailArray[imageIndex]] = "file://" + res.path()
       if (this.inSearchDone){
-        mainPhotoArray.push("file://" + res.path())
+        mainPhotoArray[emailArray[imageIndex]] = "file://" + res.path()
       }
       this.setState({imagePath:  "file://" + res.path()})
-    })
+    }).catch(function(error) {
+      console.log(error)
+    });
   }
-  console.log("photoArray.length: ", photoArray.length)
+  console.log("photoArray.length: ", Object.keys(photoArray).length)
 }
 
 async getImageURL(imageIndex){
     var storageRef = storage().ref("Photos/" + emailArray[imageIndex] + "/1.jpg")
     await storageRef.getDownloadURL().then(data =>{
       this.downloadURL = data
-      photoArray.push(data)
+      //photoArray.push(data)
 
     }).catch(function(error) {
       // Handle any errors
@@ -1262,16 +1266,16 @@ async allFunctionsCompleted(){
             for(let i = 0; i < 10; i++){
               // resim indirme KISMI /////////////////////////////////////////////////
               await this.getImageURL(i);
-              //await this.downloadImages(i);
+              await this.downloadImages(i);
             }
-            console.log("biyere geldik, mainPhotoArray.length ", mainPhotoArray.length)
+            console.log("biyere geldik, mainPhotoArray.length ", Object.keys(mainPhotoArray).length)
             this.setState({
               uri0: null,
               uri1: null,
-              uri2: photoArray[0],
-              uri3: photoArray[1],
-              uri4: photoArray[2],
-              uri5: photoArray[3],
+              uri2: photoArray[emailArray[0]],
+              uri3: photoArray[emailArray[1]],
+              uri4: photoArray[emailArray[2]],
+              uri5: photoArray[emailArray[3]],
               uri2_username: usernameArray[0],
               uri2_country: countryArray[0],
               uri2_gender: genderArray[0],
@@ -1337,7 +1341,7 @@ async filterDone(){
   countryArray = [];
   genderArray = [];
   distanceArray = [];
-  photoArray = [];
+  photoArray = {};
   this.doesExist = false;
   this.downloadURL = "";
   this.url = "";
@@ -1369,34 +1373,34 @@ async filterDone(){
     uri2_bio: "",
     uri2_gender: "",
   });
-  console.log("photoArray.length filterdone = ", photoArray.length)
+  console.log("photoArray.length filterdone = ", Object.keys(photoArray).length)
   if (this.state.gender == "All Genders" && this.state.country == "All Countries"){
     await this.createEmailDistanceArrays(this.state.gender,this.state.country,"filterDone with all");
   }
   if (this.state.gender != "All Genders" && this.state.country == "All Countries"){
     await this.createEmailDistanceArrays(this.state.gender,this.state.country,"filterDone with all countries");
   }
-  if (this.state.gender = "All Genders" && this.state.country != "All Countries"){
+  if (this.state.gender == "All Genders" && this.state.country != "All Countries"){
     await this.createEmailDistanceArrays(this.state.gender,this.state.country,"filterDone with all genders");
   }
   if (this.state.gender != "All Genders" && this.state.country != "All Countries"){
     await this.createEmailDistanceArrays(this.state.gender,this.state.country,"filterDone");
   }
-  console.log("photoArray.length filterdone end = ", photoArray.length)
-  if (photoArray.length < 10){
-    for(let i = photoArray.length; i < 10; i++){
+  console.log("photoArray.length filterdone end = ", Object.keys(photoArray).length)
+  if (Object.keys(photoArray).length < 10){
+    for(let i = Object.keys(photoArray).length; i < 10; i++){
       // resim indirme KISMI /////////////////////////////////////////////////
       await this.getImageURL(i);
-      //await this.downloadImages(i);
+      await this.downloadImages(i);
     }
   }
   this.setState({
     uri0: null,
     uri1: null,
-    uri2: photoArray[0],
-    uri3: photoArray[1],
-    uri4: photoArray[2],
-    uri5: photoArray[3],
+    uri2: photoArray[emailArray[0]],
+    uri3: photoArray[emailArray[1]],
+    uri4: photoArray[emailArray[2]],
+    uri5: photoArray[emailArray[3]],
     uri2_username: usernameArray[0],
     uri2_country: countryArray[0],
     uri2_gender: genderArray[0],
@@ -1436,7 +1440,7 @@ async searchDone(value){
   })
   this.spinAnimation()
   this.inSearchDone = true;
-  photoArray.splice(0, photoArray.length)
+  //photoArray.splice(0, photoArray.length)
   emailArray.splice(0, emailArray.length)
   usernameArray.splice(0, usernameArray.length)
   countryArray.splice(0, countryArray.length)
@@ -1447,19 +1451,19 @@ async searchDone(value){
   mainEmailArray.splice(0, mainEmailArray.length)
   mainGenderArray.splice(0, mainGenderArray.length)
   mainCountryArray.splice(0, mainCountryArray.length)
-  mainPhotoArray.splice(0, mainPhotoArray.length)
+  //mainPhotoArray.splice(0, mainPhotoArray.length)
   emailArray = [];
   usernameArray = [];
   countryArray = [];
   genderArray = [];
   distanceArray = [];
-  photoArray = [];
+  photoArray = {};
   mainDistanceArray = [];
   mainUsernameArray = [];
   mainEmailArray = [];
   mainGenderArray = [];
   mainCountryArray = [];
-  mainPhotoArray = [];
+  mainPhotoArray = {};
   dict = {};
   bioDict = {};
   let dirs = RNFetchBlob.fs.dirs
