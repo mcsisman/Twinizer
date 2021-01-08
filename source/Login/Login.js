@@ -23,6 +23,8 @@ import ForgotPasswordScreen from './ForgotPassword';
 import NewAccountScreen from './NewAccount';
 import UserInfoScreen from '../ProfileSteps/UserInfo';
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
+import language from '../Utils/Languages/lang.json'
+
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -83,8 +85,8 @@ Login = (email, password) => {
                await storageRef.getDownloadURL().then(data =>{
                  console.log("EMBEDDING VAR: ", auth().currentUser.uid)
                  console.log("DATA: ", data)
-                 navigate('Tabs', { screen: 'Main' })
-                 //navigate("UserInfo")
+                 //navigate('Tabs', { screen: 'Main' })
+                 navigate("UserInfo")
                }).catch(function(error) {
                  console.log("EMBEDDING YOK: ", auth().currentUser.uid)
                  navigate("UserInfo")
@@ -92,10 +94,10 @@ Login = (email, password) => {
              user = auth().currentUser
              }
              else{
-               Alert.alert("", global.langEmailNotVerified )
+               Alert.alert("", lang.EmailNotVerified )
              }
         }).catch(error => {
-          Alert.alert(global.langPlsTryAgain, global.langWrongEmailPassword)
+          Alert.alert(lang.PlsTryAgain, lang.WrongEmailPassword)
       })
 
   };
@@ -104,7 +106,9 @@ Login = (email, password) => {
   }
 
   render(){
+
     const {navigate} = this.props.navigation;
+    var lang = language[global.lang]
     var keyboardAvoidingHeight = keyboardHeight + this.navBarHeight;
     if( keyboardHeight + this.navBarHeight > this.height/2){
       keyboardAvoidingHeight = this.height/2
@@ -147,7 +151,7 @@ Login = (email, password) => {
           <View style = {{ width:"100%", height: "33%", alignItems: "center", justifyContent: "center"}}>
           <TextInput
           placeholderTextColor="rgba(255,255,255,0.7)"
-          placeholder={global.langEmail}
+          placeholder={lang.Email}
           keyboardType= "email-address"
 
           style={{paddingLeft: 0, paddingBottom: 0, fontSize: 20*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
@@ -159,7 +163,7 @@ Login = (email, password) => {
           <View style = {{ width:"100%", height: "33%", alignItems: "center", justifyContent: "center"}}>
           <TextInput
           placeholderTextColor="rgba(255,255,255,0.7)"
-          placeholder={global.langPassword}
+          placeholder={lang.Password}
           secureTextEntry
 
           style={{paddingLeft: 0, paddingBottom: 0, fontSize: 20*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
@@ -175,7 +179,7 @@ Login = (email, password) => {
           paddingLeft: 15, paddingRight: 15, height: (this.height*6)/100, flex:1}}
         onPress={()=>this.check() }>
         <Text style={{textAlign: 'center', color: 'white', fontSize: 20*(this.width/360)}}>
-          {global.langLogin}
+          {lang.Login}
         </Text>
         </TouchableOpacity>
         </View>
@@ -192,7 +196,7 @@ Login = (email, password) => {
           color: 'white',
           fontSize: 18*(this.width/360)
           }}>
-          {global.langSignUp}
+          {lang.SignUp}
         </Text>
         </TouchableOpacity>
 
@@ -202,7 +206,7 @@ Login = (email, password) => {
          width: this.width*(48/100), height: (this.height*6)/100, flex:1, bottom: 0, left: this.width*(2/100)}}
          onPress={()=> navigate( "ForgotPassword") }>
         <Text style={{textAlign: 'left', color: 'white',   fontSize: 18*(this.width/360)}}>
-          {global.langForgotPassword}
+          {lang.ForgotPassword}
         </Text>
         </TouchableOpacity>
 

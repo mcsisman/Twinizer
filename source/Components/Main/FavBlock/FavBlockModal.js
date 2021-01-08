@@ -27,6 +27,8 @@ export default class FavBlockModal extends Component {
 
 
   static propTypes = {
+   cancel: PropTypes.string,
+   dialog: PropTypes.string,
    isVisible: PropTypes.bool,
    alertFontSize: PropTypes.number,
    addFontSize: PropTypes.number,
@@ -96,7 +98,7 @@ export default class FavBlockModal extends Component {
       }}>
       <Text
       style={{marginLeft:7, marginRight:7, fontSize: 12*this.width/360, color: global.themeColor}}>
-      Don't show this dialog again
+      {this.props.dialog}
       </Text>
       </View>
 
@@ -123,7 +125,7 @@ export default class FavBlockModal extends Component {
       style={{ width: screenWidth*(3/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
       <ImgModalOvalButton
       activeOpacity = {0.7}
-      title = {'CANCEL'}
+      title = {this.props.cancel}
       textColor = {global.themeColor}
       onPress = {this.props.onPressClose}
       borderColor = {'rgba(241,51,18,0)'}

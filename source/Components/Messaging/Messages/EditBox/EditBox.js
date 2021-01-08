@@ -12,7 +12,7 @@ import {
   Animated,
   Easing
 } from 'react-native';
-
+import language from '../../../../Utils/Languages/lang.json'
 var leftAnim = new Animated.Value(-this.width*(3/16))
 export default class EditBox extends Component {
   constructor(props) {
@@ -41,12 +41,13 @@ export default class EditBox extends Component {
 
   render(){
     var theColor;
+    var lang = language[global.lang]
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
 
     var messageText
     if (this.props.isPhoto && this.props.lastMsg == " ") {
-      messageText = "Photo"
+      messageText = lang.Photo
     }
     else{
       messageText = this.props.lastMsg
@@ -65,7 +66,7 @@ export default class EditBox extends Component {
             disabled = {false}>
 
           <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
-          {this.props.editText}
+          {this.props.editText == "Edit" ? lang.Edit : lang.Cancel}
           </Text>
           </TouchableOpacity>
 
@@ -74,7 +75,7 @@ export default class EditBox extends Component {
             style={{width: this.width/2, justifyContent: 'center', alignItems: 'center',}}
             onPress = {this.props.messageSelectAll}>
           <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
-          {this.props.allSelected ? "Deselect All" : "Select All"}
+          {this.props.allSelected ? lang.DeselectAll : lang.SelectAll}
           </Text>
           </TouchableOpacity>
 
@@ -84,7 +85,7 @@ export default class EditBox extends Component {
             style={{opacity: this.props.messageDoneDisabled ? 0 : 1, justifyContent: 'center', alignItems: 'center', width: this.width/4}}
             onPress = {this.props.messageDonePress}>
           <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
-          Done
+          {lang.Done}
           </Text>
           </TouchableOpacity>
           </View>
@@ -100,7 +101,7 @@ export default class EditBox extends Component {
             disabled = {false}>
 
           <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
-          {this.props.editText}
+          {this.props.editText == "Edit" ? lang.Edit : lang.Cancel}
           </Text>
           </TouchableOpacity>
 
@@ -109,7 +110,7 @@ export default class EditBox extends Component {
             style={{ width: this.width/2, justifyContent: 'center', alignItems: 'center'}}
             onPress = {this.props.requestSelectAll}>
           <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
-          {this.props.allSelected ? "Deselect All" : "Select All"}
+          {this.props.allSelected ? lang.DeselectAll : lang.SelectAll}
           </Text>
           </TouchableOpacity>
 
@@ -118,7 +119,7 @@ export default class EditBox extends Component {
             style={{opacity: this.props.requestDoneDisabled ? 0 : 1, justifyContent: 'center', alignItems: 'center', width: this.width/4}}
             onPress = {this.props.requestDonePress}>
           <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
-          Done
+          {lang.Done}
           </Text>
           </TouchableOpacity>
 
@@ -138,7 +139,7 @@ export default class EditBox extends Component {
             disabled = {this.props.messageArray.length == 0 ? true : false}>
 
           <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
-          {this.props.editText}
+          {this.props.editText == "Edit" ? lang.Edit : lang.Cancel}
           </Text>
           </TouchableOpacity>
           </View>
@@ -154,7 +155,7 @@ export default class EditBox extends Component {
             disabled = {this.props.requestArray.length == 0 ? true : false}>
 
           <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
-          {this.props.editText}
+          {this.props.editText == "Edit" ? lang.Edit : lang.Cancel}
           </Text>
           </TouchableOpacity>
           </View>

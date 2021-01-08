@@ -35,6 +35,7 @@ import MessageBox from '../Components/Messaging/Messages/MessageBox/MessageBox'
 import EditBox from '../Components/Messaging/Messages/EditBox/EditBox'
 import MessageSwitchButton from '../Components/Messaging/Messages/MessageSwitchButton/MessageSwitchButton'
 import DeleteMessageModal from '../Components/Messaging/Messages/DeleteMessage/DeleteMessageModal'
+import language from '../Utils/Languages/lang.json'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -1455,6 +1456,7 @@ messageSelectAll(){
 
 }
 render(){
+  var lang = language[global.lang]
   const {navigate} = this.props.navigation;
 
   scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight();
@@ -1462,7 +1464,7 @@ render(){
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg']
   })
-  
+
   if(!this.state.loadingDone){ // IF PAGE IS LOADING
       return(
         <View
@@ -1492,7 +1494,7 @@ render(){
       editPressed = {this.state.editText}
       onPress = {()=> this.switchButtonPressed(this.state.whichScreen == "left" ? "right" : "left")}
       whichScreen = {"Messages"}
-      title = {this.state.whichScreen == "left" ? "Messages" : "Requests"}/>
+      title = {this.state.whichScreen == "left" ? lang.Messages : lang.Requests}/>
 
       <EditBox
       editButtonPressed = {()=>this.editButtonPressed()}

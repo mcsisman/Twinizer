@@ -102,7 +102,7 @@ export default class ImageUploadModal extends Component {
       style={{width: "50%",height:screenWidth*(1.5/10),justifyContent: 'center', alignItems:'center',}}>
 
       <ImgModalOvalButton
-      title = {'LIBRARY'}
+      title = {this.props.txtOpenLibrary}
       textColor = {global.themeColor}
       onPress = {this.props.onPressLibrary}
       borderColor = {global.themeColor}
@@ -116,7 +116,7 @@ export default class ImageUploadModal extends Component {
       style={{width: "50%",height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center',}}>
 
       <ImgModalOvalButton
-      title = {'CAMERA'}
+      title = {this.props.txtTakePhoto}
       textColor = {global.themeColor}
       onPress = {this.props.onPressCamera}
       borderColor = {global.themeColor}

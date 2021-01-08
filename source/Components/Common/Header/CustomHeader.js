@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {createAppContainer, navigation} from 'react-navigation';
 import {createStackNavigator, Header} from 'react-navigation-stack';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import language from '../../../Utils/Languages/lang.json'
 import {
   View,
   Platform,
@@ -30,6 +31,7 @@ export default class CustomHeader extends Component {
     editPressed: PropTypes.string,
   }
   render(){
+    var lang = language[global.lang]
     var filterOpacity = 1;
     if(!this.props.isFilterVisible){
       filterOpacity = 0
@@ -38,7 +40,7 @@ export default class CustomHeader extends Component {
     var messageDisabled;
     var requestColor;
     var messageColor;
-    if(this.props.title == "Messages"){
+    if(this.props.title == lang.Messages){
       requestDisabled = false;
       messageDisabled = true;
       requestColor = "lockgray";

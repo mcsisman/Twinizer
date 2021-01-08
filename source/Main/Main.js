@@ -54,7 +54,7 @@ import PhotoPopUpModal from '../Components/Main/Swipeable/PhotoPopUpModal'
 import BigImgInfo from '../Components/Main/Swipeable/BigImgInfo'
 import SwipeableSmallImg from '../Components/Main/Swipeable/SwipeableSmallImg'
 import SwipeableBigImg from '../Components/Main/Swipeable/SwipeableBigImg'
-
+import language from '../Utils/Languages/lang.json'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -62,7 +62,7 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
-
+var lang = language[global.lang]
 var distanceArray = [];
 var usernameArray = [];
 var emailArray = [];
@@ -106,7 +106,7 @@ constructor(props){
     global.deactivationDistanceLeft = this.width*(2.5/10)
     global.activationDistanceRight = this.width*(2.5/10)
     global.deactivationDistanceRight = this.width*(2.5/10)
-
+    var lang = language[global.lang]
     this.state = {
       imageViewerVisible: false,
       favTickVisible: false,
@@ -130,8 +130,8 @@ constructor(props){
       gender: null,
       disabledSearch: true,
       filterButtonOpacity: 0.4,
-      placeHolder1: global.langCountry,
-      placeHolder2: global.langGender,
+      placeHolder1: lang.Country,
+      placeHolder2: lang.Gender,
       imagePath: null,
       backgroundOpacity: 0.2,
       swipeableDisabled: true,
@@ -188,7 +188,8 @@ constructor(props){
   }
 
 async componentDidMount(){
-  var authStatus = await messaging().requestPermission();
+
+  //console.log("rwar:", lang.SignUp)
     favShowThisDialog = await AsyncStorage.getItem(auth().currentUser.uid + 'favShowThisDialog')
     blockShowThisDialog = await AsyncStorage.getItem(auth().currentUser.uid + 'blockShowThisDialog')
     global.fromMessages = false
@@ -1770,6 +1771,7 @@ camera = () => {
 };
 
 render(){
+    var lang = language[global.lang]
     var emptyScreenHeight = this.height -( getStatusBarHeight() + headerHeight + this.width/6 + this.width/2*(7/6) + this.width/10 + this.width*(3/10)*(7/6) + this.width/10 + this.width/7)
     const {navigate} = this.props.navigation;
     const spin = this.spinValue.interpolate({
@@ -1859,22 +1861,22 @@ render(){
       </Swipeable>
 
       <View
-      style = {{opacity: this.state.messageButtonOpacity, backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
+      style = {{opacity: 1, backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
       borderBottomLeftRadius: 16, borderBottomRightRadius: 16, borderTopLeftRadius: 16, borderTopRightRadius: 16,
       }}>
       <FavoriteUserButton
-      disabled = {this.state.messageButtonDisabled}
+      disabled = {0}
       onPress = {()=>this.addToFavButtonClicked()}
       opacity = {1}
       borderBottomLeftRadius = {16}
       borderTopLeftRadius = {16}
       isSelected = {isFav}/>
       <SendMsgButton
-      disabled = {this.state.messageButtonDisabled}
+      disabled = {0}
       onPress = {()=>this.sendFirstMessage()}
       opacity = {1}/>
       <BlockUserButton
-      disabled = {this.state.messageButtonDisabled}
+      disabled = {0}
       onPress = {()=>this.addToBlockButtonClicked()}
       borderBottomRightRadius = {16}
       borderTopRightRadius = {16}
@@ -1913,39 +1915,43 @@ render(){
       <InfoModal
       isVisible = {this.state.searchOnIsVisible}
       txtAlert = {"There is already a Twinizing process going on. You can automatically cancel it and start a new process by uploading a new image."}
-      txtGotIt = {global.langGotIt}
+      txtGotIt = {lang.GotIt}
       onPressClose = {()=>this.setState({searchOnIsVisible:false})}/>
 
       <InfoModal
       isVisible={this.state.notifIsVisible}
-      txtAlert = {"Your Twinizing process has started."}
-      txtGotIt = {global.langGotIt}
+      txtAlert = {lang.TwinizingProcessInfo}
+      txtGotIt = {lang.GotIt}
       onPressClose = {()=>this.setState({notifIsVisible:false})}/>
 
       <FavBlockModal
+      cancel = {lang.CancelCap}
+      dialog = {lang.DontShowThisDialogAgain}
       tickIsVisible = {this.state.favTickVisible}
       onPressTick = {()=> this.setState({favTickVisible: this.state.favTickVisible ? 0 : 1})}
       isVisible = {this.state.addToFavVisible}
       image = {"star"}
-      txtAlert= {"You are adding " +this.state.uri2_username+ " to favorite users. Are you sure?"}
+      txtAlert= {lang.FavUserInfoPt1 + this.state.uri2_username + lang.FavUserInfoPt2}
       onPressAdd= {()=>this.favModalButtonClicked(emailArray[global.swipeCount])}
       onPressClose = {()=>this.setState({addToFavVisible:false})}/>
 
       <FavBlockModal
+      cancel = {lang.CancelCap}
+      dialog = {lang.DontShowThisDialogAgain}
       tickIsVisible = {this.state.blockTickVisible}
       onPressTick = {()=> this.setState({blockTickVisible: this.state.blockTickVisible ? 0 : 1})}
       isVisible = {this.state.addToBlockVisible}
       image = {"block"}
-      txtAlert= {"You are blocking " +this.state.uri2_username + ". Are you sure?"}
+      txtAlert= {lang.BlockUserInfoPt1 +this.state.uri2_username + lang.BlockUserInfoPt2 }
       onPressAdd= {()=>this.blockModalButtonClicked(emailArray[global.swipeCount])}
       onPressClose = {()=>this.setState({addToBlockVisible:false})}/>
 
       <ImageUploadModal
       isVisible={this.state.isVisible1}
-      txtUploadPhoto = {global.langUploadPhoto}
-      txtCancel = {global.langCancel}
-      txtTakePhoto = {global.langTakePhoto}
-      txtOpenLibrary = {global.langLibrary}
+      txtUploadPhoto = {lang.UploadAPhoto}
+      txtCancel = {lang.Cancel}
+      txtTakePhoto = {lang.Camera}
+      txtOpenLibrary = {lang.Library}
       onPressCancel = {()=>this.setState({ isVisible1: false}) }
       onPressCamera = {this.camera}
       onPressLibrary = {this.library}/>
@@ -1960,10 +1966,10 @@ render(){
       placeHolder1 = {this.state.placeHolder1}
       placeHolder2 = {this.state.placeHolder2}
       onPressSearch = {()=>this.filterDone()}
-      textSearch = {global.langSearch}
+      textSearch = {lang.Search}
       opacity = {this.state.filterButtonOpacity}
       searchDisabled = {this.state.disabledSearch}
-      textFilters = {global.langFilters}/>
+      textFilters = {lang.Filter}/>
 
       <PhotoPopUpModal
       isVisible = {this.state.openProfileIsVisible}

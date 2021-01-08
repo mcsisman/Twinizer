@@ -26,6 +26,7 @@ import LoginScreen from './Login';
 import CustomHeader from '../Components/Common/Header/CustomHeader'
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 import OvalButton from '../Components/Common/OvalButton/OvalButton'
+import language from '../Utils/Languages/lang.json'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -48,7 +49,7 @@ export default class NewAccountScreen extends Component<{}>{
       gender: "",
       verificationSended: false
     }
-    this.props.navigation.setParams({ otherParam: global.langSignUp })
+    this.props.navigation.setParams({ otherParam: lang.SignUp })
     this.statusBarHeaderTotalHeight = getStatusBarHeight() + headerHeight
     this.height = Math.round(Dimensions.get('screen').height);
     global.globalUsername = "";
@@ -101,14 +102,14 @@ writeUserData(userId, name, email, imageUrl) {
                     AsyncStorage.setItem(auth().currentUser.uid + 'userName', this.state.isim)
                     auth().currentUser.sendEmailVerification();
                     navigate('Login')
-                    Alert.alert('',global.langVerificationSent);
+                    Alert.alert('',lang.VerificationSent);
                 })
                 .catch(error => {
                   if(error.message == 'The email is badly formatted.'){
-                    Alert.alert(global.langPlsTryAgain,global.langInvalidEmail);
+                    Alert.alert(lang.PlsTryAgain,lang.InvalidEmail);
                   }
                   else{
-                    Alert.alert(global.langPlsTryAgain,global.langEmailAlready);
+                    Alert.alert(lang.PlsTryAgain,lang.EmailAlready);
                   }
 
                 });
@@ -121,27 +122,28 @@ writeUserData(userId, name, email, imageUrl) {
     if(this.state.sifre == this.state.sifre2 ){
       if(this.state.isim == ""  ){
         if(this.state.email == ""){
-          Alert.alert('',global.langPlsEnterEmailUsername);
+          Alert.alert('',lang.PlsEnterEmailUsername);
         }
         else{
-          Alert.alert('',global.langPlsEnterUsername);
+          Alert.alert('',lang.PlsEnterUsername);
         }
       }
       else if(this.state.email == ""){
-        Alert.alert('',global.langPlsEnterEmail);
+        Alert.alert('',lang.PlsEnterEmail);
       }
       else if (this.state.sifre.length < 6 && this.state.sifre2.length < 6 ) {
-        Alert.alert('',global.langPasswordCharacter);
+        Alert.alert('',lang.PasswordCharacter);
       }
       else {
         this.SignUp(this.state.email, this.state.password)
       }
     }
     else{
-        Alert.alert('',global.langPasswordMatch);
+        Alert.alert('',lang.PasswordMatch);
     }
   }
   render(){
+    var lang = language[global.lang]
     var keyboardAvoidingHeight = keyboardHeight + this.navBarHeight;
     const {navigate} = this.props.navigation;
       return(
@@ -154,7 +156,7 @@ writeUserData(userId, name, email, imageUrl) {
         <ModifiedStatusBar/>
 
         <CustomHeader
-        title = {global.langSignUp}
+        title = {lang.SignUp}
         onPress = {()=> this.props.navigation.goBack()}/>
 
         <View
@@ -165,7 +167,7 @@ writeUserData(userId, name, email, imageUrl) {
         style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
-        placeholder= {global.langEmail}
+        placeholder= {lang.Email}
         keyboardType= "email-address"
         //returnKeyType="Next"
         style={{ paddingLeft: 0, fontSize: 20*(this.width/360), paddingBottom: 0, position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100,
@@ -177,7 +179,7 @@ writeUserData(userId, name, email, imageUrl) {
         style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
-        placeholder={global.langUsername}
+        placeholder={lang.Username}
         //returnKeyType="Next"
         style={{paddingLeft: 0, fontSize: 20*(this.width/360), paddingBottom: 0, position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100,
          backgroundColor: global.isDarkMode ? 'rgba(255,255,255,0)': 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
@@ -188,7 +190,7 @@ writeUserData(userId, name, email, imageUrl) {
         style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
-        placeholder={global.langPassword}
+        placeholder={lang.Password}
         secureTextEntry
         //returnKeyType="Next"
         style={{paddingLeft: 0, fontSize: 20*(this.width/360), paddingBottom: 0, position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100,
@@ -200,7 +202,7 @@ writeUserData(userId, name, email, imageUrl) {
         style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
-        placeholder={global.langConfirmPassword}
+        placeholder={lang.ConfirmPassword}
         secureTextEntry
         //returnKeyType="Next"
         style={{paddingLeft: 0, fontSize: 20*(this.width/360), paddingBottom: 0,position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100,
@@ -213,7 +215,7 @@ writeUserData(userId, name, email, imageUrl) {
         <OvalButton
         opacity = {1}
         backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
-        title = {global.langCreate}
+        title = {lang.Create}
         textColor = {global.themeColor}
         onPress = { ()=> this.check()}
         borderColor = {global.themeColor}/>

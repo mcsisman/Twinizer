@@ -48,6 +48,7 @@ import ProfileScreen from './source/Settings/Profile';
 import ProfileFavUserScreen from './source/Settings/ProfileFavUser';
 import ProfileBlockedUserScreen from './source/Settings/ProfileBlockedUser';
 import themes from './source/Settings/Themes';
+import language from './source/Utils/Languages/lang.json'
 
 if (!global.btoa) { global.btoa = encode }
 
@@ -68,7 +69,10 @@ global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,
 
     async componentDidMount() {
       this._subscribe = this.props.navigation.addListener('focus', async () => {
+        this.getLocalLang();
+
         console.log("subscribe")
+
         const user = auth().currentUser;
         await this.setTheme(user)
         if (user) {
@@ -79,7 +83,17 @@ global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,
         }
       })
     }
+    async getLocalLang(){
+      var lang = RNLocalize.getLocales()
+      if(lang[0]["languageCode"] == "tr"){
+        global.lang = "langTR"
+      }
+      else{
+        global.lang = "langEN"
+      }
 
+      console.log("LOCAL:", )
+    }
     async setTheme(user){
       // Theme color
       if(user){
@@ -434,6 +448,7 @@ function MyTabBar({ state, descriptors, navigation }) {
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {
+  var lang = language[global.lang]
   return (
     <Tab.Navigator tabBar={props => <MyTabBar {...props} />}
       headerMode = {"none"}
@@ -446,28 +461,28 @@ function MyTabs() {
         name="Main"
         component={MainScreen}
         options={{
-          tabBarLabel: 'Home',
+          tabBarLabel: lang.Home,
         }}
       />
       <Tab.Screen
         name="Messages"
         component={MessagesScreen}
         options={{
-          tabBarLabel: 'Messages',
+          tabBarLabel: lang.Messages,
         }}
       />
       <Tab.Screen
         name="History"
         component={HistoryScreen}
         options={{
-          tabBarLabel: 'History',
+          tabBarLabel: lang.History,
         }}
       />
       <Tab.Screen
         name="Settings"
         component={SettingsScreen}
         options={{
-          tabBarLabel: 'Settings',
+          tabBarLabel: lang.Settings,
         }}
       />
     </Tab.Navigator>

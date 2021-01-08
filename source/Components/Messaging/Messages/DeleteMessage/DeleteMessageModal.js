@@ -14,6 +14,7 @@ import {
   Image,
   StatusBar
 } from 'react-native';
+import language from '../../../../Utils/Languages/lang.json'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -52,6 +53,7 @@ export default class DeleteMessageModal extends Component {
    tickIsVisible: 0
  }
   render(){
+    var lang = language[global.lang]
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     return(
@@ -94,7 +96,7 @@ export default class DeleteMessageModal extends Component {
       style={{ width: screenWidth*(3/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
       <ImgModalOvalButton
       activeOpacity = {0.7}
-      title = {'Clear Chat'}
+      title = {lang.ClearMessageHistory}
       textColor = {global.themeColor}
       onPress = {this.props.onPressClear}
       borderColor = {'rgba(241,51,18,0)'}
@@ -107,7 +109,7 @@ export default class DeleteMessageModal extends Component {
       style={{width: screenWidth*(3/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
       <ImgModalOvalButton
       activeOpacity = {0.7}
-      title = {'Delete Chat'}
+      title = {lang.RemoveChat}
       textColor = {global.themeColor}
       onPress = {this.props.onPressDelete}
       borderColor = {'rgba(241,51,18,0)'}

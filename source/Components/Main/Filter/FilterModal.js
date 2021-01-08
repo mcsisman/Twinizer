@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import countries from '../../../Utils/Countries';
 import CustomPicker from '../../Common/Pickers/CustomPicker'
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+
 import {
   View,
   Platform,
@@ -16,7 +17,7 @@ import {
   Image,
   StatusBar
 } from 'react-native';
-
+import language from '../../../Utils/Languages/lang.json'
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
 }
@@ -45,6 +46,8 @@ export default class FilterModal extends Component {
  static defaultProps = {
  }
   render(){
+    var lang = language[global.lang]
+    console.log("NEEEEEEE:", lang.SelectYourCountry)
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     return(
@@ -74,7 +77,7 @@ export default class FilterModal extends Component {
           </Text>
 
           <CustomPicker
-          selectedValue = {this.props.countrySelectedValue == null ? "Select a Country" : this.props.countrySelectedValue }
+          selectedValue = {this.props.countrySelectedValue == null ? lang.SelectYourCountry : this.props.countrySelectedValue }
           borderBottomColor = {global.themeColor}
           onValueChange = {this.props.onValueChangeCountry}
           items = {countries.newMainItems}
@@ -85,7 +88,7 @@ export default class FilterModal extends Component {
           width = {this.width*(45/100)}/>
 
           <CustomPicker
-          selectedValue = {this.props.genderSelectedValue == null ? "Select a Gender" : this.props.genderSelectedValue}
+          selectedValue = {this.props.genderSelectedValue == null ? lang.SelectAGender : this.props.genderSelectedValue}
           borderBottomColor = {global.themeColor}
           onValueChange = {this.props.onValueChangeGender}
           items = {[{label: global.langAllGenders, key: 1, component: <View style={{}}><Text style={{color: 'red', fontSize: 16,  textAlign: "center"}}>{global.langAllGenders}</Text></View>},

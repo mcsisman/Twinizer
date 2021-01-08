@@ -1,0 +1,238 @@
+{
+  "langEN":
+  {
+    "Login": "Login",
+    "SignUp": "Sign Up",
+    "Email": "email",
+    "Password": "password",
+    "ForgotPassword": "Forgot Password",
+    "EmailNotVerified": "This email address is not verified.",
+    "PlsTryAgain": "Please Try Again",
+    "WrongEmailPassword": "Incorrect email address or password!",
+
+    "SendEmail": "Send Email",
+    "Username": "username",
+    "ConfirmPassword": "confirm password",
+    "Create": "CREATE",
+    "EmailNotRegistered": "This email address is not registered.",
+    "VerificationSent": "Verification email has been sent.",
+    "InvalidEmail": "The email address is invalid.",
+    "EmailAlready": "This email address has already been registered.",
+    "PlsEnterEmailUsername": "Please enter your email address and username.",
+    "PlsEnterUsername": "Please enter your username.",
+    "PlsEnterEmail": "Please enter your email address",
+    "PasswordCharacter": "The password must be at least 6 characters.",
+    "PasswordMatch": "Your password and confirmation password does not match.",
+
+    "CompleteYourProfile": "Complete Your Profile",
+    "PleaseEnterYourInformation": "Please Enter Your Information",
+    "Male": "MALE",
+    "Female": "FEMALE",
+    "Country": "Country",
+    "SelectYourCountry": "Country",
+    "SelectYourBirthday": "Birthday",
+    "SelectAGender": "Gender",
+    "Next": "NEXT",
+
+    "PleaseUploadAProfilePhoto": "Please Upload a Profile Photo",
+    "TapHere": "Tap Here",
+    "GotIt": "GOT IT!",
+    "ProfileUploadInfo": "Please make sure to choose a photo that includes your face only. This photo will be visible to other users.",
+    "Library": "LIBRARY",
+    "Camera": "CAMERA",
+    "UploadAPhoto": "Upload a Photo",
+
+    "PleaseUploadFourPhotos": "Please Upload Four Photos",
+    "ImageUploadInfo": "Please make sure to choose photos that include your face only.These photos will not be visible to any user.\\nYour photos will be used to create a model of your profile.This model will allow your profile to appear in other users' search results.",
+
+    "EnterYourBioHere": "Please Enter Your Bio",
+    "HelloWorld": "Hello World!",
+    "BioInfo": "Your bio can be displayed by other users.",
+
+    "Home": "Home",
+    "Messages": "Messages",
+    "History": "History",
+    "Settings": "Settings",
+    "TwinizingProcessInfo": "Your Twinizing process has started",
+    "Filter": "Filter",
+    "Search": "SEARCH",
+    "FavUserInfoPt1": "You are adding ",
+    "FavUserInfoPt2": " to your favorite users. Proceed?",
+    "BlockUserInfoPt1": "Are you sure you want to block ",
+    "BlockUserInfoPt2": " ?",
+    "DontShowThisDialogAgain": "Don't show this dialog again",
+    "Cancel": "Cancel",
+    "CancelCap": "CANCEL",
+
+    "Edit": "Edit",
+    "Photo": "Photo",
+    "SelectAll": "Select All",
+    "DeselectAll": "Deselect All",
+    "Done": "Done",
+    "MessagesDeleteInfo": "Warning: If you proceed to remove a chat box, the next message you receive from this user will appear on Requests section. You won't be able to send a message to this user unless you find them via Twinizer.",
+    "ClearMessageHistory": "Clear Messages",
+    "RemoveChat": "Remove the Chat",
+    "Requests": "Requests",
+    "NoRequests": "No requests, sorry...",
+    "NoMessages": "No messages, sorry...",
+    "Send": "Send",
+    "DeleteMessage": "Delete Message",
+
+    "Warning": "Warning!",
+    "HistoryDeleteInfoPt1": "Are you sure you want to remove",
+    "HistoryDeleteInfoPt2": "images from your search history?",
+    "Delete": "Delete",
+    "NoRecentActivity": "No Recent Activity",
+
+    "EditProfile": "Edit Profile",
+    "Favoriteusers": "Favorite Users",
+    "BlockedUsers": "Blocked Users",
+    "Theme Settings": "Theme Settings",
+    "About": "About",
+    "LogOut": "Log Out",
+
+    "Profile": "Profile",
+    "Save": "SAVE",
+    "DeleteMyAccount": "Delete my Account",
+    "DidntSave": "Warning! Your changes have not been saved.",
+    "GoBack": "Go Back Without Saving",
+    "YourChangesHaveBeenSaved": "Your changes have been saved",
+
+    "NoFavoriteUsers": "No favorite users",
+
+    "Original": "Original",
+    "Blue": "Blue",
+    "Green": "Green",
+    "Yellow": "Yellow",
+    "Enable Dark Mode": "Enable Dark Mode",
+    "Apply": "Apply",
+
+    "PrivacyPolicy": "Privacy Policy",
+    "TermsOfUse": "Terms of Use",
+    "Licences": "Licences"
+
+
+
+
+
+
+
+
+
+
+
+
+  },
+  "langTR":
+  {
+    "Login": "Giriş",
+    "SignUp": "Kaydol",
+    "Email": "e-posta",
+    "Password": "şifre",
+    "ForgotPassword": "Şifremi Unuttum",
+    "EmailNotVerified": "Bu e-posta adresi henüz doğrulanmamış.",
+    "PlsTryAgain": "Lütfen Tekrar Deneyin",
+    "WrongEmailPassword": "Hatalı e-posta adresi veya şifre girdiniz!",
+
+    "SendEmail": "Email Gönder",
+    "Username": "kullanıcı adı",
+    "ConfirmPassword": "şifreyi onayla",
+    "Create": "OLUŞTUR",
+    "EmailNotRegistered": "Bu e-posta adresi kayıtlı değil.",
+    "VerificationSent": "Onay e-postası gönderildi",
+    "InvalidEmail": "E-posta adresi geçerli değil.",
+    "EmailAlready": "Bu e-posta adresi zaten kayıtlı.",
+    "PlsEnterEmailUsername": "Lütfen e-posta adresinizi ve kullanıcı adınızı giriniz.",
+    "PlsEnterUsername": "Lütfen kullanıcı adınızı giriniz.",
+    "PlsEnterEmail": "Lütfen e-posta adresinizi giriniz.",
+    "PasswordCharacter": "Şifreniz en az 6 karakter olmalı.",
+    "PasswordMatch": "Şifreleriniz birbiriyle aynı olmalı.",
+
+    "CompleteYourProfile": "Profilini Tamamla",
+    "PleaseEnterYourInformation": "Lütfen Bilgilerini Gir",
+    "Male": "ERKEK",
+    "Female": "KADIN",
+    "Country": "Ülke",
+    "SelectYourCountry": "Ülke",
+    "SelectYourBirthday": "Doğum Tarihi",
+    "SelectAGender": "Cinsiyet",
+    "Next": "İLERİ",
+
+    "PleaseUploadAProfilePhoto": "Lütfen Bir Profil Fotoğrafı Yükle",
+    "TapHere": "Buraya Dokun",
+    "GotIt": "ANLADIM!",
+    "ProfileUploadInfo": "Lütfen sadece sizin yüzünüzün olduğu bir fotoğraf yükleyin. Bu profil fotoğrafı diğer kullanıcılar tarafından görüntülenebilir.",
+    "Library": "GALERİ",
+    "Camera": "KAMERA",
+    "UploadAPhoto": "Bir Fotoğraf Yükle",
+
+    "PleaseUploadFourPhotos": "Lütfen Dört Adet Fotoğraf Yükleyin",
+    "ImageUploadInfo": "Lütfen sadece sizin yüzünüzün olduğu bir fotoğraf yükleyin. Bu fotoğraflar diğer kullanıcılar tarafından görüntülenemez.\\nFotoğraflarınız profilinizin modelini oluşturmak için kullanılacaktır. Bu model, diğer kullanıcıların yaptığı aramalarda profilinizin bulunmasını sağlar.",
+
+    "EnterYourBioHere": "Lütfen Bir Bio Girin",
+    "HelloWorld": "Merhaba Dünya!",
+    "BioInfo": "Bionuz diğer kullanıcılar tarafından görüntülenebilir.",
+
+    "Home": "Anasayfa",
+    "Messages": "Mesajlar",
+    "History": "Geçmiş",
+    "Settings": "Ayarlar",
+    "TwinizingProcessInfo": "Twinize işleminiz başladı",
+    "Filter": "Filtre",
+    "Search": "ARA",
+    "FavUserInfoPt1": "",
+    "FavUserInfoPt2": " adlı kullanıcıyı favori kullancılarınıza eklemek istediğinize emin misiniz?",
+    "BlockUserInfoPt1": "",
+    "BlockUserInfoPt2": " adlı kullanıcıyı engellemek istediğinize emin misiniz?",
+    "DontShowThisDialogAgain": "Bu mesajı tekrar gösterme.",
+    "Cancel": "İptal",
+    "CancelCap": "İPTAL",
+
+    "Edit": "Düzenle",
+    "Photo": "Fotoğraf",
+    "SelectAll": "Hepsini Seç",
+    "DeselectAll": "Hiçbirini Seçme",
+    "Done": "Onayla",
+    "MessagesDeleteInfo": "Uyarı: Eğer bu mesaj kutusunu silerseniz, bu kullanıcıdan alacağınız bir sonraki mesaj İstekler kısmında görünecek. Tekrar Twinize işleminde bulana kadar veya mesaj alana kadar bu kullanıcıya mesaj yollayamazsınız.",
+    "ClearMessageHistory": "Mesajları Sil",
+    "RemoveChat": "Mesaj Kutusunu Sil",
+    "Requests": "İstekler",
+    "NoRequests": "Hiç isteğiniz yok, üzgünüm...",
+    "NoMessages": "Hiç mesajınız yok, üzgünüm...",
+    "Send": "Gönder",
+    "DeleteMessage": "Mesajı Sil",
+
+    "Warning": "Uyarı!",
+    "HistoryDeleteInfoPt1": "Arama geçmişinizden",
+    "HistoryDeleteInfoPt2": "adet resmi silmek istediğine emin misin",
+    "Delete": "Sil",
+    "NoRecentActivity": "Arama Geçmişiniz Boş",
+
+    "EditProfile": "Profili Düzenle",
+    "Favoriteusers": "Favori Kullanıcılar",
+    "BlockedUsers": "Engellenmiş Kullanıcılar",
+    "Theme Settings": "Tema Ayarları",
+    "About": "Hakkında",
+    "LogOut": "Çıkış Yap",
+
+    "Profile": "Profil",
+    "Save": "KAYDET",
+    "DeleteMyAccount": "Hesabımı Sil",
+    "DidntSave": "Uyarı! Değişiklikleriniz kaydedilmedi.",
+    "GoBack": "Kaydetmeden geri git",
+    "YourChangesHaveBeenSaved": "Kayıt işlemi başarıyla tamamlandı.",
+
+    "NoFavoriteUsers": "Favori kullanıcı yok",
+
+    "Original": "Orjinal",
+    "Blue": "Mavi",
+    "Green": "Yeşil",
+    "Yellow": "Sarı",
+    "Enable Dark Mode": "Karanlık Modu Etkinleştir",
+    "Apply": "Uygula",
+
+    "PrivacyPolicy": "Gizlilik Politikası",
+    "TermsOfUse": "Kullanım Şartları",
+    "Licences": "Lisanslar"
+  }
+}

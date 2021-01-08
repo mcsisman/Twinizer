@@ -11,7 +11,7 @@ import {
   Image,
   StatusBar
 } from 'react-native';
-
+import language from '../../../Utils/Languages/lang.json'
 var screenHeight = Math.round(Dimensions.get('screen').height);
 var screenWidth = Math.round(Dimensions.get('screen').width);
 export default class ImageUploader extends Component {
@@ -33,7 +33,7 @@ export default class ImageUploader extends Component {
    position: "absolute"
  }
   render(){
-
+    var lang = language[global.lang]
     return(
 
       <TouchableOpacity
@@ -49,7 +49,7 @@ export default class ImageUploader extends Component {
          borderTopLeftRadius: this.props.borderRadius, borderBottomRightRadius: this.props.borderRadius }}
        />
        <Text style={{color: global.themeColor, bottom: '60%', opacity: this.props.textOpacity, position: 'absolute', textAlign: 'center', fontSize: this.props.fontSize*(screenWidth/360)}}>
-         {global.langTapHere}
+         {lang.TapHere}
        </Text>
        <Image source={{uri: 'camera' + global.themeForImages}}
          style={{bottom: '30%', width: this.props.width*(23/100), height: this.props.width*(23/100),  position: 'absolute',  opacity: this.props.textOpacity, flex:1 }}

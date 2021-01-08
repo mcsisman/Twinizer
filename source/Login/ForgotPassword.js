@@ -22,6 +22,7 @@ import LoginScreen from './Login';
 import CustomHeader from '../Components/Common/Header/CustomHeader'
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 import OvalButton from '../Components/Common/OvalButton/OvalButton'
+import language from '../Utils/Languages/lang.json'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -39,7 +40,7 @@ export default class ForgotPasswordScreen extends Component<{}>{
     }
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
-    this.props.navigation.setParams({ otherParam: global.langForgotPassword })
+    this.props.navigation.setParams({ otherParam: lang.ForgotPassword })
   }
 componentDidMount(){
 };
@@ -51,12 +52,13 @@ static navigationOptions = {
     auth().sendPasswordResetEmail(this.state.email)
       .then(function (user) {
         navigate('Login')
-        Alert.alert("", global.langPlsCheckEmail)
+        Alert.alert("", lang.PlsCheckEmail)
       }).catch(error => {
-        Alert.alert(global.langPlsTryAgain, global.langEmailNotRegistered)
+        Alert.alert(lang.PlsTryAgain, lang.EmailNotRegistered)
       })
   }
   render(){
+    var lang = language[global.lang]
     const {navigate} = this.props.navigation;
     return(
       <KeyboardAvoidingView behavior="padding"
@@ -71,14 +73,14 @@ static navigationOptions = {
 
       <ModifiedStatusBar/>
       <CustomHeader
-      title = {global.langForgotPassword}
+      title = {lang.ForgotPassword}
       onPress = {()=> this.props.navigation.goBack()}/>
 
       <View
         style={{backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', width: this.width, height: this.height - getStatusBarHeight() - headerHeight, alignItems: 'center', flex:1}}>
       <TextInput
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
-        placeholder= {global.langEmail}
+        placeholder= {lang.Email}
         style={{color: global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)', paddingLeft: 0, paddingBottom: 0, fontSize: 20*(this.width/360), position: 'absolute', width: this.width*(7/10), height: (this.height*8)/100, flex:1, bottom: (this.height*45)/100, right: this.width*(1.5/10),
         backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
         onChangeText={(text) => this.setState({email: text})}>
@@ -89,7 +91,7 @@ static navigationOptions = {
       backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
       opacity = {1}
       bottom = {(this.height*25)/100}
-      title = {global.langSendEmail}
+      title = {lang.SendEmail}
       textColor = {global.themeColor}
       onPress = { ()=> this.check()}
       borderColor = {global.themeColor}

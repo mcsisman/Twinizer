@@ -14,7 +14,7 @@ import {
   Image,
   StatusBar
 } from 'react-native';
-
+import language from '../../../Utils/Languages/lang.json'
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
 }
@@ -46,7 +46,6 @@ export default class CustomPicker extends Component {
    borderRadius: PropTypes.number
  }
  static defaultProps = {
-   selectedValue: "Select Something",
    borderBottomWidth: 2,
    borderBottomColor: global.themeColor,
    placeHolder: true,
@@ -54,6 +53,7 @@ export default class CustomPicker extends Component {
    borderRadius: 0
  }
   render(){
+    var lang = language[global.lang]
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
 
@@ -73,7 +73,7 @@ export default class CustomPicker extends Component {
         cancelButtonAccessibilityLabel={'Cancel Button'}>
 
         <TextInput
-        style={{ paddingBottom: 0 , paddingLeft: 0 ,fontSize: 20*(this.width/360), color: this.props.selectedValue == "Select a Country" ||  this.props.selectedValue == "Select a Gender" ? "gray" : global.themeColor,
+        style={{ paddingBottom: 0 , paddingLeft: 0 ,fontSize: 18*(this.width/360), color: this.props.selectedValue == lang.SelectYourCountry ||  this.props.selectedValue == lang.SelectAGender ? "gray" : global.themeColor,
          borderRadius: this.props.borderRadius}}
         editable={false}
         placeholderTextColor={"black"}

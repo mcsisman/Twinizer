@@ -26,6 +26,7 @@ import OvalButton from '../Components/Common/OvalButton/OvalButton'
 import CustomPicker from '../Components/Common/Pickers/CustomPicker'
 import PageDots from '../Components/ProfileSteps/Common/PageDots'
 import TextBox from '../Components/ProfileSteps/Common/TextBox'
+import language from '../Utils/Languages/lang.json'
 
 
 import countries from '../Utils/Countries';
@@ -40,6 +41,7 @@ if(Platform.OS === 'ios'){
 
 export default class UserInfoScreen extends Component<{}>{
   constructor(props){
+    var lang = language[global.lang]
     super(props);
     this.state = {
       dateTextColor: "gray",
@@ -56,7 +58,7 @@ export default class UserInfoScreen extends Component<{}>{
       femaleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
       gender: "",
       country: "Country",
-      selectedValue: "Select a Country"
+      selectedValue: lang.SelectYourCountry
     }
     var selectedValue = "Select"
     this.countries = countries.countries
@@ -64,7 +66,7 @@ export default class UserInfoScreen extends Component<{}>{
     this.width = Math.round(Dimensions.get('screen').width);
     global.globalGender = "";
     global.globalCountry = "";
-    this.props.navigation.setParams({ otherParam: global.langCompleteYourProfile })
+    this.props.navigation.setParams({ otherParam: lang.CompleteYourProfile })
   }
 componentDidMount(){
 };
@@ -121,6 +123,8 @@ async goBack(){
 }
 
   render(){
+    var lang = language[global.lang]
+    var s = lang.SelectYourBirthday
     const { date } = this.state.date;
     return(
 
@@ -130,7 +134,7 @@ async goBack(){
       <ModifiedStatusBar/>
 
       <CustomHeader
-      title = {global.langCompleteYourProfile}
+      title = {lang.CompleteYourProfile}
       onPress = {async ()=> await this.goBack()}/>
 
       <View
@@ -142,7 +146,7 @@ async goBack(){
       <View
       style={{width: this.width, height: "50%", flexDirection: 'column', flex:1, alignItems: 'center', justifyContent: "center"}}>
       <TextBox
-      text = {global.langSelectGender}/>
+      text = {lang.PleaseEnterYourInformation}/>
       </View>
 
       <View
@@ -154,7 +158,7 @@ async goBack(){
       opacity = {1}
       width = {this.width*3/10}
       borderColor = {global.themeColor}
-      title = {global.langMale}
+      title = {lang.Male}
       backgroundColor = {this.state.maleBG}
       textColor = {this.state.maleText}
       onPress = { ()=> this.maleSelected()}/>
@@ -165,7 +169,7 @@ async goBack(){
       <OvalButton
       opacity = {1}
       borderColor = {global.themeColor}
-      title = {global.langFemale}
+      title = {lang.Female}
       backgroundColor = {this.state.femaleBG}
       textColor = {this.state.femaleText}
       onPress = { ()=> this.femaleSelected()}/>
@@ -184,7 +188,7 @@ async goBack(){
       height = {this.width*(12/100)}
       onValueChange = {(value) => this.valueChange(value)}
       items = {countries.newGenderItems}
-      label = {global.langCountry}
+      label = {lang.Country}
       textColor = {this.state.pickerTextColor}
       selectedValue = {this.state.selectedValue}/>
       </View>
@@ -197,7 +201,7 @@ async goBack(){
         mode="date"
         androidMode="spinner"
         showIcon={true}
-        placeholder="Select Your Birthday"
+        placeholder = {lang.SelectYourBirthday}
         format="MM-DD-YYYY"
         minDate="05-15-1900"
         maxDate="05-15-2010"
@@ -257,7 +261,7 @@ async goBack(){
       <OvalButton
       backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
       width = {this.width*3/10}
-      title = {global.langNext}
+      title = {lang.Next}
       textColor = {this.state.buttonOpacity}
       opacity = {this.state.opacity}
       onPress = { ()=> this.writeGenderToDatabase()}
