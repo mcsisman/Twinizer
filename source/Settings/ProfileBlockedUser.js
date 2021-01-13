@@ -36,6 +36,7 @@ import FavBlockedUsersButtonModal from '../Components/Settings/ProfileBlockedUse
 import BlockUserButton from '../Components/Common/FavBlockMsg/BlockUserButton'
 import FavoriteUserButton from '../Components/Common/FavBlockMsg/FavoriteUserButton'
 import countries from '../Utils/Countries';
+import language from '../Utils/Languages/lang.json'
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
 }
@@ -47,6 +48,7 @@ var currentUserCountry;
 var currentUserUsername;
 var currentUserBio;
 var listener;
+var lang = language[global.lang]
 export default class ProfileBlockedUserScreen extends Component<{}>{
   constructor(props){
     super(props);
@@ -184,6 +186,8 @@ static navigationOptions = {
   }
 
   render(){
+    var totalEmptyHeight = this.height - getStatusBarHeight() - headerHeight - this.width*(4/10)*(7/6) - this.width/2.5 - this.width/10
+    var lang = language[global.lang]
     const spin = this.spinValue.interpolate({
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg']
@@ -202,7 +206,7 @@ static navigationOptions = {
         <CustomHeader
         whichScreen = {"Profile"}
         isFilterVisible = {this.state.showFilter}
-        title = {"Profile"}>
+        title = {lang.BlockedUsers}>
         </CustomHeader>
 
         <Animated.Image source={{uri: 'loading' + global.themeForImages}}
@@ -222,11 +226,14 @@ static navigationOptions = {
         whichScreen = {"Profile"}
         onPress = {()=> this.goBack()}
         isFilterVisible = {this.state.showFilter}
-        title = "Profile">
+        title = {lang.BlockedUsers}>
         </CustomHeader>
 
         <View
-        style={{opacity: this.state.upperComponentsOpacity, width: this.width, height: (this.height-this.width/7 - headerHeight - getStatusBarHeight())/2, flexDirection: "row" }}>
+        style={{height: totalEmptyHeight/4}}/>
+
+        <View
+        style={{opacity: this.state.upperComponentsOpacity, width: this.width, height: this.width*(4/10)*(7/6), flexDirection: "row" }}>
 
         <View
         style={{opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}>
@@ -249,7 +256,7 @@ static navigationOptions = {
 
         <View
         style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderRadius: 8, borderColor:"gray"}}>
-        <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
+        <Text style={{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: 15*(this.width/360)}}>
         {this.state.userUsername}
         </Text>
         </View>
@@ -260,7 +267,7 @@ static navigationOptions = {
 
         <View
         style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderRadius: 8, borderColor:"gray"}}>
-        <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
+        <Text style={{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: 15*(this.width/360)}}>
         {this.state.userCountry}
         </Text>
         </View>
@@ -271,25 +278,28 @@ static navigationOptions = {
 
         <View
         style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderRadius: 8, borderColor:"gray"}}>
-        <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
+        <Text style={{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: 15*(this.width/360)}}>
         {this.state.userGender}
         </Text>
         </View>
-
         </View>
 
         </View>
+        <View
+        style={{height: totalEmptyHeight/4}}/>
 
         <View
-        style={{width: this.width*4/6, height: this.height*2/10, borderWidth: 0.9, borderRadius: 8, borderColor:"gray"}}>
-        <Text style={{color: global.themeColor, fontSize: 15*(this.width/360), paddingLeft: 10, paddingRight: 10, paddingTop: 3}}>
+        style={{ width: this.width*8/10, height: this.width/2.5,  justifyContent:"center", alignItems:"center"}}>
+        <View
+        style={{width: this.width*8/10, paddingTop:5, paddingBottom:5,  borderWidth: 0.9, borderColor:"gray", borderRadius: 8}}>
+        <Text style={{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: 15*(this.width/360), paddingLeft: 10, paddingRight: 10, paddingTop: 3}}>
         {this.state.userBio}
         </Text>
         </View>
+        </View>
 
         <View
-        style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5.5, justifyContent: "center", alignItems: "center"}}>
-        </View>
+        style={{height: totalEmptyHeight/4}}/>
 
         <View
         style = {{opacity: 1, backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/3, height: this.width/10,
@@ -307,15 +317,15 @@ static navigationOptions = {
 
         <FavBlockedUsersButtonModal
         isVisible = {this.state.removeModalVisible}
-        txtButton = {"REMOVE"}
-        txtAlert= {"You are unblocking this user. Are you sure?"}
+        txtButton = {lang.YES}
+        txtAlert= {lang.UnblockUserPt1 + this.state.userUsername + lang.UnblockUserPt2}
         onPressAdd= {async ()=> await this.buttonClicked("remove")}
         onPressClose = {()=>this.setState({removeModalVisible:false})}/>
 
         <FavBlockedUsersButtonModal
         isVisible = {this.state.favModalVisible}
-        txtButton = {"FAVORITE"}
-        txtAlert= {"You are adding this user to favorites. Are you sure?"}
+        txtButton = {lang.YES}
+        txtAlert= {lang.FavUserPt1 + this.state.userUsername + lang.FavUserPt2}
         onPressAdd= {async ()=> await this.buttonClicked("fav")}
         onPressClose = {()=>this.setState({favModalVisible:false})}/>
 

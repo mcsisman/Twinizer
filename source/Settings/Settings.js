@@ -36,7 +36,7 @@ import CustomHeader from '../Components/Common/Header/CustomHeader'
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 import SettingsButton from '../Components/Settings/Common/SettingsButton'
 import LogoutButton from '../Components/Settings/Common/LogoutButton'
-
+import language from '../Utils/Languages/lang.json'
 
 
 if(Platform.OS === 'android'){
@@ -45,7 +45,7 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
-
+var lang = language[global.lang]
 export default class SettingsScreen extends Component<{}>{
   constructor(props){
     super(props);
@@ -111,6 +111,7 @@ export default class SettingsScreen extends Component<{}>{
     this.props.navigation.dispatch(StackActions.popToTop());
   }
   render(){
+    var lang = language[global.lang]
     const {navigate} = this.props.navigation;
     return(
       <View
@@ -120,7 +121,7 @@ export default class SettingsScreen extends Component<{}>{
       <CustomHeader
       whichScreen = {"Settings"}
       isFilterVisible = {this.state.showFilter}
-      title = "Settings">
+      title = {lang.Settings}>
       </CustomHeader>
 
       <ScrollView
@@ -129,31 +130,32 @@ export default class SettingsScreen extends Component<{}>{
       style = {{height: this.width/9}}/>
       <SettingsButton
       onPress = {()=> navigate("Profile")}
-      text = {"Edit Profile"}/>
+      text = {lang.EditProfile}/>
 
       <View
       style = {{height: this.width/9}}/>
       <SettingsButton
       onPress = {()=> navigate("FavoriteUsers")}
       noBottomBorder = {true}
-      text = {"Favorite Users"}/>
+      text = {lang.FavoriteUsers}/>
       <SettingsButton
       onPress = {()=> navigate("BlockedUsers")}
-      text = {"Blocked Users"}/>
+      text = {lang.BlockedUsers}/>
 
       <View
       style = {{height: this.width/9}}/>
       <SettingsButton
       onPress = {()=> this.props.navigation.navigate("ThemeSettings", {update: this.updateState})}
-      text = {"Theme Settings"}/>
+      text = {lang.ThemeSettings}/>
       <View
       style = {{height: this.width/9}}/>
       <SettingsButton
       onPress = {()=> this.props.navigation.navigate("About", {update: this.updateState})}
-      text = {"About"}/>
+      text = {lang.About}/>
       <View
       style = {{height: this.width/9}}/>
       <LogoutButton
+      text = {lang.LogOut}
       onPress = {()=>this.onPressLogout()}/>
       <View
       style = {{height: this.width/9}}/>

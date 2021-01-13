@@ -42,6 +42,7 @@ import ImageViewerModal from '../Components/Common/ImageViewer/ImageViewerModal'
 import GoBackInfoModal from '../Components/Common/Info/GoBackInfoModal'
 import InfoModal from '../Components/Common/Info/InfoModal'
 import countries from '../Utils/Countries';
+import language from '../Utils/Languages/lang.json'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -58,6 +59,7 @@ var updateImage;
 var infoChanged = false;
 var keyboardHeight;
 var keyboardYcord;
+var lang = language[global.lang]
 export default class ProfileScreen extends Component<{}>{
   constructor(props){
     super(props);
@@ -237,6 +239,7 @@ static navigationOptions = {
     }
 
   async onPressSave(){
+  
     this.setState({loadingOpacity: 1})
     if(this.state.newPhoto){
       var uploadDone = false
@@ -355,6 +358,7 @@ static navigationOptions = {
   }
 
   render(){
+    var lang = language[global.lang]
     const spin = this.spinValue.interpolate({
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg']
@@ -373,7 +377,7 @@ static navigationOptions = {
         <CustomHeader
         whichScreen = {"Profile"}
         isFilterVisible = {this.state.showFilter}
-        title = {"Profile"}>
+        title = {lang.Profile}>
         </CustomHeader>
 
         <Animated.Image source={{uri: 'loading' + global.themeForImages}}
@@ -395,7 +399,7 @@ static navigationOptions = {
         whichScreen = {"Profile"}
         onPress = {()=> this.onPressGoBack()}
         isFilterVisible = {this.state.showFilter}
-        title = "Profile">
+        title = {lang.Profile}>
         </CustomHeader>
 
         <View
@@ -432,7 +436,7 @@ static navigationOptions = {
 
         <Text
         style= {{fontSize: 18*(this.width/360), color: global.themeColor}}>
-        Edit
+        {lang.Edit}
         </Text>
         </TouchableOpacity>
 
@@ -527,13 +531,13 @@ static navigationOptions = {
         onPress={()=> this.onPressSave()}>
 
         <Text style={{color: global.themeColor, fontSize: 15*(this.width/360)}}>
-        SAVE
+        {lang.Save}
         </Text>
         </TouchableOpacity>
         <View
         style = {{height: this.width/20}}/>
         <LogoutButton
-        text = {"Delete My Account"}
+        text = {lang.DeleteMyAccount}
         onPress = {()=>this.onPressDelete()}/>
 
         </View>
@@ -542,10 +546,10 @@ static navigationOptions = {
 
         <ImageUploadModal
         isVisible={this.state.isVisible}
-        txtUploadPhoto = {global.langUploadPhoto}
+        txtUploadPhoto = {lang.UploadAPhoto}
         txtCancel = {global.langCancel}
-        txtTakePhoto = {global.langTakePhoto}
-        txtOpenLibrary = {global.langLibrary}
+        txtTakePhoto = {lang.TakePhoto}
+        txtOpenLibrary = {lang.Library}
         onPressCancel = {()=>this.setState({isVisible: false}) }
         onPressCamera = {this.camera}
         onPressLibrary = {this.library}/>
@@ -559,10 +563,10 @@ static navigationOptions = {
 
         <GoBackInfoModal
         isVisible = {this.state.goBackInfoModalVisible}
-        txtAlert = {"Your changes have not been saved. Are you sure you want to go back?"}
-        txtOk = {"Go Back Anyway"}
-        txtSave = {"Save"}
-        txtCancel = {"Cancel"}
+        txtAlert = {lang.DidntSave}
+        txtOk = {lang.YES}
+        txtSave = {lang.Save}
+        txtCancel = {lang.Cancel}
         onPressOk = {()=>this.props.navigation.goBack()}
         onPressSave = {()=>{
           this.setState({goBackInfoModalVisible:false})
@@ -572,8 +576,8 @@ static navigationOptions = {
 
         <InfoModal
         isVisible = {this.state.saveInfoModalVisible}
-        txtAlert = {"Your changes have been saved."}
-        txtGotIt = {global.langGotIt}
+        txtAlert = {lang.YourChangesHaveBeenSaved}
+        txtGotIt = {lang.GotIt}
         onPressClose = {()=>this.setState({saveInfoModalVisible:false}) }/>
 
         <Animated.Image source={{uri: 'loading' + global.themeForImages}}

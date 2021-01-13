@@ -43,7 +43,7 @@ export default class DeleteMessageModal extends Component {
    tickIsVisible: PropTypes.number
  }
  static defaultProps = {
-   addFontSize: 15,
+   addFontSize: 17,
    alertFontSize: 15,
    animationInTiming: 500,
    animationOutTiming: 500,
@@ -84,7 +84,7 @@ export default class DeleteMessageModal extends Component {
       <View style={{paddingTop: 10, paddingBottom: 10, width: screenWidth*(6/10), flex:1}}>
 
       <Text style={{ marginLeft: 2, marginRight: 2, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: this.props.alertFontSize*(screenWidth/360)}}>
-      Warning: If you proceed to delete a chat, the next time you receive a message it will appear on Requests section. You wont be able to send a message to this user until then.
+      {this.props.txtAlert}
       </Text>
       </View>
       <View

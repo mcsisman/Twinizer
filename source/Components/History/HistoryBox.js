@@ -46,7 +46,7 @@ export default class HistoryBox extends Component {
     return(
       <Animated.View
         style = {{borderBottomWidth: 1, borderBottomColor: "rgba(181,181,181,0.7)", left: this.props.left ,alignItems: 'center', height: this.width/3, width: this.width + this.width*(3/16),
-        backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", flexDirection: "row", flex: 1}}>
+        backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)", flexDirection: "row", flex: 1}}>
 
         <TouchableOpacity
         activeOpacity = {1}

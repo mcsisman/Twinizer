@@ -30,7 +30,7 @@ import LibraryLicencesScreen from './LibraryLicences';
 import CustomHeader from '../Components/Common/Header/CustomHeader'
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 import SettingsButton from '../Components/Settings/Common/SettingsButton'
-
+import language from '../Utils/Languages/lang.json'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -38,7 +38,7 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
-
+var lang = language[global.lang]
 export default class AboutScreen extends Component<{}>{
   constructor(props){
     super(props);
@@ -70,6 +70,7 @@ export default class AboutScreen extends Component<{}>{
   }
 
   render(){
+    var lang = language[global.lang]
     const {navigate} = this.props.navigation;
     return(
       <View
@@ -80,7 +81,7 @@ export default class AboutScreen extends Component<{}>{
       whichScreen = {"About"}
       isFilterVisible = {this.state.showFilter}
       onPress = {()=> this.props.navigation.navigate("Settings")}
-      title = "About Twinizer">
+      title = {lang.AboutTwinizer}>
       </CustomHeader>
 
       <ScrollView
@@ -89,19 +90,19 @@ export default class AboutScreen extends Component<{}>{
       style = {{height: this.width/9}}/>
       <SettingsButton
       onPress = {()=> console.log("privacy")}
-      text = {"Privacy Policy"}/>
+      text = {lang.PrivacyPolicy}/>
 
       <View
       style = {{height: this.width/9}}/>
       <SettingsButton
       onPress = {()=> console.log("Terms")}
-      text = {"Terms of Use"}/>
+      text = {lang.TermsOfUse}/>
 
       <View
       style = {{height: this.width/9}}/>
       <SettingsButton
       onPress = {()=> this.goLicences()}
-      text = {"Licences"}/>
+      text = {lang.Licences}/>
 
       </ScrollView>
 

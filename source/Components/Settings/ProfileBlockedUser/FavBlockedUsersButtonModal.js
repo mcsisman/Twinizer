@@ -14,7 +14,7 @@ import {
   Image,
   StatusBar
 } from 'react-native';
-
+import language from '../../../Utils/Languages/lang.json'
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
 }
@@ -23,6 +23,7 @@ if(Platform.OS === 'ios'){
 }
 var screenHeight = Math.round(Dimensions.get('screen').height);
 var screenWidth = Math.round(Dimensions.get('screen').width);
+var lang = language[global.lang]
 export default class FavBlockedUsersButtonModal extends Component {
 
 
@@ -50,6 +51,7 @@ export default class FavBlockedUsersButtonModal extends Component {
    backdropOpacity: 0.4,
  }
   render(){
+    var lang = language[global.lang]
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     return(
@@ -93,7 +95,7 @@ export default class FavBlockedUsersButtonModal extends Component {
       style={{ width: screenWidth*(3/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
       <ImgModalOvalButton
       activeOpacity = {0.7}
-      title = {'CANCEL'}
+      title = {lang.NO}
       textColor = {global.themeColor}
       onPress = {this.props.onPressClose}
       borderColor = {'rgba(241,51,18,0)'}

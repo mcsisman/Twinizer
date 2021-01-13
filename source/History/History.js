@@ -29,6 +29,7 @@ import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 import SearchButton from '../Components/Common/SearchButton/SearchButton'
 import HistoryBox from '../Components/History/HistoryBox'
 import EditBox from '../Components/Messaging/Messages/EditBox/EditBox'
+import language from '../Utils/Languages/lang.json'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -36,7 +37,7 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
-
+var lang = language[global.lang]
 var ourBlue = 'rgba(77,120,204,1)'
 var colorArray = []
 var doneColor = 'rgba(128,128,128,1)'
@@ -66,8 +67,9 @@ export default class HistoryScreen extends Component<{}>{
     loadingDone = false
   }
 async componentDidMount(){
+  lang = language[global.lang]
   this._subscribe = this.props.navigation.addListener('focus', async () => {
-    this.leftAnimation = new Animated.Value(-this.width*(3/16))
+
     global.fromChat = false
     this.spinAnimation()
     noOfSearch = await this.getNoOfSearch()
@@ -80,6 +82,7 @@ async componentDidMount(){
   })
   this._subscribe = this.props.navigation.addListener('blur', async () => {
     isSelectedArray = [];
+    this.historyBoxAnimation("reset")
     this.setState({opacity: 0.4, editPressed: false, cancelPressed: false, editText: "Edit", messageBoxDisabled: false})
   })
   console.log("COMPONENT DID MOUNT")
@@ -107,8 +110,8 @@ async componentDidMount(){
     this.setState({reRender: "ok"})
     return "TESTTTT"
   }
-  historyBoxAnimation(){
-    if(this.state.editText == "Cancel"){
+  historyBoxAnimation(reset){
+    if(this.state.editText == "Cancel" || reset == "reset"){
       Animated.timing(this.leftAnimation, {
         duration: 100,
         toValue: -this.width*(3/16),
@@ -116,7 +119,7 @@ async componentDidMount(){
         useNativeDriver: false,
       }).start()
     }
-    if(this.state.editText == "Edit"){
+    else if(this.state.editText == "Edit"){
       Animated.timing(this.leftAnimation, {
         duration: 100,
         toValue: 0,
@@ -143,8 +146,14 @@ async deleteHistory(indexArray){
   console.log("SİLDİKTEN SONRA: ", historyArray)
   noOfSearch = noOfSearch - indexArray.length
 
+  colorArray = [];
+  for( i = 0; i < noOfSearch; i++){
+    colorArray[i] = "trashgray"
+  }
+
   await AsyncStorage.setItem(auth().currentUser.uid + 'noOfSearch', noOfSearch.toString())
   await AsyncStorage.setItem(auth().currentUser.uid + 'historyArray', JSON.stringify(historyArray))
+  this.leftAnimation = new Animated.Value(-this.width*(3/16))
   this.setState({historyBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
 }
 async onPressSearch(){
@@ -168,23 +177,17 @@ donePress(){
         deleteCount++;
       }
     }
-    var alertMsg;
-    if(deleteCount == 1){
-      alertMsg = "You are deleting 1 image that you searched before. Are you sure?"
-    }
-    else{
-      alertMsg = "You are deleting " + deleteCount + " images that you searched before. Are you sure?"
-    }
+    var alertMsg = lang.HistoryDeleteAlert;
     Alert.alert(
-    'Warning!',
+    lang.Warning,
     alertMsg ,
     [
       {
-        text: 'Cancel',
+        text: lang.NO,
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      {text: 'Delete', onPress: () => this.deleteHistory(indexArray)},
+      {text: lang.YES, onPress: () => this.deleteHistory(indexArray)},
     ],
     {cancelable: false},
   );
@@ -233,6 +236,22 @@ async trashButtonPressed(i){
   }
   else{
     colorArray[i] = "trashgray"
+  }
+  var trashGrayCount = 0;
+  var trashColoredCount = 0;
+  for(let i = 0; i < colorArray.length; i++){
+    if(colorArray[i] == "trashgray"){
+      trashGrayCount++;
+    }
+    else{
+      trashColoredCount++;
+    }
+  }
+  if(trashColoredCount == colorArray.length){
+    this.setState({allSelected: true})
+  }
+  if(trashGrayCount == colorArray.length){
+    this.setState({allSelected: false})
   }
   this.arrangeDoneColor()
 }
@@ -346,7 +365,7 @@ renderHistoryBoxes(){
         <View style = {{opacity: 0.7, alignItems: 'center', width: this.width, height: scrollViewHeight/4}}>
         <Text
           style = {{fontSize: 25*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
-          No recent activity
+          {lang.NoRecentActivity}
         </Text>
         </View>
         </View>
@@ -409,7 +428,7 @@ render(){
       <CustomHeader
       whichScreen = {"History"}
       isFilterVisible = {this.state.showFilter}
-      title = {"History"}>
+      title = {lang.History}>
       </CustomHeader>
 
       <EditBox

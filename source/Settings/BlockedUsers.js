@@ -8,6 +8,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import AsyncStorage from '@react-native-community/async-storage';
 
+
 import {Image,
    Text,
    View,
@@ -33,7 +34,8 @@ import ProfileBlockedUserScreen from './ProfileBlockedUser';
 import CustomHeader from '../Components/Common/Header/CustomHeader'
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 import BlockedUserBox from '../Components/Settings/BlockedUsers/BlockedUserBox'
-
+import EditBox from '../Components/Messaging/Messages/EditBox/EditBox'
+import language from '../Utils/Languages/lang.json'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -48,12 +50,14 @@ var noOfBlockedUsers;
 var colorArray = [];
 var imageUrls = [];
 var focusedtoThisScreen = false;
+var lang = language[global.lang]
 export default class BlockedUsersScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
+      allSelected: false,
       loadingDone: false,
       editPressed: false,
       blockedBoxDisabled: false,
@@ -70,6 +74,7 @@ export default class BlockedUsersScreen extends Component<{}>{
       header: null,
   };
   componentDidMount(){
+    lang = language[global.lang]
     this.setState({loadingDone: false})
     this.spinAnimation()
     this._subscribe = this.props.navigation.addListener('focus', async () => {
@@ -105,8 +110,8 @@ export default class BlockedUsersScreen extends Component<{}>{
         }
       )).start()
   }
-  blockedBoxAnimation(){
-    if(this.state.editText == "Cancel"){
+  blockedBoxAnimation(reset){
+    if(this.state.editText == "Cancel" || reset == "reset"){
       Animated.timing(this.leftAnimation, {
         duration: 100,
         toValue: -this.width*(2/16),
@@ -123,20 +128,6 @@ export default class BlockedUsersScreen extends Component<{}>{
       }).start()
     }
   }
-  editButtonPressed(){
-
-    for( i = 0; i < noOfSearch; i++){
-      colorArray[i] = "trashgray"
-    }
-    if(this.state.editText == "Edit"){
-      this.setState({blockedBoxDisabled: true, doneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false})
-      this.historyBoxAnimation()
-    }
-    else{
-      this.setState({blockedBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
-      this.historyBoxAnimation()
-      }
-    }
 
 async initializeBlockedUsersScreen(){
   await this.getBlockedUserUids()
@@ -189,6 +180,7 @@ listenerFunc = async (snap, i, conversationUid, firstTotal) => {
   }
 
   renderBlockedUserBoxes(){
+    var lang = language[global.lang]
       var scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight();
       var boxes = [];
       if(noOfBlockedUsers == 0){
@@ -198,7 +190,7 @@ listenerFunc = async (snap, i, conversationUid, firstTotal) => {
           <View style = {{opacity: 0.7, alignItems: 'center', width: this.width, top: scrollViewHeight/4,  height: scrollViewHeight/4}}>
           <Text
             style = {{fontSize: 25, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
-            No blocked users
+            {lang.NoBlockedUsers}
           </Text>
           </View>
           </View>
@@ -237,7 +229,7 @@ editButtonPressed(){
     this.blockedBoxAnimation()
     }
 }
-donePress(){
+deleteBlockedUser(){
   var limit = noOfBlockedUsers
   for(let i = limit-1; i >= 0; i--){
     if(colorArray[i] == "trash" + global.themeForImages){
@@ -250,12 +242,31 @@ donePress(){
     }
   }
   global.removedFromBlockedList = true
+  colorArray = []
   for( let i = 0; i < noOfBlockedUsers; i++){
     colorArray[i] = "trashgray"
   }
   this.setState({blockedBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
-  this.blockedBoxAnimation()
+  this.blockedBoxAnimation("reset")
   AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUserUids))
+}
+donePress(){
+
+  var alertMsg = lang.BlockedUserDeleteAlert;
+  Alert.alert(
+  lang.Warning,
+  alertMsg ,
+    [
+      {
+        text: lang.NO,
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: lang.YES, onPress: () => this.deleteBlockedUser()},
+    ],
+    {cancelable: false},
+  );
+
 }
 
 arrangeDoneColor(){
@@ -280,6 +291,24 @@ async trashButtonPressed(i){
   else{
     colorArray[i] = "trashgray"
   }
+  var trashGrayCount = 0;
+  var trashColoredCount = 0;
+  console.log("COLOR ARRAY:", colorArray)
+
+  for(let i = 0; i < colorArray.length; i++){
+    if(colorArray[i] == "trashgray"){
+      trashGrayCount++;
+    }
+    else{
+      trashColoredCount++;
+    }
+  }
+  if(trashColoredCount == colorArray.length){
+    this.setState({allSelected: true})
+  }
+  if(trashGrayCount == colorArray.length){
+    this.setState({allSelected: false})
+  }
   this.arrangeDoneColor()
 }
 
@@ -300,7 +329,21 @@ goBack(){
   global.selectedBlockedUserIndex = null
   this.props.navigation.navigate("Settings")
 }
+selectAll(){
+  if(this.state.allSelected){
+    for( i = 0; i < colorArray.length; i++){
+      colorArray[i] = "trashgray"
+    }
+      this.setState({allSelected: !this.state.allSelected, doneDisabled : true})
+  }
+  else{
+    for( i = 0; i < colorArray.length; i++){
+      colorArray[i] = "trash" + global.themeForImages
+    }
+      this.setState({allSelected: !this.state.allSelected, doneDisabled : false})
+  }
 
+}
 removeFromUser(){
   imageUrls.splice(global.selectedBlockedUserIndex,1)
   blockedUserUids.splice(global.selectedBlockedUserIndex,1)
@@ -314,6 +357,7 @@ removeFromUser(){
 }
 
   render(){
+    var lang = language[global.lang]
     const spin = this.spinValue.interpolate({
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg']
@@ -330,7 +374,7 @@ removeFromUser(){
         whichScreen = {"BlockedUsers"}
         onPress = {()=> this.goBack()}
         isFilterVisible = {this.state.showFilter}
-        title = {"Blocked Users"}>
+        title = {lang.BlockedUsers}>
         </CustomHeader>
 
         <Animated.Image source={{uri: 'loading' + global.themeForImages}}
@@ -341,7 +385,6 @@ removeFromUser(){
       )
     }
     else{
-      if(this.state.editPressed){
         return(
           <View
           style={{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)" ,width: this.width, height: this.height, flex:1, flexDirection: "column"}}>
@@ -351,31 +394,20 @@ removeFromUser(){
           whichScreen = {"BlockedUsers"}
           onPress = {()=> this.goBack()}
           isFilterVisible = {this.state.showFilter}
-          title = {"Blocked Users"}>
+          title = {lang.BlockedUsers}>
           </CustomHeader>
-          <View style = {{borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
-          <TouchableOpacity
-            activeOpacity = {1}
-            style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-            onPress={()=>this.editButtonPressed()}
-            disabled = {false}>
 
-          <Text style = {{fontSize: 20, color: global.themeColor}}>
-          {this.state.editText}
-          </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            activeOpacity = {1}
-            disabled = {this.state.doneDisabled}
-            style={{opacity: this.state.doneDisabled ? 0 : 1, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-            onPress = {()=> this.donePress()}>
-          <Text style = {{fontSize: 20, color: global.themeColor}}>
-          Done
-          </Text>
-          </TouchableOpacity>
-
-          </View>
+          <EditBox
+          editButtonPressed = {()=>this.editButtonPressed()}
+          messageSelectAll = {()=> this.selectAll()}
+          messageDoneDisabled = {this.state.doneDisabled}
+          messageDonePress = {()=> this.donePress()}
+          editText = {this.state.editText}
+          allSelected = {this.state.allSelected}
+          messageArray = {noOfBlockedUsers == 0 ? [] : [1]}
+          whichScreen = {"left"}
+          editPressed = {this.state.editPressed}
+          />
 
           <FlatList
             style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
@@ -387,45 +419,6 @@ removeFromUser(){
 
 
         </View>
-
       );
-      }
-      else{
-        return(
-          <View
-          style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
-          <ModifiedStatusBar/>
-
-          <CustomHeader
-          whichScreen = {"BlockedUsers"}
-          isFilterVisible = {this.state.showFilter}
-          onPress = {()=> this.goBack()}
-          title = {"Blocked Users"}>
-          </CustomHeader>
-
-          <View style = {{opacity: noOfBlockedUsers == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
-          <TouchableOpacity
-            activeOpacity = {1}
-            style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-            onPress={()=>this.editButtonPressed()}
-            disabled = {noOfBlockedUsers == 0 ? true : false}>
-          <Text style = {{fontSize: 20, color: global.themeColor}}>
-          {this.state.editText}
-          </Text>
-          </TouchableOpacity>
-          </View>
-
-          <FlatList
-            style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
-            width: this.width,flex: 1, flexDirection: 'column'}}
-            renderItem = {()=>this.renderBlockedUserBoxes()}
-            data = { [{bos:"boş", key: "key"}]}
-            refreshing = {true}>
-          </FlatList>
-
-        </View>
-
-        );
-      }
     }
   }}

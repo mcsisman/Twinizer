@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageImage, InputToolbar, Send, Bubble, Time, GiftedChat } from 'react-native-gifted-chat';
+import { MessageImage, InputToolbar, Send, Bubble, Time, GiftedChat, LoadEarlier } from 'react-native-gifted-chat';
 import RNFetchBlob from 'rn-fetch-blob';
 import firebaseSvc from './FirebaseSvc';
 import auth from '@react-native-firebase/auth';
@@ -26,7 +26,7 @@ import ChatSendImgBottomBar from '../Components/Messaging/Chat/ChatImgSending/Ch
 import ChatSendImgTopBar from '../Components/Messaging/Chat/ChatImgSending/ChatSendImgTopBar'
 import CustomInputToolbar  from '../Components/Messaging/Chat/GiftedChat/CustomInputToolbar'
 import ChatHeader from '../Components/Messaging/Chat/Header/ChatHeader'
-
+import language from '../Utils/Languages/lang.json'
 import {Image,
    Text,
    View,
@@ -45,6 +45,8 @@ import {Image,
    Platform,
    Keyboard
   } from 'react-native';
+
+var lang = language[global.lang]
 var lastMsg = ""
 var lastSeenInterval;
 var localMessages = [];
@@ -98,6 +100,7 @@ export default class ChatScreen extends React.Component<Props> {
     firstTime = true
   }
   componentDidMount() {
+    lang = language[global.lang]
     this.keyboardDidShowListener = Keyboard.addListener("keyboardDidHide", this._keyboardDidHide);
     this.keyboardDidHideListener = Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
       this._subscribe = this.props.navigation.addListener('focus', async () => {
@@ -408,10 +411,20 @@ renderBubble (props) {
             imageProps={{key: this.state.reRender}}
         />)
 }
+renderLoadEarlier(props){
+  return(
+    <LoadEarlier
+      {...props}
+      label = {lang.LoadEarlierMessages}>
+    </LoadEarlier>
+  )
+}
 renderSend(props) {
       return (
           <Send
               {...props}
+              alwaysShowSend = {true}
+              label = {lang.Send}
               textStyle={{
                 color: global.themeColor
               }}
@@ -425,8 +438,8 @@ messengerBarContainer(props){
       <InputToolbar
         {...props}
         containerStyle={{
-          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
-          borderTopColor: "rgba(177,177,177,1)"}}>
+          backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(244,244,244,1)",
+          borderTopColor: "rgba(88,88,88,1)"}}>
       </InputToolbar>
     );
   };
@@ -497,7 +510,7 @@ async deleteMessage(message){
   AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
 }
 onLongPress(context, message) {
-  const options = ['Delete Message', 'Cancel'];
+  const options = [lang.DeleteMessage, lang.Cancel];
   const cancelButtonIndex = options.length - 1;
   context.actionSheet().showActionSheetWithOptions({
     options,
@@ -513,6 +526,7 @@ onLongPress(context, message) {
 }
 
 render() {
+  lang = language[global.lang]
   var renderKeyboardHeight;
     if(this.state.messages != undefined){
       var msgs = this.state.messages
@@ -554,13 +568,14 @@ render() {
             keyboardOpen = {this.state.keyboardOpen}
             keyboardHeight = {keyboardHeight}
             onChangeText = {(text) => this.setState({msgText: text})}
-            onPressSend = {()=>this.sendMsgWithImage(this.state.msgText)}/>
+            onPressSend = {()=>this.sendMsgWithImage(this.state.msgText)}
+            sendText = {lang.Send}/>
           <ImageUploadModal
           isVisible={this.state.isVisible1}
-          txtUploadPhoto = {global.langUploadPhoto}
+          txtUploadPhoto = {lang.UploadAPhoto}
           txtCancel = {global.langCancel}
-          txtTakePhoto = {global.langTakePhoto}
-          txtOpenLibrary = {global.langLibrary}
+          txtTakePhoto = {lang.Camera}
+          txtOpenLibrary = {lang.Library}
           onPressCancel = {()=>this.setState({ isVisible1: false}) }
           onPressCamera = {this.camera}
           onPressLibrary = {this.library}/>
@@ -583,6 +598,7 @@ render() {
           style = {{ position: 'absolute', height: Platform.OS === 'android' ? this.state.giftedChatHeight : this.height - this.statusBarHeaderTotalHeight,
           width: this.width, top: this.statusBarHeaderTotalHeight, right: 0}}>
           <GiftedChat
+          placeholder = {""}
           onLongPress={this.onLongPress}
           renderMessageImage={this.renderMessageImage}
           textInputStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
@@ -594,6 +610,7 @@ render() {
             loadEarlier = {true}
             renderTime = {this.renderTime}
             renderBubble={this.renderBubble}
+            renderLoadEarlier = {this.renderLoadEarlier}
             renderSend = {this.renderSend}
             renderAvatar={null}
           />
@@ -609,10 +626,10 @@ render() {
 
         <ImageUploadModal
         isVisible={this.state.isVisible1}
-        txtUploadPhoto = {global.langUploadPhoto}
+        txtUploadPhoto = {lang.UploadAPhoto}
         txtCancel = {global.langCancel}
-        txtTakePhoto = {global.langTakePhoto}
-        txtOpenLibrary = {global.langLibrary}
+        txtTakePhoto = {lang.Camera}
+        txtOpenLibrary = {lang.Library}
         onPressCancel = {()=>this.setState({ isVisible1: false}) }
         onPressCamera = {this.camera}
         onPressLibrary = {this.library}/>

@@ -36,6 +36,7 @@ import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 
 import ThemeSample from '../Components/Settings/ThemeSettings/ThemeSample'
 import OvalButton from '../Components/Common/OvalButton/OvalButton'
+import language from '../Utils/Languages/lang.json'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -43,7 +44,7 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
-
+var lang = language[global.lang]
 export default class ThemeSettingsScreen extends Component<{}>{
   constructor(props){
     super(props);
@@ -137,6 +138,7 @@ export default class ThemeSettingsScreen extends Component<{}>{
     AsyncStorage.setItem(auth().currentUser.uid + 'mode', mode)
   }
   render(){
+    var lang = language[global.lang]
     var emptyScreenHeight = (this.height - headerHeight - getStatusBarHeight()) - this.width*0.7 - this.width/8 - this.width*12/100
     const {navigate} = this.props.navigation;
     return(
@@ -148,7 +150,7 @@ export default class ThemeSettingsScreen extends Component<{}>{
       whichScreen = {"Theme Settings"}
       onPress = {()=> this.props.navigation.navigate("Settings")}
       isFilterVisible = {false}
-      title = "Theme Settings">
+      title = {lang.ThemeSettings}>
       </CustomHeader>
 
       <View
@@ -167,7 +169,7 @@ export default class ThemeSettingsScreen extends Component<{}>{
       borderBottomWidth = {0.5}
       borderTopLeftRadius = {12}
       color = {"rgba(241,51,18,1)"}
-      whichTheme = {"Original"}
+      whichTheme = {lang.Original}
       bottom = {this.width*0.35}
       right = {this.width*0.35}/>
 
@@ -179,7 +181,7 @@ export default class ThemeSettingsScreen extends Component<{}>{
       borderTopWidth = {0.5}
       borderBottomRightRadius = {12}
       color = {"rgba(228,186,51,1)"}
-      whichTheme = {"Yellow"}
+      whichTheme = {lang.Yellow}
       bottom = {0}
       right = {0}/>
 
@@ -191,7 +193,7 @@ export default class ThemeSettingsScreen extends Component<{}>{
       borderBottomWidth = {0.5}
       borderTopRightRadius = {12}
       color = {"rgba(77,120,204,1)"}
-      whichTheme = {"Blue"}
+      whichTheme = {lang.Blue}
       bottom = {this.width*0.35}
       right = {0}/>
 
@@ -204,7 +206,7 @@ export default class ThemeSettingsScreen extends Component<{}>{
       borderRightWidth = {0.5}
       borderBottomLeftRadius = {12}
       color = {"rgba(115,201,144,1)"}
-      whichTheme = {"Green"}
+      whichTheme = {lang.Green}
       bottom = {0}
       right = {this.width*0.35}/>
       </View>
@@ -221,7 +223,7 @@ export default class ThemeSettingsScreen extends Component<{}>{
       style={{justifyContent: 'center', position: 'absolute', width: this.width*7/8, height: this.width/8, bottom: 0, left: 0}}>
       <Text
         style = {{color: global.isDarkMode ? global.darkModeColors[3] : 'rgba(88,88,88,1)', fontSize: 18*this.width/360, left: this.width/20, position: "absolute" }}>
-        Enable Dark Mode
+        {lang.EnableDarkMode}
       </Text>
       </View>
 
@@ -238,7 +240,7 @@ export default class ThemeSettingsScreen extends Component<{}>{
       <OvalButton
       opacity = {1}
       backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}
-      title = "Apply"
+      title = {lang.Apply}
       position = "relative"
       textColor = {global.themeColor}
       onPress = { ()=> this.apply()}

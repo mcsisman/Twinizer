@@ -49,11 +49,11 @@ export default class FavoriteUserBox extends Component {
       <Animated.View
         style = {{left: this.props.left, borderTopWidth:1, borderBottomWidth:1, borderColor: global.isDarkMode ? global.darkModeColors[2] : 'rgba(128,128,128,0.3)' ,
         backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)", flexDirection: "row", flex:1, justifyContent: 'center',
-        width: this.width*19/16, paddingTop: 5, paddingBottom: 5}}>
+        width: this.width*19/16, height: this.width/3}}>
 
       <TouchableOpacity
       activeOpacity = {1}
-      style = {{alignItems: 'center', justifyContent: 'center', width: this.width*(3/16), height: this.width*2/9*(7/6)}}
+      style = {{alignItems: 'center', justifyContent: 'center', width: this.width*(3/16), height: this.width/3}}
       onPress = {this.props.trashOnPress}>
         <Image
         style={{width: this.width*(3/16)*(4/10), height: this.width*(3/16)*(4/10)*(328/302)}}
@@ -63,8 +63,9 @@ export default class FavoriteUserBox extends Component {
 
       <TouchableOpacity
       activeOpacity = {1}
-      style={{flex: 1, flexDirection: "row", paddingTop: 5, paddingBottom: 5, width: this.width}}
-      onPress={this.props.onPress}>
+      style={{flex: 1, flexDirection: "row", height: this.width/3, width: this.width}}
+      onPress={this.props.onPress}
+      disabled = {this.props.disabled}>
 
       <View
       style={{justifyContent: 'center', alignItems: "center", width: this.width/28, height: this.width*2/9*(7/6), bottom: 0, right: 0}}>
@@ -83,7 +84,7 @@ export default class FavoriteUserBox extends Component {
       </View>
 
       <View
-      style={{justifyContent: 'center', width: this.width*5/9 - this.width/28, height: this.width*2/9*(7/6), bottom: 0, left: 0}}>
+      style={{justifyContent: 'center', width: this.width*5/9 - this.width/28, height: this.width/3, bottom: 0, left: 0}}>
       <Text
         style = {{color: global.isDarkMode ? global.darkModeColors[3] : 'rgba(88,88,88,1)', fontSize: 18*this.width/360, left: this.width/20, position: "absolute" }}>
         {this.props.text}
@@ -91,7 +92,7 @@ export default class FavoriteUserBox extends Component {
       </View>
 
       <View
-      style={{justifyContent: 'center', alignItems: "center", position: 'absolute', width: this.width/9, height: this.width*2/9*(7/6), bottom: 0, right: 0}}>
+      style={{justifyContent: 'center', alignItems: "center", position: 'absolute', width: this.width/9, height: this.width/3, bottom: 0, right: 0}}>
       <Image source={{uri: 'settingsarrow' + global.themeForImages}}
       style={{opacity: 0.5, width: this.width/8*(4/10)*(61/110), height: this.width/8*(4/10)}}/>
       </View>

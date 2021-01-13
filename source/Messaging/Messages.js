@@ -43,7 +43,7 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
-
+var lang = language[global.lang]
 var testVar = 0
 var syncRef;
 var didSync = false
@@ -81,6 +81,7 @@ var usernameListener = []
 export default class MessagesScreen extends Component<{}>{
   constructor(props){
     super(props);
+    lang = language[global.lang]
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
@@ -116,10 +117,10 @@ export default class MessagesScreen extends Component<{}>{
     scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight()
   }
 componentDidMount(){
+  lang = language[global.lang]
   global.newMsgListenerArray = []
   global.currentProcessUidArray = {}
   this._subscribe = this.props.navigation.addListener('focus', async () => {
-    this.leftAnimation = new Animated.Value(-this.width*(3/16))
     global.fromChatOfUid = ""
     global.fromMessages = true
     scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight()
@@ -138,7 +139,11 @@ componentDidMount(){
   })
 
   this._subscribe = this.props.navigation.addListener('blur', async () => {
+    this.leftAnimation = new Animated.Value(0)
+    this.messageBoxAnimation("reset")
     this.spinAnimation()
+    this.resetTrashColors()
+    console.log("Buraya gelmiyürmü ")
     this.setState({editPressed: false, cancelPressed: false, editText: "Edit", messageBoxDisabled: false})
   })
 };
@@ -149,9 +154,16 @@ componentWillUnmount(){
 static navigationOptions = {
     header: null,
 };
-
-messageBoxAnimation(){
-  if(this.state.editText == "Cancel"){
+resetTrashColors(){
+  for( let  i = 0; i < requestColorArray.length; i++){
+    requestColorArray[i] = "trashgray"
+  }
+  for( let  i = 0; i < messageColorArray.length; i++){
+    messageColorArray[i] = "trashgray"
+  }
+}
+messageBoxAnimation(reset){ // reset is to reset the message box position when leaving the screen
+  if(this.state.editText == "Cancel" || reset == "reset"){
     Animated.timing(this.leftAnimation, {
       duration: 100,
       toValue: -this.width*(3/16),
@@ -159,7 +171,7 @@ messageBoxAnimation(){
       useNativeDriver: false,
     }).start()
   }
-  if(this.state.editText == "Edit"){
+  else if(this.state.editText == "Edit"){
     Animated.timing(this.leftAnimation, {
       duration: 100,
       toValue: 0,
@@ -604,7 +616,7 @@ getMessagesData = async callback =>{
             data = localMsgs[localMsgs.length - 1]
           }
           else{
-            data = { c: "notime", id: "emptymsgid", _id: "emptymsgid", text: "No message", user:{ _id: auth().currentUser.uid, r: uidArray[count]}, image: "" }
+            data = { c: "notime", id: "emptymsgid", _id: "emptymsgid", text: lang.NoMessage, user:{ _id: auth().currentUser.uid, r: uidArray[count]}, image: "" }
           }
       }
       else{
@@ -1122,7 +1134,7 @@ getMsgTime(timestamp){
         day = "0" + day
       if(month < 10)
         month = "0" + month
-      return "Yesterday";
+      return lang.Yesterday;
     }
     else{
       if(minutes < 10)
@@ -1145,7 +1157,7 @@ renderMessageBoxes(){
       <View style = {{justifyContent: "center", opacity: 0.7, alignItems: 'center', width: this.width, height: scrollViewHeight/4}}>
       <Text
         style = {{fontSize: 25*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" }}>
-        No messages, sorry...
+        {lang.NoRequests}
       </Text>
       </View>
       </View>
@@ -1210,7 +1222,7 @@ renderRequestBoxes(){
       <View style = {{justifyContent: "center", opacity: 0.7, alignItems: 'center', width: this.width, height: scrollViewHeight/4}}>
       <Text
         style = {{fontSize: 25*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
-        No requests, sorry...
+        {lang.NoRequests}
       </Text>
       </View>
       </View>
@@ -1287,6 +1299,22 @@ requestTrashButtonPressed(count){
   else{
     requestColorArray[count] = "trashgray"
   }
+  var trashGrayCount = 0;
+  var trashColoredCount = 0;
+  for(let i = 0; i < requestColorArray.length; i++){
+    if(requestColorArray[i] == "trashgray"){
+      trashGrayCount++;
+    }
+    else{
+      trashColoredCount++;
+    }
+  }
+  if(trashGrayCount == requestColorArray.length){
+    this.setState({allSelected: false})
+  }
+  if(trashColoredCount == requestColorArray.length){
+    this.setState({allSelected: true})
+  }
   this.arrangeDoneColor()
 }
 
@@ -1296,6 +1324,22 @@ messageTrashButtonPressed(count){
   }
   else{
     messageColorArray[count] = "trashgray"
+  }
+  var trashGrayCount = 0;
+  var trashColoredCount = 0;
+  for(let i = 0; i < messageColorArray.length; i++){
+    if(messageColorArray[i] == "trashgray"){
+      trashGrayCount++;
+    }
+    else{
+      trashColoredCount++;
+    }
+  }
+  if(trashGrayCount == messageColorArray.length){
+    this.setState({allSelected: false})
+  }
+  if(trashColoredCount == messageColorArray.length){
+    this.setState({allSelected: true})
   }
   this.arrangeDoneColor()
 }
@@ -1455,6 +1499,21 @@ messageSelectAll(){
   }
 
 }
+requestSelectAll(){
+  if(this.state.allSelected){
+    for( let  i = 0; i < requestArray.length; i++){
+      requestColorArray[i] = "trashgray"
+    }
+      this.setState({allSelected: !this.state.allSelected, requestDoneDisabled : true})
+  }
+  else{
+    for( let  i = 0; i < requestArray.length; i++){
+      requestColorArray[i] = "trash" + global.themeForImages
+    }
+      this.setState({allSelected: !this.state.allSelected, requestDoneDisabled : false})
+  }
+
+}
 render(){
   var lang = language[global.lang]
   const {navigate} = this.props.navigation;
@@ -1475,7 +1534,7 @@ render(){
         editPressed = {this.state.editText}
         onPress = {()=> this.switchButtonPressed(this.state.whichScreen == "left" ? "right" : "left")}
         whichScreen = {"Messages"}
-        title = {this.state.whichScreen == "left" ? "Messages" : "Requests"}/>
+        title = {this.state.whichScreen == "left" ? lang.Messages : lang.Requests}/>
 
         <Animated.Image source={{uri: 'loading' + global.themeForImages}}
           style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
@@ -1523,7 +1582,7 @@ render(){
       isVisible = {this.state.deleteModalVisible}
       onPressClear = {this.state.whichScreen == "left" ? ()=> this.clearMessagesPressed() : ()=> this.clearRequestPressed()}
       onPressDelete = {this.state.whichScreen == "left" ? ()=> this.deleteMessagesPressed() : ()=> this.deleteRequestPressed()}
-      txtAlert = {""}/>
+      txtAlert = {lang.MessagesDeleteInfo}/>
 
       </View>
     )

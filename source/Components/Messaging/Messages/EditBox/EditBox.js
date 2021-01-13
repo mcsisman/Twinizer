@@ -65,7 +65,7 @@ export default class EditBox extends Component {
             onPress={this.props.editButtonPressed}
             disabled = {false}>
 
-          <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
+          <Text style = {{fontSize: 17*this.width/360, color: global.themeColor}}>
           {this.props.editText == "Edit" ? lang.Edit : lang.Cancel}
           </Text>
           </TouchableOpacity>
@@ -74,7 +74,7 @@ export default class EditBox extends Component {
             activeOpacity = {1}
             style={{width: this.width/2, justifyContent: 'center', alignItems: 'center',}}
             onPress = {this.props.messageSelectAll}>
-          <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
+          <Text style = {{fontSize: 17*this.width/360, color: global.themeColor}}>
           {this.props.allSelected ? lang.DeselectAll : lang.SelectAll}
           </Text>
           </TouchableOpacity>
@@ -84,7 +84,7 @@ export default class EditBox extends Component {
             disabled = {this.props.messageDoneDisabled}
             style={{opacity: this.props.messageDoneDisabled ? 0 : 1, justifyContent: 'center', alignItems: 'center', width: this.width/4}}
             onPress = {this.props.messageDonePress}>
-          <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
+          <Text style = {{fontSize: 17*this.width/360, color: global.themeColor}}>
           {lang.Done}
           </Text>
           </TouchableOpacity>
@@ -100,7 +100,7 @@ export default class EditBox extends Component {
             onPress={this.props.editButtonPressed}
             disabled = {false}>
 
-          <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
+          <Text style = {{fontSize: 17*this.width/360, color: global.themeColor}}>
           {this.props.editText == "Edit" ? lang.Edit : lang.Cancel}
           </Text>
           </TouchableOpacity>
@@ -109,16 +109,17 @@ export default class EditBox extends Component {
             activeOpacity = {1}
             style={{ width: this.width/2, justifyContent: 'center', alignItems: 'center'}}
             onPress = {this.props.requestSelectAll}>
-          <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
+          <Text style = {{fontSize: 17*this.width/360, color: global.themeColor}}>
           {this.props.allSelected ? lang.DeselectAll : lang.SelectAll}
           </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
+            activeOpacity = {1}
             disabled = {this.props.requestDoneDisabled}
             style={{opacity: this.props.requestDoneDisabled ? 0 : 1, justifyContent: 'center', alignItems: 'center', width: this.width/4}}
             onPress = {this.props.requestDonePress}>
-          <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
+          <Text style = {{fontSize: 17*this.width/360, color: global.themeColor}}>
           {lang.Done}
           </Text>
           </TouchableOpacity>
@@ -138,7 +139,7 @@ export default class EditBox extends Component {
             onPress={this.props.editButtonPressed}
             disabled = {this.props.messageArray.length == 0 ? true : false}>
 
-          <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
+          <Text style = {{fontSize: 17*this.width/360, color: global.themeColor}}>
           {this.props.editText == "Edit" ? lang.Edit : lang.Cancel}
           </Text>
           </TouchableOpacity>
@@ -154,7 +155,7 @@ export default class EditBox extends Component {
             onPress={this.props.editButtonPressed}
             disabled = {this.props.requestArray.length == 0 ? true : false}>
 
-          <Text style = {{fontSize: 20*this.width/360, color: global.themeColor}}>
+          <Text style = {{fontSize: 17*this.width/360, color: global.themeColor}}>
           {this.props.editText == "Edit" ? lang.Edit : lang.Cancel}
           </Text>
           </TouchableOpacity>

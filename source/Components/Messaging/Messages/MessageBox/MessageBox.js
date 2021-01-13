@@ -12,6 +12,7 @@ import {
   Animated,
   Easing
 } from 'react-native';
+import language from '../../../../Utils/Languages/lang.json'
 
 var leftAnim = new Animated.Value(-this.width*(3/16))
 export default class MessageBox extends Component {
@@ -40,6 +41,7 @@ export default class MessageBox extends Component {
 
 
   render(){
+    var lang = language[global.lang]
     var theColor;
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
@@ -56,7 +58,7 @@ export default class MessageBox extends Component {
     return(
       <Animated.View
         style = {{left: this.props.left, alignItems: 'center', height: this.msgBoxHeight, width: this.width + this.width*(3/16),
-        borderBottomWidth: 1 ,borderBottomColor: 'rgba(181,181,181,0.7)', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", flexDirection: "row", flex: 1}}>
+        borderBottomWidth: 1 ,borderBottomColor: 'rgba(181,181,181,0.7)', backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)", flexDirection: "row", flex: 1}}>
 
         <TouchableOpacity
         activeOpacity = {1}
@@ -107,7 +109,7 @@ export default class MessageBox extends Component {
 
           <Text
           numberOfLines={2}
-          style = {{fontStyle: messageText == "No message" ? "italic" : "normal" ,fontSize: 16*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(128,128,128,1)", width: this.props.isPhoto ? this.width*36/80 : this.width*45/80}}>
+          style = {{fontStyle: messageText == lang.NoMessage ? "italic" : "normal" ,fontSize: 16*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(128,128,128,1)", width: this.props.isPhoto ? this.width*36/80 : this.width*45/80}}>
             {messageText}
           </Text>
         </View>
@@ -117,6 +119,8 @@ export default class MessageBox extends Component {
       <View
         style = {{ alignItems: 'center', justifyContent: 'center', width: this.width*(3/16), height: this.msgBoxHeight}}>
         <Text
+        adjustsFontSizeToFit={true}
+        numberOfLines={1}
         style = {{fontSize: 14*this.width/360, top: this.width*2/100, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(128,128,128,1)", position: 'absolute'}}>
           {this.props.lastMsgTime}
         </Text>

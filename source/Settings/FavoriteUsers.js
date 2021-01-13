@@ -32,7 +32,8 @@ import ProfileFavUserScreen from './ProfileFavUser';
 import CustomHeader from '../Components/Common/Header/CustomHeader'
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 import FavoriteUserBox from '../Components/Settings/FavoriteUsers/FavoriteUserBox'
-
+import EditBox from '../Components/Messaging/Messages/EditBox/EditBox'
+import language from '../Utils/Languages/lang.json'
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
 }
@@ -46,12 +47,14 @@ var noOfFavUsers;
 var imageUrls = [];
 var colorArray = [];
 var focusedtoThisScreen = false;
+var lang = language[global.lang]
 export default class FavoriteUsersScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
+      allSelected: false,
       loadingDone: false,
       editPressed: false,
       favoriteBoxDisabled: false,
@@ -68,6 +71,7 @@ export default class FavoriteUsersScreen extends Component<{}>{
       header: null,
   };
   componentDidMount(){
+    lang = language[global.lang]
     this.setState({loadingDone: false})
     this.spinAnimation()
     this._subscribe = this.props.navigation.addListener('focus', async () => {
@@ -103,8 +107,8 @@ export default class FavoriteUsersScreen extends Component<{}>{
         }
       )).start()
   }
-  favoriteBoxAnimation(){
-    if(this.state.editText == "Cancel"){
+  favoriteBoxAnimation(reset){
+    if(this.state.editText == "Cancel" || reset == "reset"){
       Animated.timing(this.leftAnimation, {
         duration: 200,
         toValue: -this.width*(3/16),
@@ -112,7 +116,7 @@ export default class FavoriteUsersScreen extends Component<{}>{
         useNativeDriver: false,
       }).start()
     }
-    if(this.state.editText == "Edit"){
+    else if(this.state.editText == "Edit"){
       Animated.timing(this.leftAnimation, {
         duration: 200,
         toValue: 0,
@@ -201,6 +205,7 @@ listenerFunc = async (snap, i, conversationUid, firstTotal) => {
   }
 
   renderFavoriteUserBoxes(){
+      var lang = language[global.lang]
       var scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight();
       var boxes = [];
       if(noOfFavUsers == 0){
@@ -210,7 +215,7 @@ listenerFunc = async (snap, i, conversationUid, firstTotal) => {
           <View style = {{opacity: 0.7, alignItems: 'center', width: this.width, top: scrollViewHeight/4,  height: scrollViewHeight/4}}>
           <Text
             style = {{fontSize: 25, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
-            No favorite users
+            {lang.NoFavoriteUsers}
           </Text>
           </View>
           </View>
@@ -236,6 +241,22 @@ listenerFunc = async (snap, i, conversationUid, firstTotal) => {
 }
 
 donePress(){
+  var alertMsg = lang.FavUserDeleteAlert;
+  Alert.alert(
+  lang.Warning,
+  alertMsg ,
+    [
+      {
+        text: lang.NO,
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: lang.YES, onPress: () => this.deleteFavUser()},
+    ],
+    {cancelable: false},
+  );
+}
+deleteFavUser(){
   var limit = noOfFavUsers
   for(let i = limit-1; i >= 0; i--){
     if(colorArray[i] == "trash" + global.themeForImages){
@@ -246,16 +267,17 @@ donePress(){
       favoriteUserUsernames.splice(i,1)
       noOfFavUsers = noOfFavUsers - 1
     }
+
   }
   global.removedFromFavList = true
+  colorArray = []
   for( let i = 0; i < noOfFavUsers; i++){
     colorArray[i] = "trashgray"
   }
   this.setState({favoriteBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
-  this.favoriteBoxAnimation()
+  this.favoriteBoxAnimation("reset")
   AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUserUids))
 }
-
 arrangeDoneColor(){
     var flag1 = false
     for(let i = 0; i < colorArray.length; i++){
@@ -278,9 +300,41 @@ async trashButtonPressed(i){
   else{
     colorArray[i] = "trashgray"
   }
+  var trashGrayCount = 0;
+  var trashColoredCount = 0;
+  console.log("COLOR ARRAY:", colorArray)
+
+  for(let i = 0; i < colorArray.length; i++){
+    if(colorArray[i] == "trashgray"){
+      trashGrayCount++;
+    }
+    else{
+      trashColoredCount++;
+    }
+  }
+  if(trashColoredCount == colorArray.length){
+    this.setState({allSelected: true})
+  }
+  if(trashGrayCount == colorArray.length){
+    this.setState({allSelected: false})
+  }
   this.arrangeDoneColor()
 }
+selectAll(){
+  if(this.state.allSelected){
+    for( i = 0; i < colorArray.length; i++){
+      colorArray[i] = "trashgray"
+    }
+      this.setState({allSelected: !this.state.allSelected, doneDisabled : true})
+  }
+  else{
+    for( i = 0; i < colorArray.length; i++){
+      colorArray[i] = "trash" + global.themeForImages
+    }
+      this.setState({allSelected: !this.state.allSelected, doneDisabled : false})
+  }
 
+}
 goBack(){
   focusedtoThisScreen = false
   global.selectedFavUserIndex = null
@@ -319,6 +373,7 @@ removeFromUser(){
 }
 
   render(){
+    var lang = language[global.lang]
     const spin = this.spinValue.interpolate({
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg']
@@ -335,7 +390,7 @@ removeFromUser(){
         whichScreen = {"FavoriteUsers"}
         onPress = {()=> this.goBack()}
         isFilterVisible = {this.state.showFilter}
-        title = {"Favorite Users"}>
+        title = {lang.FavoriteUsers}>
         </CustomHeader>
 
         <Animated.Image source={{uri: 'loading' + global.themeForImages}}
@@ -346,7 +401,6 @@ removeFromUser(){
       )
     }
     else{
-      if(this.state.editPressed){
         return(
           <View
           style={{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)" ,width: this.width, height: this.height, flex:1, flexDirection: "column"}}>
@@ -356,31 +410,20 @@ removeFromUser(){
           whichScreen = {"FavoriteUsers"}
           onPress = {()=> this.goBack()}
           isFilterVisible = {this.state.showFilter}
-          title = {"Favorite Users"}>
+          title = {lang.FavoriteUsers}>
           </CustomHeader>
-          <View style = {{borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
-          <TouchableOpacity
-            activeOpacity = {1}
-            style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-            onPress={()=>this.editButtonPressed()}
-            disabled = {false}>
 
-          <Text style = {{fontSize: 20, color: global.themeColor}}>
-          {this.state.editText}
-          </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            activeOpacity = {1}
-            disabled = {this.state.doneDisabled}
-            style={{opacity: this.state.doneDisabled ? 0 : 1, position: "absolute", right: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-            onPress = {()=> this.donePress()}>
-          <Text style = {{fontSize: 20, color: global.themeColor}}>
-          Done
-          </Text>
-          </TouchableOpacity>
-
-          </View>
+          <EditBox
+          editButtonPressed = {()=>this.editButtonPressed()}
+          messageSelectAll = {()=> this.selectAll()}
+          messageDoneDisabled = {this.state.doneDisabled}
+          messageDonePress = {()=> this.donePress()}
+          editText = {this.state.editText}
+          allSelected = {this.state.allSelected}
+          messageArray = {noOfFavUsers == 0 ? [] : [1]}
+          whichScreen = {"left"}
+          editPressed = {this.state.editPressed}
+          />
 
           <FlatList
             style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
@@ -390,47 +433,7 @@ removeFromUser(){
             refreshing = {true}>
           </FlatList>
 
-
         </View>
-
       );
-      }
-      else{
-        return(
-          <View
-          style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
-          <ModifiedStatusBar/>
-
-          <CustomHeader
-          whichScreen = {"FavoriteUsers"}
-          isFilterVisible = {this.state.showFilter}
-          onPress = {()=> this.goBack()}
-          title = {"Favorite Users"}>
-          </CustomHeader>
-
-          <View style = {{opacity: noOfFavUsers == 0 ? 0 : 1, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', height: this.width/9, width: this.width, justifyContent: "center"}}>
-          <TouchableOpacity
-            activeOpacity = {1}
-            style={{position: "absolute", left: 0, justifyContent: 'center', alignItems: 'center', paddingLeft: 15, paddingRight: 15,}}
-            onPress={()=>this.editButtonPressed()}
-            disabled = {noOfFavUsers == 0 ? true : false}>
-          <Text style = {{fontSize: 20, color: global.themeColor}}>
-          {this.state.editText}
-          </Text>
-          </TouchableOpacity>
-          </View>
-
-          <FlatList
-            style = {{ height: this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight(),
-            width: this.width,flex: 1, flexDirection: 'column'}}
-            renderItem = {()=>this.renderFavoriteUserBoxes()}
-            data = { [{bos:"boş", key: "key"}]}
-            refreshing = {true}>
-          </FlatList>
-
-        </View>
-
-        );
-      }
     }
   }}

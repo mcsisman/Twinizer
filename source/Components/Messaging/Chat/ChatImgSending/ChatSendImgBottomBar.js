@@ -79,7 +79,7 @@ export default class ChatSendImgBottomBar extends Component {
         style={{height: this.width*0.87/10,paddingLeft: 10, paddingRight: 10,  fontSize: 15*(this.width/360) , paddingTop: 3.5, paddingBottom: 3.5}}
 
         placeholderTextColor='rgba(0,0,0,0.5)'
-        placeholder= {"Type your message"}
+        placeholder= {""}
         onChangeText={this.props.onChangeText}>
       </TextInput>
       </View>
@@ -89,12 +89,14 @@ export default class ChatSendImgBottomBar extends Component {
       <TouchableOpacity
       activeOpacity = {1}
       onPress = {this.props.onPressSend}
-      style={{paddingLeft: 12, paddingRight: 12, borderBottomRightRadius: 36, borderBottomLeftRadius:36, height: "87%",
+      style={{paddingLeft: 8, paddingRight: 8, borderBottomRightRadius: 36, borderBottomLeftRadius:36, height: "87%",
         borderTopLeftRadius:36, borderTopRightRadius:36, justifyContent:"center", alignItems: "center", backgroundColor: global.themeColor,
         borderColor: global.themeColor, borderWidth: 1}}>
       <Text
-      style = {{fontSize: 15*(this.width/360), fontWeight: "bold",  color: "white"}}>
-      Send
+      adjustsFontSizeToFit={true}
+      numberOfLines={1}
+      style = {{fontSize: 14*(this.width/360), fontWeight: "bold",  color: "white"}}>
+      {this.props.sendText}
       </Text>
       </TouchableOpacity>
       </View>
