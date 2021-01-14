@@ -47,7 +47,6 @@ export default class FilterModal extends Component {
  }
   render(){
     var lang = language[global.lang]
-    console.log("NEEEEEEE:", lang.SelectYourCountry)
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     return(
