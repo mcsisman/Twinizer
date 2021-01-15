@@ -154,7 +154,7 @@ Login = (email, password) => {
           placeholder={lang.Email}
           keyboardType= "email-address"
 
-          style={{paddingLeft: 0, paddingBottom: 0, fontSize: 20*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
+          style={{paddingLeft: 0, paddingBottom: 0, fontSize: 17*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
            borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
            onChangeText={(text) => this.setState({isim: text})}>
           </TextInput>
@@ -166,7 +166,7 @@ Login = (email, password) => {
           placeholder={lang.Password}
           secureTextEntry
 
-          style={{paddingLeft: 0, paddingBottom: 0, fontSize: 20*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
+          style={{paddingLeft: 0, paddingBottom: 0, fontSize: 17*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
            backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
            onChangeText={(text) => this.setState({sifre: text})}>
         </TextInput>
@@ -178,7 +178,7 @@ Login = (email, password) => {
         style={{justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(255,255,255, 0)',
           paddingLeft: 15, paddingRight: 15, height: (this.height*6)/100, flex:1}}
         onPress={()=>this.check() }>
-        <Text style={{textAlign: 'center', color: 'white', fontSize: 20*(this.width/360)}}>
+        <Text style={{textAlign: 'center', color: 'white', fontSize: 17*(this.width/360)}}>
           {lang.Login}
         </Text>
         </TouchableOpacity>

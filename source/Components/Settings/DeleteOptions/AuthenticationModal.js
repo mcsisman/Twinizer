@@ -101,9 +101,9 @@ export default class AuthenticationModal extends Component {
 
             <TouchableOpacity
             activeOpacity = {1}
-            style={{justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(255,255,255, 0)',
+            style={{justifyContent: 'center', position: 'absolute',
               paddingLeft: 15, paddingRight: 15, height: (this.height*6)/100, flex:1, bottom: (this.height*15)/100}}
-             onPress={()=>this.props.onPressEnter}>
+             onPress={this.props.onPressEnter}>
              <Text style={{textAlign: 'center', color: 'white',   fontSize: 18*(this.width/360)}}>
              Enter
             </Text>

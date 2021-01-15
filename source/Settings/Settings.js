@@ -72,16 +72,17 @@ export default class SettingsScreen extends Component<{}>{
     return "TESTTTT"
   }
   async onPressLogout(){
+    var lang = language[global.lang]
     Alert.alert(
     '',
-    "Are you sure you want to logout?" ,
+    lang.LogoutSure ,
     [
       {
-        text: 'No',
+        text: lang.NO,
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      {text: 'Yes', onPress: async () => await this.onPressLogoutOk()},
+      {text: lang.YES, onPress: async () => await this.onPressLogoutOk()},
     ],
     {cancelable: true},
   );

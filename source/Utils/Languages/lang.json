@@ -1,6 +1,8 @@
 {
   "langEN":
   {
+    "PlsCheckEmail": "We've sent a password reset link to your e-mail.",
+    "LogoutSure": "Are you sure you want to log out?",
     "FavUserPt1": "Are you sure you want to add ",
     "FavUserPt2": " to favorites?",
     "UnblockUserPt1": "Are you sure you want to unblock",
@@ -40,7 +42,7 @@
     "PlsEnterUsername": "Please enter your username.",
     "PlsEnterEmail": "Please enter your email address",
     "PasswordCharacter": "The password must be at least 6 characters.",
-    "PasswordMatch": "Your password and confirmation password does not match.",
+    "PasswordMatch": "Your password and confirmation password don't match.",
 
     "CompleteYourProfile": "Complete Your Profile",
     "PleaseEnterYourInformation": "Please Enter Your Information",
@@ -146,6 +148,8 @@
   },
   "langTR":
   {
+    "PlsCheckEmail": "E-posta adresinize şifre sıfırlama bağlantısı gönderildi.",
+    "LogoutSure": "Çıkış yapmak istediğinize emin misiniz?",
     "FavUserPt1": "",
     "FavUserPt2": " adlı kullanıcıyı favorilere eklemek istediğinize emin misiniz?",
     "UnblockUserPt1": "",
@@ -172,7 +176,7 @@
     "PlsTryAgain": "Lütfen Tekrar Deneyin",
     "WrongEmailPassword": "Hatalı e-posta adresi veya şifre girdiniz!",
 
-    "SendEmail": "Email Gönder",
+    "SendEmail": "E-POSTA GÖNDER",
     "Username": "kullanıcı adı",
     "ConfirmPassword": "şifreyi onayla",
     "Create": "OLUŞTUR",
@@ -184,7 +188,7 @@
     "PlsEnterUsername": "Lütfen kullanıcı adınızı giriniz.",
     "PlsEnterEmail": "Lütfen e-posta adresinizi giriniz.",
     "PasswordCharacter": "Şifreniz en az 6 karakter olmalı.",
-    "PasswordMatch": "Şifreleriniz birbiriyle aynı olmalı.",
+    "PasswordMatch": "Onay şifrenizin doğru olduğundan emin olun",
 
     "CompleteYourProfile": "Profilini Tamamla",
     "PleaseEnterYourInformation": "Lütfen Bilgilerini Gir",
