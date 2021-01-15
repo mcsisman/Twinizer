@@ -364,7 +364,7 @@ renderHistoryBoxes(){
         <View style = {{flex: 1, flexDirection: "column", width: this.width, height: scrollViewHeight}}>
         <View style = {{opacity: 0.7, alignItems: 'center', width: this.width, height: scrollViewHeight/4}}>
         <Text
-          style = {{fontSize: 25*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
+          style = {{fontSize: 20*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
           {lang.NoRecentActivity}
         </Text>
         </View>
@@ -394,6 +394,7 @@ renderHistoryBoxes(){
     return boxes;
   }
 render(){
+  var lang = language[global.lang]
   const spin = this.spinValue.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg']
@@ -409,7 +410,7 @@ render(){
       <CustomHeader
       whichScreen = {"History"}
       isFilterVisible = {this.state.showFilter}
-      title = {"History"}>
+      title = {lang.History}>
       </CustomHeader>
 
       <Animated.Image source={{uri: 'loading' + global.themeForImages}}

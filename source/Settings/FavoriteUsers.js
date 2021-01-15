@@ -214,7 +214,7 @@ listenerFunc = async (snap, i, conversationUid, firstTotal) => {
 
           <View style = {{opacity: 0.7, alignItems: 'center', width: this.width, top: scrollViewHeight/4,  height: scrollViewHeight/4}}>
           <Text
-            style = {{fontSize: 25, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
+            style = {{fontSize: 20*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
             {lang.NoFavoriteUsers}
           </Text>
           </View>

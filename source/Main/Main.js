@@ -135,16 +135,7 @@ constructor(props){
       imagePath: null,
       backgroundOpacity: 0.2,
       swipeableDisabled: true,
-      photoHeight2: global.width*(5/10)*(7/6),
-      photoWidth2: global.width*(5/10),
-      test: global.width*((12.5+2490)/10),
-      photoRight0: global.width*((24+2490)/10),
-      photoRight1: global.width*((19+2490)/10),
-      photoRight2: global.width*((12.5+2490)/10),
-      photoRight3: global.width*((9+2490)/10),
-      photoRight4: global.width*((4+2490)/10),
-      photoRight5: global.width*((-1+2490)/10),
-      photoTop2: 0,
+      swipeableContentRight: global.width*((-1+2490)/10),
       uri0: null,
       uri1: null,
       uri2: null,
@@ -180,9 +171,9 @@ constructor(props){
     this.photoRes = 7/6
     this.inSearchDone = false
 
+    this.emptyWidthAnimation = new Animated.Value(global.width*(1.5/10))
     this.widthAnimation = new Animated.Value(global.width*(5/10))
     this.heightAnimation = new Animated.Value(global.width*(5/10)*(7/6))
-    this.topAnimation = new Animated.Value(0)
     this.spinValue = new Animated.Value(0)
     var test = "xxx"
   }
@@ -372,8 +363,8 @@ async setSearchPhotoFromHistory(uri){
 swipeStart(){
   if(!this.state.swipeableDisabled){
     this.widthAnimation.setValue(global.width*(5/10))
+    this.emptyWidthAnimation.setValue(global.width*(1.5/10))
     this.heightAnimation.setValue(global.width*(5/10)*(7/6))
-    this.topAnimation.setValue(0)
     Animated.parallel([
         Animated.timing(this.widthAnimation, {
           duration: 200,
@@ -389,9 +380,9 @@ swipeStart(){
           useNativeDriver: false
         }
       ),
-        Animated.timing(this.topAnimation, {
+        Animated.timing(this.emptyWidthAnimation, {
           duration: 200,
-          toValue: global.width*(7/40),
+          toValue: global.width*(3/10),
           easing: Easing.elastic(0.5),
           useNativeDriver: false
       }
@@ -399,7 +390,6 @@ swipeStart(){
 
   ]).start(),
     this.setState({
-  photoRight2: this.state.photoRight3 + this.width*(5/10),
   messageButtonDisabled: true,
   messageButtonOpacity: 0})
   }
@@ -420,14 +410,13 @@ swipeRelease(){
         global.flag7 = false; //Right D1
         global.flag8 = false; //Right D2
         this.setState({
-          photoRight2: this.state.test,
           messageButtonDisabled: false,
           messageButtonOpacity: 1
           })
 
           this.widthAnimation.setValue(global.width*(2/10))
+          this.emptyWidthAnimation.setValue(global.width*(3/10))
           this.heightAnimation.setValue(global.width*(2/10)*(7/6))
-          this.topAnimation.setValue(global.width*(7/40))
           Animated.parallel([
               Animated.timing(this.widthAnimation, {
                 duration: 300,
@@ -443,9 +432,9 @@ swipeRelease(){
                 useNativeDriver: false
               }
             ),
-              Animated.timing(this.topAnimation, {
+              Animated.timing(this.emptyWidthAnimation, {
                 duration: 300,
-                toValue: 0,
+                toValue: global.width*(1.5/10),
                 easing: Easing.elastic(0.5),
                 useNativeDriver: false
             }
@@ -545,8 +534,8 @@ leftActionComplete(){
   global.flag8 = false; //Right D2
   global.leftD2beforeA1 = 0;
   this.widthAnimation.setValue(global.width*(2/10))
+  this.emptyWidthAnimation.setValue(global.width*(3/10))
   this.heightAnimation.setValue(global.width*(2/10)*(7/6))
-  this.topAnimation.setValue(global.width*(7/40))
   Animated.parallel([
       Animated.timing(this.widthAnimation, {
         duration: 200,
@@ -562,9 +551,9 @@ leftActionComplete(){
         useNativeDriver: false
       }
     ),
-      Animated.timing(this.topAnimation, {
+      Animated.timing(this.emptyWidthAnimation, {
         duration: 200,
-        toValue: 0,
+        toValue: global.width*(1.5/10),
         easing: Easing.elastic(0.5),
         useNativeDriver: false
     }
@@ -579,14 +568,7 @@ leftActionComplete(){
     this.releasedAfterLeftD2 = false
     this.releasedAfterRightD2 = false
     this.setState({
-    photoWidth2: global.width*(5/10), photoHeight2: global.width*(5/10)*(7/6), photoTop2: 0,
-    test: this.state.test + this.width*(10/10),
-    photoRight0: this.state.photoRight0 + this.width*(10/10),
-    photoRight1: this.state.photoRight1 + this.width*(10/10),
-    photoRight2: this.state.test  + this.width*(10/10),
-    photoRight3: this.state.photoRight3 + this.width*(10/10),
-    photoRight4: this.state.photoRight4 + this.width*(10/10),
-    photoRight5: this.state.photoRight5 + this.width*(10/10),
+    swipeableContentRight: this.state.swipeableContentRight + this.width*(10/10),
     uri5: this.state.uri3,
     uri4: this.state.uri2,
     uri3: this.state.uri1,
@@ -613,14 +595,7 @@ leftActionComplete(){
       this.releasedAfterLeftD2 = false
       this.releasedAfterRightD2 = false
       this.setState({
-      photoWidth2: global.width*(5/10), photoHeight2: global.width*(5/10)*(7/6), photoTop2: 0,
-      test: this.state.test + this.width*(5/10),
-      photoRight0: this.state.photoRight0 + this.width*(5/10),
-      photoRight1: this.state.photoRight1 + this.width*(5/10),
-      photoRight2: this.state.test  + this.width*(5/10),
-      photoRight3: this.state.photoRight3 + this.width*(5/10),
-      photoRight4: this.state.photoRight4 + this.width*(5/10),
-      photoRight5: this.state.photoRight5 + this.width*(5/10),
+      swipeableContentRight: this.state.swipeableContentRight + this.width*(5/10),
       uri5: this.state.uri4,
       uri4: this.state.uri3,
       uri3: this.state.uri2,
@@ -654,8 +629,8 @@ async rightActionComplete(){
   console.log("Swipe Count:", global.swipeCount)
   global.rightD2beforeA1 = 0;
   this.widthAnimation.setValue(global.width*(2/10))
+  this.emptyWidthAnimation.setValue(global.width*(3/10))
   this.heightAnimation.setValue(global.width*(2/10)*(7/6))
-  this.topAnimation.setValue(global.width*(7/40))
   Animated.parallel([
       Animated.timing(this.widthAnimation, {
         duration: 200,
@@ -671,9 +646,9 @@ async rightActionComplete(){
         useNativeDriver: false
       }
     ),
-      Animated.timing(this.topAnimation, {
+      Animated.timing(this.emptyWidthAnimation, {
         duration: 200,
-        toValue: 0,
+        toValue: global.width*(1.5/10),
         easing: Easing.elastic(0.5),
         useNativeDriver: false
     }
@@ -687,14 +662,7 @@ async rightActionComplete(){
     this.releasedAfterLeftD2 = false
     this.releasedAfterRightD2 = false
     this.setState({
-    photoWidth2: global.width*(5/10), photoHeight2: global.width*(5/10)*(7/6), photoTop2: 0,
-    test: this.state.test - this.width*(10/10),
-    photoRight0: this.state.photoRight0 - this.width*(10/10),
-    photoRight1: this.state.photoRight1 - this.width*(10/10),
-    photoRight2: this.state.test - this.width*(10/10),
-    photoRight3: this.state.photoRight3 - this.width*(10/10),
-    photoRight4: this.state.photoRight4 - this.width*(10/10),
-    photoRight5: this.state.photoRight5 - this.width*(10/10),
+    swipeableContentRight: this.state.swipeableContentRight - this.width*(10/10),
     uri0: this.state.uri2,
     uri1: this.state.uri3,
     uri2: this.state.uri4,
@@ -729,14 +697,7 @@ async rightActionComplete(){
     this.releasedAfterLeftD2 = false
     this.releasedAfterRightD2 = false
     this.setState({
-    photoWidth2: global.width*(5/10), photoHeight2: global.width*(5/10)*(7/6), photoTop2: 0,
-    test: this.state.test - this.width*(5/10),
-    photoRight0: this.state.photoRight0 - this.width*(5/10),
-    photoRight1: this.state.photoRight1 - this.width*(5/10),
-    photoRight2: this.state.test - this.width*(5/10),
-    photoRight3: this.state.photoRight3 - this.width*(5/10),
-    photoRight4: this.state.photoRight4 - this.width*(5/10),
-    photoRight5: this.state.photoRight5 - this.width*(5/10),
+    swipeableContentRight: this.state.swipeableContentRight - this.width*(5/10),
     uri0: this.state.uri1,
     uri1: this.state.uri2,
     uri2: this.state.uri3,
@@ -773,8 +734,8 @@ leftActionIncomplete(){
     global.flag7 = false; //Right D1
     global.flag8 = false; //Right D2
     this.widthAnimation.setValue(global.width*(2/10))
+    this.emptyWidthAnimation.setValue(global.width*(3/10))
     this.heightAnimation.setValue(global.width*(2/10)*(7/6))
-    this.topAnimation.setValue(global.width*(7/40))
     Animated.parallel([
         Animated.timing(this.widthAnimation, {
           duration: 200,
@@ -790,9 +751,9 @@ leftActionIncomplete(){
           useNativeDriver: false
         }
       ),
-        Animated.timing(this.topAnimation, {
+        Animated.timing(this.emptyWidthAnimation, {
           duration: 200,
-          toValue: 0,
+          toValue:  global.width*(1.5/10),
           easing: Easing.elastic(0.5),
           useNativeDriver: false
       }
@@ -805,14 +766,7 @@ leftActionIncomplete(){
     this.releasedAfterLeftD2 = false
     this.releasedAfterRightD2 = false
     this.setState({
-    photoWidth2: global.width*(5/10), photoHeight2: global.width*(5/10)*(7/6), photoTop2: 0,
-    test: this.state.test + this.width*(5/10),
-    photoRight0: this.state.photoRight0 + this.width*(5/10),
-    photoRight1: this.state.photoRight1 + this.width*(5/10),
-    photoRight2: this.state.test  + this.width*(5/10),
-    photoRight3: this.state.photoRight3 + this.width*(5/10),
-    photoRight4: this.state.photoRight4 + this.width*(5/10),
-    photoRight5: this.state.photoRight5 + this.width*(5/10),
+    swipeableContentRight: this.state.swipeableContentRight + this.width*(5/10),
     uri5: this.state.uri4,
     uri4: this.state.uri3,
     uri3: this.state.uri2,
@@ -845,8 +799,8 @@ rightActionIncomplete(){
     global.flag7 = false; //Right D1
     global.flag8 = false; //Right D2
     this.widthAnimation.setValue(global.width*(2/10))
+    this.emptyWidthAnimation.setValue(global.width*(3/10))
     this.heightAnimation.setValue(global.width*(2/10)*(7/6))
-    this.topAnimation.setValue(global.width*(7/40))
     Animated.parallel([
         Animated.timing(this.widthAnimation, {
           duration: 200,
@@ -862,9 +816,9 @@ rightActionIncomplete(){
           useNativeDriver: false
         }
       ),
-        Animated.timing(this.topAnimation, {
+        Animated.timing(this.emptyWidthAnimation, {
           duration: 200,
-          toValue: 0,
+          toValue: global.width*(1.5/10),
           easing: Easing.elastic(0.5),
           useNativeDriver: false
       }
@@ -877,14 +831,7 @@ rightActionIncomplete(){
     this.releasedAfterLeftD2 = false
     this.releasedAfterRightD2 = false
     this.setState({
-    photoWidth2: global.width*(5/10), photoHeight2: global.width*(5/10)*(7/6), photoTop2: 0,
-    test: this.state.test - this.width*(5/10),
-    photoRight0: this.state.photoRight0 - this.width*(5/10),
-    photoRight1: this.state.photoRight1 - this.width*(5/10),
-    photoRight2: this.state.test - this.width*(5/10),
-    photoRight3: this.state.photoRight3 - this.width*(5/10),
-    photoRight4: this.state.photoRight4 - this.width*(5/10),
-    photoRight5: this.state.photoRight5 - this.width*(5/10),
+    swipeableContentRight: this.state.swipeableContentRight - this.width*(5/10),
     uri0: this.state.uri1,
     uri1: this.state.uri2,
     uri2: this.state.uri3,
@@ -1047,7 +994,7 @@ noLeft(){
 
 }
 noRight(){
-  if(this.state.swipeableDisabled || global.swipeCount == usernameArray.length+1){ // this.state.swipeableDisabled
+  if(this.state.swipeableDisabled || global.swipeCount -5 == usernameArray.length){ // this.state.swipeableDisabled
     return false
   }
   else{
@@ -1822,15 +1769,20 @@ render(){
       onLeftActionIncomplete = {()=> this.leftActionIncomplete()}
       onRightActionIncomplete = {()=> this.rightActionIncomplete()}>
 
+      <View style = {{position: "absolute",flexDirection: "row", width: this.width*27/10, right: this.state.swipeableContentRight, justifyContent:"center", alignItems: "center"}}>
+
+
       <SwipeableSmallImg
       imgSource = {this.state.uri0}
-      right = {this.state.photoRight0}
       backgroundOpacity = {this.state.backgroundOpacity}/>
+
+      <View style = {{ height: this.width*5/10*(7/6), width: this.width*3/10}}/>
 
       <SwipeableSmallImg
       imgSource = {this.state.uri1}
-      right = {this.state.photoRight1}
       backgroundOpacity = {this.state.backgroundOpacity}/>
+
+      <Animated.View style = {{ height: this.width*5/10*(7/6), width: this.emptyWidthAnimation}}/>
 
       <SwipeableBigImg
       isFavorite = { isFav ? 1 : 0}
@@ -1838,49 +1790,53 @@ render(){
       imgSource = {this.state.uri2}
       width = {this.widthAnimation}
       height = {this.heightAnimation}
-      top = {this.topAnimation}
-      right = {this.state.photoRight2}
       onPress = {()=>this.setState({openProfileIsVisible: true})}
       backgroundOpacity = {this.state.backgroundOpacity}/>
 
+      <Animated.View style = {{height: this.width*5/10*(7/6), width: this.emptyWidthAnimation}}/>
+
       <SwipeableSmallImg
       imgSource = {this.state.uri3}
-      right = {this.state.photoRight3}
       backgroundOpacity = {this.state.backgroundOpacity}/>
+
+      <View style = {{height: this.width*5/10*(7/6), width: this.width*3/10}}/>
 
       <SwipeableSmallImg
       imgSource = {this.state.uri4}
-      right = {this.state.photoRight4}
       backgroundOpacity = {this.state.backgroundOpacity}/>
+
+      <View style = {{ height: this.width*5/10*(7/6), width: this.width*3/10}}/>
 
       <SwipeableSmallImg
       imgSource = {this.state.uri5}
-      right = {this.state.photoRight5}
       backgroundOpacity = {this.state.backgroundOpacity}/>
+
+      </View>
+
 
       </Swipeable>
 
       <View
-      style = {{opacity: 1, backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
+      style = {{opacity: this.state.messageButtonOpacity, backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
       borderBottomLeftRadius: 16, borderBottomRightRadius: 16, borderTopLeftRadius: 16, borderTopRightRadius: 16,
       }}>
       <FavoriteUserButton
-      disabled = {0}
+      disabled = {this.state.messageButtonOpacity ? 0 : 1}
       onPress = {()=>this.addToFavButtonClicked()}
-      opacity = {1}
+      opacity = {this.state.messageButtonOpacity}
       borderBottomLeftRadius = {16}
       borderTopLeftRadius = {16}
       isSelected = {isFav}/>
       <SendMsgButton
-      disabled = {0}
+      disabled = {this.state.messageButtonOpacity ? 0 : 1}
       onPress = {()=>this.sendFirstMessage()}
-      opacity = {1}/>
+      opacity = {this.state.messageButtonOpacity}/>
       <BlockUserButton
-      disabled = {0}
+      disabled = {this.state.messageButtonOpacity ? 0 : 1}
       onPress = {()=>this.addToBlockButtonClicked()}
       borderBottomRightRadius = {16}
       borderTopRightRadius = {16}
-      opacity = {1}
+      opacity = {this.state.messageButtonOpacity}
       isSelected = {isBlock}/>
       </View>
 

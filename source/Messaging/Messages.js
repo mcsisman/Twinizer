@@ -1156,8 +1156,8 @@ renderMessageBoxes(){
 
       <View style = {{justifyContent: "center", opacity: 0.7, alignItems: 'center', width: this.width, height: scrollViewHeight/4}}>
       <Text
-        style = {{fontSize: 25*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" }}>
-        {lang.NoRequests}
+        style = {{fontSize: 20*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" }}>
+        {lang.NoMessages}
       </Text>
       </View>
       </View>
@@ -1221,7 +1221,7 @@ renderRequestBoxes(){
 
       <View style = {{justifyContent: "center", opacity: 0.7, alignItems: 'center', width: this.width, height: scrollViewHeight/4}}>
       <Text
-        style = {{fontSize: 25*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
+        style = {{fontSize: 20*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
         {lang.NoRequests}
       </Text>
       </View>

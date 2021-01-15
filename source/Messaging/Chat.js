@@ -573,7 +573,7 @@ render() {
           <ImageUploadModal
           isVisible={this.state.isVisible1}
           txtUploadPhoto = {lang.UploadAPhoto}
-          txtCancel = {global.langCancel}
+          txtCancel = {""}
           txtTakePhoto = {lang.Camera}
           txtOpenLibrary = {lang.Library}
           onPressCancel = {()=>this.setState({ isVisible1: false}) }
@@ -627,7 +627,7 @@ render() {
         <ImageUploadModal
         isVisible={this.state.isVisible1}
         txtUploadPhoto = {lang.UploadAPhoto}
-        txtCancel = {global.langCancel}
+        txtCancel = {""}
         txtTakePhoto = {lang.Camera}
         txtOpenLibrary = {lang.Library}
         onPressCancel = {()=>this.setState({ isVisible1: false}) }

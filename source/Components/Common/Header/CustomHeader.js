@@ -43,14 +43,14 @@ export default class CustomHeader extends Component {
     if(this.props.title == lang.Messages){
       requestDisabled = false;
       messageDisabled = true;
-      requestColor = "lockgray";
+      requestColor = "requestgray";
       messageColor = "comment" + global.themeForImages;
 
     }
     else{
       requestDisabled = true;
       messageDisabled = false;
-      requestColor = "lock" + global.themeForImages;
+      requestColor = "request" + global.themeForImages;
       messageColor = "commentgray";
     }
     this.height = Math.round(Dimensions.get('screen').height);
@@ -107,7 +107,7 @@ export default class CustomHeader extends Component {
           style={{position: 'absolute',  width: Math.min(this.width/6, headerHeight*4/5), height: Math.min(this.width/6, headerHeight*4/5), justifyContent: 'center', alignItems: 'center',
           backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', }}>
           <Image
-          style={{position: 'absolute', width: '70%', height: '70%'}}
+          style={{position: 'absolute', width: '73.23%', height: '70%'}}
           source={{uri: requestColor}}>
           </Image>
           </TouchableOpacity>

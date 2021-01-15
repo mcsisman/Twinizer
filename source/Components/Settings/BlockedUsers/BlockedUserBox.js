@@ -56,7 +56,7 @@ export default class BlockedUserBox extends Component {
       style = {{alignItems: 'center', justifyContent: 'center', width: this.width*(2/16), height: this.width/7}}
       onPress = {this.props.trashOnPress}>
         <Image
-        style={{width: this.width*(3/16)*(4/10), height: this.width*(3/16)*(4/10)*(328/302)}}
+        style={{width: this.width*(3/16)*(3.25/10), height: this.width*(3/16)*(3.25/10)*(328/302)}}
         source = {{uri: this.props.trashImage}}>
         </Image>
       </TouchableOpacity>
@@ -70,7 +70,7 @@ export default class BlockedUserBox extends Component {
       <View
       style={{justifyContent: 'center', width: this.width*6/8, height: this.width/7, bottom: 0, left: 0}}>
       <Text
-        style = {{color: global.isDarkMode ? global.darkModeColors[3] : 'rgba(88,88,88,1)', fontSize: 21*this.width/360, left: this.width/20, position: "absolute" }}>
+        style = {{color: global.isDarkMode ? global.darkModeColors[3] : 'rgba(88,88,88,1)', fontSize: 18*this.width/360, left: this.width/20, position: "absolute" }}>
         {this.props.text}
       </Text>
       </View>

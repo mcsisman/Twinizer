@@ -239,7 +239,7 @@ static navigationOptions = {
     }
 
   async onPressSave(){
-  
+
     this.setState({loadingOpacity: 1})
     if(this.state.newPhoto){
       var uploadDone = false
@@ -548,7 +548,7 @@ static navigationOptions = {
         isVisible={this.state.isVisible}
         txtUploadPhoto = {lang.UploadAPhoto}
         txtCancel = {global.langCancel}
-        txtTakePhoto = {lang.TakePhoto}
+        txtTakePhoto = {lang.Camera}
         txtOpenLibrary = {lang.Library}
         onPressCancel = {()=>this.setState({isVisible: false}) }
         onPressCamera = {this.camera}
