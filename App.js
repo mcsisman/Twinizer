@@ -54,7 +54,7 @@ if (!global.btoa) { global.btoa = encode }
 
 if (!global.atob) { global.atob = decode }
 global.fromChat = false
-
+global.emailArrayLength = 0
 global.addedMsgs = {}
 global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,1)", "rgba(255,255,255,1)"]
   class Appp extends React.Component {

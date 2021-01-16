@@ -161,7 +161,6 @@ constructor(props){
     this.releasedAfterLeftD2= false,
     this.rightActionCount= 0,
     this.leftActionCount= 0,
-    this.doesExist = false,
     this.probabilityDoneCheck = false;
     this.downloadURL = "";
     this.url = "",
@@ -441,6 +440,7 @@ swipeRelease(){
           )
 
           ]).start()
+          console.log(this.state.uri2);
         }
     }
   }
@@ -587,6 +587,7 @@ leftActionComplete(){
   global.deactivationDistanceRight = global.deactivationDistanceRight - this.width*(10/10)
   console.log("LeftActionCompleted çift")
   console.log(this.state.uri2_bio);
+  console.log(this.state.uri2);
   }
     else{
       this.activationCount = 0
@@ -614,6 +615,7 @@ leftActionComplete(){
       global.deactivationDistanceRight = global.deactivationDistanceRight - this.width*(5/10)
       console.log("LeftActionCompleted tek")
       console.log(this.state.uri2_bio);
+      console.log(this.state.uri2);
     }
     this.checkUri2FavOrBlocked()
 }
@@ -676,13 +678,15 @@ async rightActionComplete(){
     messageButtonDisabled: false,
     messageButtonOpacity: 1
   })
-  if (global.swipeCount+10 < emailArray.length){
-    await this.getImageURL(global.swipeCount+10)
-    await this.downloadImages(global.swipeCount+10)
+  if (global.swipeCount+9 < emailArray.length){
+    console.log("İKİLİ SAĞA KAYMANIN İLKİ: ", global.swipeCount+9, emailArray[global.swipeCount+9])
+    this.getImageURL(global.swipeCount+9)
+    //this.downloadImages(global.swipeCount+9)
   }
-  if (global.swipeCount+11 < emailArray.length){
-    await this.getImageURL(global.swipeCount+11)
-    await this.downloadImages(global.swipeCount+11)
+  if (global.swipeCount+10 < emailArray.length){
+    console.log("İKİLİ SAĞA KAYMANIN İKİNCİSİ: ", global.swipeCount+10, emailArray[global.swipeCount+10])
+    this.getImageURL(global.swipeCount+10)
+    //this.downloadImages(global.swipeCount+10)
   }
   global.deactivationDistanceRight = global.deactivationDistanceRight + this.width*(5/10)
   global.activationDistanceLeft = global.activationDistanceLeft - this.width*(10/10)
@@ -712,8 +716,9 @@ async rightActionComplete(){
     messageButtonOpacity: 1
   })
   if (global.swipeCount+10 < emailArray.length){
-    await this.getImageURL(global.swipeCount+10)
-    await this.downloadImages(global.swipeCount+10)
+    console.log("İKİLİ SAĞA KAYMANIN İLKİ: ", global.swipeCount+10, emailArray[global.swipeCount+10])
+    this.getImageURL(global.swipeCount+10)
+    //this.downloadImages(global.swipeCount+9)
   }
   global.deactivationDistanceRight = global.deactivationDistanceRight + this.width*(5/10)
   global.activationDistanceLeft = global.activationDistanceLeft - this.width*(5/10)
@@ -1145,13 +1150,14 @@ async createEmailDistanceArrays(gender, country, fn){
       }
     }
   }
+  global.emailArrayLength = emailArray.length - 1
 }
 
-async downloadImages(imageIndex){
+downloadImages(imageIndex){
 
-  if (imageIndex < emailArray.length){
+  if (!photoArray[emailArray[imageIndex]]){
     let dirs = RNFetchBlob.fs.dirs
-    await RNFetchBlob
+    RNFetchBlob
     .config({
       fileCache : true,
       appendExt : 'jpg',
@@ -1162,23 +1168,17 @@ async downloadImages(imageIndex){
     })
     .then((res) => {
       console.log('The file saved to ', res.path())
-      while(this.doesExist){
-        RNFetchBlob.fs.exists(res.path())
-        .then((exist) => {
-          this.doesExist = !exist
-        })
-        .catch(() => { })
-      }
       photoArray[emailArray[imageIndex]] = "file://" + res.path()
+      console.log("photoArray.length: ", Object.keys(photoArray).length)
       if (this.inSearchDone){
         mainPhotoArray[emailArray[imageIndex]] = "file://" + res.path()
       }
       this.setState({imagePath:  "file://" + res.path()})
+      //console.log("photoArray: ", photoArray)
     }).catch(function(error) {
       console.log(error)
     });
   }
-  console.log("photoArray.length: ", Object.keys(photoArray).length)
 }
 
 async getImageURL(imageIndex){
@@ -1186,7 +1186,7 @@ async getImageURL(imageIndex){
     await storageRef.getDownloadURL().then(data =>{
       this.downloadURL = data
       //photoArray.push(data)
-
+      this.downloadImages(imageIndex);
     }).catch(function(error) {
       // Handle any errors
     });
@@ -1211,10 +1211,10 @@ async allFunctionsCompleted(){
           else{
             await this.createEmailDistanceArrays("All Genders","All Countries","searchDone");
             ////////////////////////////////////////////////////////////////////////////////
-            for(let i = 0; i < 10; i++){
+            for(let i = 0; i <= 10; i++){
               // resim indirme KISMI /////////////////////////////////////////////////
               await this.getImageURL(i);
-              await this.downloadImages(i);
+              //await this.downloadImages(i);
             }
             console.log("biyere geldik, mainPhotoArray.length ", Object.keys(mainPhotoArray).length)
             this.setState({
@@ -1290,7 +1290,6 @@ async filterDone(){
   genderArray = [];
   distanceArray = [];
   photoArray = {};
-  this.doesExist = false;
   this.downloadURL = "";
   this.url = "";
   this.complete= false
@@ -1335,11 +1334,11 @@ async filterDone(){
     await this.createEmailDistanceArrays(this.state.gender,this.state.country,"filterDone");
   }
   console.log("photoArray.length filterdone end = ", Object.keys(photoArray).length)
-  if (Object.keys(photoArray).length < 10){
-    for(let i = Object.keys(photoArray).length; i < 10; i++){
+  if (Object.keys(photoArray).length <= 10){
+    for(let i = Object.keys(photoArray).length; i <= 10; i++){
       // resim indirme KISMI /////////////////////////////////////////////////
       await this.getImageURL(i);
-      await this.downloadImages(i);
+      //this.downloadImages(i);
     }
   }
   this.setState({
@@ -1420,7 +1419,6 @@ async searchDone(value){
  .then(() => {console.log("FILE DELETED")})
  .catch((err) => {console.log("unlink olmadi")})
   console.log("EMAIL ARRAY LENGTH ", emailArray.length);
-  this.doesExist = false;
   this.downloadURL = "";
   this.url = "";
   this.complete= false
