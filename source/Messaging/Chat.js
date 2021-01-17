@@ -91,9 +91,6 @@ export default class ChatScreen extends React.Component<Props> {
       keyboardOpen: false,
       test123: "123"
     }
-
-
-
     this.windowHeight = Math.round(Dimensions.get('window').height);
     this.navbarHeight = this.height - this.windowHeight
     this.spinValue = new Animated.Value(0)
@@ -103,115 +100,66 @@ export default class ChatScreen extends React.Component<Props> {
     lang = language[global.lang]
     this.keyboardDidShowListener = Keyboard.addListener("keyboardDidHide", this._keyboardDidHide);
     this.keyboardDidHideListener = Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
-      this._subscribe = this.props.navigation.addListener('focus', async () => {
-
-        global.callback = async (data, noOfNewMsgs) => {
-          var localMessages = []
-          await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
-            .then(req => {
-              if(req){
-                 return JSON.parse(req)
-              }
-              else{
-                return null
-              }
-            })
-            .then(json => localMessages = json)
-          if( noOfNewMsgs == 1){
-            console.log("HANGİ MESAJ GELDİ İF:", data)
-            localMessages.reverse()
-            this.setState({
-              messages: localMessages
-            })
-            this.setState( {reRender: !this.state.reRender})
-          }
-          else{
-            console.log("HANGİ MESAJ GELDİ ELSE:", data)
-
-            localMessages.reverse()
-            this.setState({
-              messages: localMessages
-            })
-            this.setState( {reRender: !this.state.reRender})
-          }
-        }
-        this.resetVariables()
-        this.spinAnimation()
-        await this.getLastLocalMessages()
-        messageArray.reverse()
-          this.setState({
-              messages: messageArray,
-              loadingOpacity: 0
-          })
-        lastSeenInterval = setInterval(()=> this.updateLastSeenFile(), 100)
-      });
-      firebaseSvc.refOn(async message =>{
-        if(message != null){
-          if(true){//!firstTime
-            if(message.image == ""){
-
-              this.setState(previousState => ({
-                messages: GiftedChat.append(previousState.messages, message),
-              }))
+    this._subscribe = this.props.navigation.addListener('focus', async () => {
+      global.callback = async (data, noOfNewMsgs) => {
+        var localMessages = []
+        await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+          .then(req => {
+            if(req){
+               return JSON.parse(req)
             }
             else{
-              var localMessages = []
-              await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
-                .then(req => {
-                  if(req){
-                     return JSON.parse(req)
-                  }
-                  else{
-                    return null
-                  }
-                })
-                .then(json => localMessages = json)
-
-              var downloadURL;
-              var storageRef = storage().ref("Photos/" + auth().currentUser.uid + "/MessagePhotos/" + message.id + ".jpg")
-              var fileExists = false
-              while(!fileExists){
-                await storageRef.getDownloadURL().then(data =>{
-                  downloadURL = data
-                  fileExists = true
-                  let dirs = RNFetchBlob.fs.dirs
-                  RNFetchBlob
-                  .config({
-                    fileCache : true,
-                    appendExt : 'jpg',
-                    path: RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg"
-                  })
-                  .fetch('GET', downloadURL, {
-                    //some headers ..
-                  }).then( async data =>{
-                    console.log("THENNNNNNNNNNNNNNNNNNNNNNNN 2:", message.id)
-
-                    await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
-                      .then(req => {
-                        if(req){
-                           return JSON.parse(req)
-                        }
-                        else{
-                          return null
-                        }
-                      })
-                      .then(json => localMessages = json)
-
-                    localMessages.reverse()
-                    this.setState(previousState => ({
-                      messages: localMessages
-                    }))
-
-                    this.setState( {reRender: !this.state.reRender})
-                  })
-                }).catch(function (error) {
-                })
-              }
+              return null
             }
+          })
+          .then(json => localMessages = json)
+        if( noOfNewMsgs == 1){
+          console.log("HANGİ MESAJ GELDİ İF:", data)
+          localMessages.reverse()
+          this.setState({
+            messages: localMessages
+          })
+          this.setState( {reRender: !this.state.reRender})
+        }
+        else{
+          console.log("HANGİ MESAJ GELDİ ELSE:", data)
+          localMessages.reverse()
+          this.setState({
+            messages: localMessages
+          })
+          this.setState( {reRender: !this.state.reRender})
+        }
+      }
+      this.resetVariables()
+      this.spinAnimation()
+      await this.getLastLocalMessages()
+      messageArray.reverse()
+        this.setState({
+            messages: messageArray,
+            loadingOpacity: 0
+        })
+      lastSeenInterval = setInterval(()=> this.updateLastSeenFile(), 100)
+    });
+    firebaseSvc.refOn(async message =>{
+      if(message != null){
+        if(true){//!firstTime
+          if(message.image == ""){
+            this.setState(previousState => ({
+              messages: GiftedChat.append(previousState.messages, message),
+            }))
           }
           else{
-            await this.getLastLocalMessages()
-            messageArray.reverse()
+            var localMessages = []
+            await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+              .then(req => {
+                if(req){
+                   return JSON.parse(req)
+                }
+                else{
+                  return null
+                }
+              })
+              .then(json => localMessages = json)
             var downloadURL;
             var storageRef = storage().ref("Photos/" + auth().currentUser.uid + "/MessagePhotos/" + message.id + ".jpg")
             var fileExists = false
@@ -228,23 +176,63 @@ export default class ChatScreen extends React.Component<Props> {
                 })
                 .fetch('GET', downloadURL, {
                   //some headers ..
-                }).then( data =>{
-                  console.log("THENNNNNNNNNNNNNNNNNNNNNNNN 333")
-
-                  this.setState({
-                      messages: messageArray,
-                      loadingOpacity: 0
-                  })
+                }).then( async data =>{
+                  console.log("THENNNNNNNNNNNNNNNNNNNNNNNN 2:", message.id)
+                  await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+                    .then(req => {
+                      if(req){
+                         return JSON.parse(req)
+                      }
+                      else{
+                        return null
+                      }
+                    })
+                    .then(json => localMessages = json)
+                  localMessages.reverse()
+                  this.setState(previousState => ({
+                    messages: localMessages
+                  }))
+                  this.setState( {reRender: !this.state.reRender})
                 })
               }).catch(function (error) {
               })
             }
-
           }
-          firstTime = false
         }
-      })
-    }
+        else{
+          await this.getLastLocalMessages()
+          messageArray.reverse()
+          var downloadURL;
+          var storageRef = storage().ref("Photos/" + auth().currentUser.uid + "/MessagePhotos/" + message.id + ".jpg")
+          var fileExists = false
+          while(!fileExists){
+            await storageRef.getDownloadURL().then(data =>{
+              downloadURL = data
+              fileExists = true
+              let dirs = RNFetchBlob.fs.dirs
+              RNFetchBlob
+              .config({
+                fileCache : true,
+                appendExt : 'jpg',
+                path: RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg"
+              })
+              .fetch('GET', downloadURL, {
+                //some headers ..
+              }).then( data =>{
+                console.log("THENNNNNNNNNNNNNNNNNNNNNNNN 333")
+                this.setState({
+                    messages: messageArray,
+                    loadingOpacity: 0
+                })
+              })
+            }).catch(function (error) {
+            })
+          }
+        }
+        firstTime = false
+      }
+    })
+  }
 
 componentWillUnmount() {
   clearInterval(lastSeenInterval)

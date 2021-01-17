@@ -97,65 +97,66 @@ navigateToMain(){
 async writeCountryToDatabase(){
   this.setState({loadingOpacity: 1})
   this.spinAnimation()
-  if((global.globalBio).length < 101){
-    if(global.globalBio == ""){
-      global.globalBio = " ";
-    }
-    console.log(writeDone)
-    const funcdone_Ref = firestore().collection(auth().currentUser.uid).doc('Funcdone');
-    await funcdone_Ref.set({
-      key: 0
-    }).then(()=>{
-      console.log("funcdone was initialized")
-    }).catch(error => {
-      console.log(error)
-      Alert.alert("Connection Failed", "Please try Again.." )
-    })
-    await database().ref('Users/' + auth().currentUser.uid + "/i").update({
-      g: global.globalGender,
-      c: global.globalCountry,
-      b: global.globalBio,
-      d: global.globalGender,
-      p: 0
-    }).then(async function() {
-        var randFloat = Math.random()
-        const updateRef = firestore().collection('Functions').doc('Model');
-        await updateRef.set({
-          name: auth().currentUser.uid + "_" + randFloat.toString()
-        }).then(function() {
-          AsyncStorage.setItem(auth().currentUser.uid + 'userGender', global.globalGender)
-          AsyncStorage.setItem(auth().currentUser.uid + 'userCountry', global.globalCountry)
-          AsyncStorage.setItem(auth().currentUser.uid + 'userBio', global.globalBio)
-          AsyncStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(0))
-        })
-    });
-    var result_ref = firestore().collection(auth().currentUser.uid).doc('ModelResult').onSnapshot(async (doc) =>{
-      console.log("listenerStarted: ", listenerStarted)
-      if(listenerStarted){
-        var dict = doc.data()
-        console.log("dict: ", dict)
-        if(dict["result"] < 0){
-          Alert.alert("Error!", "Check your photos and be sure that there is a face in each of them.." )
-          updateDone = false;
-        }
-        else{
-          updateDone = true;
-        }
-        if (updateDone){
-          this.setState({loadingOpacity: 0})
-          this.spinValue = new Animated.Value(0)
-          const {navigate} = this.props.navigation;
-          navigate("Tabs")
-        }
-        else {
-          Alert.alert("Upload Failed", "Creating account is failed. Try Again.." )
-        }
+  try{
+    if((global.globalBio).length < 101){
+      if(global.globalBio == ""){
+        global.globalBio = " ";
       }
-      listenerStarted = true
-    })
-  }
-  else {
-    Alert.alert("Fail", "You exceeded the character limit." )
+      console.log(writeDone)
+      const funcdone_Ref = firestore().collection(auth().currentUser.uid).doc('Funcdone');
+      await funcdone_Ref.set({
+        key: 0
+      }).then(()=>{
+        console.log("funcdone was initialized")
+      })
+      await database().ref('Users/' + auth().currentUser.uid + "/i").update({
+        g: global.globalGender,
+        c: global.globalCountry,
+        b: global.globalBio,
+        d: global.globalGender,
+        p: 0
+      }).then(async function() {
+          var randFloat = Math.random()
+          const updateRef = firestore().collection('Functions').doc('Model');
+          await updateRef.set({
+            name: auth().currentUser.uid + "_" + randFloat.toString()
+          }).then(function() {
+            AsyncStorage.setItem(auth().currentUser.uid + 'userGender', global.globalGender)
+            AsyncStorage.setItem(auth().currentUser.uid + 'userCountry', global.globalCountry)
+            AsyncStorage.setItem(auth().currentUser.uid + 'userBio', global.globalBio)
+            AsyncStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(0))
+          })
+      });
+      var result_ref = firestore().collection(auth().currentUser.uid).doc('ModelResult').onSnapshot(async (doc) =>{
+        console.log("listenerStarted: ", listenerStarted)
+        if(listenerStarted){
+          var dict = doc.data()
+          console.log("dict: ", dict)
+          if(dict["result"] < 0){
+            Alert.alert("Error!", "Check your photos and be sure that there is a face in each of them.." )
+            updateDone = false;
+          }
+          else{
+            updateDone = true;
+          }
+          if (updateDone){
+            this.setState({loadingOpacity: 0})
+            this.spinValue = new Animated.Value(0)
+            const {navigate} = this.props.navigation;
+            navigate("Tabs")
+          }
+          else {
+            Alert.alert("Upload Failed", "Creating account is failed. Try Again.." )
+          }
+        }
+        listenerStarted = true
+      })
+    }
+    else {
+      Alert.alert("Fail", "You exceeded the character limit." )
+    }
+  } catch (error) {
+    Alert.alert(lang.langPlsTryAgain, lang.ConnectionFailed)
   }
 }
 

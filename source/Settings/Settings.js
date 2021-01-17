@@ -89,27 +89,31 @@ export default class SettingsScreen extends Component<{}>{
   }
 
   async onPressLogoutOk(){
-    OneSignal.clearOneSignalNotifications();
+    try{
+      OneSignal.clearOneSignalNotifications();
 
-    AsyncStorage.removeItem(auth().currentUser.uid + 'userGender')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'userName')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'userBio')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
-    AsyncStorage.removeItem(auth().currentUser.uid + 'playerId')
-    await database().ref('/PlayerIds/').update({
-      [auth().currentUser.uid]: "x"
-    });
-    var randO = Math.random()
-    await database().ref('/Users/'+auth().currentUser.uid + '/i').update({
-      o: randO
-    }).then( async () => {
-      console.log("o güncellendi")
-      await auth().signOut().then(function() {
-        console.log("LOGOUT SUCCESSFUL")
-      })
-    });
-    this.props.navigation.dispatch(StackActions.popToTop());
+      AsyncStorage.removeItem(auth().currentUser.uid + 'userGender')
+      AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry')
+      AsyncStorage.removeItem(auth().currentUser.uid + 'userName')
+      AsyncStorage.removeItem(auth().currentUser.uid + 'userBio')
+      AsyncStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
+      AsyncStorage.removeItem(auth().currentUser.uid + 'playerId')
+      await database().ref('/PlayerIds/').update({
+        [auth().currentUser.uid]: "x"
+      });
+      var randO = Math.random()
+      await database().ref('/Users/'+auth().currentUser.uid + '/i').update({
+        o: randO
+      }).then( async () => {
+        console.log("o güncellendi")
+        await auth().signOut().then(function() {
+          console.log("LOGOUT SUCCESSFUL")
+        })
+      });
+      this.props.navigation.dispatch(StackActions.popToTop());
+    } catch(error) {
+      Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
+    }
   }
   render(){
     var lang = language[global.lang]

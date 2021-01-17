@@ -111,7 +111,9 @@ static navigationOptions = {
 
   async initializeFavoriteUsersScreen(){
     listener = database().ref('Users/' + global.selectedFavUserUid + "/i")
-    await listener.on('value', async snap => await this.listenerFunc(snap));
+    await listener.on('value', async snap => await this.listenerFunc(snap)).catch(error => {
+      console.log(error)
+    });
   }
 
   listenerFunc = async (snap) => {

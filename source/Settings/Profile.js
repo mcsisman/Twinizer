@@ -3,7 +3,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import ImagePicker from 'react-native-image-crop-picker';
 import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
-import { NavigationContainer, navigation } from '@react-navigation/native';
+import { NavigationContainer, StackActions, CommonActions, navigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFS from 'react-native-fs'
 import RNFetchBlob from 'rn-fetch-blob'
@@ -115,6 +115,9 @@ export default class ProfileScreen extends Component<{}>{
       this.setState({loadingDone: false, goBackInfoModalVisible:false})
       this.spinAnimation()
     })
+    global.popUp = () => {
+      this.props.navigation.dispatch(StackActions.popToTop());
+    }
     console.log("PROFİL COMP")
     Keyboard.addListener("keyboardDidHide", this._keyboardDidHide);
     Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
@@ -203,7 +206,9 @@ static navigationOptions = {
         AsyncStorage.setItem(auth().currentUser.uid + 'userBio', this.state.userBio)
         await AsyncStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
         this.setState({profilePhoto:  "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg"})
-      })
+      }).catch(error => {
+        console.log(error)
+      });
    }
    else{
      this.setState({ profilePhoto: "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg", loadingDone: true, userGender: currentUserGender,
@@ -238,42 +243,48 @@ static navigationOptions = {
       .then((res) => {
         console.log('The file saved to ', res.path())
         this.setState({profilePhoto:  "file://" + res.path()})
-      })
+      }).catch(error => {
+        console.log(error)
+      });
     }
 
   async onPressSave(){
 
     this.setState({loadingOpacity: 1})
-    if(this.state.newPhoto){
-      var uploadDone = false
-      var storageRef = storage().ref();
-      var metadata = {
-        contentType: 'image/jpeg',
-      };
-      const response = await fetch(this.state.profilePhoto);
-      const blob = await response.blob();
-      var ref1 = storageRef.child("Photos/" + auth().currentUser.uid + "/1.jpg");
-      await ref1.put(blob)
-      RNFS.copyFile(this.state.profilePhoto, RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg");
-      this.setState({profilePhoto: this.state.profilePhoto + '?' + new Date(), userPhotoCount: this.state.userPhotoCount + 1})
-    }
-    AsyncStorage.setItem(auth().currentUser.uid + 'userGender', this.state.userGender)
-    AsyncStorage.setItem(auth().currentUser.uid + 'userCountry', this.state.userCountry)
-    AsyncStorage.setItem(auth().currentUser.uid + 'userName', this.state.userUsername)
-    AsyncStorage.setItem(auth().currentUser.uid + 'userBio', this.state.userBio)
-    await AsyncStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
+    try{
+      if(this.state.newPhoto){
+        var uploadDone = false
+        var storageRef = storage().ref();
+        var metadata = {
+          contentType: 'image/jpeg',
+        };
+        const response = await fetch(this.state.profilePhoto);
+        const blob = await response.blob();
+        var ref1 = storageRef.child("Photos/" + auth().currentUser.uid + "/1.jpg");
+        await ref1.put(blob)
+        RNFS.copyFile(this.state.profilePhoto, RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg");
+        this.setState({profilePhoto: this.state.profilePhoto + '?' + new Date(), userPhotoCount: this.state.userPhotoCount + 1})
+      }
+      AsyncStorage.setItem(auth().currentUser.uid + 'userGender', this.state.userGender)
+      AsyncStorage.setItem(auth().currentUser.uid + 'userCountry', this.state.userCountry)
+      AsyncStorage.setItem(auth().currentUser.uid + 'userName', this.state.userUsername)
+      AsyncStorage.setItem(auth().currentUser.uid + 'userBio', this.state.userBio)
+      await AsyncStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
 
-    await database().ref('Users/' + auth().currentUser.uid + "/i").update({
-      g: this.state.userGender,
-      c: this.state.userCountry,
-      b: this.state.userBio,
-      u: this.state.userUsername,
-      p: this.state.userPhotoCount
-    }).then(() => {
-      infoChanged = false
-      this.setState({saveInfoModalVisible:true, loadingOpacity:0})
-      this.spinValue = new Animated.Value(0)
-    })
+      await database().ref('Users/' + auth().currentUser.uid + "/i").update({
+        g: this.state.userGender,
+        c: this.state.userCountry,
+        b: this.state.userBio,
+        u: this.state.userUsername,
+        p: this.state.userPhotoCount
+      }).then(() => {
+        infoChanged = false
+        this.setState({saveInfoModalVisible:true, loadingOpacity:0})
+        this.spinValue = new Animated.Value(0)
+      })
+    } catch(error){
+      Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
+    }
   }
   onCountryValueChange(value){
     if(this.state.userCountry != value.label){
@@ -370,88 +381,7 @@ static navigationOptions = {
       this.props.navigation.goBack()
     }
   }
-  async deletePress(email, password){
-    console.log("DELETE PRESS")
-    this.setState({authenticationVisible: false})
-    if(auth().currentUser.email == global.deleteAuthEmail){
-      await auth()
-       .signInWithEmailAndPassword(email, password)
-       .then(async () => {
-         authenticated = true
-         console.log("authenticated")
-       }).catch(error => {
-         Alert.alert(global.langPlsTryAgain, global.langWrongEmailPassword)
-       })
-       if (authenticated){
-         OneSignal.removeEventListener('received', this.onReceived);
-         OneSignal.removeEventListener('opened', this.onOpened);
-         OneSignal.removeEventListener('ids', this.onIds);
-         // async storage remove
-         AsyncStorage.removeItem(auth().currentUser.uid + 'userGender')
-         AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry')
-         AsyncStorage.removeItem(auth().currentUser.uid + 'userName')
-         AsyncStorage.removeItem(auth().currentUser.uid + 'userBio')
-         AsyncStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
-         AsyncStorage.removeItem(auth().currentUser.uid + 'blockedUsers')
-         AsyncStorage.removeItem(auth().currentUser.uid + 'favoriteUsers')
-         AsyncStorage.removeItem(auth().currentUser.uid + 'noOfSearch')
-         AsyncStorage.removeItem(auth().currentUser.uid + 'lastSearch')
-         AsyncStorage.removeItem(auth().currentUser.uid + 'historyArray')
-         AsyncStorage.removeItem(auth().currentUser.uid + 'favShowThisDialog')
-         AsyncStorage.removeItem(auth().currentUser.uid + 'blockShowThisDialog')
-         AsyncStorage.removeItem(auth().currentUser.uid + "o")
-         AsyncStorage.removeItem(auth().currentUser.uid + 'playerId')
-         AsyncStorage.removeItem(auth().currentUser.uid + 'message_uids')
-         AsyncStorage.removeItem(auth().currentUser.uid + 'message_usernames')
-         AsyncStorage.removeItem(auth().currentUser.uid + 'theme')
-         AsyncStorage.removeItem(auth().currentUser.uid + 'mode')
-         var messageUidsArray = firestore().collection(auth().currentUser.uid).doc("MessageInformation")
-         console.log("messageuidsarray: ", messageUidsArray)
-         messageUidsArray.get().then( async doc =>{
-           console.log("firestore içi")
-           if(doc.exists){
-             var conversationUidArray = await doc.data()["UidArray"]
-             for(let i = 0; i < conversationUidArray.length; i++){
-               AsyncStorage.removeItem(auth().currentUser.uid + conversationUidArray[i] + '/messages')
-               AsyncStorage.removeItem('IsRequest/' + auth().currentUser.uid + "/" + conversationUidArray[i])
-               AsyncStorage.removeItem('ShowMessageBox/' + auth().currentUser.uid + "/" + conversationUidArray[i])
-               AsyncStorage.removeItem(auth().currentUser.uid + "" + conversationUidArray[i] + 'lastSeen')
-               // firestore delete
-               firestore().collection(auth().currentUser.uid).doc('MessageInformation').delete().then(() => {
-                 console.log('MessageInformation deleted!');
-               });
-               firestore().collection(auth().currentUser.uid).doc('Bios').delete().then(() => {
-                 console.log('Bİos deleted!');
-               });
-               firestore().collection(auth().currentUser.uid).doc('Similarity').delete().then(() => {
-                 console.log('Similarity deleted!');
-               });
-             }
-           }
-         })
-         // realtime remove
-         database().ref('/PlayerIds/' + auth().currentUser.uid).remove()
-         database().ref('/Users/'+auth().currentUser.uid).remove()
-         // storage delete
-         storage().ref("Embeddings/" + auth().currentUser.uid + ".pickle").delete()
-         storage().ref("Photos/" + auth().currentUser.uid + "/1.jpg").delete()
-         storage().ref("Photos/" + auth().currentUser.uid + "/2.jpg").delete()
-         storage().ref("Photos/" + auth().currentUser.uid + "/3.jpg").delete()
-         storage().ref("Photos/" + auth().currentUser.uid + "/4.jpg").delete()
-         storage().ref("Photos/" + auth().currentUser.uid + "/5.jpg").delete()
-         storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/search-photo.jpg").delete()
-         storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/vec.pickle").delete()
 
-         auth().currentUser.delete().then(function() {
-           console.log("LOGOUT SUCCESSFUL")
-           this.props.navigation.dispatch(StackActions.popToTop());
-         })
-       }
-    }
-    else{
-      Alert.alert(global.langPlsTryAgain, global.langWrongEmailPassword)
-    }
-  }
   render(){
     var lang = language[global.lang]
     const spin = this.spinValue.interpolate({

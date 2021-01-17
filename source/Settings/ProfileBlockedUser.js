@@ -113,7 +113,9 @@ static navigationOptions = {
 
   async initializeBlockedUsersScreen(){
     listener = database().ref('Users/' + global.selectedBlockedUserUid + "/i")
-    await listener.on('value', async snap => await this.listenerFunc(snap));
+    await listener.on('value', async snap => await this.listenerFunc(snap)).catch(error => {
+      console.log(error)
+    });
   }
 
   listenerFunc = async (snap) => {
@@ -147,6 +149,7 @@ static navigationOptions = {
         this.setState({profilePhoto: data})
         console.log("profil photo: ", data)
       }).catch(function(error) {
+        console.log(error)
         // Handle any errors
       });
   }

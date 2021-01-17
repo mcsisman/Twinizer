@@ -85,8 +85,8 @@ Login = (email, password) => {
                await storageRef.getDownloadURL().then(data =>{
                  console.log("EMBEDDING VAR: ", auth().currentUser.uid)
                  console.log("DATA: ", data)
-                 //navigate('Tabs', { screen: 'Main' })
-                 navigate("UserInfo")
+                 navigate('Tabs', { screen: 'Main' })
+                 //navigate("UserInfo")
                }).catch(function(error) {
                  console.log("EMBEDDING YOK: ", auth().currentUser.uid)
                  navigate("UserInfo")

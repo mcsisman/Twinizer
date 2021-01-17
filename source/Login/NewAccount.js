@@ -92,33 +92,29 @@ writeUserData(userId, name, email, imageUrl) {
     SignUp = (email, password) => {
       var lang = language[global.lang]
       const {navigate} = this.props.navigation;
-    try {
-              auth()
-               .createUserWithEmailAndPassword(this.state.email, this.state.sifre)
-               .then(() => {
-                 console.log(auth().currentUser.uid)
-                      console.log(database().ref('/Users/' + auth().currentUser.uid + "/i"))
-                      database().ref('/Users/' + auth().currentUser.uid + "/i").set({
-                      u: this.state.isim,
-                    });
-                    AsyncStorage.setItem(auth().currentUser.uid + 'userName', this.state.isim)
-                    auth().currentUser.sendEmailVerification();
-                    navigate('Login')
-                    Alert.alert('',lang.VerificationSent);
-                })
-                .catch(error => {
-                  if(error.message == 'The email is badly formatted.'){
-                    Alert.alert(lang.PlsTryAgain,lang.InvalidEmail);
-                  }
-                  else{
-                    Alert.alert(lang.PlsTryAgain,lang.EmailAlready);
-                  }
-
-                });
-
-} catch (error) {
-      alert(error);
-    }
+      auth().createUserWithEmailAndPassword(this.state.email, this.state.sifre).then(() => {
+        console.log(auth().currentUser.uid)
+        console.log(database().ref('/Users/' + auth().currentUser.uid + "/i"))
+        database().ref('/Users/' + auth().currentUser.uid + "/i").set({
+          u: this.state.isim,
+        }).catch(error => {
+          console.log("Can't update database")
+        });
+        AsyncStorage.setItem(auth().currentUser.uid + 'userName', this.state.isim)
+        auth().currentUser.sendEmailVerification().catch(error => {
+          Alert.alert(lang.PlsTryAgain, lang.SendEmailFailed)
+        });
+        navigate('Login')
+        Alert.alert('',lang.VerificationSent);
+      }).catch(error => {
+        console.log("Create account error: ", error.message)
+        if(error.message == '[auth/invalid-email] The email address is badly formatted.'){
+            Alert.alert(lang.PlsTryAgain,lang.InvalidEmail);
+        }
+        else{
+            Alert.alert(lang.PlsTryAgain,lang.EmailAlready);
+        }
+      });
   };
   check(){
     var lang = language[global.lang]

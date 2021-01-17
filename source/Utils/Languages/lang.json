@@ -37,6 +37,7 @@
     "EmailNotRegistered": "This email address is not registered.",
     "VerificationSent": "Verification email has been sent.",
     "InvalidEmail": "The email address is invalid.",
+    "SendEmailFailed": "Sending verification email failed.",
     "EmailAlready": "This email address has already been registered.",
     "PlsEnterEmailUsername": "Please enter your email address and username.",
     "PlsEnterUsername": "Please enter your username.",
@@ -132,9 +133,9 @@
 
     "PrivacyPolicy": "Privacy Policy",
     "TermsOfUse": "Terms of Use",
-    "Licences": "Licences"
+    "Licences": "Licences",
 
-
+    "ConnectionFailed": "Connection Failed."
 
 
 
@@ -183,6 +184,7 @@
     "EmailNotRegistered": "Bu e-posta adresi kayıtlı değil.",
     "VerificationSent": "Onay e-postası gönderildi",
     "InvalidEmail": "E-posta adresi geçerli değil.",
+    "SendEmailFailed": "Onay E-postası gönderilemedi.",
     "EmailAlready": "Bu e-posta adresi zaten kayıtlı.",
     "PlsEnterEmailUsername": "Lütfen e-posta adresinizi ve kullanıcı adınızı giriniz.",
     "PlsEnterUsername": "Lütfen kullanıcı adınızı giriniz.",
@@ -277,6 +279,8 @@
 
     "PrivacyPolicy": "Gizlilik Politikası",
     "TermsOfUse": "Kullanım Şartları",
-    "Licences": "Lisanslar"
+    "Licences": "Lisanslar",
+
+    "ConnectionFailed": "Bağlantı kurulamadı."
   }
 }

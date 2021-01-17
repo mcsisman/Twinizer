@@ -70,7 +70,9 @@ class FirebaseSvc {
           };
           firstTime = false
           if(!global.currentProcessUidArray[global.receiverUid]){
-            database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
+            database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove().catch(error => {
+              console.log(error)
+            });
             await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
               .then(req => {
                 if(req){
@@ -95,7 +97,9 @@ class FirebaseSvc {
           }
           else{
             if(!global.addedMsgs[global.receiverUid].includes(message.id)){
-              database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
+              database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove().catch(error => {
+                console.log(error)
+              });
               await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
                 .then(req => {
                   if(req){
@@ -127,7 +131,9 @@ class FirebaseSvc {
   };
   refOn = async callback => {
     database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().endAt("A").startAt("-").limitToLast(1)
-      .on('child_added', async snapshot => await callback(await this.parse(snapshot)));
+      .on('child_added', async snapshot => await callback(await this.parse(snapshot))).catch(error => {
+        console.log(error)
+      });
   }
 
   get timestamp() {
@@ -139,7 +145,9 @@ class FirebaseSvc {
     AsyncStorage.setItem('IsRequest/' + auth().currentUser.uid + "/" + global.receiverUid, "false")
     database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).update({
       k:1
-    })
+    }).catch(error => {
+      console.log(error)
+    }); // ALOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO BURDAN AŞAĞISINDA CATCH KOYMADIM CEMİL BURAYA CATCH KOYARKEN BERABER BAKALIM
     //If sending a msg to previously deleted person on main page
     AsyncStorage.setItem('ShowMessageBox/' + auth().currentUser.uid + "/" + global.receiverUid, "true")
     console.log("SENDE GELEN MESSAGES:", messages)

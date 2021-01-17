@@ -261,9 +261,13 @@ async onIds(device) {
       var randO = Math.random()
       database().ref('/Users/'+auth().currentUser.uid + '/i').update({
         o: randO
+      }).catch(error => {
+        Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
       });
       database().ref('/PlayerIds/').update({
         [auth().currentUser.uid]: global.playerId
+      }).catch(error => {
+        Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
       });
       AsyncStorage.setItem(auth().currentUser.uid + 'playerId', global.playerId)
     }
@@ -877,6 +881,8 @@ async sendFirstMessage(){
   var realtimeo = 0;
   database().ref('/Users/'+ global.receiverUid + "/i/o").once('value').then(snapshot => {
     realtimeo = snapshot.val()
+  }).catch(error => {
+    console.log("Can't get o value in database info")
   });
   if(tempo != realtimeo){
     database().ref('/PlayerIds/'+global.receiverUid).once('value').then(snapshot => {
@@ -884,6 +890,8 @@ async sendFirstMessage(){
       global.playerIdArray[global.receiverUid] = snapshot.val()
       AsyncStorage.setItem(global.receiverUid + "playerId", snapshot.val())
       AsyncStorage.setItem(global.receiverUid + "o", realtimeo)
+    }).catch(error => {
+      console.log("Can't get playerId of the user you send message")
     });
   }
   this.props.navigation.navigate("Chat")
@@ -1038,28 +1046,29 @@ async createEmailDistanceArrays(gender, country, fn){
   console.log("fn: ", fn)
   if (fn == "searchDone"){
     console.log("searchDone")
-    bioDict_ref = firestore().collection(auth().currentUser.uid).doc("Bios")
-    bioDict_ref.get().then(doc => {
-     if (doc.exists) {
-       bioDict = doc.data();
-     }
-   });
-   usersDict_ref = firestore().collection(auth().currentUser.uid).doc("Users")
-   await usersDict_ref.get().then(doc => {
-    if (doc.exists) {
-      usersDict = doc.data();
-    }
-  });
-    var items = Object.keys(dict).map(function(key) {
-       return [key, dict[key]];
-     });
-     // Sort the array based on the second element
-     items.sort(function(first, second) {
-       return first[1] - second[1];
-     });
-     var length = Object.keys(dict).length;
-     console.log(length);
-     for(let i = 0; i < length; i++){
+    try{
+      bioDict_ref = firestore().collection(auth().currentUser.uid).doc("Bios")
+      bioDict_ref.get().then(doc => {
+        if (doc.exists) {
+          bioDict = doc.data();
+        }
+      });
+      usersDict_ref = firestore().collection(auth().currentUser.uid).doc("Users")
+      await usersDict_ref.get().then(doc => {
+        if (doc.exists) {
+          usersDict = doc.data();
+        }
+      });
+      var items = Object.keys(dict).map(function(key) {
+        return [key, dict[key]];
+      });
+      // Sort the array based on the second element
+      items.sort(function(first, second) {
+        return first[1] - second[1];
+      });
+      var length = Object.keys(dict).length;
+      console.log(length);
+      for(let i = 0; i < length; i++){
        if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(items[i][0]) == false){
          countryArray.push(((usersDict[items[i][0]]).split("_"))[1]);
          genderArray.push(((usersDict[items[i][0]]).split("_"))[0]);
@@ -1072,11 +1081,14 @@ async createEmailDistanceArrays(gender, country, fn){
          mainUsernameArray.push(((usersDict[items[i][0]]).split("_"))[2]);
          mainDistanceArray.push(items[i][1]);
        }
-     }
-     console.log(items);
-     console.log(emailArray);
-     console.log(distanceArray);
-     //console.log(distanceArray);
+      }
+      console.log(items);
+      console.log(emailArray);
+      console.log(distanceArray);
+      //console.log(distanceArray);
+    } catch(error) {
+      Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
+    }
   }
   else if (fn == "filterDone with all") {
     console.log("filterDone with all")
@@ -1188,6 +1200,7 @@ async getImageURL(imageIndex){
       //photoArray.push(data)
       this.downloadImages(imageIndex);
     }).catch(function(error) {
+      console.log(error)
       // Handle any errors
     });
 }
@@ -1246,6 +1259,8 @@ async allFunctionsCompleted(){
           }
     }
     console.log(this.state.uri2);
+  }).catch(error => {
+    Alert.alert(lang.langPlsTryAgain, lang.ConnectionFailed)
   });
 }
 
@@ -1275,7 +1290,9 @@ async checkFunction(){
       funcnumval = 0
     }
     this.probabilityDoneCheck = true;
-  })
+  }).catch(error => {
+    Alert.alert(lang.langPlsTryAgain, lang.ConnectionFailed)
+  });
 }
 
 async filterDone(){
@@ -1667,12 +1684,12 @@ uploadSearchPhoto = async (uri) => {
          Alert.alert("Connection Failed", "Please try Again.." )
        });
       }
-      }).catch(error => {
-        this.setState({loadingOpacity: 0})
-        this.spinValue = new Animated.Value(0)
-        console.log("Search fotosu upload olmadı")
-        Alert.alert("Connection Failed", "Please try Again.. 1")
-      });
+    }).catch(error => {
+      this.setState({loadingOpacity: 0})
+      this.spinValue = new Animated.Value(0)
+      console.log("Search fotosu upload olmadı")
+      Alert.alert("Connection Failed", "Please try Again.. 1")
+    });
 }
 search = () =>{
     this.setState({isVisible2: true})

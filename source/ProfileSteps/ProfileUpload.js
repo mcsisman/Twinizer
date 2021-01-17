@@ -104,14 +104,11 @@ uploadPhoto = async (uri) => {
       var ref1 = storageRef.child("Photos/" + auth().currentUser.uid + this.state.str);
       await ref1.put(blob).then(function(snapshot) {uploadDone = true}).catch(function(error) {
         Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
-      });;
-
+      });
       this.spinValue = new Animated.Value(0)
       this.setState({loadingOpacity: 0})
     if (uploadDone){
-
       RNFS.copyFile(this.state.profilePhoto, RNFS.DocumentDirectoryPath + auth().currentUser.uid + "profile.jpg");
-
       const {navigate} = this.props.navigation;
       navigate("ImageUpload")
     }

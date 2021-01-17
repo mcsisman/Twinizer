@@ -143,22 +143,21 @@ uploadPhoto = async (uri1, uri2, uri3, uri4) => {
               uploadDone4 = true;
             }).catch(function(error) {
               Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
-            });;;
+            });
           }).catch(function(error) {
             Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
-          });;;
+          });
         }).catch(function(error) {
           Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
-        });;;
+        });
       }).catch(function(error) {
         Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
-      });;;
+      });
       this.spinValue = new Animated.Value(0)
       this.setState({loadingOpacity: 0})
     if(uploadDone1 && uploadDone2 && uploadDone3 && uploadDone4){
       const {navigate} = this.props.navigation;
       global.welcomeOpacity = 1;
-
       navigate("Bio")
     }
   }

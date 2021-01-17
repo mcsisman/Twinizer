@@ -182,7 +182,9 @@ async initializeFavoriteUsersScreen(){
   async getUsernameOfTheUid(uid, i){
     usernameListener[i] = database().ref('Users/' + uid + "/i/u")
     const firstTotalfavs = noOfFavUsers
-    await usernameListener[i].on('value', async snap => await this.listenerFunc(snap, i, uid, firstTotalfavs));
+    await usernameListener[i].on('value', async snap => await this.listenerFunc(snap, i, uid, firstTotalfavs)).catch(error => {
+      console.log(error)
+    });
   }
 listenerFunc = async (snap, i, conversationUid, firstTotal) => {
     console.log("LISTENER")

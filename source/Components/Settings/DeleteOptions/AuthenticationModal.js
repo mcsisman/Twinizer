@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import {createStackNavigator, Header} from 'react-navigation-stack';
 import Modal from "react-native-modal";
-
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
+import OneSignal from 'react-native-onesignal'
+import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-community/async-storage';
 import PropTypes from 'prop-types';
 import {
+  Alert,
   View,
   Platform,
   TextInput,
@@ -17,6 +23,8 @@ import {
   StatusBar
 } from 'react-native';
 
+email = ""
+pw = ""
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
 }
@@ -35,6 +43,129 @@ export default class AuthenticationModal extends Component {
    onPressEnter: PropTypes.func
  }
  static defaultProps = {
+ }
+ async deletePress(email, password){
+   console.log("DELETE PRESS")
+   this.setState({authenticationVisible: false})
+   try{
+     if(auth().currentUser.email == email){
+       await auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(async () => {
+          authenticated = true
+          console.log("authenticated")
+        })
+        if (authenticated){
+          await OneSignal.removeEventListener('received', this.onReceived);
+          await OneSignal.removeEventListener('opened', this.onOpened);
+          await OneSignal.removeEventListener('ids', this.onIds);
+          // async storage remove
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'userGender')
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry')
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'userName')
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'userBio')
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'blockedUsers')
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'favoriteUsers')
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'noOfSearch')
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'lastSearch')
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'historyArray')
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'favShowThisDialog')
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'blockShowThisDialog')
+          await AsyncStorage.removeItem(auth().currentUser.uid + "o")
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'playerId')
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'message_uids')
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'message_usernames')
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'theme')
+          await AsyncStorage.removeItem(auth().currentUser.uid + 'mode')
+          var messageUidsArray = firestore().collection(auth().currentUser.uid).doc("MessageInformation")
+          console.log("messageuidsarray: ", messageUidsArray)
+          await messageUidsArray.get().then( async doc =>{
+            console.log("firestore içi")
+            if(doc.exists){
+              var conversationUidArray = await doc.data()["UidArray"]
+              for(let i = 0; i < conversationUidArray.length; i++){
+                await AsyncStorage.removeItem(auth().currentUser.uid + conversationUidArray[i] + '/messages')
+                await AsyncStorage.removeItem('IsRequest/' + auth().currentUser.uid + "/" + conversationUidArray[i])
+                await AsyncStorage.removeItem('ShowMessageBox/' + auth().currentUser.uid + "/" + conversationUidArray[i])
+                await AsyncStorage.removeItem(auth().currentUser.uid + "" + conversationUidArray[i] + 'lastSeen')
+              }
+            }
+          })
+          // firestore delete
+          await firestore().collection(auth().currentUser.uid).doc('ModelResult').delete().then(() => {
+            console.log('ModelResult deleted!');
+          }).catch(error => {
+            console.log(error)
+          });
+          await firestore().collection(auth().currentUser.uid).doc('Bios').delete().then(() => {
+            console.log('Bİos deleted!');
+          }).catch(error => {
+            console.log(error)
+          });
+          await firestore().collection(auth().currentUser.uid).doc('Similarity').delete().then(() => {
+            console.log('Similarity deleted!');
+          }).catch(error => {
+            console.log(error)
+          });
+          await firestore().collection(auth().currentUser.uid).doc('MessageInformation').delete().then(() => {
+            console.log('MessageInformation deleted!');
+          }).catch(error => {
+            console.log(error)
+          });
+          await firestore().collection(auth().currentUser.uid).doc('Funcdone').delete().then(() => {
+            console.log('Funcdone deleted!');
+          })
+          // storage delete
+          await storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/search-photo.jpg").delete().then(() => {
+            console.log('search-photo deleted');
+          }).catch(error => {
+            console.log(error)
+          });
+          await storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/vec.pickle").delete().then(() => {
+            console.log('vec deleted!');
+          }).catch(error => {
+            console.log(error)
+          });
+          await storage().ref("Photos/" + auth().currentUser.uid + "/2.jpg").delete().then(() => {
+            console.log('2 deleted!');
+          })
+          await storage().ref("Photos/" + auth().currentUser.uid + "/3.jpg").delete().then(() => {
+            console.log('3 deleted!');
+          })
+          await storage().ref("Photos/" + auth().currentUser.uid + "/4.jpg").delete().then(() => {
+            console.log('4 deleted!');
+          })
+          await storage().ref("Photos/" + auth().currentUser.uid + "/5.jpg").delete().then(() => {
+            console.log('5 deleted!');
+          })
+          await storage().ref("Embeddings/" + auth().currentUser.uid + ".pickle").delete().then(() => {
+            console.log('embeddings deleted!');
+          })
+          await storage().ref("Photos/" + auth().currentUser.uid + "/1.jpg").delete().then(() => {
+            console.log('1 deleted!');
+          })
+          // realtime remove
+          await database().ref('/PlayerIds/' + auth().currentUser.uid).remove().then(() => {
+            console.log('playerId deleted!');
+          })
+          await database().ref('/Users/'+auth().currentUser.uid).remove().then(() => {
+            console.log('user info deleted!');
+          })
+          // delete account from authentication
+          await auth().currentUser.delete().then(function() {
+            console.log("LOGOUT SUCCESSFUL")
+            global.popUp()
+          })
+        }
+     }
+     else{
+       Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
+     }
+   } catch (error) {
+     console.log(error)
+     Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
+   }
  }
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
@@ -87,7 +218,7 @@ export default class AuthenticationModal extends Component {
 
                 style={{fontSize: 16*(this.width/360),  position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*30)/100,
                  backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
-                 onChangeText={(text) => global.deleteAuthEmail = text}>
+                 onChangeText={(text) => email = text}>
               </TextInput>
               <TextInput
               placeholderTextColor="rgba(255,255,255,0.7)"
@@ -96,14 +227,14 @@ export default class AuthenticationModal extends Component {
 
               style={{fontSize: 16*(this.width/360),  position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*23)/100,
                backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
-               onChangeText={(text) => global.deleteAuthPassWord = text}>
+               onChangeText={(text) => pw = text}>
             </TextInput>
 
             <TouchableOpacity
             activeOpacity = {1}
             style={{justifyContent: 'center', position: 'absolute',
               paddingLeft: 15, paddingRight: 15, height: (this.height*6)/100, flex:1, bottom: (this.height*15)/100}}
-             onPress={this.props.onPressEnter}>
+             onPress={() => {this.deletePress(email, pw)}}>
              <Text style={{textAlign: 'center', color: 'white',   fontSize: 18*(this.width/360)}}>
              Enter
             </Text>
