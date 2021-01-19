@@ -41,6 +41,8 @@ export default class NewAccountScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.state = {
+      fontWeight: "normal",
+      usernameColor: "black",
       splashOver : false,
       isim : "",
       sifre : "",
@@ -74,12 +76,9 @@ export default class NewAccountScreen extends Component<{}>{
     const { height, screenX, screenY, width } = e.endCoordinates
     keyboardYcord = screenY
     keyboardHeight = height
-
-    console.log("keyboard açıldı")
     this.setState({keyboardOpen: true})
   };
   _keyboardDidHide = () => {
-    console.log("keyboard kapandı")
     this.setState({keyboardOpen: false})
   };
 writeUserData(userId, name, email, imageUrl) {
@@ -93,7 +92,6 @@ writeUserData(userId, name, email, imageUrl) {
       var lang = language[global.lang]
       const {navigate} = this.props.navigation;
       auth().createUserWithEmailAndPassword(this.state.email, this.state.sifre).then(() => {
-        console.log(auth().currentUser.uid)
         console.log(database().ref('/Users/' + auth().currentUser.uid + "/i"))
         database().ref('/Users/' + auth().currentUser.uid + "/i").set({
           u: this.state.isim,
@@ -141,6 +139,25 @@ writeUserData(userId, name, email, imageUrl) {
         Alert.alert('',lang.PasswordMatch);
     }
   }
+  onUsernameTextChange(text){
+
+    this.setState({isim: text})
+    if(this.checkIfUsernameValid(text)){
+      this.setState({usernameColor: "black", fontWeight: "normal"})
+    }
+    else{
+      this.setState({usernameColor: "red", fontWeight: "bold"})
+    }
+  }
+  checkIfUsernameValid(text){
+    var regex = /^[A-Za-z0-9. ]+$/
+    if(regex.test(text) &&  text.length >= 3){
+      return true
+    }
+    else{
+      return false
+    }
+  }
   render(){
     var lang = language[global.lang]
     var keyboardAvoidingHeight = keyboardHeight + this.navBarHeight;
@@ -177,12 +194,14 @@ writeUserData(userId, name, email, imageUrl) {
         <View
         style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
+        maxLength = {15}
+        value = {this.state.isim}
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder={lang.Username}
         //returnKeyType="Next"
-        style={{paddingLeft: 0, fontSize: 17*(this.width/360), paddingBottom: 0, position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100,
+        style={{color: this.state.usernameColor, fontWeight: this.state.fontWeight, paddingLeft: 0, fontSize: 17*(this.width/360), paddingBottom: 0, position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100,
          backgroundColor: global.isDarkMode ? 'rgba(255,255,255,0)': 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
-         onChangeText={(text) => this.setState({isim: text})}>
+         onChangeText={(text) => this.onUsernameTextChange(text)}>
         </TextInput>
         </View>
         <View

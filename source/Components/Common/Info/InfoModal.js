@@ -36,6 +36,8 @@ export default class InfoModal extends Component {
    animationOutTiming: PropTypes.number,
    animationIn: PropTypes.string,
    backdropOpacity: PropTypes.number,
+   isKeyboardOpen: PropTypes.bool,
+   keyboardHeight: PropTypes.number,
 
  }
  static defaultProps = {
@@ -86,7 +88,7 @@ export default class InfoModal extends Component {
       alignItems: 'center',
       position: 'absolute',
       flexDirection: 'column',
-      bottom: screenHeight*(1/10)}}>
+      bottom: this.props.isKeyboardOpen ? this.props.keyboardHeight+screenHeight*(1/10) : screenHeight*(1/10)}}>
 
       <View style={{paddingTop: 10, paddingBottom: 10, width: screenWidth*(5.5/10), flex:1}}>
 

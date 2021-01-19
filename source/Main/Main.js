@@ -55,7 +55,7 @@ import BigImgInfo from '../Components/Main/Swipeable/BigImgInfo'
 import SwipeableSmallImg from '../Components/Main/Swipeable/SwipeableSmallImg'
 import SwipeableBigImg from '../Components/Main/Swipeable/SwipeableBigImg'
 import language from '../Utils/Languages/lang.json'
-
+import CryptoJS from "react-native-crypto-js";
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
 }
@@ -179,6 +179,14 @@ constructor(props){
 
 async componentDidMount(){
 
+  let ciphertext = CryptoJS.AES.encrypt('my message', 'secret key 123').toString();
+
+// Decrypt
+  console.log("cipher:", ciphertext)
+let bytes  = CryptoJS.AES.decrypt(ciphertext, 'secret key 1');
+let originalText = bytes.toString(CryptoJS.enc.Utf8);
+
+console.log(originalText); // 'my message'
   //console.log("rwar:", lang.SignUp)
     favShowThisDialog = await AsyncStorage.getItem(auth().currentUser.uid + 'favShowThisDialog')
     blockShowThisDialog = await AsyncStorage.getItem(auth().currentUser.uid + 'blockShowThisDialog')
@@ -1906,16 +1914,7 @@ render(){
       onPressAdd= {()=>this.favModalButtonClicked(emailArray[global.swipeCount])}
       onPressClose = {()=>this.setState({addToFavVisible:false})}/>
 
-      <FavBlockModal
-      cancel = {lang.CancelCap}
-      dialog = {lang.DontShowThisDialogAgain}
-      tickIsVisible = {this.state.blockTickVisible}
-      onPressTick = {()=> this.setState({blockTickVisible: this.state.blockTickVisible ? 0 : 1})}
-      isVisible = {this.state.addToBlockVisible}
-      image = {"block"}
-      txtAlert= {lang.BlockUserInfoPt1 +this.state.uri2_username + lang.BlockUserInfoPt2 }
-      onPressAdd= {()=>this.blockModalButtonClicked(emailArray[global.swipeCount])}
-      onPressClose = {()=>this.setState({addToBlockVisible:false})}/>
+
 
       <ImageUploadModal
       isVisible={this.state.isVisible1}
@@ -1942,6 +1941,17 @@ render(){
       searchDisabled = {this.state.disabledSearch}
       textFilters = {lang.Filter}/>
 
+      <FavBlockModal
+      cancel = {lang.CancelCap}
+      dialog = {lang.DontShowThisDialogAgain}
+      tickIsVisible = {this.state.blockTickVisible}
+      onPressTick = {()=> this.setState({blockTickVisible: this.state.blockTickVisible ? 0 : 1})}
+      isVisible = {this.state.addToBlockVisible}
+      image = {"block"}
+      txtAlert= {lang.BlockUserInfoPt1 +this.state.uri2_username + lang.BlockUserInfoPt2 }
+      onPressAdd= {()=>this.blockModalButtonClicked(emailArray[global.swipeCount])}
+      onPressClose = {()=>this.setState({addToBlockVisible:false})}/>
+
       <PhotoPopUpModal
       isVisible = {this.state.openProfileIsVisible}
       onPressImage = {() => {
@@ -1957,14 +1967,16 @@ render(){
       isBlocked = {isBlock}
       onPressFav = {()=>this.addToFavButtonClicked()}
       onPressBlock = {()=>this.addToBlockButtonClicked()}
-      onPressSendMsg = {()=>this.sendFirstMessage()}/>
+      onPressSendMsg = {()=>this.sendFirstMessage()}>
+
+      </PhotoPopUpModal>
+
+
+
 
       <Animated.Image source={{uri: 'loading' + global.themeForImages}}
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
         position: 'absolute', top: getStatusBarHeight() + headerHeight + this.width/6+(this.width/2)*(7/6)/2-this.width/30, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
-
-
-
 
 
         <ImageViewerModal

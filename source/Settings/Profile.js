@@ -66,9 +66,11 @@ export default class ProfileScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.state = {
+      keyboardHeight: 0,
       authenticationVisible: false,
       whichInput: null,
       keyboardOpen: false,
+      keyboardOpenAuth: false,
       saveInfoModalVisible: false,
       imageViewerVisible: false,
       goBackInfoModalVisible: false,
@@ -96,6 +98,8 @@ export default class ProfileScreen extends Component<{}>{
     this.downloadURL = "";
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
+    this.windowHeight = Math.round(Dimensions.get('window').height);
+    this.navBarHeight = this.height - this.windowHeight
     this.spinValue = new Animated.Value(0)
   }
 
@@ -134,14 +138,15 @@ static navigationOptions = {
   };
   _keyboardDidHide = () => {
     if(this.state.bioOpacity == 1){
-      this.setState({upperComponentsOpacity: 1, upperComponentsDisabled: false, keyboardOpen: false})
+      this.setState({keyboardOpenAuth: false, upperComponentsOpacity: 1, upperComponentsDisabled: false, keyboardOpen: false})
     }
     else{
-      this.setState({bioOpacity: 1, keyboardOpen: false})
+      this.setState({keyboardOpenAuth: false, bioOpacity: 1, keyboardOpen: false})
     }
   };
   _keyboardDidShow = (e) => {
     const { height, screenX, screenY, width } = e.endCoordinates
+    this.setState({keyboardHeight: height + this.navBarHeight, keyboardOpenAuth: true})
     console.log(height)
     console.log("y:", screenY)
     if(this.state.whichInput == "bio"){
@@ -168,6 +173,7 @@ static navigationOptions = {
   async checkIfUserDataExistsInLocalAndSaveIfNot(){
     // from asyncstorage part
 
+    console.log("current user:", auth().currentUser.uid)
     await AsyncStorage.getItem(auth().currentUser.uid + 'userGender').then( req => {
       currentUserGender = req
     })
@@ -192,7 +198,14 @@ static navigationOptions = {
       .then(json => {
         currentUserPhotoCount = json
       })
+      console.log("1:", currentUserCountry)
+      console.log("2:", currentUserGender)
+      console.log("3:", currentUserUsername)
+      console.log("4:", currentUserBio)
+      console.log("5:", currentUserPhotoCount)
+
     if(currentUserCountry == null || currentUserGender == null || currentUserUsername == null || currentUserBio == null || currentUserPhotoCount == null){
+      console.log("LOCAL USER DATA IS NULL")
       var infoListener = database().ref('Users/' + auth().currentUser.uid + "/i");
       await infoListener.once('value').then(async snapshot => {
         this.setState({loadingDone: true, userGender: snapshot.val().g, userCountry: snapshot.val().c, userUsername: snapshot.val().u,
@@ -211,8 +224,10 @@ static navigationOptions = {
       });
    }
    else{
+
      this.setState({ profilePhoto: "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg", loadingDone: true, userGender: currentUserGender,
      userCountry: currentUserCountry, userUsername: currentUserUsername, userBio: currentUserBio, bioLimit: currentUserBio.length, userPhotoCount: currentUserPhotoCount })
+     console.log("LOCAL USER DATA IS NOT NULL:", this.state.profilePhoto)
    }
   }
 
@@ -358,16 +373,17 @@ static navigationOptions = {
   });
   };
   onPressDelete(){
+    var lang = language[global.lang]
       Alert.alert(
       '',
-      "Are you sure you want to delete your account?" ,
+      lang.DeleteAccount ,
       [
         {
-          text: 'No',
+          text: lang.NO,
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        {text: 'Yes', onPress: () => this.setState({authenticationVisible: true})},
+        {text: lang.YES, onPress: () => this.setState({authenticationVisible: true})},
       ],
       {cancelable: true},
     );
@@ -571,6 +587,8 @@ static navigationOptions = {
         </View>
 
         <AuthenticationModal
+        isKeyboardOpen={this.state.keyboardOpenAuth}
+        modalBottom = {(this.height - getStatusBarHeight() - this.state.keyboardHeight - this.width*8/10)/2 + this.state.keyboardHeight }
         isVisible = {this.state.authenticationVisible}
         onPressEnter = {() => {this.deletePress()}}
         onPressCancel = {() => {this.setState({authenticationVisible: false})}}
@@ -613,7 +631,9 @@ static navigationOptions = {
         isVisible = {this.state.saveInfoModalVisible}
         txtAlert = {lang.YourChangesHaveBeenSaved}
         txtGotIt = {lang.GotIt}
-        onPressClose = {()=>this.setState({saveInfoModalVisible:false}) }/>
+        onPressClose = {()=>this.setState({saveInfoModalVisible:false}) }
+        isKeyboardOpen = {this.state.keyboardOpen}
+        keyboardHeight = {this.state.keyboardHeight}/>
 
         <Animated.Image source={{uri: 'loading' + global.themeForImages}}
           style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),

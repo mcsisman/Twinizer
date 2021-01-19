@@ -1,6 +1,15 @@
 {
   "langEN":
   {
+    "CouldntUploadImg": "Couldn't upload the image. Try Again.." ,
+    "CharLengthExceeded": "You've exceeded the character limit.",
+    "CreateAccountFailed": "Creating account is failed. Try Again..",
+    "SomethingWentWrong": "Something went wrong.",
+    "CheckPhotos": "Check your photos and be sure that there is a face in each of them.",
+    "Error": "Error!",
+    "DeleteAccount": "Are you sure you want to delete your account?",
+    "Enter" : "Enter",
+    "VerifyEmailPW": "Verify your email and password to delete your account.",
     "PlsCheckEmail": "We've sent a password reset link to your e-mail.",
     "LogoutSure": "Are you sure you want to log out?",
     "FavUserPt1": "Are you sure you want to add ",
@@ -149,6 +158,15 @@
   },
   "langTR":
   {
+    "CouldntUploadImg": "Resminiz kaydedilemedi, lütfen tekrar deneyin.",
+    "CharLengthExceeded": "Karakter limitini aştınız.",
+    "CreateAccountFailed": "Creating account is failed. Try Again..",
+    "SomethingWentWrong": "Bir hata oluştu.",
+    "CheckPhotos": "Lütfen fotoğraflarınız kontrol edin ve hepsinde yüzünüzün görünür olduğundan emin olun.",
+    "Error": "Hata!",
+    "DeleteAccount": "Hesabınızı silmek istediğinizden emin misiniz?",
+    "Enter" : "Onayla",
+    "VerifyEmailPW": "Hesabınızı silebilmek için lütfen e-posta adresinizi ve şifrenizi girin.",
     "PlsCheckEmail": "E-posta adresinize şifre sıfırlama bağlantısı gönderildi.",
     "LogoutSure": "Çıkış yapmak istediğinize emin misiniz?",
     "FavUserPt1": "",

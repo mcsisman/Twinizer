@@ -92,6 +92,7 @@ export default class ProfileUploadScreen extends React.Component {
       )).start()
   }
 uploadPhoto = async (uri) => {
+  var lang = language[global.lang]
     this.setState({loadingOpacity: 1})
     this.spinAnimation()
     var storageRef =  storage().ref();
@@ -103,12 +104,13 @@ uploadPhoto = async (uri) => {
       const blob = await response.blob();
       var ref1 = storageRef.child("Photos/" + auth().currentUser.uid + this.state.str);
       await ref1.put(blob).then(function(snapshot) {uploadDone = true}).catch(function(error) {
-        Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
+        Alert.alert(lang.Error, lang.CouldntUploadImg )
       });
       this.spinValue = new Animated.Value(0)
       this.setState({loadingOpacity: 0})
     if (uploadDone){
-      RNFS.copyFile(this.state.profilePhoto, RNFS.DocumentDirectoryPath + auth().currentUser.uid + "profile.jpg");
+      RNFS.copyFile(this.state.profilePhoto, RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg");
+      console.log("LOCALE KAYDEDİLDİ:", RNFS.DocumentDirectoryPath + auth().currentUser.uid + "profile.jpg")
       const {navigate} = this.props.navigation;
       navigate("ImageUpload")
     }

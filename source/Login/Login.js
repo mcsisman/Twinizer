@@ -75,6 +75,7 @@ _keyboardDidHide = () => {
 };
 
 Login = (email, password) => {
+  var lang = language[global.lang]
     const {navigate} = this.props.navigation;
           auth()
            .signInWithEmailAndPassword(email, password)

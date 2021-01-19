@@ -7,6 +7,7 @@ import storage from '@react-native-firebase/storage';
 import OneSignal from 'react-native-onesignal'
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-community/async-storage';
+import language from '../../../Utils/Languages/lang.json'
 import PropTypes from 'prop-types';
 import {
   Alert,
@@ -31,6 +32,7 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
+var lang = language[global.lang]
 var screenHeight = Math.round(Dimensions.get('screen').height);
 var screenWidth = Math.round(Dimensions.get('screen').width);
 export default class AuthenticationModal extends Component {
@@ -40,7 +42,10 @@ export default class AuthenticationModal extends Component {
    isVisible: PropTypes.bool,
    onBackdropPress: PropTypes.func,
    onPressCancel: PropTypes.func,
-   onPressEnter: PropTypes.func
+   onPressEnter: PropTypes.func,
+   isKeyboardOpen: PropTypes.bool,
+   modalBottom: PropTypes.bottom,
+   onFocus: PropTypes.func,
  }
  static defaultProps = {
  }
@@ -168,11 +173,12 @@ export default class AuthenticationModal extends Component {
    }
  }
   render(){
+    var lang = language[global.lang]
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     return(
       <Modal /*BÜYÜTÜLMÜŞ FOTOĞRAF MODALI*/
-        style = {{alignItems: 'center', justifyContent: 'center'}}
+        style = {{alignItems: 'center', justifyContent: this.props.isKeyboardOpen ? "flex-start": 'center'}}
         backdropOpacity = {0.4}
         coverScreen = {false}
         deviceHeight = {this.height}
@@ -192,61 +198,84 @@ export default class AuthenticationModal extends Component {
           width: this.width*(8/10),
           flexDirection: 'column',
           paddingTop: 0,
-          paddingBottom: 0
+          paddingBottom: 0,
+          position: this.props.isKeyboardOpen ? "absolute" : "relative",
+          bottom: this.props.isKeyboardOpen ? this.props.modalBottom : null
           }}>
           <ImageBackground source={{uri: "flare"}}
             style={{ alignItems: "center", borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,
-              width: this.width*(8/10), height: this.width*(12/10)}}>
+              width: this.width*(8/10), height: this.width*(8/10)}}>
 
               <TouchableOpacity
               activeOpacity = {1}
-              style={{width: this.width*(8/10), height: this.width*(12/10), flex:1, alignItems: 'center',}}
+              style={{width: this.width*(8/10), height: this.width*(8/10), flex:1, alignItems: 'center',}}
                onPress={()=> Keyboard.dismiss() }>
+
               <View
-              style = {{position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*55)/100,
-               backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)'}}>
+              style = {{alignItems: "center", justifyContent:"flex-start",position: 'absolute', width: this.width*(6/10), height: this.width*2/10, flex:1, top:this.width*1/10,
+               borderColor: 'rgba(241,51,18,0)'}}>
               <Text
-              style = {{fontSize: 18*(this.width/360), color: 'white'}}>
-              Verify your email and password to delete your account.
+              numberOfLines = {3}
+              adjustsFontSizeToFit={true}
+              style = {{fontSize: 17*(this.width/360), color: 'white'}}>
+              {lang.VerifyEmailPW}
+
               </Text>
               </View>
 
-                <TextInput
-                placeholderTextColor="rgba(255,255,255,0.7)"
-                placeholder={global.langEmail}
-                keyboardType= "email-address"
+              <View
+              style = {{alignItems: "center", justifyContent:"center", position: 'absolute', width: this.width*(8/10), height: this.width*5/10, flex:1, top:this.width*3/10,
+               borderColor: 'rgba(241,51,18,0)'}}>
 
-                style={{fontSize: 16*(this.width/360),  position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*30)/100,
-                 backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
-                 onChangeText={(text) => email = text}>
-              </TextInput>
               <TextInput
               placeholderTextColor="rgba(255,255,255,0.7)"
-              placeholder={global.langPassword}
+              placeholder={lang.Email}
+              onFocus={this.props.onFocus}
+              keyboardType= "email-address"
+
+              style={{fontSize: 16*(this.width/360),  width: this.width*(6/10), height: (this.height*6)/100,
+               borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
+               onChangeText={(text) => email = text}>
+              </TextInput>
+
+              <View
+              style = {{ height: (this.height*2)/100}}>
+              </View>
+
+              <TextInput
+              placeholderTextColor="rgba(255,255,255,0.7)"
+              placeholder={lang.Password}
+              onFocus={this.props.onFocus}
               secureTextEntry
 
-              style={{fontSize: 16*(this.width/360),  position: 'absolute', width: this.width*(6/10), height: (this.height*6)/100, flex:1, bottom: (this.height*23)/100,
-               backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
+              style={{fontSize: 16*(this.width/360),  width: this.width*(6/10), height: (this.height*6)/100,
+               borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
                onChangeText={(text) => pw = text}>
-            </TextInput>
+               </TextInput>
 
+               <View
+               style = {{ height: (this.height*3)/100}}>
+               </View>
             <TouchableOpacity
             activeOpacity = {1}
-            style={{justifyContent: 'center', position: 'absolute',
-              paddingLeft: 15, paddingRight: 15, height: (this.height*6)/100, flex:1, bottom: (this.height*15)/100}}
+            style={{justifyContent: 'center', paddingLeft: 15, paddingRight: 15, height: (this.height*6)/100,}}
              onPress={() => {this.deletePress(email, pw)}}>
              <Text style={{textAlign: 'center', color: 'white',   fontSize: 18*(this.width/360)}}>
-             Enter
+             {lang.Enter}
             </Text>
             </TouchableOpacity>
+            </View>
             </TouchableOpacity>
+
+
             <TouchableOpacity
-            style={{width: this.width*(2/15), height: this.width*(2/15), right: 0, position:'absolute', top:0}}
+            style={{width: this.width*(1/10), height: this.width*(1/10), right: 0, position:'absolute', top:0}}
              onPress={this.props.onPressCancel}>
              <Image source={{uri: 'cross' + global.themeForImages}}
                style={{width: '40%', height: '40%', right:'30%', bottom: '30%', position: 'absolute' }}
              />
             </TouchableOpacity>
+
           </ImageBackground>
         </View>
       </Modal>

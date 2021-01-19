@@ -240,7 +240,7 @@ var Swipeable = function (_PureComponent) {
         }
       }
 
-      if ( global.swipeCount < 20 && (rightActionActivated || global.rightD2A2 ) && canSwipeLeft && x <= -rightActionActivationDistance) {
+      if ( global.swipeCount < global.emailArrayLength && (rightActionActivated || global.rightD2A2 ) && canSwipeLeft && x <= -rightActionActivationDistance) {
         if(isSwipingLeft && global.flag6){
           console.log("RA2")
           center = center - global.width*(5/10)
@@ -263,7 +263,7 @@ var Swipeable = function (_PureComponent) {
         }
       }
 
-      if (global.swipeCount < 20 && !rightActionActivated && canSwipeLeft && x <= -rightActionActivationDistance) {
+      if (global.swipeCount < global.emailArrayLength && !rightActionActivated && canSwipeLeft && x <= -rightActionActivationDistance) {
         if(isSwipingLeft && global.flag5){
           if(global.rightD2beforeA1 != 3){
             console.log("RA1")

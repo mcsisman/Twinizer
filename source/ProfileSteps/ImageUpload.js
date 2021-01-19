@@ -142,16 +142,20 @@ uploadPhoto = async (uri1, uri2, uri3, uri4) => {
             await ref4.put(blob4).then(async snapshot => {
               uploadDone4 = true;
             }).catch(function(error) {
-              Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
+              var lang = language[global.lang]
+              Alert.alert(lang.Error, lang.CouldntUploadImg)
             });
           }).catch(function(error) {
-            Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
+            var lang = language[global.lang]
+            Alert.alert(lang.Error, lang.CouldntUploadImg )
           });
         }).catch(function(error) {
-          Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
+          var lang = language[global.lang]
+          Alert.alert(lang.Error, lang.CouldntUploadImg )
         });
       }).catch(function(error) {
-        Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
+        var lang = language[global.lang]
+        Alert.alert(lang.Error, lang.CouldntUploadImg )
       });
       this.spinValue = new Animated.Value(0)
       this.setState({loadingOpacity: 0})

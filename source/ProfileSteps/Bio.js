@@ -95,6 +95,7 @@ navigateToMain(){
 }
 
 async writeCountryToDatabase(){
+  var lang = language[global.lang]
   this.setState({loadingOpacity: 1})
   this.spinAnimation()
   try{
@@ -121,19 +122,22 @@ async writeCountryToDatabase(){
           await updateRef.set({
             name: auth().currentUser.uid + "_" + randFloat.toString()
           }).then(function() {
+
             AsyncStorage.setItem(auth().currentUser.uid + 'userGender', global.globalGender)
             AsyncStorage.setItem(auth().currentUser.uid + 'userCountry', global.globalCountry)
             AsyncStorage.setItem(auth().currentUser.uid + 'userBio', global.globalBio)
             AsyncStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(0))
+            console.log("bilgiler locale kaydedildi:", auth().currentUser.uid)
           })
       });
       var result_ref = firestore().collection(auth().currentUser.uid).doc('ModelResult').onSnapshot(async (doc) =>{
         console.log("listenerStarted: ", listenerStarted)
+        var lang = language[global.lang]
         if(listenerStarted){
           var dict = doc.data()
           console.log("dict: ", dict)
           if(dict["result"] < 0){
-            Alert.alert("Error!", "Check your photos and be sure that there is a face in each of them.." )
+            Alert.alert(lang.Error, lang.CheckPhotos )
             updateDone = false;
           }
           else{
@@ -146,14 +150,14 @@ async writeCountryToDatabase(){
             navigate("Tabs")
           }
           else {
-            Alert.alert("Upload Failed", "Creating account is failed. Try Again.." )
+            Alert.alert(lang.SomethingWentWrong, lang.CreateAccountFailed)
           }
         }
         listenerStarted = true
       })
     }
     else {
-      Alert.alert("Fail", "You exceeded the character limit." )
+      Alert.alert(lang.Error, lang.CharLengthExceeded)
     }
   } catch (error) {
     Alert.alert(lang.langPlsTryAgain, lang.ConnectionFailed)
