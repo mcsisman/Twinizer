@@ -82,7 +82,7 @@ export default class InfoModal extends Component {
       <View style={{
       borderRadius: 8, borderWidth: 0.3, borderColor: "rgba(0,0,0,4)",
       backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
-      width: screenWidth*(6.5/10),
+      width: screenWidth*(7.5/10),
       paddingTop: 10,
       paddingBottom: 15,
       alignItems: 'center',
@@ -90,14 +90,14 @@ export default class InfoModal extends Component {
       flexDirection: 'column',
       bottom: this.props.isKeyboardOpen ? this.props.keyboardHeight+screenHeight*(1/10) : screenHeight*(1/10)}}>
 
-      <View style={{paddingTop: 10, paddingBottom: 10, width: screenWidth*(5.5/10), flex:1}}>
+      <View style={{paddingTop: 10, paddingBottom: 10, width: screenWidth*(6.5/10), flex:1}}>
 
       <Text style={{ color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" ,fontSize: this.props.alertFontSize*(screenWidth/360)}}>
       {this.props.txtAlert}
       </Text>
       </View>
 
-      <View style={{justifyContent: 'center', alignItems: 'center', flex:1, width: screenWidth*(5.5/10)}}>
+      <View style={{justifyContent: 'center', alignItems: 'center', flex:1, width: screenWidth*(6.5/10)}}>
       <TouchableOpacity
       activeOpacity = {1}
       style={{ borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,

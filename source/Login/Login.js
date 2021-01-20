@@ -86,8 +86,8 @@ Login = (email, password) => {
                await storageRef.getDownloadURL().then(data =>{
                  console.log("EMBEDDING VAR: ", auth().currentUser.uid)
                  console.log("DATA: ", data)
-                 navigate('Tabs', { screen: 'Main' })
-                 //navigate("UserInfo")
+                 //navigate('Tabs', { screen: 'Main' })
+                 navigate("UserInfo")
                }).catch(function(error) {
                  console.log("EMBEDDING YOK: ", auth().currentUser.uid)
                  navigate("UserInfo")
@@ -140,8 +140,8 @@ Login = (email, password) => {
           <Image source={{uri: 'logo2'}}
             style={{ width: this.width*(5/10), height:this.width*(5/10) }}
           />
-          <Image source={{uri: 'slogan'}}
-            style={{ width: this.width*(0.8/10)*(1243/203), height:this.width*(0.8/10) }}
+          <Image source={{uri: 'twinizerlogin'}}
+            style={{ width: this.width*(0.8/10)*(782/159), height:this.width*(0.8/10) }}
           />
           </View>
           </View>

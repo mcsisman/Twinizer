@@ -20,14 +20,15 @@ export default class ImageUploader extends Component {
   static propTypes = {
    width: PropTypes.number,
    bottom: PropTypes.number,
-   right: PropTypes.number,
+   right: PropTypes.string,
    borderRadius: PropTypes.number,
    borderOpacity: PropTypes.number,
    onPress: PropTypes.func,
    textOpacity: PropTypes.number,
    fontSize: PropTypes.number,
    photo: PropTypes.object,
-   position: PropTypes.string
+   position: PropTypes.string,
+   widthleft: PropTypes.string
  }
  static defaultProps = {
    position: "absolute"
@@ -39,7 +40,7 @@ export default class ImageUploader extends Component {
       <TouchableOpacity
       activeOpacity = {1}
       style={{ justifyContent: 'center', alignItems: 'center', position: this.props.position, backgroundColor: 'rgba(241,51,18,0)',
-       width: this.props.width, height: this.props.width*(7/6), bottom: this.props.bottom, right: this.props.right, borderBottomLeftRadius: this.props.borderRadius, borderTopRightRadius: this.props.borderRadius,
+       width: this.props.width, height: this.props.width*(7/6), bottom: this.props.bottom, right: this.props.right, left: this.props.left, borderBottomLeftRadius: this.props.borderRadius, borderTopRightRadius: this.props.borderRadius,
        borderTopLeftRadius: this.props.borderRadius, borderBottomRightRadius: this.props.borderRadius, borderOpacity: this.props.borderOpacity,
        borderColor: this.props.borderOpacity == 1 ? global.themeColor : "rgba(0,0,0,0)", borderWidth: 2}}
 

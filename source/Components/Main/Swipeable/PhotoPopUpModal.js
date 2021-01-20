@@ -4,6 +4,7 @@ import Modal from "react-native-modal";
 import BlockUserButton from '../../Common/FavBlockMsg/BlockUserButton'
 import FavoriteUserButton from '../../Common/FavBlockMsg/FavoriteUserButton'
 import SendMsgButton from '../../Common/FavBlockMsg/SendMsgButton'
+import FavBlockModal from '../FavBlock/FavBlockModal'
 
 import PropTypes from 'prop-types';
 import {
@@ -41,8 +42,27 @@ export default class PhotoPopUpModal extends Component {
    onPressBlock: PropTypes.func,
    onPressImage: PropTypes.func,
    isFavorite: PropTypes.bool,
-   isBlocked: PropTypes.bool
+   isBlocked: PropTypes.bool,
 
+   favBcancel: PropTypes.string,
+   favBdialog: PropTypes.string,
+   favBtickIsVisible: PropTypes.bool,
+   favBonPressTick: PropTypes.func,
+   favBisVisible: PropTypes.bool,
+   favBimage: PropTypes.string,
+   favBtxtAlert: PropTypes.string,
+   favBonPressAdd: PropTypes.func,
+   favBonPressClose: PropTypes.func,
+
+   blockBcancel: PropTypes.string,
+   blockBdialog: PropTypes.string,
+   blockBtickIsVisible: PropTypes.bool,
+   blockBonPressTick: PropTypes.func,
+   blockBisVisible: PropTypes.bool,
+   blockBimage: PropTypes.string,
+   blockBtxtAlert: PropTypes.string,
+   blockBonPressAdd: PropTypes.func,
+   blockBonPressClose: PropTypes.func,
  }
  static defaultProps = {
    gotItFontSize: 15,
@@ -145,6 +165,29 @@ export default class PhotoPopUpModal extends Component {
           </View>
 
         </View>
+
+        <FavBlockModal
+        cancel = {this.props.favBcancel}
+        dialog = {this.props.favBdialog}
+        tickIsVisible = {this.props.favBtickIsVisible}
+        onPressTick = {this.props.favBonPressTick}
+        isVisible = {this.props.favBisVisible}
+        image = {this.props.favBimage}
+        txtAlert= {this.props.favBtxtAlert}
+        onPressAdd= {this.props.favBonPressAdd}
+        onPressClose = {this.props.favBonPressClose}/>
+
+        <FavBlockModal
+        cancel = {this.props.blockBcancel}
+        dialog = {this.props.blockBdialog}
+        tickIsVisible = {this.props.blockBtickIsVisible}
+        onPressTick = {this.props.blockBonPressTick}
+        isVisible = {this.props.blockBisVisible}
+        image = {this.props.blockBimage}
+        txtAlert= {this.props.blockBtxtAlert}
+        onPressAdd= {this.props.blockBonPressAdd}
+        onPressClose = {this.props.blockBonPressClose}/>
+
       </Modal>
     )
   }

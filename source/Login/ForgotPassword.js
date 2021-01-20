@@ -50,13 +50,18 @@ static navigationOptions = {
   check(){
     var lang = language[global.lang]
     const {navigate} = this.props.navigation;
-    auth().sendPasswordResetEmail(this.state.email)
-      .then(function (user) {
-        navigate('Login')
-        Alert.alert("", lang.PlsCheckEmail)
-      }).catch(error => {
-        Alert.alert(lang.PlsTryAgain, lang.EmailNotRegistered)
-      })
+    if(this.state.email == "" || this.state.email == null || this.state.email == undefined){
+      Alert.alert(lang.PlsTryAgain, lang.EmailNotRegistered)
+    }
+    else{
+      auth().sendPasswordResetEmail(this.state.email)
+        .then(function (user) {
+          Alert.alert("", lang.PlsCheckEmail)
+        }).catch(error => {
+          Alert.alert(lang.PlsTryAgain, lang.EmailNotRegistered)
+        })
+    }
+
   }
   render(){
     var lang = language[global.lang]

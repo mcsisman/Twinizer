@@ -323,6 +323,7 @@ camera = (selectedPhoto) => {
       <View
       style={{width: "50%", height: "100%", alignItems: 'center', justifyContent: "center"}}>
       <ImageUploader
+      right = {"15%"}
       width = {this.width*(2.5/10)}
       borderRadius = {16}
       borderOpacity = {this.state.borderOpacity1}
@@ -335,6 +336,7 @@ camera = (selectedPhoto) => {
       <View
       style={{width: "50%", height: "100%",  alignItems: 'center', justifyContent: "center"}}>
       <ImageUploader
+      left = {"15%"}
       width = {this.width*(2.5/10)}
       borderRadius = {16}
       borderOpacity = {this.state.borderOpacity2}
@@ -351,6 +353,7 @@ camera = (selectedPhoto) => {
       <View
       style={{width: "50%", height: "100%", alignItems: 'center', justifyContent: "center"}}>
       <ImageUploader
+      right = {"15%"}
       width = {this.width*(2.5/10)}
       borderRadius = {16}
       borderOpacity = {this.state.borderOpacity3}
@@ -363,6 +366,7 @@ camera = (selectedPhoto) => {
       <View
       style={{width: "50%", height: "100%",  alignItems: 'center', justifyContent: "center"}}>
       <ImageUploader
+      left = {"15%"}
       width = {this.width*(2.5/10)}
       borderRadius = {16}
       borderOpacity = {this.state.borderOpacity4}
@@ -426,7 +430,7 @@ camera = (selectedPhoto) => {
 
       <InfoModal
       isVisible = {this.state.isVisible2}
-      txtAlert = {lang.ImageUploadInfo}
+      txtAlert = {(lang.ImageUploadInfo).replace("-1-", "\n")}
       txtGotIt = {lang.GotIt}
       onPressClose = {()=>this.setState({isVisible2:false}) }/>
 

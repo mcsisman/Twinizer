@@ -55,7 +55,7 @@
     "PasswordMatch": "Your password and confirmation password don't match.",
 
     "CompleteYourProfile": "Complete Your Profile",
-    "PleaseEnterYourInformation": "Please Enter Your Information",
+    "PleaseEnterYourInformation": "Please fill the information below",
     "Male": "MALE",
     "Female": "FEMALE",
     "Country": "Country",
@@ -64,7 +64,7 @@
     "SelectAGender": "Gender",
     "Next": "NEXT",
 
-    "PleaseUploadAProfilePhoto": "Please Upload a Profile Photo",
+    "PleaseUploadAProfilePhoto": "Please upload a profile photo",
     "TapHere": "Tap Here",
     "GotIt": "GOT IT!",
     "ProfileUploadInfo": "Please make sure to choose a photo that includes your face only. This photo will be visible to other users.",
@@ -72,10 +72,10 @@
     "Camera": "CAMERA",
     "UploadAPhoto": "Upload a Photo",
 
-    "PleaseUploadFourPhotos": "Please Upload Four Photos",
+    "PleaseUploadFourPhotos": "Please upload four photos",
     "ImageUploadInfo": "Please make sure to choose photos that include your face only.These photos will not be visible to any user.\\nYour photos will be used to create a model of your profile.This model will allow your profile to appear in other users' search results.",
 
-    "EnterYourBioHere": "Please Enter Your Bio",
+    "EnterYourBioHere": "Please enter your bio",
     "HelloWorld": "Hello World!",
     "BioInfo": "Your bio can be displayed by other users.",
 
@@ -211,7 +211,7 @@
     "PasswordMatch": "Onay şifrenizin doğru olduğundan emin olun",
 
     "CompleteYourProfile": "Profilini Tamamla",
-    "PleaseEnterYourInformation": "Lütfen Bilgilerini Gir",
+    "PleaseEnterYourInformation": "Lütfen aşağıdaki alanları doldurun",
     "Male": "ERKEK",
     "Female": "KADIN",
     "Country": "Ülke",
@@ -220,7 +220,7 @@
     "SelectAGender": "Cinsiyet",
     "Next": "İLERİ",
 
-    "PleaseUploadAProfilePhoto": "Lütfen Bir Profil Fotoğrafı Yükle",
+    "PleaseUploadAProfilePhoto": "Lütfen bir profil fotoğrafı yükleyin",
     "TapHere": "Buraya Dokun",
     "GotIt": "ANLADIM!",
     "ProfileUploadInfo": "Lütfen sadece sizin yüzünüzün olduğu bir fotoğraf yükleyin. Bu profil fotoğrafı diğer kullanıcılar tarafından görüntülenebilir.",
@@ -228,10 +228,10 @@
     "Camera": "KAMERA",
     "UploadAPhoto": "Bir Fotoğraf Yükle",
 
-    "PleaseUploadFourPhotos": "Lütfen Dört Adet Fotoğraf Yükleyin",
-    "ImageUploadInfo": "Lütfen sadece sizin yüzünüzün olduğu bir fotoğraf yükleyin. Bu fotoğraflar diğer kullanıcılar tarafından görüntülenemez.\\nFotoğraflarınız profilinizin modelini oluşturmak için kullanılacaktır. Bu model, diğer kullanıcıların yaptığı aramalarda profilinizin bulunmasını sağlar.",
+    "PleaseUploadFourPhotos": "Lütfen dört adet fotoğraf yükleyin",
+    "ImageUploadInfo": "Lütfen sadece sizin yüzünüzün olduğu bir fotoğraf yükleyin. Bu fotoğraflar diğer kullanıcılar tarafından görüntülenemez.-1-Fotoğraflarınız profilinizin modelini oluşturmak için kullanılacaktır. Bu model, diğer kullanıcıların yaptığı aramalarda profilinizin bulunmasını sağlar.",
 
-    "EnterYourBioHere": "Lütfen Bir Bio Girin",
+    "EnterYourBioHere": "Lütfen bionuzu girin",
     "HelloWorld": "Merhaba Dünya!",
     "BioInfo": "Bionuz diğer kullanıcılar tarafından görüntülenebilir.",
 

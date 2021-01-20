@@ -32,7 +32,7 @@ export default class TextBox extends Component {
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     return(
-      <Text style={{ color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: 22*(this.width/360)}}>
+      <Text style={{ color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: 20*(this.width/360)}}>
         {this.props.text}
         </Text>
     )

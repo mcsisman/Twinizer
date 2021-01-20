@@ -125,7 +125,9 @@ constructor(props){
       isVisible1: false,
       isVisible2: false,
       addToFavVisible: false,
+      addToFavVisibleUpper: false,
       addToBlockVisible: false,
+      addToBlockVisibleUpper:false,
       country: null,
       gender: null,
       disabledSearch: true,
@@ -905,41 +907,53 @@ async sendFirstMessage(){
   this.props.navigation.navigate("Chat")
 }
 
-addToFavButtonClicked(){
+addToFavButtonClicked(fromWhere){
   if (isFav){
     var index = favoriteUsers.indexOf(emailArray[global.swipeCount])
     favoriteUsers.splice(index,1)
     AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
     favoriteUsersSet.delete(emailArray[global.swipeCount])
     isFav = false
-    this.setState({addToFavVisible:false})
+    this.setState({addToFavVisible:false, addToFavVisibleUpper: false,})
   }
   else{
     if(favShowThisDialog == "true" || favShowThisDialog == null){
-      this.setState({addToFavVisible:true})
+      if(fromWhere == "onMain"){
+        this.setState({addToFavVisible:true})
+      }
+      else{
+        this.setState({addToFavVisibleUpper: true})
+      }
     }
     else{
       this.favModalButtonClicked(emailArray[global.swipeCount])
-      this.setState({addToFavVisible:false})
+      this.setState({addToFavVisible:false, addToFavVisibleUpper: false})
     }
   }
 }
-addToBlockButtonClicked(){
+addToBlockButtonClicked(fromWhere){
   if (isBlock){
     var index = blockedUsers.indexOf(emailArray[global.swipeCount])
     blockedUsers.splice(index,1)
     AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
     blockedUsersSet.delete(emailArray[global.swipeCount])
     isBlock = false
-    this.setState({addToBlockVisible:false})
+    this.setState({addToBlockVisible:false, addToBlockVisibleUpper:false})
   }
   else{
     if(blockShowThisDialog == "true" || blockShowThisDialog == null){
-      this.setState({addToBlockVisible:true})
+      if(fromWhere == "onMain"){
+        this.setState({addToBlockVisible:true})
+      }
+      else{
+        this.setState({addToBlockVisibleUpper:true})
+
+      }
+
     }
     else{
       this.blockModalButtonClicked(emailArray[global.swipeCount])
-      this.setState({addToBlockVisible:false})
+      this.setState({addToBlockVisible:false, addToBlockVisibleUpper:false})
     }
   }
 }
@@ -952,7 +966,7 @@ favModalButtonClicked(uid){
   this.addToFavoriteUsers(uid)
   isBlock = false
   isFav = true
-  this.setState({addToFavVisible:false})
+  this.setState({addToFavVisible:false, addToFavVisibleUpper: false})
 }
 blockModalButtonClicked(uid){
   if(this.state.blockTickVisible){
@@ -962,7 +976,7 @@ blockModalButtonClicked(uid){
   this.addToBlockedUsers(uid)
   isBlock = true
   isFav = false
-  this.setState({addToBlockVisible:false})
+  this.setState({addToBlockVisible:false, addToBlockVisibleUpper:false})
 }
 
 addToFavoriteUsers(uid){
@@ -1845,7 +1859,7 @@ render(){
       }}>
       <FavoriteUserButton
       disabled = {this.state.messageButtonOpacity ? 0 : 1}
-      onPress = {()=>this.addToFavButtonClicked()}
+      onPress = {()=>this.addToFavButtonClicked("onMain")}
       opacity = {this.state.messageButtonOpacity}
       borderBottomLeftRadius = {16}
       borderTopLeftRadius = {16}
@@ -1856,7 +1870,7 @@ render(){
       opacity = {this.state.messageButtonOpacity}/>
       <BlockUserButton
       disabled = {this.state.messageButtonOpacity ? 0 : 1}
-      onPress = {()=>this.addToBlockButtonClicked()}
+      onPress = {()=>this.addToBlockButtonClicked("onMain")}
       borderBottomRightRadius = {16}
       borderTopRightRadius = {16}
       opacity = {this.state.messageButtonOpacity}
@@ -1903,16 +1917,7 @@ render(){
       txtGotIt = {lang.GotIt}
       onPressClose = {()=>this.setState({notifIsVisible:false})}/>
 
-      <FavBlockModal
-      cancel = {lang.CancelCap}
-      dialog = {lang.DontShowThisDialogAgain}
-      tickIsVisible = {this.state.favTickVisible}
-      onPressTick = {()=> this.setState({favTickVisible: this.state.favTickVisible ? 0 : 1})}
-      isVisible = {this.state.addToFavVisible}
-      image = {"star"}
-      txtAlert= {lang.FavUserInfoPt1 + this.state.uri2_username + lang.FavUserInfoPt2}
-      onPressAdd= {()=>this.favModalButtonClicked(emailArray[global.swipeCount])}
-      onPressClose = {()=>this.setState({addToFavVisible:false})}/>
+
 
 
 
@@ -1941,16 +1946,7 @@ render(){
       searchDisabled = {this.state.disabledSearch}
       textFilters = {lang.Filter}/>
 
-      <FavBlockModal
-      cancel = {lang.CancelCap}
-      dialog = {lang.DontShowThisDialogAgain}
-      tickIsVisible = {this.state.blockTickVisible}
-      onPressTick = {()=> this.setState({blockTickVisible: this.state.blockTickVisible ? 0 : 1})}
-      isVisible = {this.state.addToBlockVisible}
-      image = {"block"}
-      txtAlert= {lang.BlockUserInfoPt1 +this.state.uri2_username + lang.BlockUserInfoPt2 }
-      onPressAdd= {()=>this.blockModalButtonClicked(emailArray[global.swipeCount])}
-      onPressClose = {()=>this.setState({addToBlockVisible:false})}/>
+
 
       <PhotoPopUpModal
       isVisible = {this.state.openProfileIsVisible}
@@ -1965,13 +1961,53 @@ render(){
       imgSource = {this.state.uri2}
       isFavorite = {isFav}
       isBlocked = {isBlock}
-      onPressFav = {()=>this.addToFavButtonClicked()}
-      onPressBlock = {()=>this.addToBlockButtonClicked()}
-      onPressSendMsg = {()=>this.sendFirstMessage()}>
+      onPressFav = {()=>this.addToFavButtonClicked("onModal")}
+      onPressBlock = {()=>this.addToBlockButtonClicked("onModal")}
+      onPressSendMsg = {()=>this.sendFirstMessage()}
+
+      favBcancel = {lang.CancelCap}
+      favBdialog = {lang.DontShowThisDialogAgain}
+      favBtickIsVisible = {this.state.favTickVisible}
+      favBonPressTick = {()=> this.setState({favTickVisible: this.state.favTickVisible ? 0 : 1})}
+      favBisVisible = {this.state.addToFavVisibleUpper}
+      favBimage = {"star"}
+      favBtxtAlert = {lang.FavUserInfoPt1 + this.state.uri2_username + lang.FavUserInfoPt2}
+      favBonPressAdd = {()=>this.favModalButtonClicked(emailArray[global.swipeCount])}
+      favBonPressClose = {()=>this.setState({addToFavVisible:false, addToFavVisibleUpper: false})}
+
+      blockBcancel = {lang.CancelCap}
+      blockBdialog = {lang.DontShowThisDialogAgain}
+      blockBtickIsVisible = {this.state.blockTickVisible}
+      blockBonPressTick = {()=> this.setState({blockTickVisible: this.state.blockTickVisible ? 0 : 1})}
+      blockBisVisible = {this.state.addToBlockVisibleUpper}
+      blockBimage = {"block"}
+      blockBtxtAlert = {lang.BlockUserInfoPt1 +this.state.uri2_username + lang.BlockUserInfoPt2 }
+      blockBonPressAdd = {()=>this.blockModalButtonClicked(emailArray[global.swipeCount])}
+      blockBonPressClose = {()=>this.setState({addToBlockVisible:false, addToBlockVisibleUpper:false})}>
 
       </PhotoPopUpModal>
 
+      <FavBlockModal
+      cancel = {lang.CancelCap}
+      dialog = {lang.DontShowThisDialogAgain}
+      tickIsVisible = {this.state.favTickVisible}
+      onPressTick = {()=> this.setState({favTickVisible: this.state.favTickVisible ? 0 : 1})}
+      isVisible = {this.state.addToFavVisible}
+      image = {"star"}
+      txtAlert= {lang.FavUserInfoPt1 + this.state.uri2_username + lang.FavUserInfoPt2}
+      onPressAdd= {()=>this.favModalButtonClicked(emailArray[global.swipeCount])}
+      onPressClose = {()=>this.setState({addToFavVisible:false, addToFavVisibleUpper: false})}/>
 
+      <FavBlockModal
+      cancel = {lang.CancelCap}
+      dialog = {lang.DontShowThisDialogAgain}
+      tickIsVisible = {this.state.blockTickVisible}
+      onPressTick = {()=> this.setState({blockTickVisible: this.state.blockTickVisible ? 0 : 1})}
+      isVisible = {this.state.addToBlockVisible}
+      image = {"block"}
+      txtAlert= {lang.BlockUserInfoPt1 +this.state.uri2_username + lang.BlockUserInfoPt2 }
+      onPressAdd= {()=>this.blockModalButtonClicked(emailArray[global.swipeCount])}
+      onPressClose = {()=>this.setState({addToBlockVisible:false, addToBlockVisibleUpper:false})}/>
 
 
       <Animated.Image source={{uri: 'loading' + global.themeForImages}}
