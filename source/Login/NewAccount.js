@@ -125,6 +125,9 @@ writeUserData(userId, name, email, imageUrl) {
           Alert.alert('',lang.PlsEnterUsername);
         }
       }
+      else if(!this.checkIfUsernameValid(this.state.isim)){
+        Alert.alert("", lang.InvalidUsername)
+      }
       else if(this.state.email == ""){
         Alert.alert('',lang.PlsEnterEmail);
       }
