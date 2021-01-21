@@ -55,7 +55,6 @@ import BigImgInfo from '../Components/Main/Swipeable/BigImgInfo'
 import SwipeableSmallImg from '../Components/Main/Swipeable/SwipeableSmallImg'
 import SwipeableBigImg from '../Components/Main/Swipeable/SwipeableBigImg'
 import language from '../Utils/Languages/lang.json'
-import CryptoJS from "react-native-crypto-js";
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
 }
@@ -181,14 +180,7 @@ constructor(props){
 
 async componentDidMount(){
 
-  let ciphertext = CryptoJS.AES.encrypt('my message', 'secret key 123').toString();
 
-// Decrypt
-  console.log("cipher:", ciphertext)
-let bytes  = CryptoJS.AES.decrypt(ciphertext, 'secret key 1');
-let originalText = bytes.toString(CryptoJS.enc.Utf8);
-
-console.log(originalText); // 'my message'
   //console.log("rwar:", lang.SignUp)
     favShowThisDialog = await AsyncStorage.getItem(auth().currentUser.uid + 'favShowThisDialog')
     blockShowThisDialog = await AsyncStorage.getItem(auth().currentUser.uid + 'blockShowThisDialog')
