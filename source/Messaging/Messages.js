@@ -606,6 +606,7 @@ getMessagesData = async callback =>{
             }
           })
           .then(json => localMsgs = json)
+          console.log("TEST1:", localMsgs)
           if(localMsgs != null && localMsgs != undefined && localMsgs.length != 0){
             data = localMsgs[localMsgs.length - 1]
           }
@@ -778,7 +779,8 @@ async getLastLocalMessage(){
       }
     })
     .then(json => localMessages[count] = json)
-    if(localMessages[count] != null && localMessages[count].length != 0){
+    console.log("TEST1:", localMessages[count])
+    if(localMessages[count] != null && localMessages[count] != undefined && localMessages[count].length != 0){
       var key = localMessages[count][localMessages[count].length - 1]._id
       lastLocalKey = key + "z";
     }else{
