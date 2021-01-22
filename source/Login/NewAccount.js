@@ -76,10 +76,13 @@ export default class NewAccountScreen extends Component<{}>{
     const { height, screenX, screenY, width } = e.endCoordinates
     keyboardYcord = screenY
     keyboardHeight = height
-    this.setState({keyboardOpen: true})
-  };
-  _keyboardDidHide = () => {
-    this.setState({keyboardOpen: false})
+    if(global.keyboardHeight == null || global.keyboardHeight == undefined){
+
+      global.keyboardHeight = keyboardHeight
+      console.log("global:", global.keyboardHeight)
+      AsyncStorage.setItem('keyboardHeight', (global.keyboardHeight).toString())
+    }
+
   };
 writeUserData(userId, name, email, imageUrl) {
   database().ref('users/' + userId).set({
@@ -163,7 +166,7 @@ writeUserData(userId, name, email, imageUrl) {
   }
   render(){
     var lang = language[global.lang]
-    var keyboardAvoidingHeight = keyboardHeight + this.navBarHeight;
+    var keyboardAvoidingHeight = global.keyboardHeight + this.navBarHeight;
     const {navigate} = this.props.navigation;
       return(
 
@@ -185,6 +188,8 @@ writeUserData(userId, name, email, imageUrl) {
         <View
         style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
+        onFocus = {()=> this.setState({keyboardOpen: true})}
+        onBlur = {()=> this.setState({keyboardOpen: false})}
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder= {lang.Email}
         keyboardType= "email-address"
@@ -197,6 +202,8 @@ writeUserData(userId, name, email, imageUrl) {
         <View
         style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
+        onFocus = {()=> this.setState({keyboardOpen: true})}
+        onBlur = {()=> this.setState({keyboardOpen: false})}
         maxLength = {15}
         value = {this.state.isim}
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
@@ -210,6 +217,8 @@ writeUserData(userId, name, email, imageUrl) {
         <View
         style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
+        onFocus = {()=> this.setState({keyboardOpen: true})}
+        onBlur = {()=> this.setState({keyboardOpen: false})}
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder={lang.Password}
         secureTextEntry
@@ -222,6 +231,8 @@ writeUserData(userId, name, email, imageUrl) {
         <View
         style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
+        onFocus = {()=> this.setState({keyboardOpen: true})}
+        onBlur = {()=> this.setState({keyboardOpen: false})}
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder={lang.ConfirmPassword}
         secureTextEntry

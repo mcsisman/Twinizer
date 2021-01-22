@@ -1464,7 +1464,7 @@ async searchDone(value){
   global.deactivationRightDistance= global.width*(2.5/10)
   global.deactivationLeftDistance= global.width*(2.5/10)
   await this.saveSearchPhotoLocally(this.state.photoPath)
-  await this.uploadSearchPhoto("file://" + RNFS.DocumentDirectoryPath + "/search-photos/1.jpg")
+  await this.uploadSearchPhoto(this.state.photoPath)
 }
 
 async getLastSearchNo(){
