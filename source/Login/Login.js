@@ -128,7 +128,7 @@ Login = (email, password) => {
 
           <TouchableOpacity
           activeOpacity = {1}
-          style={{flex:1, alignItems: 'center',width: "100%", height: "100%",bottom: this.state.keyboardOpen ? keyboardAvoidingHeight: 0 }}
+          style={{flex:1, alignItems: 'center',width: "100%", height: "100%",bottom: this.state.keyboardOpen ? 200: 0 }}
            onPress={()=> Keyboard.dismiss() }>
           <ImageBackground
           source={{uri: 'flare'}}
@@ -154,7 +154,7 @@ Login = (email, password) => {
           placeholderTextColor="rgba(255,255,255,0.7)"
           placeholder={lang.Email}
           keyboardType= "email-address"
-
+          onFocus = {()=> this.setState({keyboardOpen: true})}
           style={{paddingLeft: 0, paddingBottom: 0, fontSize: 17*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
            borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
            onChangeText={(text) => this.setState({isim: text})}>
@@ -166,7 +166,7 @@ Login = (email, password) => {
           placeholderTextColor="rgba(255,255,255,0.7)"
           placeholder={lang.Password}
           secureTextEntry
-
+          onFocus = {()=> this.setState({keyboardOpen: true})}
           style={{paddingLeft: 0, paddingBottom: 0, fontSize: 17*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
            backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
            onChangeText={(text) => this.setState({sifre: text})}>
