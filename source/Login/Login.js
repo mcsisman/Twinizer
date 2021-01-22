@@ -5,6 +5,7 @@ import { NavigationContainer, navigation } from '@react-navigation/native';
 import { Header } from 'react-navigation-stack';
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
+import AsyncStorage from '@react-native-community/async-storage';
 import {Image,
    Text,
    View,
@@ -35,7 +36,6 @@ if(Platform.OS === 'ios'){
 
 global.messagesFirstTime = true
 var keyboardHeight;
-var keyboardYcord;
 
 export default class LoginScreen extends Component<{}>{
   constructor(props){
@@ -63,15 +63,17 @@ componentDidMount(){
 
 _keyboardDidShow = (e) => {
   const { height, screenX, screenY, width } = e.endCoordinates
-  keyboardYcord = screenY
   keyboardHeight = height
+  if(global.keyboardHeight == null || global.keyboardHeight == undefined){
 
+    global.keyboardHeight = keyboardHeight
+    console.log("global:", global.keyboardHeight)
+    AsyncStorage.setItem('keyboardHeight', (global.keyboardHeight).toString())
+  }
   console.log("keyboard açıldı")
-  this.setState({keyboardOpen: true})
 };
 _keyboardDidHide = () => {
   console.log("keyboard kapandı")
-  this.setState({keyboardOpen: false})
 };
 
 Login = (email, password) => {
@@ -110,8 +112,8 @@ Login = (email, password) => {
 
     const {navigate} = this.props.navigation;
     var lang = language[global.lang]
-    var keyboardAvoidingHeight = keyboardHeight + this.navBarHeight;
-    if( keyboardHeight + this.navBarHeight > this.height/2){
+    var keyboardAvoidingHeight = global.keyboardHeight + this.navBarHeight;
+    if( global.keyboardHeight + this.navBarHeight > this.height/2){
       keyboardAvoidingHeight = this.height/2
     }
       if(!this.state.splashOver){
@@ -154,6 +156,7 @@ Login = (email, password) => {
           placeholderTextColor="rgba(255,255,255,0.7)"
           placeholder={lang.Email}
           keyboardType= "email-address"
+          onBlur = {()=> this.setState({keyboardOpen: false})}
           onFocus = {()=> this.setState({keyboardOpen: true})}
           style={{paddingLeft: 0, paddingBottom: 0, fontSize: 17*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
            borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
@@ -166,6 +169,7 @@ Login = (email, password) => {
           placeholderTextColor="rgba(255,255,255,0.7)"
           placeholder={lang.Password}
           secureTextEntry
+          onBlur = {()=> this.setState({keyboardOpen: false})}
           onFocus = {()=> this.setState({keyboardOpen: true})}
           style={{paddingLeft: 0, paddingBottom: 0, fontSize: 17*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
            backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}

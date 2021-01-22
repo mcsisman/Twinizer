@@ -68,7 +68,16 @@ global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,
     }
 
     async componentDidMount() {
+
+
       this._subscribe = this.props.navigation.addListener('focus', async () => {
+        global.keyboardHeight = await AsyncStorage.getItem('keyboardHeight')
+        console.log("APPJSTE KEYBOARD1:", global.keyboardHeight)
+        if(global.keyboardHeight != undefined && global.keyboardHeight != null){
+          console.log("APPJSTE KEYBOARD:", global.keyboardHeight)
+          global.keyboardHeight = parseInt(global.keyboardHeight)
+        }
+        
         this.getLocalLang();
 
         console.log("subscribe")
