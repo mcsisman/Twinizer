@@ -87,7 +87,7 @@ static navigationOptions = {
       <TextInput
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder= {lang.Email}
-        style={{color: global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)', paddingLeft: 0, paddingBottom: 0, fontSize: 17*(this.width/360), position: 'absolute', width: this.width*(7/10), height: (this.height*8)/100, flex:1, bottom: (this.height*45)/100, right: this.width*(1.5/10),
+        style={{color: global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)', paddingLeft: 0, paddingBottom: this.width/50, fontSize: 17*(this.width/360), position: 'absolute', width: this.width*(7/10), bottom: (this.height*45)/100, right: this.width*(1.5/10),
         backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
         onChangeText={(text) => this.setState({email: text})}>
       </TextInput>
