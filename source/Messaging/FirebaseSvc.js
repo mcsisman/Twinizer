@@ -70,9 +70,7 @@ class FirebaseSvc {
           };
           firstTime = false
           if(!global.currentProcessUidArray[global.receiverUid]){
-            database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove().catch(error => {
-              console.log(error)
-            });
+            database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
             await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
               .then(req => {
                 if(req){
@@ -131,9 +129,7 @@ class FirebaseSvc {
   };
   refOn = async callback => {
     database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).orderByKey().endAt("A").startAt("-").limitToLast(1)
-      .on('child_added', async snapshot => await callback(await this.parse(snapshot))).catch(error => {
-        console.log(error)
-      });
+      .on('child_added', async snapshot => await callback(await this.parse(snapshot)))
   }
 
   get timestamp() {
@@ -145,9 +141,7 @@ class FirebaseSvc {
     AsyncStorage.setItem('IsRequest/' + auth().currentUser.uid + "/" + global.receiverUid, "false")
     database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).update({
       k:1
-    }).catch(error => {
-      console.log(error)
-    }); // ALOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO BURDAN AŞAĞISINDA CATCH KOYMADIM CEMİL BURAYA CATCH KOYARKEN BERABER BAKALIM
+    })
     //If sending a msg to previously deleted person on main page
     AsyncStorage.setItem('ShowMessageBox/' + auth().currentUser.uid + "/" + global.receiverUid, "true")
     console.log("SENDE GELEN MESSAGES:", messages)
@@ -226,9 +220,7 @@ class FirebaseSvc {
           const response = await fetch(images[index].url);
           const blob = await response.blob();
           var ref1 = storageRef.child("Photos/" + global.receiverUid+ "/MessagePhotos/" + pushedKey + ".jpg");
-          ref1.put(blob).then(function(snapshot) {}).catch(function(error) {
-            Alert.alert("Upload Failed", "Couldn't upload the image. Try Again.." )
-          });;
+          ref1.put(blob).then(function(snapshot) {})
 
           await RNFS.mkdir(RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid)
           await RNFS.copyFile(images[index].url, RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + pushedKey + ".jpg");
