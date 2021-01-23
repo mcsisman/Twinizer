@@ -139,7 +139,7 @@ componentDidMount(){
   })
 
   this._subscribe = this.props.navigation.addListener('blur', async () => {
-    this.leftAnimation = new Animated.Value(0)
+    
     this.messageBoxAnimation("reset")
     this.spinAnimation()
     this.resetTrashColors()
