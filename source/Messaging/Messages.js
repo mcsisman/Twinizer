@@ -505,7 +505,7 @@ async createUidPhotoArrays(){
     })
     .then(json => localUids = json)
 
-    if(localUids != null && localUids.length != 0){
+    if(localUids != null && localUids != undefined && localUids.length != 0){
 
       if(conversationUidArray.concat().sort().join(',') === localUids.concat().sort().join(',')){
       }

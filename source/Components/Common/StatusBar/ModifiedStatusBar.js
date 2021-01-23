@@ -28,7 +28,10 @@ export default class ModifiedStatusBar extends Component {
     return(
 
       <View style={{backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'white', width: this.width, height:getStatusBarHeight()}}>
-      <StatusBar translucent backgroundColor="transparent" />
+      <StatusBar
+      translucent
+      barStyle = {global.isDarkMode ? "light-content" : "dark-content"}
+      backgroundColor="transparent" />
       <View style={{width: this.width, height:getStatusBarHeight(), backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'white' }}>
       </View>
       </View>
