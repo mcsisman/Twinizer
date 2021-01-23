@@ -73,6 +73,7 @@ _keyboardDidShow = (e) => {
   console.log("keyboard açıldı")
 };
 _keyboardDidHide = () => {
+  this.setState({keyboardOpen: false})
   console.log("keyboard kapandı")
 };
 
@@ -113,6 +114,9 @@ Login = (email, password) => {
     const {navigate} = this.props.navigation;
     var lang = language[global.lang]
     var keyboardAvoidingHeight = global.keyboardHeight + this.navBarHeight;
+    console.log("keyboardavoid:", keyboardAvoidingHeight)
+    console.log("keyboardh:", global.keyboardHeight)
+    console.log("navbarheight:", this.navBarHeight)
     if( global.keyboardHeight + this.navBarHeight > this.height/2){
       keyboardAvoidingHeight = this.height/2
     }
@@ -130,8 +134,10 @@ Login = (email, password) => {
 
           <TouchableOpacity
           activeOpacity = {1}
-          style={{flex:1, alignItems: 'center',width: "100%", height: "100%",bottom: this.state.keyboardOpen ? 200: 0 }}
-           onPress={()=> Keyboard.dismiss() }>
+          style={{flex:1, alignItems: 'center',width: "100%", height: "100%",bottom: this.state.keyboardOpen ? keyboardAvoidingHeight: 0 }}
+           onPress={()=> {
+             Keyboard.dismiss()
+             this.setState({keyboardOpen: false})} }>
           <ImageBackground
           source={{uri: 'flare'}}
           style={{width: "100%", height: "100%", flex:1, flexDirection: "column", alignItems: 'center', }}>
@@ -156,7 +162,6 @@ Login = (email, password) => {
           placeholderTextColor="rgba(255,255,255,0.7)"
           placeholder={lang.Email}
           keyboardType= "email-address"
-          onBlur = {()=> this.setState({keyboardOpen: false})}
           onFocus = {()=> this.setState({keyboardOpen: true})}
           style={{paddingLeft: 0, paddingBottom: 0, fontSize: 17*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
            borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
@@ -169,7 +174,6 @@ Login = (email, password) => {
           placeholderTextColor="rgba(255,255,255,0.7)"
           placeholder={lang.Password}
           secureTextEntry
-          onBlur = {()=> this.setState({keyboardOpen: false})}
           onFocus = {()=> this.setState({keyboardOpen: true})}
           style={{paddingLeft: 0, paddingBottom: 0, fontSize: 17*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
            backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}

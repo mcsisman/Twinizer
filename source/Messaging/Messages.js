@@ -507,6 +507,7 @@ async createUidPhotoArrays(){
 
     if(localUids != null && localUids != undefined && localUids.length != 0){
 
+      console.log("localde mesaj var")
       if(conversationUidArray.concat().sort().join(',') === localUids.concat().sort().join(',')){
       }
       else {
@@ -521,6 +522,7 @@ async createUidPhotoArrays(){
           }
         }
         for( let i = 0; i < differenceArray.length; i++){
+          console.log("locale resmi kaydedilen kullanıcı ifte:", conversationUidArray[differenceArrayIndexes[i]])
           var storageRef = storage().ref("Photos/" + conversationUidArray[differenceArrayIndexes[i]] + "/1.jpg")
           await storageRef.getDownloadURL().then(data =>{
             urlArray.push(data)
@@ -539,6 +541,7 @@ async createUidPhotoArrays(){
       }
     }
     else{
+      console.log("localde mesaj yok")
       differenceArray = conversationUidArray
       AsyncStorage.setItem(auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
       AsyncStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
@@ -550,6 +553,7 @@ async createUidPhotoArrays(){
         }
       }
       for( let i = 0; i < differenceArray.length; i++){
+        console.log("locale resmi kaydedilen kullanıcı elsete:", conversationUidArray[i])
         var storageRef = storage().ref("Photos/" + conversationUidArray[i] + "/1.jpg")
         await storageRef.getDownloadURL().then(data =>{
           urlArray.push(data)

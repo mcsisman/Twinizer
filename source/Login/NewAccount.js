@@ -84,6 +84,10 @@ export default class NewAccountScreen extends Component<{}>{
     }
 
   };
+  _keyboardDidHide = () => {
+    this.setState({keyboardOpen: false})
+    console.log("keyboard kapandı")
+  };
 writeUserData(userId, name, email, imageUrl) {
   database().ref('users/' + userId).set({
     username: name,
@@ -172,8 +176,10 @@ writeUserData(userId, name, email, imageUrl) {
 
         <TouchableOpacity
         activeOpacity = {1}
-        style={{width: this.width, height: this.height, flex:1, alignItems: 'center',bottom: this.state.keyboardOpen ? keyboardAvoidingHeight - ((this.height - getStatusBarHeight() - headerHeight)-this.height/2)/2: 0}}
-         onPress={()=> Keyboard.dismiss() }>
+        style={{width: this.width, height: this.height, flex:1, alignItems: 'center',bottom: this.state.keyboardOpen ? keyboardAvoidingHeight - ((this.height - getStatusBarHeight() - headerHeight)-this.height/2)/2 + this.width/50: 0}}
+         onPress={()=> {
+           Keyboard.dismiss()
+           this.setState({keyboardOpen: false})} }>
 
         <ModifiedStatusBar/>
 
@@ -189,7 +195,6 @@ writeUserData(userId, name, email, imageUrl) {
         style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
         onFocus = {()=> this.setState({keyboardOpen: true})}
-        onBlur = {()=> this.setState({keyboardOpen: false})}
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder= {lang.Email}
         keyboardType= "email-address"
@@ -203,7 +208,6 @@ writeUserData(userId, name, email, imageUrl) {
         style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
         onFocus = {()=> this.setState({keyboardOpen: true})}
-        onBlur = {()=> this.setState({keyboardOpen: false})}
         maxLength = {15}
         value = {this.state.isim}
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
@@ -218,7 +222,6 @@ writeUserData(userId, name, email, imageUrl) {
         style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
         onFocus = {()=> this.setState({keyboardOpen: true})}
-        onBlur = {()=> this.setState({keyboardOpen: false})}
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder={lang.Password}
         secureTextEntry
@@ -232,7 +235,6 @@ writeUserData(userId, name, email, imageUrl) {
         style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
         onFocus = {()=> this.setState({keyboardOpen: true})}
-        onBlur = {()=> this.setState({keyboardOpen: false})}
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder={lang.ConfirmPassword}
         secureTextEntry
