@@ -116,6 +116,9 @@ uploadPhoto = async (uri) => {
     }
 }
 library = () =>{
+  this.setState({
+    isVisible1: false,
+  })
   ImagePicker.openPicker({
     width: 600,
     height: 700,
@@ -127,7 +130,6 @@ library = () =>{
       borderOpacity: 0,
       str: '/1.jpg',
       opacity: 0,
-      isVisible1: false,
       disabled: false,
       btnOpacity: 1,
       profilePhoto: image.path
@@ -135,6 +137,9 @@ library = () =>{
   });
 };
 camera = () => {
+  this.setState({
+    isVisible1: false,
+  })
   ImagePicker.openCamera({
     width: 600,
     height: 700,
@@ -146,7 +151,6 @@ camera = () => {
       borderOpacity: 0,
       str: '/1.jpg',
       opacity: 0,
-      isVisible1: false,
       disabled: false,
       btnOpacity: 1,
       profilePhoto: image.path

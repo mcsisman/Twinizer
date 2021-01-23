@@ -290,26 +290,30 @@ onPressCamera(){
   this.setState({isVisible1: true})
 }
 library = () =>{
+  this.setState({
+    isVisible1: false,
+  })
   ImagePicker.openPicker({
     cropping: true
   }).then(image1 => {
     this.setState({
       photoPath: image1.path,
       photo: {uri: image1.path},
-      isVisible1: false,
     });
     this.imageSelected()
   });
 };
 
 camera = () => {
+  this.setState({
+    isVisible1: false,
+  })
   ImagePicker.openCamera({
     cropping: true
   }).then(image1 => {
     this.setState({
       photoPath: image1.path,
       photo: {uri: image1.path},
-      isVisible1: false,
     });
     this.imageSelected()
 });

@@ -346,6 +346,9 @@ static navigationOptions = {
     Keyboard.dismiss()
   }
   library = () =>{
+    this.setState({
+      isVisible: false,
+    })
     ImagePicker.openPicker({
       width: 600,
       height: 700,
@@ -354,11 +357,13 @@ static navigationOptions = {
       this.setState({
         newPhoto: true,
         profilePhoto: image.path,
-        isVisible: false,
       });
     });
   };
   camera = () => {
+    this.setState({
+      isVisible1: false,
+    })
     ImagePicker.openCamera({
       width: 600,
       height: 700,
@@ -368,7 +373,6 @@ static navigationOptions = {
       this.setState({
         newPhoto: true,
         profilePhoto: image.path,
-        isVisible: false,
       });
   });
   };

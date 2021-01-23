@@ -1709,6 +1709,9 @@ search = () =>{
     this.setState({isVisible2: true})
 }
 library = () =>{
+  this.setState({
+    isVisible1: false,
+  })
   ImagePicker.openPicker({
     width: 600,
     height: 700,
@@ -1727,6 +1730,9 @@ library = () =>{
   });
 };
 camera = () => {
+  this.setState({
+    isVisible1: false,
+  })
   ImagePicker.openCamera({
     width: 600,
     height: 700,
@@ -1739,7 +1745,6 @@ camera = () => {
       photo: {uri: image.path},
       borderOpacity: 0,
       opacity: 0,
-      isVisible1: false,
       disabled: false,
       btnOpacity: 1,
     });
