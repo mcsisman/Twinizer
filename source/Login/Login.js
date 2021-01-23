@@ -163,7 +163,7 @@ Login = (email, password) => {
           placeholder={lang.Email}
           keyboardType= "email-address"
           onFocus = {()=> this.setState({keyboardOpen: true})}
-          style={{paddingLeft: 0, paddingBottom: 0, fontSize: 17*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
+          style={{ paddingLeft: 0, paddingBottom:this.width/50, fontSize: 17*(this.width/360), width: this.width*(6/10),
            borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
            onChangeText={(text) => this.setState({isim: text})}>
           </TextInput>
@@ -175,7 +175,7 @@ Login = (email, password) => {
           placeholder={lang.Password}
           secureTextEntry
           onFocus = {()=> this.setState({keyboardOpen: true})}
-          style={{paddingLeft: 0, paddingBottom: 0, fontSize: 17*(this.width/360), width: this.width*(6/10), height: "100%", flex:1,
+          style={{paddingLeft: 0, paddingBottom: this.width/50, fontSize: 17*(this.width/360), width: this.width*(6/10),
            backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
            onChangeText={(text) => this.setState({sifre: text})}>
         </TextInput>
