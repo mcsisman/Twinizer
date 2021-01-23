@@ -571,7 +571,9 @@ async createUidPhotoArrays(){
       }
     }
   for( let i = 0; i < conversationUidArray.length; i++){
-      photoArray[i] = "file:///data/user/0/com.twinizer/files/" + conversationUidArray[i] + "y"+ ".jpg" + '?' + new Date();
+    let dirs = RNFetchBlob.fs.dirs
+    console.log("DOCUMENT DIR NEYMİŞ:", dirs.DocumentDir)
+      photoArray[i] = "file://" + dirs.DocumentDir + "/" + conversationUidArray[i] + "y"+ ".jpg" + '?' + new Date();
   }
   return conversationUidArray
 }
