@@ -166,6 +166,9 @@ uploadPhoto = async (uri1, uri2, uri3, uri4) => {
     }
   }
 library = (selectedPhoto) =>{
+  this.setState({
+    isVisible1: false
+  });
     ImagePicker.openPicker({
       width: 600,
       height: 700,
@@ -181,7 +184,6 @@ library = (selectedPhoto) =>{
           borderOpacity1: 0,
           disabled1: false,
           opacity1: 0,
-          isVisible1: false
         });
       }
       else if(selectedPhoto == 2){
@@ -192,7 +194,6 @@ library = (selectedPhoto) =>{
           borderOpacity2: 0,
           disabled2: false,
           opacity2: 0,
-          isVisible1: false
         });
       }
       else if(selectedPhoto == 3){
@@ -203,7 +204,6 @@ library = (selectedPhoto) =>{
           borderOpacity3: 0,
           disabled3: false,
           opacity3: 0,
-          isVisible1: false
         });
       }
       else if(selectedPhoto == 4){
@@ -214,7 +214,6 @@ library = (selectedPhoto) =>{
           borderOpacity4: 0,
           disabled4: false,
           opacity4: 0,
-          isVisible1: false
         });
       }
 
@@ -228,6 +227,9 @@ library = (selectedPhoto) =>{
     });
   };
 camera = (selectedPhoto) => {
+  this.setState({
+    isVisible1: false
+  });
     ImagePicker.openCamera({
       width: 600,
       height: 700,
@@ -243,7 +245,6 @@ camera = (selectedPhoto) => {
           borderOpacity1: 0,
           disabled1: false,
           opacity1: 0,
-          isVisible1: false
         });
       }
       else if(selectedPhoto == 2){
@@ -254,7 +255,6 @@ camera = (selectedPhoto) => {
           borderOpacity2: 0,
           disabled2: false,
           opacity2: 0,
-          isVisible1: false
         });
       }
       else if(selectedPhoto == 3){
@@ -265,7 +265,6 @@ camera = (selectedPhoto) => {
           borderOpacity3: 0,
           disabled3: false,
           opacity3: 0,
-          isVisible1: false
         });
       }
       else if(selectedPhoto == 4){
@@ -276,7 +275,6 @@ camera = (selectedPhoto) => {
           borderOpacity4: 0,
           disabled4: false,
           opacity4: 0,
-          isVisible1: false
         });
       }
 
