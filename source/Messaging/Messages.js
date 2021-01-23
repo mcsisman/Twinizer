@@ -769,7 +769,6 @@ getMessagesData = async callback =>{
     global.newMsgListenerArray[count].isOpen = true
     global.newMsgListenerArray[count].listenerID = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-");
     testVar = 1
-    console.log("LISTENER OLUŞTURULDU:", uidArray[count])
     await global.newMsgListenerArray[count].listenerID.on('value', async snapshot => await this.syncLocalMessages(snapshot, uidCount));
   }
 };
@@ -799,7 +798,6 @@ async getLastLocalMessage(){
 syncLocalMessages = async (snapshot, uidCount) => {
   // remove k from snapshot data
   if(snapshot.val() != null){
-    console.log("SYNC LOCAL MESSAGES")
     var snapVal = snapshot.val()
     var messageKey;
     var noOfNewMsgs = Object.keys(snapVal).length

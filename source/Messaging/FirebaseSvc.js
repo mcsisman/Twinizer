@@ -87,7 +87,6 @@ class FirebaseSvc {
             else{
               localMessages.push(message)
             }
-            console.log("IFDE LOCALE KOYDU:", localMessages)
             await AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
 
             console.log("IF RETURN:", message)
@@ -95,9 +94,7 @@ class FirebaseSvc {
           }
           else{
             if(!global.addedMsgs[global.receiverUid].includes(message.id)){
-              database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove().catch(error => {
-                console.log(error)
-              });
+              database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
               await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
                 .then(req => {
                   if(req){

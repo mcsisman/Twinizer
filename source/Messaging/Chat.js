@@ -194,7 +194,6 @@ export default class ChatScreen extends React.Component<Props> {
                   }))
                   this.setState( {reRender: !this.state.reRender})
                 })
-              }).catch(function (error) {
               })
             }
           }
@@ -225,7 +224,6 @@ export default class ChatScreen extends React.Component<Props> {
                     loadingOpacity: 0
                 })
               })
-            }).catch(function (error) {
             })
           }
         }
@@ -235,8 +233,9 @@ export default class ChatScreen extends React.Component<Props> {
   }
 
 componentWillUnmount() {
+  console.log("UNMONUT")
   clearInterval(lastSeenInterval)
-  firebaseSvc.refOff();
+
   this.keyboardDidShowListener.remove();
   this.keyboardDidHideListener.remove();
 }
@@ -341,6 +340,7 @@ spinAnimation(){
       )).start()
   }
 goBackOnPress(){
+  firebaseSvc.refOff();
   if(global.msgFromMain){
     global.msgFromMain = false
     this.props.navigation.navigate("Main")
