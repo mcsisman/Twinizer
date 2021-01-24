@@ -100,7 +100,8 @@ var favoriteUsersSet = new Set();
 var blockedUsersSet = new Set();
 var favShowThisDialog = "true"
 var blockShowThisDialog = "true"
-const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-5851216250959661~8477988141';
+const adUnitId = Platform.OS === 'android' ? "ca-app-pub-5851216250959661/2799313720" : TestIds.INTERSTITAL;
+//const adUnitId = Platform.OS === 'android' ? "ca-app-pub-5851216250959661/2799313720" : "ca-app-pub-5851216250959661/4802482925";
 
 const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
   requestNonPersonalizedAdsOnly: true,
@@ -191,7 +192,10 @@ constructor(props){
 
 async componentDidMount(){
     interstitial.onAdEvent(type => {
-      console.log("TYPE:", type)
+      if(type === AdEventType.ERROR){
+        console.log("error geldi tekrar load et")
+        interstitial.load();
+      }
     if (type === AdEventType.LOADED) {
       console.log("ad loaded")
 
