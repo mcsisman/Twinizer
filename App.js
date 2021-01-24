@@ -557,7 +557,7 @@ function MyTabs() {
         }}
         name="ThemeSettings" component={ThemeSettingsScreen} />
         <Stack.Screen options={{
-          gestureEnabled: false,
+          gestureEnabled: true,
           transitionSpec: {
             open: config,
             close: config,
@@ -574,7 +574,7 @@ function MyTabs() {
         }}
         name="Profile" component={ProfileScreen} />
         <Stack.Screen options={{
-          gestureEnabled: false,
+          gestureEnabled: true,
           transitionSpec: {
             open: config,
             close: config,
@@ -591,7 +591,7 @@ function MyTabs() {
         }}
         name="ProfileFavUser" component={ProfileFavUserScreen} />
         <Stack.Screen options={{
-          gestureEnabled: false,
+          gestureEnabled: true,
           transitionSpec: {
             open: config,
             close: config,
@@ -599,7 +599,7 @@ function MyTabs() {
         }}
         name="ProfileBlockedUser" component={ProfileBlockedUserScreen} />
         <Stack.Screen options={{
-          gestureEnabled: false,
+          gestureEnabled: true,
           transitionSpec: {
             open: config,
             close: config,
@@ -624,7 +624,7 @@ function MyTabs() {
         }}
         name="Chat" component={ChatScreen} />
         <Stack.Screen options={{
-          gestureEnabled: false,
+          gestureEnabled: true,
           transitionSpec: {
             open: config,
             close: config,
@@ -649,7 +649,7 @@ function MyTabs() {
         }}
         name="FavoriteUsers" component={FavoriteUsersScreen} />
         <Stack.Screen options={{
-          gestureEnabled: false, gestureDirection: "horizontal",
+          gestureEnabled: true, gestureDirection: "horizontal",
           cardStyleInterpolator: forHorizontalModal,
           transitionSpec: {
             open: config2,
@@ -658,7 +658,7 @@ function MyTabs() {
         }}
         name="BlockedUsers" component={BlockedUsersScreen} />
         <Stack.Screen options={{
-          gestureEnabled: false, gestureDirection: "horizontal",
+          gestureEnabled: true, gestureDirection: "horizontal",
           cardStyleInterpolator: forHorizontalModal,
           transitionSpec: {
             open: config2,
@@ -667,7 +667,7 @@ function MyTabs() {
         }}
         name="About" component={AboutScreen} />
         <Stack.Screen options={{
-          gestureEnabled: false, gestureDirection: "horizontal",
+          gestureEnabled: true, gestureDirection: "horizontal",
           cardStyleInterpolator: forHorizontalModal,
           transitionSpec: {
             open: config2,
@@ -676,7 +676,7 @@ function MyTabs() {
         }}
         name="LibraryLicences" component={LibraryLicencesScreen} />
         <Stack.Screen options={{
-          gestureEnabled: false, gestureDirection: "horizontal",
+          gestureEnabled: true, gestureDirection: "horizontal",
           cardStyleInterpolator: forHorizontalModal,
           transitionSpec: {
             open: config2,

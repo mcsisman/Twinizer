@@ -89,6 +89,7 @@ export default class SettingsScreen extends Component<{}>{
   }
 
   async onPressLogoutOk(){
+    var lang = language[global.lang]
     try{
       OneSignal.clearOneSignalNotifications();
 
@@ -111,7 +112,9 @@ export default class SettingsScreen extends Component<{}>{
         })
       });
       this.props.navigation.dispatch(StackActions.popToTop());
+      Alert.alert('',lang.LogOutSuccess);
     } catch(error) {
+      console.log(error)
       Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
     }
   }

@@ -130,6 +130,8 @@
     "DidntSave": "Warning! Your changes have not been saved. Do you still want to continue",
     "GoBack": "Go Back Without Saving",
     "YourChangesHaveBeenSaved": "Your changes have been saved",
+    "LogOutSuccess": "You have logged out successfully.",
+    "DeleteAccountSuccess": "You have deleted account successfully.",
 
     "NoFavoriteUsers": "No favorite users",
     "NoBlockedUsers": "No blocked users",
@@ -287,6 +289,8 @@
     "DidntSave": "Uyarı! Değişiklikleriniz kaydedilmedi. Yine de devam etmek istiyor musunuz?",
     "GoBack": "Kaydetmeden geri git",
     "YourChangesHaveBeenSaved": "Kayıt işlemi başarıyla tamamlandı.",
+    "LogOutSuccess": "Hesabınızdan başarıyla çıkış yaptınız.",
+    "DeleteAccountSuccess": "Hesabınız başarıyla silindi.",
 
     "NoFavoriteUsers": "Favori kullanıcı yok",
     "NoBlockedUsers": "Engellenmiş kullanıcı yok",

@@ -120,7 +120,9 @@ export default class ProfileScreen extends Component<{}>{
       this.spinAnimation()
     })
     global.popUp = () => {
+      var lang = language[global.lang]
       this.props.navigation.dispatch(StackActions.popToTop());
+      Alert.alert('',lang.DeleteAccountSuccess);
     }
     console.log("PROFİL COMP")
     Keyboard.addListener("keyboardDidHide", this._keyboardDidHide);

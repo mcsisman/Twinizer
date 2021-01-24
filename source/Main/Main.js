@@ -1228,49 +1228,40 @@ async allFunctionsCompleted(){
         var tempdict = doc.data();
         dict = Object.assign({}, tempdict, dict)
         console.log("DICT SONUCU: ", dict)
-          if(dict["noface"] != null){
-            this.setState({
-              loadingOpacity: 0
-            })
-            this.spinValue = new Animated.Value(0)
-            Alert.alert("Error!", "There is no face in your search photo.." )
-          }
-          else{
-            await this.createEmailDistanceArrays("All Genders","All Countries","searchDone");
-            ////////////////////////////////////////////////////////////////////////////////
-            for(let i = 0; i <= 10; i++){
-              // resim indirme KISMI /////////////////////////////////////////////////
-              await this.getImageURL(i);
-              //await this.downloadImages(i);
-            }
-            console.log("biyere geldik, mainPhotoArray.length ", Object.keys(mainPhotoArray).length)
-            this.setState({
-              uri0: null,
-              uri1: null,
-              uri2: photoArray[emailArray[0]],
-              uri3: photoArray[emailArray[1]],
-              uri4: photoArray[emailArray[2]],
-              uri5: photoArray[emailArray[3]],
-              uri2_username: usernameArray[0],
-              uri2_country: countryArray[0],
-              uri2_gender: genderArray[0],
-              uri2_bio: bioDict[emailArray[0]],
-              backgroundOpacity: 0,
-              swipeableDisabled: false,
-              messageButtonDisabled: false,
-              messageButtonOpacity: 1,
-              showFilter: true,
-              loadingOpacity: 0
-            })
-            this.checkUri2FavOrBlocked()
-            this.spinValue = new Animated.Value(0)
-            console.log(photoArray)
-            console.log(emailArray)
-            console.log(genderArray)
-            console.log(countryArray)
-            console.log(distanceArray)
-            console.log(bioDict)
-          }
+        await this.createEmailDistanceArrays("All Genders","All Countries","searchDone");
+        ////////////////////////////////////////////////////////////////////////////////
+        for(let i = 0; i <= 10; i++){
+          // resim indirme KISMI /////////////////////////////////////////////////
+          await this.getImageURL(i);
+          //await this.downloadImages(i);
+        }
+        console.log("biyere geldik, mainPhotoArray.length ", Object.keys(mainPhotoArray).length)
+        this.setState({
+          uri0: null,
+          uri1: null,
+          uri2: photoArray[emailArray[0]],
+          uri3: photoArray[emailArray[1]],
+          uri4: photoArray[emailArray[2]],
+          uri5: photoArray[emailArray[3]],
+          uri2_username: usernameArray[0],
+          uri2_country: countryArray[0],
+          uri2_gender: genderArray[0],
+          uri2_bio: bioDict[emailArray[0]],
+          backgroundOpacity: 0,
+          swipeableDisabled: false,
+          messageButtonDisabled: false,
+          messageButtonOpacity: 1,
+          showFilter: true,
+          loadingOpacity: 0
+        })
+        this.checkUri2FavOrBlocked()
+        this.spinValue = new Animated.Value(0)
+        console.log(photoArray)
+        console.log(emailArray)
+        console.log(genderArray)
+        console.log(countryArray)
+        console.log(distanceArray)
+        console.log(bioDict)
     }
     console.log(this.state.uri2);
   }).catch(error => {
@@ -1287,12 +1278,23 @@ async checkFunction(){
     if(doc.exists){
       if (this.probabilityDoneCheck) {
         var completedfuncs = parseInt(doc.data()["key"])
-        console.log("completedfuncs: ", completedfuncs)
-        console.log("global.functionNumber: ", global.functionNumber)
-        console.log("funcnumval: ", funcnumval)
-        if(completedfuncs == funcnumval + global.functionNumber){
-          await this.allFunctionsCompleted()
-          funcnumval = completedfuncs
+        var isFace = doc.data()["isface"].split("_")[0]
+        console.log("isFace: ", isFace)
+        if(isFace == "T"){
+          console.log("completedfuncs: ", completedfuncs)
+          console.log("global.functionNumber: ", global.functionNumber)
+          console.log("funcnumval: ", funcnumval)
+          if(completedfuncs == funcnumval + global.functionNumber){
+            await this.allFunctionsCompleted()
+            funcnumval = completedfuncs
+          }
+        }
+        else{
+          this.setState({
+            loadingOpacity: 0
+          })
+          this.spinValue = new Animated.Value(0)
+          Alert.alert("Error!", "There is no face in your search photo.." )
         }
       }
       else{
