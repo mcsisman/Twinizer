@@ -41,8 +41,6 @@ class FirebaseSvc {
   parse = async snapshot => {
 
     if(snapshot.val() != null){
-      console.log("PARSE KEY:", snapshot.key)
-      console.log("PARSE SNAPSHOT:", snapshot.val())
       // remove k from snapshot data
       var snapVal = snapshot.val()
       var messageKey = snapshot.key
@@ -57,7 +55,7 @@ class FirebaseSvc {
           var image ="";
           if(p == "t"){
             image = "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + messageKey + ".jpg"
-
+            console.log("image pathi:", image)
           }
           const message = {
             c,
@@ -89,7 +87,6 @@ class FirebaseSvc {
             }
             await AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
 
-            console.log("IF RETURN:", message)
             return message;
           }
           else{
@@ -111,9 +108,7 @@ class FirebaseSvc {
               else{
                 localMessages.push(message)
               }
-              console.log("ELSEDE LOCALE KOYDU:", localMessages)
               AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
-              console.log("ELSE RETURN:", message)
               return message;
             }
             return null
@@ -141,7 +136,6 @@ class FirebaseSvc {
     })
     //If sending a msg to previously deleted person on main page
     AsyncStorage.setItem('ShowMessageBox/' + auth().currentUser.uid + "/" + global.receiverUid, "true")
-    console.log("SENDE GELEN MESSAGES:", messages)
     if(global.firstMessage){
       var kExists = false
       var kListener = database().ref('Messages/' + global.receiverUid + "/" + auth().currentUser.uid + "/k");
@@ -208,7 +202,6 @@ class FirebaseSvc {
       // RESİMLİ MESAJSA
       var image;
       if( p == "t" ){
-        console.log("IMAGE:", images[index])
         var storageRef = storage().ref();
         var metadata = {
           contentType: 'image/jpeg',

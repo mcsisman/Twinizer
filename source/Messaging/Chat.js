@@ -114,7 +114,6 @@ export default class ChatScreen extends React.Component<Props> {
           })
           .then(json => localMessages = json)
         if( noOfNewMsgs == 1){
-          console.log("HANGİ MESAJ GELDİ İF:", data)
           localMessages.reverse()
           this.setState({
             messages: localMessages
@@ -122,7 +121,6 @@ export default class ChatScreen extends React.Component<Props> {
           this.setState( {reRender: !this.state.reRender})
         }
         else{
-          console.log("HANGİ MESAJ GELDİ ELSE:", data)
           localMessages.reverse()
           this.setState({
             messages: localMessages
@@ -175,9 +173,10 @@ export default class ChatScreen extends React.Component<Props> {
                   path: RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg"
                 })
                 .fetch('GET', downloadURL, {
+                  console.log("resim indirildi:", RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg")
                   //some headers ..
                 }).then( async data =>{
-                  console.log("THENNNNNNNNNNNNNNNNNNNNNNNN 2:", message.id)
+
                   await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
                     .then(req => {
                       if(req){
@@ -216,9 +215,8 @@ export default class ChatScreen extends React.Component<Props> {
                 path: RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg"
               })
               .fetch('GET', downloadURL, {
-                //some headers ..
+                console.log("resim indirildi:", RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg")
               }).then( data =>{
-                console.log("THENNNNNNNNNNNNNNNNNNNNNNNN 333")
                 this.setState({
                     messages: messageArray,
                     loadingOpacity: 0
@@ -233,7 +231,6 @@ export default class ChatScreen extends React.Component<Props> {
   }
 
 componentWillUnmount() {
-  console.log("UNMONUT")
   clearInterval(lastSeenInterval)
 
   this.keyboardDidShowListener.remove();
