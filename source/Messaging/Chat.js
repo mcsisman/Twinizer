@@ -173,8 +173,8 @@ export default class ChatScreen extends React.Component<Props> {
                   path: RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg"
                 })
                 .fetch('GET', downloadURL, {
-                  console.log("resim indirildi:", RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg")
-                  //some headers ..
+                  console.log("resim indirildi:", RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg"),
+
                 }).then( async data =>{
 
                   await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
@@ -215,7 +215,7 @@ export default class ChatScreen extends React.Component<Props> {
                 path: RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg"
               })
               .fetch('GET', downloadURL, {
-                console.log("resim indirildi:", RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg")
+                console.log("resim indirildi:", RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg"),
               }).then( data =>{
                 this.setState({
                     messages: messageArray,
