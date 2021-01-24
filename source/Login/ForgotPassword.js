@@ -77,7 +77,7 @@ static navigationOptions = {
       style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
        onPress={()=> Keyboard.dismiss() }>
 
-      <ModifiedStatusBar/>
+      <ModifiedStatusBar color= {global.isDarkMode ? "light-content" : "dark-content"}/>
       <CustomHeader
       title = {lang.ForgotPassword}
       onPress = {()=> this.props.navigation.goBack()}/>

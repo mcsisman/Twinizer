@@ -1,6 +1,7 @@
 {
   "langEN":
   {
+    "OK": "OK",
     "InvalidUsername": "Your username cannot be shorter than 3 characters and can only consist of letters, numbers and dots.",
     "CouldntUploadImg": "Couldn't upload the image. Try Again.." ,
     "CharLengthExceeded": "You've exceeded the character limit.",
@@ -161,6 +162,7 @@
   },
   "langTR":
   {
+    "OK": "TAMAM",
     "InvalidUsername": "Kullanıcı adınız 3 karakterden kısa olamaz ve harf, sayı ve nokta işaretinden başka karakter içeremez.",
     "CouldntUploadImg": "Resminiz kaydedilemedi, lütfen tekrar deneyin.",
     "CharLengthExceeded": "Karakter limitini aştınız.",
