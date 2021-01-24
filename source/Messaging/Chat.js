@@ -178,6 +178,7 @@ export default class ChatScreen extends React.Component<Props> {
 
                 }).then( async data =>{
                   console.log("resim indirildi:", RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg"),
+
                   await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
                     .then(req => {
                       if(req){
@@ -194,7 +195,7 @@ export default class ChatScreen extends React.Component<Props> {
                   }))
                   this.setState( {reRender: !this.state.reRender})
                 })
-              })
+              }).catch(e=> {console.log(e)})
             }
           }
         }
