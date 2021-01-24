@@ -308,15 +308,12 @@ async getFavoriteUsers(){
         return JSON.parse(req)
       }
       else{
-        return null
+        return []
       }
     })
     .then(json => {
-      console.log("JSON DATA: ", json)
+      console.log("FAVORITE USERS: ", json)
       favoriteUsers = json
-      if (favoriteUsers == null){
-        favoriteUsers = []
-      }
       favoriteUsersSet = new Set(favoriteUsers)
     })
 }
@@ -327,14 +324,12 @@ async getBlockedUsers(){
          return JSON.parse(req)
       }
       else{
-        return null
+        return []
       }
     })
     .then(json => {
+      console.log("BLOCKED USERS: ", json)
       blockedUsers = json
-      if (blockedUsers == null){
-        blockedUsers = []
-      }
       blockedUsersSet = new Set(blockedUsers)
     })
 }
@@ -1306,8 +1301,6 @@ async checkFunction(){
       funcnumval = 0
     }
     this.probabilityDoneCheck = true;
-  }).catch(error => {
-    Alert.alert(lang.langPlsTryAgain, lang.ConnectionFailed)
   });
 }
 

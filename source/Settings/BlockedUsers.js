@@ -168,9 +168,7 @@ async initializeBlockedUsersScreen(){
   async getUsernameOfTheUid(uid, i){
     usernameListener[i] = database().ref('Users/' + uid + "/i/u")
     const firstTotalblocks = noOfBlockedUsers
-    await usernameListener[i].on('value', async snap => await this.listenerFunc(snap, i, uid,  firstTotalblocks)).catch(error => {
-      console.log(error)
-    });
+    await usernameListener[i].on('value', async snap => await this.listenerFunc(snap, i, uid,  firstTotalblocks));
   }
 listenerFunc = async (snap, i, conversationUid, firstTotal) => {
     console.log("LISTENER")
