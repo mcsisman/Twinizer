@@ -40,7 +40,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Camera</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Library</string>
 	<key>UIAppFonts</key>

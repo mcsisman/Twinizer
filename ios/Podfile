@@ -80,6 +80,10 @@ target 'Twinizer' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+  pod 'RNFBAdMob', :path => '../node_modules/@react-native-firebase/admob'
+
+  pod 'RNFBApp', :path => '../node_modules/@react-native-firebase/app'
+
   target 'TwinizerTests' do
     inherit! :complete
     # Pods for testing

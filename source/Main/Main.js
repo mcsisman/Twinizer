@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import RNFS from 'react-native-fs'
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { createStackNavigator} from '@react-navigation/stack';
@@ -17,6 +17,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import Swipeable from 'react-native-swipeable';
 import RNFetchBlob from 'rn-fetch-blob'
 import AsyncStorage from '@react-native-community/async-storage';
+import  { AdEventType, admob, InterstitialAd, RewardedAd, BannerAd, TestIds, MaxAdContentRating } from '@react-native-firebase/admob';
 import {Image,
    Text,
    View,
@@ -61,6 +62,9 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
+
+
+
 var lang = language[global.lang]
 var distanceArray = [];
 var usernameArray = [];
@@ -96,6 +100,12 @@ var favoriteUsersSet = new Set();
 var blockedUsersSet = new Set();
 var favShowThisDialog = "true"
 var blockShowThisDialog = "true"
+const adUnitId = __DEV__ ? TestIds.INTERSTITIAL : 'ca-app-pub-5851216250959661~8477988141';
+
+const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
+  requestNonPersonalizedAdsOnly: true,
+});
+
 export default class MainScreen extends Component<{}>{
 constructor(props){
     super(props);
@@ -107,6 +117,7 @@ constructor(props){
     global.deactivationDistanceRight = this.width*(2.5/10)
     var lang = language[global.lang]
     this.state = {
+      showAd: false,
       imageViewerVisible: false,
       favTickVisible: false,
       blockTickVisible: false,
@@ -179,7 +190,17 @@ constructor(props){
   }
 
 async componentDidMount(){
+    interstitial.onAdEvent(type => {
+      console.log("TYPE:", type)
+    if (type === AdEventType.LOADED) {
+      console.log("ad loaded")
 
+    }
+    if (type === AdEventType.CLOSED) {
+      interstitial.load();
+    }
+  });
+    interstitial.load();
 
   //console.log("rwar:", lang.SignUp)
     favShowThisDialog = await AsyncStorage.getItem(auth().currentUser.uid + 'favShowThisDialog')
@@ -196,6 +217,9 @@ async componentDidMount(){
     //this.addToBlockedUsers("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1")
     //this.addToBlockedUsers("JtfxB5eiDvSzOM4dbhgGeU7PXVC2")
     this._subscribe = this.props.navigation.addListener('focus', async () => {
+
+
+
       this.setState({reRender: "ok"})
       global.fromChat = false
       if(global.removedFromFavList){
@@ -233,7 +257,6 @@ async componentDidMount(){
 static navigationOptions = {
     header: null,
 }
-
 updateState = () =>{
   console.log("LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG")
   this.setState({reRender: "ok"})
@@ -264,11 +287,14 @@ async onIds(device) {
       database().ref('/Users/'+auth().currentUser.uid + '/i').update({
         o: randO
       }).catch(error => {
+        var lang = language[global.lang]
+        console.log("HATA2")
         Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
       });
       database().ref('/PlayerIds/').update({
         [auth().currentUser.uid]: global.playerId
       }).catch(error => {
+        console.log("HATA3")
         Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
       });
       AsyncStorage.setItem(auth().currentUser.uid + 'playerId', global.playerId)
@@ -361,6 +387,7 @@ async setSearchPhotoFromHistory(uri){
   global.fromHistorySearch = false
 }
 swipeStart(){
+  this.setState({showAd: false})
   if(!this.state.swipeableDisabled){
     this.widthAnimation.setValue(global.width*(5/10))
     this.emptyWidthAnimation.setValue(global.width*(1.5/10))
@@ -395,6 +422,7 @@ swipeStart(){
   }
 }
 swipeRelease(){
+
   //this.checkUri2FavOrBlocked()
   if(!this.state.swipeableDisabled){
     if(!this.complete || this.activationCount == 0){
@@ -442,6 +470,7 @@ swipeRelease(){
 
           ]).start()
           console.log(this.state.uri2);
+          this.setState({showAd: true})
         }
     }
   }
@@ -561,6 +590,7 @@ leftActionComplete(){
   )
 
   ]).start()
+  this.setState({showAd: true})
   console.log("Swipe Count:", global.swipeCount)
   if(this.leftActionCount == 2){
     this.activationCount = 0
@@ -658,6 +688,7 @@ async rightActionComplete(){
   )
 
   ]).start()
+  this.setState({showAd: true})
   if(this.rightActionCount == 2){
     this.activationCount = 0
     this.complete = false
@@ -766,6 +797,7 @@ leftActionIncomplete(){
     )
 
   ]).start(),
+  this.setState({showAd: true})
     this.activationCount = 0
     this.complete = false
     this.leftActionCount = 0
@@ -831,6 +863,7 @@ rightActionIncomplete(){
     )
 
   ]).start(),
+  this.setState({showAd: true})
     this.activationCount = 0
     this.complete = false
     this.rightActionCount = 0
@@ -1077,18 +1110,31 @@ async createEmailDistanceArrays(gender, country, fn){
       });
       var length = Object.keys(dict).length;
       console.log(length);
+      var lang = language[global.lang]
+      var itemsIndex = 0;
       for(let i = 0; i < length; i++){
        if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(items[i][0]) == false){
-         countryArray.push(((usersDict[items[i][0]]).split("_"))[1]);
-         genderArray.push(((usersDict[items[i][0]]).split("_"))[0]);
-         emailArray.push(items[i][0]);
-         usernameArray.push(((usersDict[items[i][0]]).split("_"))[2]);
-         distanceArray.push(items[i][1]);
-         mainCountryArray.push(((usersDict[items[i][0]]).split("_"))[1]);
-         mainGenderArray.push(((usersDict[items[i][0]]).split("_"))[0]);
-         mainEmailArray.push(items[i][0]);
-         mainUsernameArray.push(((usersDict[items[i][0]]).split("_"))[2]);
-         mainDistanceArray.push(items[i][1]);
+         if(i % 6 == 0 && i != 0){
+           emailArray.push("ground")
+           countryArray.push("")
+           genderArray.push("ground")
+           usernameArray.push(lang.Advertisement)
+           distanceArray.push("ground");
+           itemsIndex++;
+         }
+         else{
+           countryArray.push(((usersDict[items[i-itemsIndex][0]]).split("_"))[1]);
+           genderArray.push(((usersDict[items[i-itemsIndex][0]]).split("_"))[0]);
+           emailArray.push(items[i-itemsIndex][0]);
+           usernameArray.push(((usersDict[items[i-itemsIndex][0]]).split("_"))[2]);
+           distanceArray.push(items[i-itemsIndex][1]);
+           mainCountryArray.push(((usersDict[items[i-itemsIndex][0]]).split("_"))[1]);
+           mainGenderArray.push(((usersDict[items[i-itemsIndex][0]]).split("_"))[0]);
+           mainEmailArray.push(items[i-itemsIndex][0]);
+           mainUsernameArray.push(((usersDict[items[i-itemsIndex][0]]).split("_"))[2]);
+           mainDistanceArray.push(items[i-itemsIndex][1]);
+         }
+
        }
       }
       console.log(items);
@@ -1096,6 +1142,9 @@ async createEmailDistanceArrays(gender, country, fn){
       console.log(distanceArray);
       //console.log(distanceArray);
     } catch(error) {
+      var lang = language[global.lang]
+      console.log(error)
+      console.log("HATA4")
       Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
     }
   }
@@ -1176,7 +1225,12 @@ async createEmailDistanceArrays(gender, country, fn){
 
 downloadImages(imageIndex){
 
-  if (!photoArray[emailArray[imageIndex]]){
+  if(!photoArray["ground"]){
+    photoArray["ground"] = "ground"
+  }
+  console.log("image index:", imageIndex)
+  if (!photoArray[emailArray[imageIndex]] && emailArray[imageIndex] != "ground" && (imageIndex % 6 != 0 || imageIndex % 6 == 0)){
+    console.log("qqq:", emailArray[imageIndex])
     let dirs = RNFetchBlob.fs.dirs
     RNFetchBlob
     .config({
@@ -1203,6 +1257,7 @@ downloadImages(imageIndex){
 }
 
 async getImageURL(imageIndex){
+  if(emailArray[imageIndex] != "ground" && (imageIndex % 6 != 0 || imageIndex % 6 == 0)){
     var storageRef = storage().ref("Photos/" + emailArray[imageIndex] + "/1.jpg")
     await storageRef.getDownloadURL().then(data =>{
       this.downloadURL = data
@@ -1212,6 +1267,8 @@ async getImageURL(imageIndex){
       console.log(error)
       // Handle any errors
     });
+  }
+
 }
 
 async allFunctionsCompleted(){
@@ -1260,7 +1317,10 @@ async allFunctionsCompleted(){
     }
     console.log(this.state.uri2);
   }).catch(error => {
-    Alert.alert(lang.langPlsTryAgain, lang.ConnectionFailed)
+    console.log(error)
+    var lang = language[global.lang]
+    console.log("HATA1")
+    Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
   });
 }
 
@@ -1390,9 +1450,12 @@ async filterDone(){
 }
 
 async searchDone(value){
+
   isFav = false
   isBlock = false
-  this.setState({showFilter: false,
+  this.setState({
+    notifIsVisible: true,
+    showFilter: false,
     loadingOpacity: 1,
     backgroundOpacity: 0.2,
     messageButtonDisabled: true,
@@ -1577,6 +1640,7 @@ uploadSearchPhoto = async (uri) => {
               updateRef.set({
               name: auth().currentUser.uid + "_" + batch.toString() + "_" + randFloat.toString() + "_" + global.functionNumber.toString()
               }).then(() => {
+
                 console.log("Embedder updated")
                     this.setState({
                       messageButtonDisabled: true,
@@ -1588,7 +1652,6 @@ uploadSearchPhoto = async (uri) => {
                       uri3: null,
                       uri4: null,
                       uri5: null,
-                      notifIsVisible: true,
                       imagePath: null,
                       swipeableDisabled: true,
                       uri2_username: "",
@@ -1655,7 +1718,6 @@ uploadSearchPhoto = async (uri) => {
                          uri3: null,
                          uri4: null,
                          uri5: null,
-                         notifIsVisible: true,
                          imagePath: null,
                          swipeableDisabled: true,
                          uri2_username: "",
@@ -1802,18 +1864,21 @@ render(){
 
 
       <SwipeableSmallImg
+      index = {7}
       imgSource = {this.state.uri0}
       backgroundOpacity = {this.state.backgroundOpacity}/>
 
       <View style = {{ height: this.width*5/10*(7/6), width: this.width*3/10}}/>
 
       <SwipeableSmallImg
+      index = {6}
       imgSource = {this.state.uri1}
       backgroundOpacity = {this.state.backgroundOpacity}/>
 
       <Animated.View style = {{ height: this.width*5/10*(7/6), width: this.emptyWidthAnimation}}/>
 
       <SwipeableBigImg
+      showAd = {this.state.showAd}
       disabled = {this.state.messageButtonOpacity == 0 ? true : false}
       isFavorite = { isFav ? 1 : 0}
       isBlocked = { isBlock ? 1 : 0}
@@ -1826,18 +1891,21 @@ render(){
       <Animated.View style = {{height: this.width*5/10*(7/6), width: this.emptyWidthAnimation}}/>
 
       <SwipeableSmallImg
+      index = {4}
       imgSource = {this.state.uri3}
       backgroundOpacity = {this.state.backgroundOpacity}/>
 
       <View style = {{height: this.width*5/10*(7/6), width: this.width*3/10}}/>
 
       <SwipeableSmallImg
+      index = {3}
       imgSource = {this.state.uri4}
       backgroundOpacity = {this.state.backgroundOpacity}/>
 
       <View style = {{ height: this.width*5/10*(7/6), width: this.width*3/10}}/>
 
       <SwipeableSmallImg
+      index = {2}
       imgSource = {this.state.uri5}
       backgroundOpacity = {this.state.backgroundOpacity}/>
 
@@ -1847,26 +1915,26 @@ render(){
       </Swipeable>
 
       <View
-      style = {{opacity: this.state.messageButtonOpacity, backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
+      style = {{opacity: this.state.messageButtonOpacity && (global.swipeCount % 6 != 0 || global.swipeCount == 0) ? 1 : 0 , backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
       borderBottomLeftRadius: 16, borderBottomRightRadius: 16, borderTopLeftRadius: 16, borderTopRightRadius: 16,
       }}>
       <FavoriteUserButton
-      disabled = {this.state.messageButtonOpacity ? 0 : 1}
+      disabled = {this.state.messageButtonOpacity && (global.swipeCount % 6 != 0 || global.swipeCount == 0) ? 0 : 1}
       onPress = {()=>this.addToFavButtonClicked("onMain")}
-      opacity = {this.state.messageButtonOpacity}
+      opacity = {this.state.messageButtonOpacity && (global.swipeCount % 6 != 0 || global.swipeCount == 0) ? 1 : 0 }
       borderBottomLeftRadius = {16}
       borderTopLeftRadius = {16}
       isSelected = {isFav}/>
       <SendMsgButton
-      disabled = {this.state.messageButtonOpacity ? 0 : 1}
+      disabled = {this.state.messageButtonOpacity && (global.swipeCount % 6 != 0 || global.swipeCount == 0) ? 0 : 1}
       onPress = {()=>this.sendFirstMessage()}
-      opacity = {this.state.messageButtonOpacity}/>
+      opacity = {this.state.messageButtonOpacity && (global.swipeCount % 6 != 0 || global.swipeCount == 0) ? 1 : 0 }/>
       <BlockUserButton
-      disabled = {this.state.messageButtonOpacity ? 0 : 1}
+      disabled = {this.state.messageButtonOpacity && (global.swipeCount % 6 != 0 || global.swipeCount == 0) ? 0 : 1}
       onPress = {()=>this.addToBlockButtonClicked("onMain")}
       borderBottomRightRadius = {16}
       borderTopRightRadius = {16}
-      opacity = {this.state.messageButtonOpacity}
+      opacity = {this.state.messageButtonOpacity && (global.swipeCount % 6 != 0 || global.swipeCount == 0) ? 1 : 0 }
       isSelected = {isBlock}/>
       </View>
 
@@ -1880,7 +1948,7 @@ render(){
       width = {this.width*3/10}
       borderRadius = {16}
       borderOpacity = {this.state.borderOpacity}
-      onPress={()=>this.setState({ isVisible1: true})}
+      onPress={()=>this.setState({isVisible1: true})}
       textOpacity = {this.state.opacity}
       fontSize = {14}
       photo = {this.state.photo}/>
@@ -1908,7 +1976,7 @@ render(){
       isVisible={this.state.notifIsVisible}
       txtAlert = {lang.TwinizingProcessInfo}
       txtGotIt = {lang.GotIt}
-      onPressClose = {()=>this.setState({notifIsVisible:false})}/>
+      onPressClose = {()=> {this.setState({notifIsVisible:false}), interstitial.show()}}/>
 
 
 
