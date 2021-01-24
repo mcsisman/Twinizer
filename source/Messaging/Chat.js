@@ -159,6 +159,7 @@ export default class ChatScreen extends React.Component<Props> {
               })
               .then(json => localMessages = json)
             var downloadURL;
+            console.log("Photos/" + auth().currentUser.uid + "/MessagePhotos/" + message.id + ".jpg")
             var storageRef = storage().ref("Photos/" + auth().currentUser.uid + "/MessagePhotos/" + message.id + ".jpg")
             var fileExists = false
             while(!fileExists){
