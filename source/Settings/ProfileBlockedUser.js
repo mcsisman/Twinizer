@@ -113,9 +113,7 @@ static navigationOptions = {
 
   async initializeBlockedUsersScreen(){
     listener = database().ref('Users/' + global.selectedBlockedUserUid + "/i")
-    await listener.on('value', async snap => await this.listenerFunc(snap)).catch(error => {
-      console.log(error)
-    });
+    await listener.on('value', async snap => await this.listenerFunc(snap));
   }
 
   listenerFunc = async (snap) => {
@@ -144,6 +142,7 @@ static navigationOptions = {
   }
 
   async getImageURL(uid){
+    console.log("getImageURL: ", uid)
       var storageRef = storage().ref("Photos/" + uid + "/1.jpg")
       await storageRef.getDownloadURL().then(data =>{
         this.setState({profilePhoto: data})
@@ -169,13 +168,15 @@ static navigationOptions = {
            return JSON.parse(req)
         }
         else{
-          return null
+          return []
         }
       })
-      .then(json => favoriteUsers = json)
-    favoriteUsers.push(global.selectedBlockedUserUid)
-    AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
-    this.props.navigation.navigate("BlockedUsers")
+      .then(json => {
+        favoriteUsers = json
+        favoriteUsers.push(global.selectedBlockedUserUid)
+        AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
+        this.props.navigation.navigate("BlockedUsers")
+      })
   }
 
   async buttonClicked(whichButton){

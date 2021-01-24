@@ -111,9 +111,7 @@ static navigationOptions = {
 
   async initializeFavoriteUsersScreen(){
     listener = database().ref('Users/' + global.selectedFavUserUid + "/i")
-    await listener.on('value', async snap => await this.listenerFunc(snap)).catch(error => {
-      console.log(error)
-    });
+    await listener.on('value', async snap => await this.listenerFunc(snap));
   }
 
   listenerFunc = async (snap) => {
@@ -140,13 +138,15 @@ static navigationOptions = {
            return JSON.parse(req)
         }
         else{
-          return null
+          return []
         }
       })
-      .then(json => blockedUsers = json)
-    blockedUsers.push(global.selectedFavUserUid)
-    AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
-    this.props.navigation.navigate("FavoriteUsers")
+      .then(json => {
+        blockedUsers = json
+        blockedUsers.push(global.selectedFavUserUid)
+        AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+        this.props.navigation.navigate("FavoriteUsers")
+      })
   }
   sendMsg(){
     global.receiverUid = "pg7bdvxZS0XvAzL4YcU7Tzc3Xpk2"
