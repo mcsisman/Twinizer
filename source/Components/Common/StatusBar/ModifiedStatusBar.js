@@ -18,9 +18,7 @@ export default class ModifiedStatusBar extends Component {
   static propTypes = {
    color: PropTypes.string,
  }
- static defaultProps = {
-   color: 'rgba(188,192,204,0.5)'
- }
+
   render(){
 
     this.height = Math.round(Dimensions.get('screen').height);
