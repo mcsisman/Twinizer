@@ -164,6 +164,7 @@ export default class ChatScreen extends React.Component<Props> {
             while(!fileExists){
               await storageRef.getDownloadURL().then(data =>{
                 downloadURL = data
+                console.log("downloadURL2:", downloadURL)
                 fileExists = true
                 let dirs = RNFetchBlob.fs.dirs
                 RNFetchBlob
@@ -206,6 +207,7 @@ export default class ChatScreen extends React.Component<Props> {
           while(!fileExists){
             await storageRef.getDownloadURL().then(data =>{
               downloadURL = data
+              console.log("downloadURL2:", downloadURL)
               fileExists = true
               let dirs = RNFetchBlob.fs.dirs
               RNFetchBlob
