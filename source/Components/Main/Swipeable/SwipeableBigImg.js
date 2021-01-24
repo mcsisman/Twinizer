@@ -36,7 +36,8 @@ export default class SwipeableBigImg extends Component {
    top: PropTypes.object,
    right: PropTypes.number,
    onPress: PropTypes.func,
-   backgroundOpacity: PropTypes.number
+   backgroundOpacity: PropTypes.number,
+   disabled: PropTypes.bool
  }
 
   render(){
@@ -48,6 +49,7 @@ export default class SwipeableBigImg extends Component {
        width: this.props.width, height: this.props.height, top: this.props.top, right: this.props.right , borderBottomLeftRadius: 16, borderTopRightRadius: 16,
        borderTopLeftRadius: 16, borderBottomRightRadius: 16}}>
        <TouchableOpacity
+       disabled = {this.props.disabled}
        activeOpacity = {1}
        style = {{width: '100%', height: '100%', borderBottomLeftRadius: 16, borderTopRightRadius: 16,
        borderTopLeftRadius: 16, borderBottomRightRadius: 16, flex:1, justifyContent: 'center', alignItems: 'center', position: 'absolute'}}

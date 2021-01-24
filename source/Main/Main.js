@@ -1821,6 +1821,7 @@ render(){
       <Animated.View style = {{ height: this.width*5/10*(7/6), width: this.emptyWidthAnimation}}/>
 
       <SwipeableBigImg
+      disabled = {this.state.messageButtonOpacity == 0 ? true : false}
       isFavorite = { isFav ? 1 : 0}
       isBlocked = { isBlock ? 1 : 0}
       imgSource = {this.state.uri2}

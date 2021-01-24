@@ -579,7 +579,7 @@ render() {
         <View
         style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
 
-        <TouchableOpacity
+        <View
         activeOpacity = {1}
         style={{width: this.width, height: this.height, flex:1, alignItems: 'center',}}
          onPress={()=> Keyboard.dismiss() }>
@@ -590,6 +590,8 @@ render() {
           style = {{ position: 'absolute', height: Platform.OS === 'android' ? this.state.giftedChatHeight : this.height - this.statusBarHeaderTotalHeight,
           width: this.width, top: this.statusBarHeaderTotalHeight, right: 0}}>
           <GiftedChat
+          
+          keyboardShouldPersistTaps = {false}
           placeholder = {""}
           onLongPress={this.onLongPress}
           renderMessageImage={this.renderMessageImage}
@@ -642,7 +644,7 @@ render() {
           this.setState({imageViewerVisible: false})
         }}/>
 
-        </TouchableOpacity>
+        </View>
         </View>
       )
 

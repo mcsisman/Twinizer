@@ -3,6 +3,7 @@ import {createStackNavigator, Header} from 'react-navigation-stack';
 import Modal from "react-native-modal";
 import PropTypes from 'prop-types';
 import ImgModalOvalButton from '../../Common/ImageUpload/ImgModalOvalButton'
+import language from '../../../Utils/Languages/lang.json'
 import {
   View,
   Platform,
@@ -55,6 +56,7 @@ export default class FavBlockModal extends Component {
    tickIsVisible: false
  }
   render(){
+    var lang = language[global.lang]
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     return(
@@ -134,14 +136,19 @@ export default class FavBlockModal extends Component {
       borderWidth = {0}/>
       </View>
 
-      <TouchableOpacity
-      activeOpacity = {1}
-      style={{width: screenWidth*(3/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}
-      onPress = {this.props.onPressAdd}>
-      <Image source={{uri: this.props.image}}
-        style={{width: screenWidth*(1.5/20), height:screenWidth*(1.5/20)}}
-      />
-      </TouchableOpacity>
+      <View
+      style={{ width: screenWidth*(3/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
+      <ImgModalOvalButton
+      activeOpacity = {0.7}
+      title = {lang.YES}
+      textColor = {global.themeColor}
+      onPress = {this.props.onPressAdd}
+      borderColor = {'rgba(241,51,18,0)'}
+      borderRadius = {0}
+      textFontSize = {this.props.addFontSize}
+      borderWidth = {0}/>
+      </View>
+
 
       </View>
 
