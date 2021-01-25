@@ -90,9 +90,9 @@ export default class FilterModal extends Component {
           selectedValue = {this.props.genderSelectedValue == null ? lang.SelectAGender : this.props.genderSelectedValue}
           borderBottomColor = {global.themeColor}
           onValueChange = {this.props.onValueChangeGender}
-          items = {[{label: global.langAllGenders, key: 1, component: <View style={{}}><Text style={{color: 'red', fontSize: 16,  textAlign: "center"}}>{global.langAllGenders}</Text></View>},
-                      {label: global.langFilterMale, key: 2},
-                      {label: global.langFilterFemale, key: 3}]}
+          items = {[{label: lang.AllGenders, key: 1, component: <View style={{}}><Text style={{color: 'red', fontSize: 16,  textAlign: "center"}}>{lang.AllGenders}</Text></View>},
+                      {label: lang.MaleSmall, key: 2},
+                      {label: lang.FemaleSmall, key: 3}]}
           label = {this.props.placeHolder2}
           bottom = {this.height*10/100}
           right = {this.width*(52.5/100)}

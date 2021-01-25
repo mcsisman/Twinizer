@@ -1,6 +1,9 @@
 {
   "langEN":
   {
+    "MaleSmall": "Male",
+    "FemaleSmall": "Female",
+    "AllGenders": "All Genders",
     "Advertisement": "Advertisement",
     "OK": "OK",
     "InvalidUsername": "Your username cannot be shorter than 3 characters and can only consist of letters, numbers and dots.",
@@ -143,7 +146,7 @@
     "Green": "Green",
     "Yellow": "Yellow",
     "EnableDarkMode": "Enable Dark Mode",
-    "Apply": "Apply",
+    "Apply": "APPLY",
 
     "PrivacyPolicy": "Privacy Policy",
     "TermsOfUse": "Terms of Use",
@@ -163,6 +166,9 @@
   },
   "langTR":
   {
+    "MaleSmall": "Erkek",
+    "FemaleSmall": "Kadın",
+    "AllGenders": "Tüm Cinsiyetler",
     "Advertisement": "Reklam",
     "OK": "TAMAM",
     "InvalidUsername": "Kullanıcı adınız 3 karakterden kısa olamaz ve harf, sayı ve nokta işaretinden başka karakter içeremez.",
@@ -303,7 +309,7 @@
     "Green": "Yeşil",
     "Yellow": "Sarı",
     "EnableDarkMode": "Karanlık Modu Etkinleştir",
-    "Apply": "Uygula",
+    "Apply": "UYGULA",
 
     "PrivacyPolicy": "Gizlilik Politikası",
     "TermsOfUse": "Kullanım Şartları",

@@ -14,6 +14,7 @@ import {
   Image,
   StatusBar
 } from 'react-native';
+import language from '../Utils/Languages/lang.json'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -56,7 +57,7 @@ export default class CustomPicker extends Component {
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
-
+    var lang = language[global.lang]
     if(this.props.placeHolder){
       return(
         <View style = {{paddingLeft: 5, opacity: this.props.opacity, justifyContent: 'center',
@@ -70,7 +71,8 @@ export default class CustomPicker extends Component {
         data = {this.props.items}
         accessible={true}
         scrollViewAccessibilityLabel={'Scrollable options'}
-        cancelButtonAccessibilityLabel={'Cancel Button'}>
+        cancelButtonAccessibilityLabel={'Cancel Button'}
+        cancelText = {lang.Cancel}>
 
         <TextInput
         style={{ height: 40, fontSize: 18, color: this.props.selectedValue == "Select a Country" ||  this.props.selectedValue == "Select a Gender" ? "gray" : global.themeColor,

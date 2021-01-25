@@ -70,7 +70,8 @@ export default class CustomPicker extends Component {
         data = {this.props.items}
         accessible={true}
         scrollViewAccessibilityLabel={'Scrollable options'}
-        cancelButtonAccessibilityLabel={'Cancel Button'}>
+        cancelButtonAccessibilityLabel={'Cancel Button'}
+        cancelText = {lang.Cancel}>
 
         <TextInput
         style={{ paddingBottom: 0 , paddingLeft: 0 ,fontSize: 18*(this.width/360), color: this.props.selectedValue == lang.SelectYourCountry ||  this.props.selectedValue == lang.SelectAGender ? "gray" : global.themeColor,
@@ -95,7 +96,8 @@ export default class CustomPicker extends Component {
         data = {this.props.items}
         accessible={true}
         scrollViewAccessibilityLabel={'Scrollable options'}
-        cancelButtonAccessibilityLabel={'Cancel Button'}>
+        cancelButtonAccessibilityLabel={'Cancel Button'}
+        cancelText = {lang.Cancel}>
 
         <TextInput
         style={{ height: 40, borderRadius: this.props.borderRadius, fontSize: 14*(this.width/360), color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}

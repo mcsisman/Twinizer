@@ -262,7 +262,7 @@ static navigationOptions = {
         <View
         style={{width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)/5, justifyContent: "center", alignItems: "center", borderWidth: 0.9, borderColor:"gray", borderRadius: 8}}>
         <Text style={{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: 15*(this.width/360)}}>
-        {this.state.userGender}
+        {this.state.userGender == "Male" ? lang.MaleSmall : lang.FemaleSmall}
         </Text>
         </View>
 

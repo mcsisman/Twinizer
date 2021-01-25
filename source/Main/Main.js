@@ -2006,7 +2006,7 @@ render(){
       placeHolder1 = {this.state.placeHolder1}
       placeHolder2 = {this.state.placeHolder2}
       onPressSearch = {()=>this.filterDone()}
-      textSearch = {lang.Search}
+      textSearch = {lang.Apply}
       opacity = {this.state.filterButtonOpacity}
       searchDisabled = {this.state.disabledSearch}
       textFilters = {lang.Filter}/>

@@ -310,10 +310,21 @@ static navigationOptions = {
     this.setState({userCountry: value.label})
   }
   onValueChangeGender(value){
-    if(this.state.userGender != value.label){
+    var g;
+    if(value.label == "Erkek"){
+      g = "Male"
+    }
+    else if(value.label == "Kadın"){
+      g = "Female"
+    }
+    else{
+      g = value.label
+    }
+
+    if(this.state.userGender != g ){
       infoChanged = true
     }
-    this.setState({userGender: value.label})
+    this.setState({userGender: g})
   }
   onValueChangeUsername(text){
     if(this.state.userUsername != text){
@@ -541,13 +552,13 @@ static navigationOptions = {
         borderBottomWidth = {0.4}
         borderColor = {"gray"}
         borderBottomColor = {"gray"}
-        selectedValue = {this.state.userGender}
+        selectedValue = {this.state.userGender == "Male" ? lang.MaleSmall : lang.FemaleSmall}
         disabled = {this.state.upperComponentsDisabled}
         opacity = {this.state.upperComponentsOpacity}
         onOpen = {()=> this.onPressGender()}
         onValueChange = {(value)=> this.onValueChangeGender(value)}
-        items = {[{label: global.langFilterMale, key: 1},
-                    {label: global.langFilterFemale, key: 2}]}
+        items = {[{label: lang.MaleSmall, key: 1},
+                    {label: lang.FemaleSmall, key: 2}]}
         label = {"label"}
         height = {this.width/2*(8/10)*(7/6)/5}
         width = {this.width/2*(8/10)}/>
