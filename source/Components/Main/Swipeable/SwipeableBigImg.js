@@ -26,7 +26,7 @@ if(Platform.OS === 'ios'){
 var screenHeight = Math.round(Dimensions.get('screen').height);
 var screenWidth = Math.round(Dimensions.get('screen').width);
 var opacity = 0;
-const adUnitId = Platform.OS === 'android' ? 'ca-app-pub-5851216250959661/4367546266' : TestIds.BANNER;
+const adUnitId = Platform.OS === 'android' ? 'ca-app-pub-5851216250959661/4367546266' : "ca-app-pub-5851216250959661/3449216268";
 //const adUnitId = Platform.OS === 'android' ? 'ca-app-pub-5851216250959661/4367546266' : "ca-app-pub-5851216250959661/3449216268";
 
 export default class SwipeableBigImg extends Component {
