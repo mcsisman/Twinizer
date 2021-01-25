@@ -100,7 +100,7 @@ var favoriteUsersSet = new Set();
 var blockedUsersSet = new Set();
 var favShowThisDialog = "true"
 var blockShowThisDialog = "true"
-const adUnitId = Platform.OS === 'android' ? "ca-app-pub-5851216250959661/2799313720" : TestIds.INTERSTITAL;
+const adUnitId = Platform.OS === 'android' ? "ca-app-pub-5851216250959661/2799313720" : TestIds.INTERSTITIAL;
 //const adUnitId = Platform.OS === 'android' ? "ca-app-pub-5851216250959661/2799313720" : "ca-app-pub-5851216250959661/4802482925";
 
 const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
