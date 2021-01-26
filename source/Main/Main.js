@@ -990,7 +990,7 @@ favModalButtonClicked(uid){
   this.addToFavoriteUsers(uid)
   isBlock = false
   isFav = true
-  this.setState({addToFavVisible:false, addToFavVisibleUpper: false})
+  this.setState({favTickVisible: false, addToFavVisible:false, addToFavVisibleUpper: false})
 }
 blockModalButtonClicked(uid){
   if(this.state.blockTickVisible){
@@ -1000,7 +1000,7 @@ blockModalButtonClicked(uid){
   this.addToBlockedUsers(uid)
   isBlock = true
   isFav = false
-  this.setState({addToBlockVisible:false, addToBlockVisibleUpper:false})
+  this.setState({blockTickVisible: false,addToBlockVisible:false, addToBlockVisibleUpper:false})
 }
 
 addToFavoriteUsers(uid){
@@ -1977,7 +1977,8 @@ render(){
       onPressClose = {()=>this.setState({searchOnIsVisible:false})}/>
 
       <InfoModal
-      isVisible={this.state.notifIsVisible}
+      textVerticalAlign = {"center"}
+      isVisible = {this.state.notifIsVisible}
       txtAlert = {lang.TwinizingProcessInfo}
       txtGotIt = {lang.GotIt}
       onPressClose = {()=> {this.setState({notifIsVisible:false}), interstitial.show()}}/>
@@ -2038,7 +2039,7 @@ render(){
       favBimage = {"star"}
       favBtxtAlert = {lang.FavUserInfoPt1 + this.state.uri2_username + lang.FavUserInfoPt2}
       favBonPressAdd = {()=>this.favModalButtonClicked(emailArray[global.swipeCount])}
-      favBonPressClose = {()=>this.setState({addToFavVisible:false, addToFavVisibleUpper: false})}
+      favBonPressClose = {()=>this.setState({favTickVisible: false, addToFavVisible:false, addToFavVisibleUpper: false})}
 
       blockBcancel = {lang.CancelCap}
       blockBdialog = {lang.DontShowThisDialogAgain}
@@ -2048,7 +2049,7 @@ render(){
       blockBimage = {"block"}
       blockBtxtAlert = {lang.BlockUserInfoPt1 +this.state.uri2_username + lang.BlockUserInfoPt2 }
       blockBonPressAdd = {()=>this.blockModalButtonClicked(emailArray[global.swipeCount])}
-      blockBonPressClose = {()=>this.setState({addToBlockVisible:false, addToBlockVisibleUpper:false})}>
+      blockBonPressClose = {()=>this.setState({blockTickVisible: false, addToBlockVisible:false, addToBlockVisibleUpper:false})}>
 
       </PhotoPopUpModal>
 
@@ -2061,7 +2062,7 @@ render(){
       image = {"star"}
       txtAlert= {lang.FavUserInfoPt1 + this.state.uri2_username + lang.FavUserInfoPt2}
       onPressAdd= {()=>this.favModalButtonClicked(emailArray[global.swipeCount])}
-      onPressClose = {()=>this.setState({addToFavVisible:false, addToFavVisibleUpper: false})}/>
+      onPressClose = {()=>this.setState({favTickVisible: false,addToFavVisible:false, addToFavVisibleUpper: false})}/>
 
       <FavBlockModal
       cancel = {lang.CancelCap}
@@ -2072,7 +2073,7 @@ render(){
       image = {"block"}
       txtAlert= {lang.BlockUserInfoPt1 +this.state.uri2_username + lang.BlockUserInfoPt2 }
       onPressAdd= {()=>this.blockModalButtonClicked(emailArray[global.swipeCount])}
-      onPressClose = {()=>this.setState({addToBlockVisible:false, addToBlockVisibleUpper:false})}/>
+      onPressClose = {()=>this.setState({blockTickVisible: false,addToBlockVisible:false, addToBlockVisibleUpper:false})}/>
 
 
       <Animated.Image source={{uri: 'loading' + global.themeForImages}}

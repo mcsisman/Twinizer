@@ -26,6 +26,7 @@ export default class InfoModal extends Component {
 
 
   static propTypes = {
+   textVerticalAlign: PropTypes.string,
    isVisible: PropTypes.bool,
    alertFontSize: PropTypes.number,
    gotItFontSize: PropTypes.number,
@@ -92,7 +93,7 @@ export default class InfoModal extends Component {
 
       <View style={{paddingTop: 10, paddingBottom: 10, width: screenWidth*(6.5/10), flex:1}}>
 
-      <Text style={{ color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" ,fontSize: this.props.alertFontSize*(screenWidth/360)}}>
+      <Text style={{ textAlign: this.props.textVerticalAlign, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" ,fontSize: this.props.alertFontSize*(screenWidth/360)}}>
       {this.props.txtAlert}
       </Text>
       </View>

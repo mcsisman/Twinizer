@@ -60,7 +60,8 @@ export default class ChatHeader extends Component {
 
       <View
       style={{right: 0, position:"absolute", width: this.width*(4/10), height: this.width*(1/10)*(7/6), justifyContent: 'center', }}>
-      <Text style = {{ fontSize: 22, position: "absolute", color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,0.9)"}}
+      <Text style = {{ fontSize: 21*this.width/360, position: "absolute", color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,0.9)"}}
+      adjustsFontSizeToFit = {true}
       numberOfLines={1}>
       {global.receiverUsername}
       </Text>

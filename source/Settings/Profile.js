@@ -497,7 +497,7 @@ static navigationOptions = {
         activeOpacity = {1}
         disabled = {this.state.upperComponentsDisabled}
         style={{opacity: this.state.upperComponentsOpacity, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius:12, borderBottomRightRadius:12, width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)}}
-        onPress = {()=> this.setState({imageViewerVisible: true})}>
+        onPress = {()=> {Keyboard.dismiss(), this.setState({imageViewerVisible: true})}}>
 
         <Image
         style={{opacity: this.state.upperComponentsOpacity, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius:12, borderBottomRightRadius:12, width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)}}

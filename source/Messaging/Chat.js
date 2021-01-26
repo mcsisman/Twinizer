@@ -504,6 +504,7 @@ async deleteMessage(message){
   AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
 }
 onLongPress(context, message) {
+  /* Disabled for now, bugged.
   const options = [lang.DeleteMessage, lang.Cancel];
   const cancelButtonIndex = options.length - 1;
   context.actionSheet().showActionSheetWithOptions({
@@ -516,7 +517,7 @@ onLongPress(context, message) {
       this.deleteMessage(message)
       break;
     }
-    });
+  });*/
 }
 
 render() {
@@ -603,7 +604,7 @@ render() {
             messages={this.state.messages}
             onSend={this.sendMsg}
             user={this.user}
-            loadEarlier = {true}
+            
             renderTime = {this.renderTime}
             renderBubble={this.renderBubble}
             renderLoadEarlier = {this.renderLoadEarlier}
@@ -635,7 +636,9 @@ render() {
         onBackdropPress = {()=> this.setState({photoPopUpIsVisible: false})}
         onPressImage = {() => {this.setState({imageViewerVisible: true})}}
         username = {global.receiverUsername}
-        bio = {"\"Ne Ne bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunNe bakıyorsunbakıyorsun\""}
+        country = {global.receiverCountry}
+        gender = {global.receiverGender}
+        bio = {global.receiverBio}
         onPressCancel = {()=>this.setState({photoPopUpIsVisible:false}) }
         imgSource = {global.receiverPhoto}/>
 

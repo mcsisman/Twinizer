@@ -41,13 +41,17 @@ export default class BigImgInfo extends Component {
       width: this.width, height: this.width/6, left: 0}}>
 
       <View style={{alignItems: 'center', width: this.width, height: "50%", justifyContent: 'center'}}>
-      <Text style={{ color: global.isDarkMode ? "white":"black", fontSize: 22*(this.width/360)}}>
+      <Text style={{ color: global.isDarkMode ? "white":"black", fontSize: 22*(this.width/360)}}
+      adjustsFontSizeToFit = {true}
+      numberOfLines = {1}>
         {this.props.username}
         </Text>
       </View>
 
       <View style={{alignItems: 'center', width: this.width, height: "50%", justifyContent: 'center'}}>
-      <Text style={{ color: global.isDarkMode ? "white":"black", fontSize: 16*(this.width/360)}}>
+      <Text style={{ color: global.isDarkMode ? "white":"black", fontSize: 18*(this.width/360)}}
+      adjustsFontSizeToFit = {true}
+      numberOfLines = {1}>
         {this.props.country}
         </Text>
       </View>
