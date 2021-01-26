@@ -593,7 +593,7 @@ render() {
           width: this.width, top: this.statusBarHeaderTotalHeight, right: 0}}>
           <GiftedChat
 
-          keyboardShouldPersistTaps = {false}
+          keyboardShouldPersistTaps = {"never"}
           placeholder = {""}
           onLongPress={this.onLongPress}
           renderMessageImage={this.renderMessageImage}

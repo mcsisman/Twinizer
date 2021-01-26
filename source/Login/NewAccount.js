@@ -41,6 +41,7 @@ export default class NewAccountScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.state = {
+      reRender: true,
       fontWeight: "normal",
       usernameColor: "black",
       splashOver : false,
@@ -66,7 +67,7 @@ export default class NewAccountScreen extends Component<{}>{
     this.keyboardDidHideListener = Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       console.log("subscribe")
-      this.setState({reRender: "ok"})
+      this.setState({reRender: !this.state.reRender})
     })
   };
   static navigationOptions = {
@@ -74,15 +75,14 @@ export default class NewAccountScreen extends Component<{}>{
   };
   _keyboardDidShow = (e) => {
     const { height, screenX, screenY, width } = e.endCoordinates
-    keyboardYcord = screenY
     keyboardHeight = height
     if(global.keyboardHeight == null || global.keyboardHeight == undefined){
 
       global.keyboardHeight = keyboardHeight
       console.log("global:", global.keyboardHeight)
       AsyncStorage.setItem('keyboardHeight', (global.keyboardHeight).toString())
+      this.setState({reRender: !this.state.reRender, keyboardOpen: true})
     }
-
   };
   _keyboardDidHide = () => {
     this.setState({keyboardOpen: false})
@@ -170,13 +170,20 @@ writeUserData(userId, name, email, imageUrl) {
   }
   render(){
     var lang = language[global.lang]
-    var keyboardAvoidingHeight = global.keyboardHeight + this.navBarHeight;
+    var keyboardAvoidingHeight;
+    if(global.keyboardHeight == null || global.keyboardHeight == undefined){
+      keyboardAvoidingHeight = 0;
+    }
+    else{
+      keyboardAvoidingHeight = global.keyboardHeight + this.navBarHeight;
+    }
+    console.log("avoid:", keyboardAvoidingHeight)
     const {navigate} = this.props.navigation;
       return(
 
         <TouchableOpacity
         activeOpacity = {1}
-        style={{width: this.width, height: this.height, flex:1, alignItems: 'center',bottom: this.state.keyboardOpen ? keyboardAvoidingHeight - ((this.height - getStatusBarHeight() - headerHeight)-this.height/2)/2 + this.width/50: 0}}
+        style={{width: this.width, height: this.height, flex:1, alignItems: 'center',bottom: this.state.keyboardOpen && global.keyboardHeight != null && global.keyboardHeight != undefined ? keyboardAvoidingHeight - ((this.height - getStatusBarHeight() - headerHeight)-this.height/2)/2 + this.width/50: 0}}
          onPress={()=> {
            Keyboard.dismiss()
            this.setState({keyboardOpen: false})} }>

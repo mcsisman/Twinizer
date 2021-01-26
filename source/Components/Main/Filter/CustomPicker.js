@@ -65,6 +65,8 @@ export default class CustomPicker extends Component {
         height: this.props.height, position: 'absolute', right: this.props.right, bottom: this.props.bottom, borderBottomColor: this.props.borderBottomColor, borderColor: this.props.borderColor,
         borderBottomWidth: this.props.borderBottomWidth, borderTopWidth: this.props.borderWidth, borderRightWidth: this.props.borderWidth, borderLeftWidth: this.props.borderWidth }}>
         <ModalSelector
+        onModalOpen = {this.props.onOpen}
+        backdropPressToClose = {true}
         touchableActiveOpacity = {1}
         disabled = {this.props.disabled}
         onChange = {this.props.onValueChange}
@@ -91,6 +93,8 @@ export default class CustomPicker extends Component {
         height: this.props.height, right: this.props.right, bottom: this.props.bottom, borderBottomColor: this.props.borderBottomColor, borderColor: this.props.borderColor,
         borderBottomWidth: this.props.borderBottomWidth, borderTopWidth: this.props.borderWidth, borderRightWidth: this.props.borderWidth, borderLeftWidth: this.props.borderWidth }}>
         <ModalSelector
+        onModalOpen = {this.props.onOpen}
+        backdropPressToClose = {true}
         touchableActiveOpacity = {1}
         disabled = {this.props.disabled}
         onChange = {this.props.onValueChange}

@@ -44,7 +44,7 @@ export default class ChatSendImgBottomBar extends Component {
     this.navbarHeight = this.height - this.windowHeight
     var bottom = 0;
     if(this.props.keyboardOpen){
-      bottom = this.props.keyboardHeight + this.navbarHeight;
+      bottom = global.keyboardHeight + this.navbarHeight;
     }
     else{
       bottom = 0

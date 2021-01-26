@@ -66,7 +66,6 @@ export default class ProfileScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.state = {
-      keyboardHeight: 0,
       authenticationVisible: false,
       whichInput: null,
       keyboardOpen: false,
@@ -148,7 +147,7 @@ static navigationOptions = {
   };
   _keyboardDidShow = (e) => {
     const { height, screenX, screenY, width } = e.endCoordinates
-    this.setState({keyboardHeight: height + this.navBarHeight, keyboardOpenAuth: true})
+    this.setState({keyboardOpenAuth: true})
     console.log(height)
     console.log("y:", screenY)
     if(this.state.whichInput == "bio"){
@@ -158,6 +157,23 @@ static navigationOptions = {
       }
     }
   };
+  keyboardWillHide(){
+    if(this.state.bioOpacity == 1){
+      this.setState({keyboardOpenAuth: false, upperComponentsOpacity: 1, upperComponentsDisabled: false, keyboardOpen: false})
+    }
+    else{
+      this.setState({keyboardOpenAuth: false, bioOpacity: 1, keyboardOpen: false})
+    }
+  }
+  keyboardWillShow(){
+    this.setState({whichInput: "bio", keyboardOpen: true, upperComponentsOpacity: 0, upperComponentsDisabled:true})
+    if(this.state.whichInput == "bio"){
+      this.setState({keyboardOpen: true})
+      if(this.state.bioOpacity == 1){
+        this.setState({upperComponentsOpacity: 0, upperComponentsDisabled: true})
+      }
+    }
+  }
   spinAnimation(){
     this.spinValue = new Animated.Value(0)
     // First set up animation
@@ -348,14 +364,23 @@ static navigationOptions = {
     this.setState({bioOpacity: 1})
   }
   onPressGender(){
+    console.log("girdimi")
     Keyboard.dismiss()
+    this.refs.test.blur()
     this.setState({bioOpacity: 1})
   }
   onPressEdit(){
     Keyboard.dismiss()
     this.setState({bioOpacity: 1, isVisible: true})
+    //this.refs.test.blur()
   }
   onPressScreen(){
+    if(this.state.bioOpacity == 1){
+      this.setState({keyboardOpenAuth: false, upperComponentsOpacity: 1, upperComponentsDisabled: false, keyboardOpen: false})
+    }
+    else{
+      this.setState({keyboardOpenAuth: false, bioOpacity: 1, keyboardOpen: false})
+    }
     Keyboard.dismiss()
   }
   library = () =>{
@@ -507,9 +532,10 @@ static navigationOptions = {
 
 
         <TextInput
+        ref = {"test"}
         defaultValue = {this.state.userUsername}
         editable = {!this.state.upperComponentsDisabled}
-        onBlur={() => {this.setState({selection: {start: 0,end: 0}})}}
+        onBlur={() => {console.log("blur"),this.setState({selection: {start: 0,end: 0}})}}
         onFocus={() => {this.setState({whichInput: "username", selection: {start: this.state.userUsername.length, end:this.state.userUsername.length}}, () => {this.setState({ selection: null })})  }}
         selection={this.state.selection}
         numberOfLines={1}
@@ -573,7 +599,7 @@ static navigationOptions = {
         <View
         style = {{height: this.width/20}}/>
         <ProfileBioButton
-        onFocus = { () => this.setState({whichInput: "bio", keyboardOpen: true, upperComponentsOpacity: 0, upperComponentsDisabled:true})}
+        onFocus = { () => this.keyboardWillShow()}
         opacity = {this.state.bioOpacity}
         defaultText = {this.state.userBio}
         onChangeText = {(text) => this.valueChange(text)}
@@ -605,7 +631,7 @@ static navigationOptions = {
 
         <AuthenticationModal
         isKeyboardOpen={this.state.keyboardOpenAuth}
-        modalBottom = {(this.height - getStatusBarHeight() - this.state.keyboardHeight - this.width*8/10)/2 + this.state.keyboardHeight }
+        modalBottom = {(this.height - getStatusBarHeight() - global.keyboardHeight - this.width*8/10)/2 + global.keyboardHeight }
         isVisible = {this.state.authenticationVisible}
         onPressEnter = {() => {this.deletePress()}}
         onPressCancel = {() => {this.setState({authenticationVisible: false})}}
@@ -650,7 +676,7 @@ static navigationOptions = {
         txtGotIt = {lang.GotIt}
         onPressClose = {()=>this.setState({saveInfoModalVisible:false}) }
         isKeyboardOpen = {this.state.keyboardOpen}
-        keyboardHeight = {this.state.keyboardHeight}/>
+        keyboardHeight = {global.keyboardHeight}/>
 
         <Animated.Image source={{uri: 'loading' + global.themeForImages}}
           style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),

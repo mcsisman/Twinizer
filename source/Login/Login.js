@@ -69,6 +69,7 @@ _keyboardDidShow = (e) => {
     global.keyboardHeight = keyboardHeight
     console.log("global:", global.keyboardHeight)
     AsyncStorage.setItem('keyboardHeight', (global.keyboardHeight).toString())
+    this.setState({keyboardOpen: true})
   }
 };
 _keyboardDidHide = () => {
@@ -111,7 +112,14 @@ Login = (email, password) => {
 
     const {navigate} = this.props.navigation;
     var lang = language[global.lang]
-    var keyboardAvoidingHeight = global.keyboardHeight + this.navBarHeight;
+    var keyboardAvoidingHeight;
+    if(global.keyboardHeight == null || global.keyboardHeight == undefined){
+      keyboardAvoidingHeight = 0
+    }
+    else{
+      keyboardAvoidingHeight = global.keyboardHeight + this.navBarHeight;
+    }
+
 
       if(!this.state.splashOver){
         return(
@@ -126,7 +134,7 @@ Login = (email, password) => {
 
           <TouchableOpacity
           activeOpacity = {1}
-          style={{position: "absolute", alignItems: 'center',width: this.width, height: this.height,bottom: this.state.keyboardOpen ? keyboardAvoidingHeight: 0 }}
+          style={{position: "absolute", alignItems: 'center',width: this.width, height: this.height,bottom: this.state.keyboardOpen && global.keyboardHeight != null && global.keyboardHeight != undefined ? keyboardAvoidingHeight: 0 }}
            onPress={()=> {
              console.log("keyboardavoid:", keyboardAvoidingHeight)
              Keyboard.dismiss()
@@ -135,7 +143,7 @@ Login = (email, password) => {
           source={{uri: 'flare'}}
           style={{width: this.width, height: this.height, flexDirection: "column", alignItems: 'center', }}>
 
-          <View style = {{ opacity: this.state.keyboardOpen ? 0 : 1, width: "100%", height: this.height/2, alignItems: "center", justifyContent: "center"}}>
+          <View style = {{ opacity: this.state.keyboardOpen && global.keyboardHeight != null && global.keyboardHeight !=undefined ? 0 : 1, width: "100%", height: this.height/2, alignItems: "center", justifyContent: "center"}}>
           <View style = {{ position: "absolute", width: "100%", height: this.width*(5.8/10) + this.height*(0.1/10),
           flexDirection: "column", flex:1, alignItems: "center"}}>
           <Image source={{uri: 'logo2'}}
@@ -217,6 +225,9 @@ Login = (email, password) => {
         </View>
 
         </ImageBackground>
+        <Image
+        source={{uri: 'flare'}}
+        style={{transform: [{ rotate: '180deg'}] ,position:"absolute", bottom: -this.height, width: this.width, height: this.height, flexDirection: "column", alignItems: 'center', }}/>
         </TouchableOpacity>
         );
       }
