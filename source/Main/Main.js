@@ -1356,8 +1356,9 @@ async checkFunction(){
           this.setState({
             loadingOpacity: 0
           })
+          var lang = language[global.lang]
           this.spinValue = new Animated.Value(0)
-          Alert.alert("Error!", "There is no face in your search photo.." )
+          Alert.alert(lang.Error, lang.MainNoFace )
         }
       }
       else{

@@ -135,7 +135,7 @@ async deleteHistory(indexArray){
   for( i = 0; i < indexArray.length; i++){
     RNFS.unlink("file://" + RNFS.DocumentDirectoryPath + "/search-photos/" + historyArray[noOfSearch-indexArray[i]-1]["lastSearch"].toString() +".jpg")
   .then(() => {
-    console.log('FILE DELETED');
+    console.log('Silinen path:',"file://" + RNFS.DocumentDirectoryPath + "/search-photos/" + historyArray[noOfSearch-indexArray[i]-1]["lastSearch"].toString() +".jpg" );
   })
   // `unlink` will throw an error, if the item to unlink does not exist
   .catch((err) => {
@@ -372,6 +372,7 @@ renderHistoryBoxes(){
       )
     }
     else{
+      console.log("resimler:", uriArray)
       for( i = 0; i < noOfSearch; i++){
         const temp = i
         boxes.push(

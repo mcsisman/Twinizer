@@ -1,6 +1,7 @@
 {
   "langEN":
   {
+    "MainNoFace": "Could not detect a face in your photo. Please try with a new one.",
     "MaleSmall": "Male",
     "FemaleSmall": "Female",
     "AllGenders": "All Genders",
@@ -166,6 +167,7 @@
   },
   "langTR":
   {
+    "MainNoFace": "Fotoğrafınızda yüz bulunamadı. Lütfen yeni bir fotoğraf yükleyin.",
     "MaleSmall": "Erkek",
     "FemaleSmall": "Kadın",
     "AllGenders": "Tüm Cinsiyetler",
