@@ -142,6 +142,7 @@ async deleteHistory(indexArray){
     console.log(err.message);
   });
     historyArray.splice(noOfSearch-indexArray[i]-1,1)
+    uriArray.splice(noOfSearch-indexArray[i]-1,1)
   }
   console.log("SİLDİKTEN SONRA: ", historyArray)
   noOfSearch = noOfSearch - indexArray.length
