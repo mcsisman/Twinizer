@@ -241,6 +241,7 @@ listenerFunc = async (snap, i, conversationUid, firstTotal) => {
 }
 
 donePress(){
+  var lang = language[global.lang]
   var alertMsg = lang.FavUserDeleteAlert;
   Alert.alert(
   lang.Warning,

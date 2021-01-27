@@ -38,6 +38,7 @@ export default class ForgotPasswordScreen extends Component<{}>{
       splashOver : false,
       email: ""
     }
+    var lang = language[global.lang]
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.props.navigation.setParams({ otherParam: lang.ForgotPassword })

@@ -139,7 +139,7 @@ componentDidMount(){
   })
 
   this._subscribe = this.props.navigation.addListener('blur', async () => {
-    
+
     this.messageBoxAnimation("reset")
     this.spinAnimation()
     this.resetTrashColors()
@@ -598,6 +598,7 @@ getMessagesData = async callback =>{
   var listener23 = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-").limitToLast(1);
   await listener23.once('value').then(async snapshot => {
       var data = "";
+      var lang = language[global.lang]
       var emptyMessage;
       if(snapshot.val() == null || snapshot.val() == undefined){
         isEmpty = true
@@ -1094,6 +1095,7 @@ navigateToChat(receiverUid, receiverPhoto, receiverUsername){
   this.props.navigation.navigate("Chat")
 }
 getMsgTime(timestamp){
+  var lang = language[global.lang]
   if(timestamp == "notime"){
     return ""
   }
@@ -1148,6 +1150,7 @@ getMsgTime(timestamp){
 }
 
 renderMessageBoxes(){
+  var lang = language[global.lang]
   if(messageArray.length == 0){
     return(
       <View style = {{flex: 1, flexDirection: "column", width: this.width, height: scrollViewHeight}}>
@@ -1212,6 +1215,7 @@ renderMessageBoxes(){
 
 }
 renderRequestBoxes(){
+  var lang = language[global.lang]
   if(requestArray.length == 0){
 
     return(

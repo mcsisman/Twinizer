@@ -251,7 +251,7 @@ deleteBlockedUser(){
   AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUserUids))
 }
 donePress(){
-
+  var lang = language[global.lang]
   var alertMsg = lang.BlockedUserDeleteAlert;
   Alert.alert(
   lang.Warning,

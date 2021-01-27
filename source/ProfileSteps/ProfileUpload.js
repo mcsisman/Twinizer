@@ -66,6 +66,7 @@ export default class ProfileUploadScreen extends React.Component {
     };
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
+    var lang = language[global.lang]
     this.props.navigation.setParams({ otherParam: lang.CompleteYourProfile })
     this.spinValue = new Animated.Value(0)
   }

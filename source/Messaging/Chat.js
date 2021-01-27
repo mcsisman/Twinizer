@@ -406,6 +406,7 @@ renderBubble (props) {
         />)
 }
 renderLoadEarlier(props){
+  var lang = language[global.lang]
   return(
     <LoadEarlier
       {...props}
@@ -414,6 +415,7 @@ renderLoadEarlier(props){
   )
 }
 renderSend(props) {
+  var lang = language[global.lang]
       return (
           <Send
               {...props}

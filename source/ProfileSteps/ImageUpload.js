@@ -85,6 +85,7 @@ export default class ImageUploadScreen extends React.Component {
     };
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
+    var lang = language[global.lang]
     this.props.navigation.setParams({ otherParam: lang.CompleteYourProfile})
     this.spinValue = new Animated.Value(0)
   }
@@ -114,6 +115,7 @@ export default class ImageUploadScreen extends React.Component {
       )).start()
   }
 uploadPhoto = async (uri1, uri2, uri3, uri4) => {
+  var lang = language[global.lang]
     this.setState({loadingOpacity: 1})
     this.spinAnimation()
     var metadata = {

@@ -283,6 +283,7 @@ onOpened(openResult) {
 async onIds(device) {
     // Check playerId from local and change if it is changed
     playerId = await AsyncStorage.getItem(auth().currentUser.uid + 'playerId')
+    var lang = language[global.lang]
     global.playerId = device["userId"]
     console.log("playerId from storage: ", playerId)
     console.log("playerId from onesignal", global.playerId)
@@ -1094,6 +1095,7 @@ valueChangeGender(value){
 
 async createEmailDistanceArrays(gender, country, fn){
   console.log("fn: ", fn)
+  var lang = language[global.lang]
   if (fn == "searchDone"){
     console.log("searchDone")
     try{
@@ -1118,7 +1120,6 @@ async createEmailDistanceArrays(gender, country, fn){
       });
       var length = Object.keys(dict).length;
       console.log(length);
-      var lang = language[global.lang]
       var itemsIndex = 0;
       for(let i = 0; i < length; i++){
        if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(items[i][0]) == false){
@@ -1629,6 +1630,7 @@ uploadSearchPhoto = async (uri) => {
     console.log("storageref child alındı")
     ref1.put(blob).then(snapshot => {
       console.log("global.functionNumber ", global.functionNumber)
+      var lang = language[global.lang]
       if(global.functionNumber != -1){
         const updateRef = firestore().collection('Functions').doc('Embedder');
         var batch = 1
@@ -1678,19 +1680,19 @@ uploadSearchPhoto = async (uri) => {
                     console.log("buraya mı geldi evet")
                     this.spinValue = new Animated.Value(0)
                     console.log("User2 update olmadı")
-                    Alert.alert("Connection Failed", "Please try Again.." )
+                    Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
                   });
             }).catch(error => {
               console.log(error)
-              Alert.alert("Connection Failed", "Please try Again.." )
+              Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
             })
           }).catch(error => {
             console.log(error)
-            Alert.alert("Connection Failed", "Please try Again.." )
+            Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
           })
         }).catch(error => {
           console.log(error)
-          Alert.alert("Connection Failed", "Please try Again.." )
+          Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
         })
       }
       else{
@@ -1742,33 +1744,33 @@ uploadSearchPhoto = async (uri) => {
                        this.setState({loadingOpacity: 0})
                        this.spinValue = new Animated.Value(0)
                        console.log("User2 update olmadı")
-                       Alert.alert("Connection Failed", "Please try Again.." )
+                       Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
                      });
                }).catch(error => {
                  console.log(error)
-                 Alert.alert("Connection Failed", "Please try Again.." )
+                 Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
                })
              }).catch(error => {
                console.log(error),
-               Alert.alert("Connection Failed", "Please try Again.." )
+               Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
              })
            }).catch(error => {
              console.log(error)
-             Alert.alert("Connection Failed", "Please try Again.." )
+             Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
            })
          }
        }).catch(error => {
          this.setState({loadingOpacity: 0})
          this.spinValue = new Animated.Value(0)
          console.log("Function number catchi")
-         Alert.alert("Connection Failed", "Please try Again.." )
+         Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
        });
       }
     }).catch(error => {
       this.setState({loadingOpacity: 0})
       this.spinValue = new Animated.Value(0)
       console.log("Search fotosu upload olmadı")
-      Alert.alert("Connection Failed", "Please try Again.. 1")
+      Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
     });
 }
 search = () =>{

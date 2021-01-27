@@ -282,7 +282,7 @@ static navigationOptions = {
     }
 
   async onPressSave(){
-
+    var lang = language[global.lang]
     this.setState({loadingOpacity: 1})
     try{
       if(this.state.newPhoto){

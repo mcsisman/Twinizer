@@ -1181,30 +1181,30 @@
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
 
-"@react-native-firebase/auth@^8.3.3":
-  version "8.3.3"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/auth/-/auth-8.3.3.tgz#a9c0778dbee0c8251a8cb406951bed5bd02aa9e4"
-  integrity sha512-EM73Q8VDh3n9rbdv9Z8nAoe9d+JfNvbU4iXlEBpmH7FZhCkDKQR9Q9isa4Q8vzhVCmyJTQbgi0sMCJIXbOFTug==
+"@react-native-firebase/auth@^10.5.1":
+  version "10.5.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/auth/-/auth-10.5.1.tgz#fb44d4aaa60e99aa782c0644ac291c5963f92d89"
+  integrity sha512-CPqTYQ0fMHGST663I9fW43Yj7uA7w0nNxXQtFxr4oBCs4ykWzy89mqLeiBSMtWufkrrPE0nFoTdJ1YJiQchOxg==
 
-"@react-native-firebase/database@^7.4.2":
-  version "7.5.15"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/database/-/database-7.5.15.tgz#6a8d4570f181b9978ad10ff3bead3911833c0e1b"
-  integrity sha512-3fcrNRAJ3yBbM90Y4uG/qWwip7fV8fyb0Xdt5I4Ul6F+BNVYFe5TGT+8YyKCooR2bYgU0RH6spbdtVqI6CwHig==
+"@react-native-firebase/database@^10.5.1":
+  version "10.5.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/database/-/database-10.5.1.tgz#f5f9453c5c3db692f1d963766cd04645aad30a9a"
+  integrity sha512-jhBUbunCO2HoXPO1mom214A9wdtjLfhNgcaN9Z3x3TmObGZNm7xQ9FYINAXqKmb1iLMMZxlmR0CBD/2uUv3Chw==
 
-"@react-native-firebase/firestore@^7.5.3":
-  version "7.10.3"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-7.10.3.tgz#2f318e4f757ec42f81a976b1de8a55ab1d01561d"
-  integrity sha512-+RBgYAFEaWnGdnmWXR9mC9tTgCrmPcFtqsP+W0hLH3VBYGpxZCPJozzFWJhQHo6Scc8NR3Qpxxc4V8gm9+bImg==
+"@react-native-firebase/firestore@^10.5.1":
+  version "10.5.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-10.5.1.tgz#ecf047a38e20838297e2ab307b0769f1ca114c33"
+  integrity sha512-c51AynnkAm1ErnKKY5nIBFHUERkxD7nQE5G7zBo8t7T0P8YBofErxCjT7QTttILiyE/gFpAHsIsaX5a+CHCYDA==
 
 "@react-native-firebase/messaging@^10.5.1":
   version "10.5.1"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-10.5.1.tgz#f4b833f6ff6a7c234e790bae1f01289ac08199d8"
   integrity sha512-cpx87M3vaR34vUYEFdpsFQk0/A29225tD5lqqvKW+l/u8FHD9KHyjm+XoEenV2eCayF8IxkmO9PQKsufgg4FHQ==
 
-"@react-native-firebase/storage@^7.3.3":
-  version "7.4.14"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-7.4.14.tgz#5ceb2a740e94042cb6870f7a832df0cb0fdd164c"
-  integrity sha512-mq+rG8WK/4P4S+fwdBL/JMp60Qt3tu1MjT8zEA8zkT9uplrj43DJwanqEQD6R5XgCqj+f/fUFtGXt84pAzXlRA==
+"@react-native-firebase/storage@^10.5.1":
+  version "10.5.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-10.5.1.tgz#67678b44d23a8d92516b0ae603748854af860f29"
+  integrity sha512-cL+6sdT+smsR/T0cK89Tv8JAAsxVlBYNJxCD4k8rONFL79M9yUvv0JXpIO8kDUCBicXxZO8xXrJ88VuDvs1LHw==
 
 "@react-navigation/bottom-tabs@^5.7.0":
   version "5.11.6"

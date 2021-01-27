@@ -52,6 +52,7 @@ export default class NewAccountScreen extends Component<{}>{
       gender: "",
       verificationSended: false
     }
+    var lang = language[global.lang]
     this.props.navigation.setParams({ otherParam: lang.SignUp })
     this.statusBarHeaderTotalHeight = getStatusBarHeight() + headerHeight
     this.height = Math.round(Dimensions.get('screen').height);

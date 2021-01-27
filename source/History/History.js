@@ -170,6 +170,7 @@ async onPressSearch(){
   navigate("Main")
 }
 donePress(){
+    var lang = language[global.lang]
     var deleteCount = 0
     var indexArray = []
     for( i = 0; i < colorArray.length; i++){

@@ -116,6 +116,7 @@ valueChange(value){
 }
 
 async goBack(){
+  var lang = language[global.lang]
   await auth().signOut().then(function() {
     console.log("LOGOUT SUCCESSFUL")
   }).catch(error => {
