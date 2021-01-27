@@ -911,26 +911,17 @@ async sendFirstMessage(){
   global.receiverCountry = "Australia"
   global.receiverUsername = "cemil ug"
   //global.firstMessage = true
-  global.playerIdArray[global.receiverUid] = await AsyncStorage.getItem(global.receiverUid + "playerId")
+  //global.playerIdArray[global.receiverUid] = await AsyncStorage.getItem(global.receiverUid + "playerId")
   console.log("global.playerIdArray: ", global.playerIdArray)
-  var tempo = await AsyncStorage.getItem(global.receiverUid + "o")
-  var realtimeo = 0;
+  //var tempo = await AsyncStorage.getItem(global.receiverUid + "o")
+  //var realtimeo = 0;
   console.log("sendfirst before database once")
-  database().ref('/Users/'+ global.receiverUid + "/i/o").once('value').then(snapshot => {
-    realtimeo = snapshot.val()
-  }).catch(error => {
-    console.log("Can't get o value in database info")
-  });
   console.log("sendfirst before if")
-  if(tempo != realtimeo){
-    database().ref('/PlayerIds/'+global.receiverUid).once('value').then(snapshot => {
+  if(!global.playerIdArray[global.receiverUid]){
+    database().ref('/PlayerIds/'+global.receiverUid).on('child_changed', snap => {
       console.log("PLAYER ID READ EDIYO")
-      global.playerIdArray[global.receiverUid] = snapshot.val()
-      AsyncStorage.setItem(global.receiverUid + "playerId", snapshot.val())
-      AsyncStorage.setItem(global.receiverUid + "o", realtimeo)
-    }).catch(error => {
-      console.log("Can't get playerId of the user you send message")
-    });
+      global.playerIdArray[global.receiverUid] = snap.val()
+    })
   }
   console.log("sendfirst end")
   this.props.navigation.navigate("Chat")

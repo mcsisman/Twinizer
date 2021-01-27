@@ -293,7 +293,7 @@ async updatePlayerIds(snapshot, index){
     database().ref('/PlayerIds/'+ conversationUidArray[index]).on('child_changed', snap => {
       console.log("PLAYER ID DEGISTI LISTENERI")
       global.playerIdArray[conversationUidArray[index]] = snap.val()
-      AsyncStorage.setItem(conversationUidArray[index] + "playerId", snap.val())
+      //AsyncStorage.setItem(conversationUidArray[index] + "playerId", snap.val())
     })
 }
 
