@@ -902,6 +902,7 @@ async sendFirstMessage(){
   //global.receiverGender = genderArray[global.swipeCount]
   //global.receiverCountry = countryArray[global.swipeCount]
   //global.receiverUsername = usernameArray[global.swipeCount]
+  console.log("sendfirst start")
   global.msgFromMain = true
   global.receiverUid = "p9UY4QQtEnRTWBYDfgG4pyHiyZg2"
   global.receiverMail = "cemil.sisman@ug.bilkent.edu.tr"
@@ -913,11 +914,13 @@ async sendFirstMessage(){
   console.log("global.playerIdArray: ", global.playerIdArray)
   var tempo = await AsyncStorage.getItem(global.receiverUid + "o")
   var realtimeo = 0;
+  console.log("sendfirst before database once")
   database().ref('/Users/'+ global.receiverUid + "/i/o").once('value').then(snapshot => {
     realtimeo = snapshot.val()
   }).catch(error => {
     console.log("Can't get o value in database info")
   });
+  console.log("sendfirst before if")
   if(tempo != realtimeo){
     database().ref('/PlayerIds/'+global.receiverUid).once('value').then(snapshot => {
       console.log("PLAYER ID READ EDIYO")
@@ -928,6 +931,7 @@ async sendFirstMessage(){
       console.log("Can't get playerId of the user you send message")
     });
   }
+  console.log("sendfirst end")
   this.props.navigation.navigate("Chat")
 }
 
