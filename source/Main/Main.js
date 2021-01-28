@@ -192,16 +192,6 @@ constructor(props){
   }
 
 async componentDidMount(){
-  var str = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
-  var testArr = [];
-  testArr[0] = str;
-  for(let i = 0; i < 100000; i++){
-    testArr.push(str)
-  }
-  await EncryptedStorage.setItem("test",JSON.stringify(testArr))
-  var deneme = await EncryptedStorage.getItem("test")
-  var xx = JSON.parse(deneme)
-  console.log("TEST:", xx[99888])
 
     interstitial.onAdEvent(type => {
       if(type === AdEventType.ERROR){
