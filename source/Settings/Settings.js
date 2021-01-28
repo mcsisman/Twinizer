@@ -9,6 +9,7 @@ import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-community/async-storage';
 import OneSignal from 'react-native-onesignal'
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {Image,
    Text,
    View,
@@ -93,12 +94,12 @@ export default class SettingsScreen extends Component<{}>{
     try{
       OneSignal.clearOneSignalNotifications();
 
-      AsyncStorage.removeItem(auth().currentUser.uid + 'userGender')
-      AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry')
-      AsyncStorage.removeItem(auth().currentUser.uid + 'userName')
-      AsyncStorage.removeItem(auth().currentUser.uid + 'userBio')
-      AsyncStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
-      AsyncStorage.removeItem(auth().currentUser.uid + 'playerId')
+      EncryptedStorage.removeItem(auth().currentUser.uid + 'userGender')
+      EncryptedStorage.removeItem(auth().currentUser.uid + 'userCountry')
+      EncryptedStorage.removeItem(auth().currentUser.uid + 'userName')
+      EncryptedStorage.removeItem(auth().currentUser.uid + 'userBio')
+      EncryptedStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
+      EncryptedStorage.removeItem(auth().currentUser.uid + 'playerId')
       await database().ref('/PlayerIds/').update({
         [auth().currentUser.uid]: "x"
       });

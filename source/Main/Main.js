@@ -17,6 +17,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import Swipeable from 'react-native-swipeable';
 import RNFetchBlob from 'rn-fetch-blob'
 import AsyncStorage from '@react-native-community/async-storage';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import  { AdEventType, admob, InterstitialAd, RewardedAd, BannerAd, TestIds, MaxAdContentRating } from '@react-native-firebase/admob';
 import {Image,
    Text,
@@ -191,6 +192,17 @@ constructor(props){
   }
 
 async componentDidMount(){
+  var str = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+  var testArr = [];
+  testArr[0] = str;
+  for(let i = 0; i < 100000; i++){
+    testArr.push(str)
+  }
+  await EncryptedStorage.setItem("test",JSON.stringify(testArr))
+  var deneme = await EncryptedStorage.getItem("test")
+  var xx = JSON.parse(deneme)
+  console.log("TEST:", xx[99888])
+
     interstitial.onAdEvent(type => {
       if(type === AdEventType.ERROR){
         console.log("error geldi tekrar load et")
@@ -207,8 +219,8 @@ async componentDidMount(){
     interstitial.load();
 
   //console.log("rwar:", lang.SignUp)
-    favShowThisDialog = await AsyncStorage.getItem(auth().currentUser.uid + 'favShowThisDialog')
-    blockShowThisDialog = await AsyncStorage.getItem(auth().currentUser.uid + 'blockShowThisDialog')
+    favShowThisDialog = await EncryptedStorage.getItem(auth().currentUser.uid + 'favShowThisDialog')
+    blockShowThisDialog = await EncryptedStorage.getItem(auth().currentUser.uid + 'blockShowThisDialog')
     global.fromMessages = false
     var localMessages = []
     var arr = []
@@ -282,7 +294,7 @@ onOpened(openResult) {
 
 async onIds(device) {
     // Check playerId from local and change if it is changed
-    playerId = await AsyncStorage.getItem(auth().currentUser.uid + 'playerId')
+    playerId = await EncryptedStorage.getItem(auth().currentUser.uid + 'playerId')
     var lang = language[global.lang]
     global.playerId = device["userId"]
     console.log("playerId from storage: ", playerId)
@@ -302,7 +314,7 @@ async onIds(device) {
         console.log("HATA3")
         Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
       });
-      AsyncStorage.setItem(auth().currentUser.uid + 'playerId', global.playerId)
+      EncryptedStorage.setItem(auth().currentUser.uid + 'playerId', global.playerId)
     }
     console.log('Device info: ', device);
 }
@@ -333,7 +345,7 @@ checkUri2FavOrBlocked(){
   this.setState({reRender: "okeyyy"})
 }
 async getFavoriteUsers(){
-  await AsyncStorage.getItem(auth().currentUser.uid + 'favoriteUsers')
+  await EncryptedStorage.getItem(auth().currentUser.uid + 'favoriteUsers')
     .then(req => {
       if(req){
         return JSON.parse(req)
@@ -349,7 +361,7 @@ async getFavoriteUsers(){
     })
 }
 async getBlockedUsers(){
-  await AsyncStorage.getItem(auth().currentUser.uid + 'blockedUsers')
+  await EncryptedStorage.getItem(auth().currentUser.uid + 'blockedUsers')
     .then(req => {
       if(req){
          return JSON.parse(req)
@@ -911,9 +923,9 @@ async sendFirstMessage(){
   global.receiverCountry = "Australia"
   global.receiverUsername = "cemil ug"
   //global.firstMessage = true
-  //global.playerIdArray[global.receiverUid] = await AsyncStorage.getItem(global.receiverUid + "playerId")
+  //global.playerIdArray[global.receiverUid] = await EncryptedStorage.getItem(global.receiverUid + "playerId")
   console.log("global.playerIdArray: ", global.playerIdArray)
-  //var tempo = await AsyncStorage.getItem(global.receiverUid + "o")
+  //var tempo = await EncryptedStorage.getItem(global.receiverUid + "o")
   //var realtimeo = 0;
   console.log("sendfirst before database once")
   console.log("sendfirst before if")
@@ -931,7 +943,7 @@ addToFavButtonClicked(fromWhere){
   if (isFav){
     var index = favoriteUsers.indexOf(emailArray[global.swipeCount])
     favoriteUsers.splice(index,1)
-    AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
+    EncryptedStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
     favoriteUsersSet.delete(emailArray[global.swipeCount])
     isFav = false
     this.setState({addToFavVisible:false, addToFavVisibleUpper: false,})
@@ -955,7 +967,7 @@ addToBlockButtonClicked(fromWhere){
   if (isBlock){
     var index = blockedUsers.indexOf(emailArray[global.swipeCount])
     blockedUsers.splice(index,1)
-    AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+    EncryptedStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
     blockedUsersSet.delete(emailArray[global.swipeCount])
     isBlock = false
     this.setState({addToBlockVisible:false, addToBlockVisibleUpper:false})
@@ -981,7 +993,7 @@ addToBlockButtonClicked(fromWhere){
 favModalButtonClicked(uid){
   if(this.state.favTickVisible){
     favShowThisDialog = "false"
-    AsyncStorage.setItem(auth().currentUser.uid + 'favShowThisDialog', favShowThisDialog)
+    EncryptedStorage.setItem(auth().currentUser.uid + 'favShowThisDialog', favShowThisDialog)
   }
   this.addToFavoriteUsers(uid)
   isBlock = false
@@ -991,7 +1003,7 @@ favModalButtonClicked(uid){
 blockModalButtonClicked(uid){
   if(this.state.blockTickVisible){
     blockShowThisDialog = "false"
-    AsyncStorage.setItem(auth().currentUser.uid + 'blockShowThisDialog', blockShowThisDialog)
+    EncryptedStorage.setItem(auth().currentUser.uid + 'blockShowThisDialog', blockShowThisDialog)
   }
   this.addToBlockedUsers(uid)
   isBlock = true
@@ -1005,24 +1017,24 @@ addToFavoriteUsers(uid){
     if (blockedUsersSet.has(uid)){
       var index = blockedUsers.indexOf(uid)
       blockedUsers.splice(index,1)
-      AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+      EncryptedStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
       blockedUsersSet.delete(uid)
     }
     favoriteUsers.push(uid)
     favoriteUsersSet.add(uid)
-    AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
+    EncryptedStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
   }
   else if (favoriteUsers.length == 0 || !favoriteUsersSet.has(uid)) {
     if (favoriteUsers.length <= 15){
       if (blockedUsersSet.has(uid)){
         var index = blockedUsers.indexOf(uid)
         blockedUsers.splice(index,1)
-        AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+        EncryptedStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
         blockedUsersSet.delete(uid)
       }
       favoriteUsers.push(uid)
       favoriteUsersSet.add(uid)
-      AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
+      EncryptedStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
     }
   }
 }
@@ -1031,11 +1043,11 @@ addToBlockedUsers(uid){
     if (favoriteUsersSet.has(uid)){
       var index = favoriteUsers.indexOf(uid)
       favoriteUsers.splice(index,1)
-      AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
+      EncryptedStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUsers))
     }
     blockedUsers.push(uid)
     blockedUsersSet.add(uid)
-    AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+    EncryptedStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
   }
 }
 
@@ -1528,7 +1540,7 @@ async searchDone(value){
 
 async getLastSearchNo(){
   var lastSearch;
-  lastSearch = await AsyncStorage.getItem(auth().currentUser.uid + 'lastSearch')
+  lastSearch = await EncryptedStorage.getItem(auth().currentUser.uid + 'lastSearch')
   if(lastSearch == null){
     lastSearch = "0";
   }
@@ -1537,7 +1549,7 @@ async getLastSearchNo(){
 }
 async getNoOfSearch(){
   var noOfSearch;
-  noOfSearch = await AsyncStorage.getItem(auth().currentUser.uid + 'noOfSearch')
+  noOfSearch = await EncryptedStorage.getItem(auth().currentUser.uid + 'noOfSearch')
   if(noOfSearch == null){
     noOfSearch = "0";
   }
@@ -1553,7 +1565,7 @@ async increaseNoOfSearch(){
   if(noOfSearch < 20){
     noOfSearch = noOfSearch + 1;
     flagIs20 = false;
-    await AsyncStorage.setItem(auth().currentUser.uid + 'noOfSearch', noOfSearch.toString())
+    await EncryptedStorage.setItem(auth().currentUser.uid + 'noOfSearch', noOfSearch.toString())
   }
   return noOfSearch;
 }
@@ -1561,13 +1573,13 @@ async increaseLastSearchNo(){
   var lastSearch;
   lastSearch = await this.getLastSearchNo()
   lastSearch = lastSearch + 1
-  await AsyncStorage.setItem(auth().currentUser.uid + 'lastSearch', lastSearch.toString())
+  await EncryptedStorage.setItem(auth().currentUser.uid + 'lastSearch', lastSearch.toString())
   return lastSearch;
 }
 
 async getHistoryImageArray(){
   var historyArray = []
-  await AsyncStorage.getItem(auth().currentUser.uid + 'historyArray')
+  await EncryptedStorage.getItem(auth().currentUser.uid + 'historyArray')
     .then(req => {
       if(req){
          return JSON.parse(req)
@@ -1598,7 +1610,7 @@ async arrangeSearchImageArray(lastSearch, noOfSearch){
   var date = day + "." + month + "." + year;
   historyArray[noOfSearch-1] = {lastSearch: lastSearch, searchDate: date}
   console.log("GET HISTORY ARRAY2: ", historyArray)
-  await AsyncStorage.setItem(auth().currentUser.uid + 'historyArray', JSON.stringify(historyArray))
+  await EncryptedStorage.setItem(auth().currentUser.uid + 'historyArray', JSON.stringify(historyArray))
 }
 
 async saveSearchPhotoLocally(photoPath){

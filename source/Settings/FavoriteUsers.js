@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {Image,
    Text,
    View,
@@ -151,7 +152,7 @@ async initializeFavoriteUsersScreen(){
 
   async getFavoriteUserUids(){
 
-    await AsyncStorage.getItem(auth().currentUser.uid + 'favoriteUsers')
+    await EncryptedStorage.getItem(auth().currentUser.uid + 'favoriteUsers')
       .then(req => {
         if(req){
            return JSON.parse(req)
@@ -277,7 +278,7 @@ deleteFavUser(){
   }
   this.setState({favoriteBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
   this.favoriteBoxAnimation("reset")
-  AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUserUids))
+  EncryptedStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUserUids))
 }
 arrangeDoneColor(){
     var flag1 = false
@@ -370,7 +371,7 @@ removeFromUser(){
   global.removeFromFavUser = false
   global.favoriteUsersListeners = global.favoriteUsersListeners - 1
   this.setState({reRender: !this.state.reRender})
-  AsyncStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUserUids))
+  EncryptedStorage.setItem(auth().currentUser.uid + 'favoriteUsers', JSON.stringify(favoriteUserUids))
 }
 
   render(){

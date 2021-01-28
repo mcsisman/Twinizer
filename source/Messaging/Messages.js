@@ -12,6 +12,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {Image,
    Text,
    View,
@@ -117,6 +118,7 @@ export default class MessagesScreen extends Component<{}>{
     scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight()
   }
 componentDidMount(){
+
   lang = language[global.lang]
   global.newMsgListenerArray = []
   global.currentProcessUidArray = {}
@@ -262,7 +264,7 @@ async startFromLocal(){
   await this.spinAnimation()
   var localUids = []
   localUids.splice(0, localUids.length)
-  await AsyncStorage.getItem(auth().currentUser.uid + 'message_uids')
+  await EncryptedStorage.getItem(auth().currentUser.uid + 'message_uids')
     .then(req => {
       if(req){
          return JSON.parse(req)
@@ -293,7 +295,7 @@ async updatePlayerIds(snapshot, index){
     database().ref('/PlayerIds/'+ conversationUidArray[index]).on('child_changed', snap => {
       console.log("PLAYER ID DEGISTI LISTENERI")
       global.playerIdArray[conversationUidArray[index]] = snap.val()
-      //AsyncStorage.setItem(conversationUidArray[index] + "playerId", snap.val())
+      //EncryptedStorage.setItem(conversationUidArray[index] + "playerId", snap.val())
     })
 }
 
@@ -302,7 +304,7 @@ async getUsernameOfTheUid(){
   if(global.messagesFirstTime){
     global.fromChatOfUid = ""
     var localUsernames = []
-    await AsyncStorage.getItem(auth().currentUser.uid + 'message_usernames')
+    await EncryptedStorage.getItem(auth().currentUser.uid + 'message_usernames')
       .then(req => {
         if(req){
            return JSON.parse(req)
@@ -350,7 +352,7 @@ async getUsernameOfTheUid(){
   else{
     if(newRequest){
       var localUsernames = []
-      await AsyncStorage.getItem(auth().currentUser.uid + 'message_usernames')
+      await EncryptedStorage.getItem(auth().currentUser.uid + 'message_usernames')
         .then(req => {
           if(req){
              return JSON.parse(req)
@@ -378,7 +380,7 @@ async getUsernameOfTheUid(){
         await this.updatePlayerIds(snapshot, conversationUsernameArray.length-1)
 
       })
-      await AsyncStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
+      await EncryptedStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
     }
     else{
       if(!global.comingFromChat){
@@ -386,7 +388,7 @@ async getUsernameOfTheUid(){
       }
       global.comingFromChat = false
       var localUsernames = []
-      await AsyncStorage.getItem(auth().currentUser.uid + 'message_usernames')
+      await EncryptedStorage.getItem(auth().currentUser.uid + 'message_usernames')
         .then(req => {
           if(req){
              return JSON.parse(req)
@@ -403,7 +405,7 @@ async getUsernameOfTheUid(){
 }
 createUsernameArray = async (snap, i, conversationUid) => {
   var localUsernames = []
-  await AsyncStorage.getItem(auth().currentUser.uid + 'message_usernames')
+  await EncryptedStorage.getItem(auth().currentUser.uid + 'message_usernames')
     .then(req => {
       if(req){
          return JSON.parse(req)
@@ -436,7 +438,7 @@ createUsernameArray = async (snap, i, conversationUid) => {
   await this.updatePlayerIds(snap, i)
   conversationUsernameArray[i] = snap.val()
 
-  AsyncStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
+  EncryptedStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
   this.startFromLocal()
 }
 async createConversationArrays(){
@@ -494,7 +496,7 @@ async createUidPhotoArrays(){
   // GET THE UIDS THAT ARE SAVED TO LOCAL
   var localUids = []
   localUids.splice(0, localUids.length)
-  await AsyncStorage.getItem(auth().currentUser.uid + 'message_uids')
+  await EncryptedStorage.getItem(auth().currentUser.uid + 'message_uids')
     .then(req => {
       if(req){
          return JSON.parse(req)
@@ -512,8 +514,8 @@ async createUidPhotoArrays(){
       }
       else {
         differenceArray = conversationUidArray.filter(x => !localUids.includes(x))
-        AsyncStorage.setItem(auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
-        AsyncStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
+        EncryptedStorage.setItem(auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
+        EncryptedStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
         for( let i = 0; i < conversationUidArray.length; i++){
           for( let j = 0; j < differenceArray.length; j++){
             if( conversationUidArray[i] == differenceArray[j] ){
@@ -543,8 +545,8 @@ async createUidPhotoArrays(){
     else{
       console.log("localde mesaj yok")
       differenceArray = conversationUidArray
-      AsyncStorage.setItem(auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
-      AsyncStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
+      EncryptedStorage.setItem(auth().currentUser.uid + 'message_uids', JSON.stringify(conversationUidArray))
+      EncryptedStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
       for( let i = 0; i < conversationUidArray.length; i++){
         for( let j = 0; j < differenceArray.length; j++){
           if( conversationUidArray[i] == differenceArray[j] ){
@@ -603,7 +605,7 @@ getMessagesData = async callback =>{
       if(snapshot.val() == null || snapshot.val() == undefined){
         isEmpty = true
         var localMsgs = []
-        await AsyncStorage.getItem(auth().currentUser.uid + uidArray[count] + '/messages')
+        await EncryptedStorage.getItem(auth().currentUser.uid + uidArray[count] + '/messages')
           .then(req => {
             if(req){
                return JSON.parse(req)
@@ -665,7 +667,7 @@ getMessagesData = async callback =>{
             }
           }
           for( let  i = 0; i < noOfConversations; i++){
-            var isReq = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[i])
+            var isReq = await EncryptedStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[i])
             var kVal;
             var kListener = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[i] + "/k");
             await kListener.once('value').then(async snapshot => {
@@ -674,7 +676,7 @@ getMessagesData = async callback =>{
               }
             })
 
-            var showBox = await AsyncStorage.getItem('ShowMessageBox/' + auth().currentUser.uid + "/" + uidArray[i])
+            var showBox = await EncryptedStorage.getItem('ShowMessageBox/' + auth().currentUser.uid + "/" + uidArray[i])
             if(kVal == 0){
               isReq = "true"
             }
@@ -709,7 +711,7 @@ getMessagesData = async callback =>{
             }
             else{
               key = auth().currentUser.uid + "" + requestArray[i].user._id
-              time = await AsyncStorage.getItem(key + 'lastSeen')
+              time = await EncryptedStorage.getItem(key + 'lastSeen')
               if(requestArray[i].c > time){
                 requestLastSeenArray[i] = 1
               }
@@ -728,7 +730,7 @@ getMessagesData = async callback =>{
             }
             else{
               key = auth().currentUser.uid + "" + messageArray[i].user._id
-              time = await AsyncStorage.getItem(key + 'lastSeen')
+              time = await EncryptedStorage.getItem(key + 'lastSeen')
               if(messageArray[i].c > time){
                 messageLastSeenArray[i] = 1
               }
@@ -776,7 +778,7 @@ getMessagesData = async callback =>{
 async getLastLocalMessage(){
 
   var lastLocalKey;
-  await AsyncStorage.getItem(auth().currentUser.uid + otherUserUid + '/messages')
+  await EncryptedStorage.getItem(auth().currentUser.uid + otherUserUid + '/messages')
     .then(req => {
       if(req){
          return JSON.parse(req)
@@ -848,7 +850,8 @@ syncLocalMessages = async (snapshot, uidCount) => {
             console.log("LOCALE KAYDEDİLDİ, MESSAGESTA:", localMessages)
           }
           if(noOfNewMsgs == 1){
-            AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
+            EncryptedStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]));
+            // Swapped to EncryptedStorage EncryptedStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
           }
         if(p == "t"){
           var downloadURL;
@@ -887,7 +890,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
         }
       }
       if(noOfNewMsgs > 1){
-        await AsyncStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
+        await EncryptedStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
       }
 
       global.currentProcessUidArray[uidArray[uidCount]] = false
@@ -895,7 +898,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
       console.log("DEVAMKE")
 
       var kValue;
-      var isRequ = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[uidCount])
+      var isRequ = await EncryptedStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[uidCount])
       if(isRequ == undefined || isRequ == null || isRequ == "true"){
         kValue = 0
       }
@@ -924,7 +927,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
             }
           }
           for( let  i = 0; i < noOfConversations; i++){
-            var isReq = await AsyncStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[i])
+            var isReq = await EncryptedStorage.getItem('IsRequest/' + auth().currentUser.uid + "/" + uidArray[i])
             if(isReq == undefined || isReq == null || isReq == ""){
               var kVal;
               var kListener = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[i] + "/k");
@@ -965,7 +968,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
             }
             else{
               key = auth().currentUser.uid + "" + requestArray[i].user._id
-              time = await AsyncStorage.getItem(key + 'lastSeen')
+              time = await EncryptedStorage.getItem(key + 'lastSeen')
               if(requestArray[i].c == "notime"){
                 requestLastSeenArray[i] = 0
               }
@@ -989,7 +992,7 @@ syncLocalMessages = async (snapshot, uidCount) => {
             }
             else{
               key = auth().currentUser.uid + "" + messageArray[i].user._id
-              time = await AsyncStorage.getItem(key + 'lastSeen')
+              time = await EncryptedStorage.getItem(key + 'lastSeen')
               if(messageArray[i].c == "notime"){
                 messageLastSeenArray[i] = 0
               }
@@ -1399,7 +1402,7 @@ arrangeDoneColor(){
 
 async clearMessages(uid){
   var emptyArr = []
-  await AsyncStorage.setItem(auth().currentUser.uid + uid + '/messages', JSON.stringify(emptyArr))
+  await EncryptedStorage.setItem(auth().currentUser.uid + uid + '/messages', JSON.stringify(emptyArr))
 }
 async deleteMessages(uid, which){
   await this.clearMessages(uid)
@@ -1411,10 +1414,10 @@ async deleteMessages(uid, which){
 }
 
 async setShowMessageBox(uid, bool){
-  await AsyncStorage.setItem('ShowMessageBox/' + auth().currentUser.uid + "/" + uid, bool)
+  await EncryptedStorage.setItem('ShowMessageBox/' + auth().currentUser.uid + "/" + uid, bool)
 }
 async setLocalIsRequest(uid, bool){
-  await AsyncStorage.setItem('IsRequest/' + auth().currentUser.uid + "/" + uid, bool)
+  await EncryptedStorage.setItem('IsRequest/' + auth().currentUser.uid + "/" + uid, bool)
 }
 async setRequestDB(uid, value){
   console.log("set requestDB:", uid)

@@ -9,6 +9,7 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import { CommonActions } from '@react-navigation/native';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 var firstTime = true
 var localMessages = []
@@ -69,7 +70,7 @@ class FirebaseSvc {
           firstTime = false
           if(!global.currentProcessUidArray[global.receiverUid]){
             database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
-            await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+            await EncryptedStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
               .then(req => {
                 if(req){
                    return JSON.parse(req)
@@ -85,14 +86,14 @@ class FirebaseSvc {
             else{
               localMessages.push(message)
             }
-            await AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
+            await EncryptedStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
 
             return message;
           }
           else{
             if(!global.addedMsgs[global.receiverUid].includes(message.id)){
               database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
-              await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+              await EncryptedStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
                 .then(req => {
                   if(req){
                      return JSON.parse(req)
@@ -108,7 +109,7 @@ class FirebaseSvc {
               else{
                 localMessages.push(message)
               }
-              AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
+              EncryptedStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
               return message;
             }
             return null
@@ -130,12 +131,12 @@ class FirebaseSvc {
 
   // send the message to the Backend
   send = async (messages, p, images, index) => {
-    AsyncStorage.setItem('IsRequest/' + auth().currentUser.uid + "/" + global.receiverUid, "false")
+    EncryptedStorage.setItem('IsRequest/' + auth().currentUser.uid + "/" + global.receiverUid, "false")
     database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid).update({
       k:1
     })
     //If sending a msg to previously deleted person on main page
-    AsyncStorage.setItem('ShowMessageBox/' + auth().currentUser.uid + "/" + global.receiverUid, "true")
+    EncryptedStorage.setItem('ShowMessageBox/' + auth().currentUser.uid + "/" + global.receiverUid, "true")
     if(global.firstMessage){
       var kExists = false
       var kListener = database().ref('Messages/' + global.receiverUid + "/" + auth().currentUser.uid + "/k");
@@ -235,7 +236,7 @@ class FirebaseSvc {
       global.msgToDisplay = msg
       if(!global.currentProcessUidArray[global.receiverUid]){
         var localMsgs = []
-        await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+        await EncryptedStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
           .then(req => {
             if(req){
                return JSON.parse(req)
@@ -251,7 +252,7 @@ class FirebaseSvc {
           else{
             localMsgs.push(msg)
           }
-          await AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMsgs))
+          await EncryptedStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMsgs))
       }
       else{
         global.messageBuffer.push(msg)

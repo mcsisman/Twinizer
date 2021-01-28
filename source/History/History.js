@@ -6,6 +6,7 @@ import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {Image,
    Text,
    View,
@@ -152,8 +153,8 @@ async deleteHistory(indexArray){
     colorArray[i] = "trashgray"
   }
 
-  await AsyncStorage.setItem(auth().currentUser.uid + 'noOfSearch', noOfSearch.toString())
-  await AsyncStorage.setItem(auth().currentUser.uid + 'historyArray', JSON.stringify(historyArray))
+  await EncryptedStorage.setItem(auth().currentUser.uid + 'noOfSearch', noOfSearch.toString())
+  await EncryptedStorage.setItem(auth().currentUser.uid + 'historyArray', JSON.stringify(historyArray))
   this.leftAnimation = new Animated.Value(-this.width*(3/16))
   this.setState({historyBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
 }
@@ -277,7 +278,7 @@ historyBoxPressed(whichBox){
 }
 async getNoOfSearch(){
   var noOfSearch;
-  noOfSearch = await AsyncStorage.getItem(auth().currentUser.uid + 'noOfSearch')
+  noOfSearch = await EncryptedStorage.getItem(auth().currentUser.uid + 'noOfSearch')
   if(noOfSearch == null){
     noOfSearch = "0";
   }
@@ -303,7 +304,7 @@ async createDateArray(){
 
 async getLastSearchNo(){
   var lastSearch;
-  lastSearch = await AsyncStorage.getItem(auth().currentUser.uid + 'lastSearch')
+  lastSearch = await EncryptedStorage.getItem(auth().currentUser.uid + 'lastSearch')
   if(lastSearch == null){
     lastSearch = "0";
   }
@@ -312,7 +313,7 @@ async getLastSearchNo(){
 }
 async getHistoryImageArray(){
   var historyArray = []
-  await AsyncStorage.getItem(auth().currentUser.uid + 'historyArray')
+  await EncryptedStorage.getItem(auth().currentUser.uid + 'historyArray')
     .then(req => {
       if(req){
          return JSON.parse(req)

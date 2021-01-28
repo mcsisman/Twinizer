@@ -5832,6 +5832,11 @@ react-native-datepicker@^1.7.2:
   dependencies:
     moment "^2.22.0"
 
+react-native-encrypted-storage@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-encrypted-storage/-/react-native-encrypted-storage-4.0.1.tgz#9f36344634e01343c387771923a2ca0228a07fdc"
+  integrity sha512-RQf5lbAWNYhAtUbm5eh3eT1TTdH+kL0Mjpv9zImANLnAEoH6ZtqDmIXF+m/E5uAF5d2DN3J0KMh7i2KNPG0JJQ==
+
 react-native-fs@^2.16.6:
   version "2.16.6"
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.16.6.tgz#2901789a43210a35a0ef0a098019bbef3af395fd"

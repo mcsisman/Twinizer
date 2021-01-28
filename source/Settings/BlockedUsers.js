@@ -7,6 +7,7 @@ import {navigate, route} from './RootNavigation'
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import AsyncStorage from '@react-native-community/async-storage';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 
 import {Image,
@@ -138,7 +139,7 @@ async initializeBlockedUsersScreen(){
 
   async getBlockedUserUids(){
 
-    await AsyncStorage.getItem(auth().currentUser.uid + 'blockedUsers')
+    await EncryptedStorage.getItem(auth().currentUser.uid + 'blockedUsers')
       .then(req => {
         if(req){
            return JSON.parse(req)
@@ -248,7 +249,7 @@ deleteBlockedUser(){
   }
   this.setState({blockedBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
   this.blockedBoxAnimation("reset")
-  AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUserUids))
+  EncryptedStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUserUids))
 }
 donePress(){
   var lang = language[global.lang]
@@ -353,7 +354,7 @@ removeFromUser(){
   global.removeFromBlockedUser = false
   global.blockedUsersListeners = global.blockedUsersListeners - 1
   this.setState({reRender: !this.state.reRender})
-  AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUserUids))
+  EncryptedStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUserUids))
 }
 
   render(){

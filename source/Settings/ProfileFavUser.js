@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import RNFS from 'react-native-fs'
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 import {Image,
    Text,
@@ -132,7 +133,7 @@ static navigationOptions = {
   async block(){
     listener.off()
     global.removeFromFavUser = true
-    await AsyncStorage.getItem(auth().currentUser.uid + 'blockedUsers')
+    await EncryptedStorage.getItem(auth().currentUser.uid + 'blockedUsers')
       .then(req => {
         if(req){
            return JSON.parse(req)
@@ -144,7 +145,7 @@ static navigationOptions = {
       .then(json => {
         blockedUsers = json
         blockedUsers.push(global.selectedFavUserUid)
-        AsyncStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
+        EncryptedStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUsers))
         this.props.navigation.navigate("FavoriteUsers")
       })
   }

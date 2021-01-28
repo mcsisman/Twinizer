@@ -26,6 +26,7 @@ import ChatSendImgBottomBar from '../Components/Messaging/Chat/ChatImgSending/Ch
 import ChatSendImgTopBar from '../Components/Messaging/Chat/ChatImgSending/ChatSendImgTopBar'
 import CustomInputToolbar  from '../Components/Messaging/Chat/GiftedChat/CustomInputToolbar'
 import ChatHeader from '../Components/Messaging/Chat/Header/ChatHeader'
+import EncryptedStorage from 'react-native-encrypted-storage';
 import language from '../Utils/Languages/lang.json'
 import {Image,
    Text,
@@ -103,7 +104,7 @@ export default class ChatScreen extends React.Component<Props> {
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       global.callback = async (data, noOfNewMsgs) => {
         var localMessages = []
-        await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+        await EncryptedStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
           .then(req => {
             if(req){
                return JSON.parse(req)
@@ -148,7 +149,7 @@ export default class ChatScreen extends React.Component<Props> {
           }
           else{
             var localMessages = []
-            await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+            await EncryptedStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
               .then(req => {
                 if(req){
                    return JSON.parse(req)
@@ -180,7 +181,7 @@ export default class ChatScreen extends React.Component<Props> {
                 }).then( async data =>{
                   console.log("resim indirildi:", RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "/" + message.id + ".jpg"),
 
-                  await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+                  await EncryptedStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
                     .then(req => {
                       if(req){
                          return JSON.parse(req)
@@ -486,7 +487,7 @@ async deleteMessage(message){
   }
   this.setState({messages: messageArray})
 
-  await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+  await EncryptedStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
     .then(req => {
       if(req){
          return JSON.parse(req)
@@ -503,7 +504,7 @@ async deleteMessage(message){
       break
     }
   }
-  AsyncStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
+  EncryptedStorage.setItem(auth().currentUser.uid + global.receiverUid + '/messages', JSON.stringify(localMessages))
 }
 onLongPress(context, message) {
   /* Disabled for now, bugged.
@@ -662,13 +663,13 @@ render() {
   async updateLastSeenFile(){
     var currentTime = "" + new Date().getTime();
     var key = auth().currentUser.uid + "" + global.receiverUid
-    AsyncStorage.setItem(key + 'lastSeen', currentTime )
+    EncryptedStorage.setItem(key + 'lastSeen', currentTime )
 
   }
 async getLastLocalMessages(){
     messageArray = []
     messageArray.splice(0, messageArray.length)
-    await AsyncStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
+    await EncryptedStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
       .then(req => {
         if(req){
            return JSON.parse(req)

@@ -6,6 +6,7 @@ import { NavigationContainer, navigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import AsyncStorage from '@react-native-community/async-storage';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {Image,
    Text,
    View,
@@ -81,7 +82,7 @@ export default class NewAccountScreen extends Component<{}>{
 
       global.keyboardHeight = keyboardHeight
       console.log("global:", global.keyboardHeight)
-      AsyncStorage.setItem('keyboardHeight', (global.keyboardHeight).toString())
+      EncryptedStorage.setItem('keyboardHeight', (global.keyboardHeight).toString())
       this.setState({reRender: !this.state.reRender, keyboardOpen: true})
     }
   };
@@ -106,7 +107,7 @@ writeUserData(userId, name, email, imageUrl) {
         }).catch(error => {
           console.log("Can't update database")
         });
-        AsyncStorage.setItem(auth().currentUser.uid + 'userName', this.state.isim)
+        EncryptedStorage.setItem(auth().currentUser.uid + 'userName', this.state.isim)
         auth().currentUser.sendEmailVerification().catch(error => {
           Alert.alert(lang.PlsTryAgain, lang.SendEmailFailed)
         });

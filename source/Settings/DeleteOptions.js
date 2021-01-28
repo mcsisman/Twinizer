@@ -6,6 +6,7 @@ import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import OneSignal from 'react-native-onesignal'
 import AsyncStorage from '@react-native-community/async-storage';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {Image,
    Text,
    View,
@@ -149,24 +150,24 @@ async deletePress(email, password){
        OneSignal.removeEventListener('opened', this.onOpened);
        OneSignal.removeEventListener('ids', this.onIds);
        // async storage remove
-       AsyncStorage.removeItem(auth().currentUser.uid + 'userGender')
-       AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry')
-       AsyncStorage.removeItem(auth().currentUser.uid + 'userName')
-       AsyncStorage.removeItem(auth().currentUser.uid + 'userBio')
-       AsyncStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
-       AsyncStorage.removeItem(auth().currentUser.uid + 'blockedUsers')
-       AsyncStorage.removeItem(auth().currentUser.uid + 'favoriteUsers')
-       AsyncStorage.removeItem(auth().currentUser.uid + 'noOfSearch')
-       AsyncStorage.removeItem(auth().currentUser.uid + 'lastSearch')
-       AsyncStorage.removeItem(auth().currentUser.uid + 'historyArray')
-       AsyncStorage.removeItem(auth().currentUser.uid + 'favShowThisDialog')
-       AsyncStorage.removeItem(auth().currentUser.uid + 'blockShowThisDialog')
-       AsyncStorage.removeItem(auth().currentUser.uid + "o")
-       AsyncStorage.removeItem(auth().currentUser.uid + 'playerId')
-       AsyncStorage.removeItem(auth().currentUser.uid + 'message_uids')
-       AsyncStorage.removeItem(auth().currentUser.uid + 'message_usernames')
-       AsyncStorage.removeItem(auth().currentUser.uid + 'theme')
-       AsyncStorage.removeItem(auth().currentUser.uid + 'mode')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'userGender')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'userCountry')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'userName')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'userBio')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'userPhotoCount')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'blockedUsers')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'favoriteUsers')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'noOfSearch')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'lastSearch')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'historyArray')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'favShowThisDialog')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'blockShowThisDialog')
+       EncryptedStorage.removeItem(auth().currentUser.uid + "o")
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'playerId')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'message_uids')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'message_usernames')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'theme')
+       EncryptedStorage.removeItem(auth().currentUser.uid + 'mode')
        var messageUidsArray = firestore().collection(auth().currentUser.uid).doc("MessageInformation")
        console.log("messageuidsarray: ", messageUidsArray)
        messageUidsArray.get().then( async doc =>{
@@ -174,10 +175,10 @@ async deletePress(email, password){
          if(doc.exists){
            var conversationUidArray = await doc.data()["UidArray"]
            for(let i = 0; i < conversationUidArray.length; i++){
-             AsyncStorage.removeItem(auth().currentUser.uid + conversationUidArray[i] + '/messages')
-             AsyncStorage.removeItem('IsRequest/' + auth().currentUser.uid + "/" + conversationUidArray[i])
-             AsyncStorage.removeItem('ShowMessageBox/' + auth().currentUser.uid + "/" + conversationUidArray[i])
-             AsyncStorage.removeItem(auth().currentUser.uid + "" + conversationUidArray[i] + 'lastSeen')
+             EncryptedStorage.removeItem(auth().currentUser.uid + conversationUidArray[i] + '/messages')
+             EncryptedStorage.removeItem('IsRequest/' + auth().currentUser.uid + "/" + conversationUidArray[i])
+             EncryptedStorage.removeItem('ShowMessageBox/' + auth().currentUser.uid + "/" + conversationUidArray[i])
+             EncryptedStorage.removeItem(auth().currentUser.uid + "" + conversationUidArray[i] + 'lastSeen')
              // firestore delete
              firestore().collection(auth().currentUser.uid).doc('MessageInformation').delete().then(() => {
                console.log('MessageInformation deleted!');

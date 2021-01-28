@@ -12,6 +12,7 @@ import database from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
 import OneSignal from 'react-native-onesignal'
 import firestore from '@react-native-firebase/firestore';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {Image,
    Text,
    View,
@@ -192,19 +193,19 @@ static navigationOptions = {
     // from asyncstorage part
 
     console.log("current user:", auth().currentUser.uid)
-    await AsyncStorage.getItem(auth().currentUser.uid + 'userGender').then( req => {
+    await EncryptedStorage.getItem(auth().currentUser.uid + 'userGender').then( req => {
       currentUserGender = req
     })
-    await AsyncStorage.getItem(auth().currentUser.uid + 'userCountry').then( req => {
+    await EncryptedStorage.getItem(auth().currentUser.uid + 'userCountry').then( req => {
       currentUserCountry = req
     })
-    await AsyncStorage.getItem(auth().currentUser.uid + 'userName').then( req => {
+    await EncryptedStorage.getItem(auth().currentUser.uid + 'userName').then( req => {
       currentUserUsername = req
     })
-    await AsyncStorage.getItem(auth().currentUser.uid + 'userBio').then( req => {
+    await EncryptedStorage.getItem(auth().currentUser.uid + 'userBio').then( req => {
       currentUserBio = req
     })
-    await AsyncStorage.getItem(auth().currentUser.uid + 'userPhotoCount')
+    await EncryptedStorage.getItem(auth().currentUser.uid + 'userPhotoCount')
       .then(req => {
         if(req){
            return JSON.parse(req)
@@ -230,12 +231,12 @@ static navigationOptions = {
           userBio: snapshot.val().b,  bioLimit: snapshot.val().b.length, userPhotoCount: snapshot.val().p })
         await this.getImageURL()
         await this.downloadImages()
-        AsyncStorage.setItem(auth().currentUser.uid + 'userGender', this.state.userGender)
+        EncryptedStorage.setItem(auth().currentUser.uid + 'userGender', this.state.userGender)
         console.log("this.state.userGender: ", this.state.userGender)
-        AsyncStorage.setItem(auth().currentUser.uid + 'userCountry', this.state.userCountry)
-        AsyncStorage.setItem(auth().currentUser.uid + 'userName', this.state.userUsername)
-        AsyncStorage.setItem(auth().currentUser.uid + 'userBio', this.state.userBio)
-        await AsyncStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
+        EncryptedStorage.setItem(auth().currentUser.uid + 'userCountry', this.state.userCountry)
+        EncryptedStorage.setItem(auth().currentUser.uid + 'userName', this.state.userUsername)
+        EncryptedStorage.setItem(auth().currentUser.uid + 'userBio', this.state.userBio)
+        await EncryptedStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
         this.setState({profilePhoto:  "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg"})
       }).catch(error => {
         console.log(error)
@@ -298,11 +299,11 @@ static navigationOptions = {
         RNFS.copyFile(this.state.profilePhoto, RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg");
         this.setState({profilePhoto: this.state.profilePhoto + '?' + new Date(), userPhotoCount: this.state.userPhotoCount + 1})
       }
-      AsyncStorage.setItem(auth().currentUser.uid + 'userGender', this.state.userGender)
-      AsyncStorage.setItem(auth().currentUser.uid + 'userCountry', this.state.userCountry)
-      AsyncStorage.setItem(auth().currentUser.uid + 'userName', this.state.userUsername)
-      AsyncStorage.setItem(auth().currentUser.uid + 'userBio', this.state.userBio)
-      await AsyncStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
+      EncryptedStorage.setItem(auth().currentUser.uid + 'userGender', this.state.userGender)
+      EncryptedStorage.setItem(auth().currentUser.uid + 'userCountry', this.state.userCountry)
+      EncryptedStorage.setItem(auth().currentUser.uid + 'userName', this.state.userUsername)
+      EncryptedStorage.setItem(auth().currentUser.uid + 'userBio', this.state.userBio)
+      await EncryptedStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
 
       await database().ref('Users/' + auth().currentUser.uid + "/i").update({
         g: this.state.userGender,

@@ -6,6 +6,7 @@ import { Header } from 'react-navigation-stack';
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import AsyncStorage from '@react-native-community/async-storage';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {Image,
    Text,
    View,
@@ -68,7 +69,7 @@ _keyboardDidShow = (e) => {
 
     global.keyboardHeight = keyboardHeight
     console.log("global:", global.keyboardHeight)
-    AsyncStorage.setItem('keyboardHeight', (global.keyboardHeight).toString())
+    EncryptedStorage.setItem('keyboardHeight', (global.keyboardHeight).toString())
     this.setState({keyboardOpen: true})
   }
 };

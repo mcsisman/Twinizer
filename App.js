@@ -10,6 +10,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { navigationRef } from './source/RootNavigation';
 import AsyncStorage from '@react-native-community/async-storage';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {
   SafeAreaView,
   StyleSheet,
@@ -71,7 +72,7 @@ global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,
 
 
       this._subscribe = this.props.navigation.addListener('focus', async () => {
-        global.keyboardHeight = await AsyncStorage.getItem('keyboardHeight')
+        global.keyboardHeight = await EncryptedStorage.getItem('keyboardHeight')
         console.log("APPJSTE KEYBOARD1:", global.keyboardHeight)
         if(global.keyboardHeight != undefined && global.keyboardHeight != null){
           console.log("APPJSTE KEYBOARD:", global.keyboardHeight)
@@ -106,14 +107,14 @@ global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,
     async setTheme(user){
       // Theme color
       if(user){
-        var themeColor = await AsyncStorage.getItem(auth().currentUser.uid + 'theme')
+        var themeColor = await EncryptedStorage.getItem(auth().currentUser.uid + 'theme')
         console.log("STORAGEDAN GELEN THEME COLOR:", themeColor)
         if(themeColor == null || themeColor == undefined){
           themeColor = "Original"
         }
         global.themeColor = themes.getTheme(themeColor)
         global.themeForImages = themes.getThemeForImages(themeColor)
-        var mode = await AsyncStorage.getItem(auth().currentUser.uid + 'mode')
+        var mode = await EncryptedStorage.getItem(auth().currentUser.uid + 'mode')
         if(mode == null || mode == undefined){
           mode = "false"
         }

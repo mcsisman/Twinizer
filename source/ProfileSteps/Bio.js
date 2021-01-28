@@ -9,6 +9,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import Modal from "react-native-modal";
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {Image,
    Text,
    View,
@@ -124,10 +125,10 @@ async writeCountryToDatabase(){
             name: auth().currentUser.uid + "_" + randFloat.toString()
           }).then(function() {
 
-            AsyncStorage.setItem(auth().currentUser.uid + 'userGender', global.globalGender)
-            AsyncStorage.setItem(auth().currentUser.uid + 'userCountry', global.globalCountry)
-            AsyncStorage.setItem(auth().currentUser.uid + 'userBio', global.globalBio)
-            AsyncStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(0))
+            EncryptedStorage.setItem(auth().currentUser.uid + 'userGender', global.globalGender)
+            EncryptedStorage.setItem(auth().currentUser.uid + 'userCountry', global.globalCountry)
+            EncryptedStorage.setItem(auth().currentUser.uid + 'userBio', global.globalBio)
+            EncryptedStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(0))
             console.log("bilgiler locale kaydedildi:", auth().currentUser.uid)
           })
       });

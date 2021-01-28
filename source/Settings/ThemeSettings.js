@@ -9,6 +9,7 @@ import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import themes from './Themes';
 import {navigate, route} from './RootNavigation'
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 import {Image,
    Text,
@@ -77,8 +78,8 @@ export default class ThemeSettingsScreen extends Component<{}>{
     })
   }
   async getSelectedTheme(){
-    var themeColor = await AsyncStorage.getItem(auth().currentUser.uid + 'theme')
-    var mode = await AsyncStorage.getItem(auth().currentUser.uid + 'mode')
+    var themeColor = await EncryptedStorage.getItem(auth().currentUser.uid + 'theme')
+    var mode = await EncryptedStorage.getItem(auth().currentUser.uid + 'mode')
 
     if(themeColor == null || themeColor == undefined){
       themeColor = "Original"
@@ -134,8 +135,8 @@ export default class ThemeSettingsScreen extends Component<{}>{
     global.themeForImages = themes.getThemeForImages(themeColor)
     this.setState({reRender: "ok"})
     this.props.route.params.update()
-    AsyncStorage.setItem(auth().currentUser.uid + 'theme', themeColor)
-    AsyncStorage.setItem(auth().currentUser.uid + 'mode', mode)
+    EncryptedStorage.setItem(auth().currentUser.uid + 'theme', themeColor)
+    EncryptedStorage.setItem(auth().currentUser.uid + 'mode', mode)
   }
   render(){
     var lang = language[global.lang]
