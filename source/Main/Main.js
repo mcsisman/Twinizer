@@ -1867,13 +1867,13 @@ render(){
     })
 
     const spinY = this.spinValueY.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['0deg', '180deg']
+      inputRange: [0.01, 1],
+      outputRange: ['0.4deg', '180deg']
     })
 
     const spinZ = this.spinValueZ.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['0deg', '180deg']
+      inputRange: [0.01, 1],
+      outputRange: ['0.4deg', '180deg']
     })
     return(
       <View
