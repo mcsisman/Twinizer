@@ -2126,10 +2126,10 @@ render(){
       onPressClose = {()=>this.setState({blockTickVisible: false,addToBlockVisible:false, addToBlockVisibleUpper:false})}/>
 
 
-    
+
 
       <Animated.Image source={{uri: 'logorenkli'}}
-        style={{transform: [ {rotateY: spinY}, {rotateX: spinZ}] ,width: this.width*(2/15), height: this.width*(2/15),
+        style={{backgroundColor: "blue", transform: [ {rotateY: spinY}, {rotateX: spinZ}] ,width: this.width*(2/15), height: this.width*(2/15),
         position: 'absolute', top: getStatusBarHeight() + headerHeight + this.width/6+(this.width/2)*(7/6)/2-this.width/15, left: this.width*(6.5/15) , opacity: 1}}/>
 
         <ImageViewerModal
