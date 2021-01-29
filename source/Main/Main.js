@@ -195,7 +195,7 @@ constructor(props){
 
 async componentDidMount(){
 
-  this.logoAnimation()
+  //this.logoAnimation() not working properly on ios transform: [ {rotateY: spinY}, {rotateX: spinZ}]
 
     interstitial.onAdEvent(type => {
       if(type === AdEventType.ERROR){
@@ -2126,11 +2126,11 @@ render(){
       onPressClose = {()=>this.setState({blockTickVisible: false,addToBlockVisible:false, addToBlockVisibleUpper:false})}/>
 
 
+      <Animated.Image source={{uri: 'loading' + global.themeForImages}}
+        style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
+        position: 'absolute', top: getStatusBarHeight() + headerHeight + this.width/6+(this.width/2)*(7/6)/2-this.width/30, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 
 
-      <Animated.Image source={{uri: 'logorenkli'}}
-        style={{backgroundColor: "blue", transform: [{rotateY: spinY}, {rotateX: spinZ}, {perspective: 1000}, ] ,width: this.width*(2/15), height: this.width*(2/15),
-        position: 'absolute', top: getStatusBarHeight() + headerHeight + this.width/6+(this.width/2)*(7/6)/2-this.width/15, left: this.width*(6.5/15) , opacity: 1}}/>
 
         <ImageViewerModal
         isVisible = {this.state.imageViewerVisible}
