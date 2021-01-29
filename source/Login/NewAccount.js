@@ -43,7 +43,6 @@ export default class NewAccountScreen extends Component<{}>{
     super(props);
     this.state = {
       reRender: true,
-      fontWeight: "normal",
       usernameColor: "black",
       splashOver : false,
       isim : "",
@@ -155,10 +154,10 @@ writeUserData(userId, name, email, imageUrl) {
 
     this.setState({isim: text})
     if(this.checkIfUsernameValid(text)){
-      this.setState({usernameColor: "black", fontWeight: "normal"})
+      this.setState({usernameColor: "black"})
     }
     else{
-      this.setState({usernameColor: "red", fontWeight: "bold"})
+      this.setState({usernameColor: "red"})
     }
   }
   checkIfUsernameValid(text){
@@ -222,7 +221,7 @@ writeUserData(userId, name, email, imageUrl) {
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder={lang.Username}
         //returnKeyType="Next"
-        style={{color: this.state.usernameColor, fontWeight: this.state.fontWeight, paddingLeft: 0, fontSize: 17*(this.width/360), paddingBottom: this.width/50, position: 'absolute', width: this.width*(6/10),
+        style={{color: this.state.usernameColor, paddingLeft: 0, fontSize: 17*(this.width/360), paddingBottom: this.width/50, position: 'absolute', width: this.width*(6/10),
          backgroundColor: global.isDarkMode ? 'rgba(255,255,255,0)': 'rgba(255,255,255,0.2)',  borderColor: 'rgba(241,51,18,0)', borderBottomColor: global.themeColor, borderBottomWidth: 2}}
          onChangeText={(text) => this.onUsernameTextChange(text)}>
         </TextInput>
