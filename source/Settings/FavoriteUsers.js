@@ -170,7 +170,6 @@ async initializeFavoriteUsersScreen(){
           noOfFavUsers = favoriteUserUids.length
         }
       })
-    this.setState({loadingDone: true})
   }
   async createUsernameArray(){
     for(let i = global.favoriteUsersListeners; i < noOfFavUsers; i++){
@@ -199,7 +198,7 @@ listenerFunc = async (snap, i, conversationUid, firstTotal) => {
       storageRef.getDownloadURL().then(data =>{
         imageUrls[i] = data
         console.log("profil photo: ", data)
-        this.setState({reRender: !this.state.reRender})
+        this.setState({loadingDone: true, reRender: !this.state.reRender})
       }).catch(function(error) {
         // Handle any errors
       });

@@ -276,7 +276,7 @@ static navigationOptions = {
       })
       .then((res) => {
         console.log('The file saved to ', res.path())
-        this.setState({profilePhoto:  "file://" + res.path()})
+        this.setState({loadingDone: true, profilePhoto:  "file://" + res.path()})
       }).catch(error => {
         console.log(error)
       });

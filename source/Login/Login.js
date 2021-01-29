@@ -166,7 +166,7 @@ Login = (email, password) => {
           keyboardType= "email-address"
           onFocus = {()=>{console.log("keyboardavoid:", keyboardAvoidingHeight)
          this.setState({keyboardOpen: true})}}
-          style={{ paddingLeft: 0, paddingBottom:this.width/50, fontSize: 17*(this.width/360), width: this.width*(6/10),
+          style={{ fontFamily: "", paddingLeft: 0, paddingBottom:this.width/50, fontSize: 17*(this.width/360), width: this.width*(6/10),
            borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
            onChangeText={(text) => this.setState({isim: text})}>
           </TextInput>
@@ -179,7 +179,7 @@ Login = (email, password) => {
           secureTextEntry
           onFocus = {()=>{console.log("keyboardavoid:", keyboardAvoidingHeight)
          this.setState({keyboardOpen: true})}}
-          style={{paddingLeft: 0, paddingBottom: this.width/50, fontSize: 17*(this.width/360), width: this.width*(6/10),
+          style={{fontFamily: "", paddingLeft: 0, paddingBottom: this.width/50, fontSize: 17*(this.width/360), width: this.width*(6/10),
            backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
            onChangeText={(text) => this.setState({sifre: text})}>
         </TextInput>
@@ -191,7 +191,7 @@ Login = (email, password) => {
         style={{justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(255,255,255, 0)',
           paddingLeft: 15, paddingRight: 15, height: (this.height*6)/100, flex:1}}
         onPress={()=>this.check() }>
-        <Text style={{textAlign: 'center', color: 'white', fontSize: 17*(this.width/360)}}>
+        <Text style={{fontFamily: "", textAlign: 'center', color: 'white', fontSize: 17*(this.width/360)}}>
           {lang.Login}
         </Text>
         </TouchableOpacity>
@@ -205,6 +205,7 @@ Login = (email, password) => {
          padding:this.width/50, bottom: 0, right: this.width*(2/100)}}
          onPress={()=>navigate("NewAccount") }>
         <Text style={{
+          fontFamily: "",
           textAlign: 'right',
           color: 'white',
           fontSize: 18*(this.width/360)
@@ -218,7 +219,7 @@ Login = (email, password) => {
         style={{position: 'absolute',
          padding:this.width/50, bottom: 0, left: this.width*(2/100)}}
          onPress={()=> navigate( "ForgotPassword") }>
-        <Text style={{textAlign: 'left', color: 'white',   fontSize: 18*(this.width/360)}}>
+        <Text style={{fontFamily: "", textAlign: 'left', color: 'white', fontSize: 18*(this.width/360)}}>
           {lang.ForgotPassword}
         </Text>
         </TouchableOpacity>

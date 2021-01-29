@@ -80,7 +80,7 @@ export default class ProfileBlockedUserScreen extends Component<{}>{
     this.spinAnimation()
     console.log("comp did mount")
     this._subscribe = this.props.navigation.addListener('focus', async () => {
-      this.setState({loadingDone: true})
+      this.setState({loadingDone: false})
       //this.spinAnimation()
       console.log("subscribe")
       await this.initializeBlockedUsersScreen()
@@ -146,7 +146,7 @@ static navigationOptions = {
     console.log("getImageURL: ", uid)
       var storageRef = storage().ref("Photos/" + uid + "/1.jpg")
       await storageRef.getDownloadURL().then(data =>{
-        this.setState({profilePhoto: data})
+        this.setState({loadingDone: true, profilePhoto: data})
         console.log("profil photo: ", data)
       }).catch(function(error) {
         console.log(error)

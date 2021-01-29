@@ -188,10 +188,14 @@ constructor(props){
     this.widthAnimation = new Animated.Value(global.width*(5/10))
     this.heightAnimation = new Animated.Value(global.width*(5/10)*(7/6))
     this.spinValue = new Animated.Value(0)
+    this.spinValueY = new Animated.Value(0);
+    this.spinValueZ = new Animated.Value(0);
     var test = "xxx"
   }
 
 async componentDidMount(){
+
+  this.logoAnimation()
 
     interstitial.onAdEvent(type => {
       if(type === AdEventType.ERROR){
@@ -281,7 +285,48 @@ onOpened(openResult) {
     //const {navigate} = this.props.navigation;
     //navigate("Messages")
 }
+logoAnimation(){
+  Animated.loop(Animated.sequence([
+   Animated.timing(
+    this.spinValueY,
+    {
+     toValue: 1,
+     duration: 800,
+     easing: Easing.linear,
+     useNativeDriver: true
+     }
+   ),
+   Animated.timing(
+    this.spinValueZ,
+    {
+     toValue: 1,
+     duration: 800,
+     easing: Easing.linear,
+     useNativeDriver: true
+    }
+   ),
+   Animated.timing(
+    this.spinValueY,
+    {
+     toValue: 0,
+     duration: 800,
+     easing: Easing.linear,
+     useNativeDriver: true
+    }
+  ),
+  Animated.timing(
+   this.spinValueZ,
+   {
+    toValue: 0,
+    duration: 800,
+    easing: Easing.linear,
+    useNativeDriver: true
+   }
+  )
+  ]
 
+  )).start();
+}
 async onIds(device) {
     // Check playerId from local and change if it is changed
     playerId = await EncryptedStorage.getItem(auth().currentUser.uid + 'playerId')
@@ -1820,6 +1865,16 @@ render(){
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg']
     })
+
+    const spinY = this.spinValueY.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '180deg']
+    })
+
+    const spinZ = this.spinValueZ.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '180deg']
+    })
     return(
       <View
       style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
@@ -1969,7 +2024,6 @@ render(){
       opacity = {this.state.btnOpacity}/>
       </View>
 
-
       <InfoModal
       isVisible = {this.state.searchOnIsVisible}
       txtAlert = {"There is already a Twinizing process going on. You can automatically cancel it and start a new process by uploading a new image."}
@@ -1982,10 +2036,6 @@ render(){
       txtAlert = {lang.TwinizingProcessInfo}
       txtGotIt = {lang.GotIt}
       onPressClose = {()=> {this.setState({notifIsVisible:false}), interstitial.show()}}/>
-
-
-
-
 
       <ImageUploadModal
       isVisible={this.state.isVisible1}
@@ -2080,6 +2130,9 @@ render(){
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
         position: 'absolute', top: getStatusBarHeight() + headerHeight + this.width/6+(this.width/2)*(7/6)/2-this.width/30, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 
+      <Animated.Image source={{uri: 'logorenkli'}}
+        style={{transform: [ {rotateY: spinY}, {rotateX: spinZ}] ,width: this.width*(2/15), height: this.width*(2/15),
+        position: 'absolute', top: getStatusBarHeight() + headerHeight + this.width/6+(this.width/2)*(7/6)/2-this.width/15, left: this.width*(6.5/15) , opacity: 1}}/>
 
         <ImageViewerModal
         isVisible = {this.state.imageViewerVisible}
