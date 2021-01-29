@@ -1867,13 +1867,13 @@ render(){
     })
 
     const spinY = this.spinValueY.interpolate({
-      inputRange: [0.01, 1],
-      outputRange: ['0.4deg', '180deg']
+      inputRange: [0, 1],
+      outputRange: ['0deg', '180deg']
     })
 
     const spinZ = this.spinValueZ.interpolate({
-      inputRange: [0.01, 1],
-      outputRange: ['0.4deg', '180deg']
+      inputRange: [0, 1],
+      outputRange: ['0deg', '180deg']
     })
     return(
       <View
@@ -2126,9 +2126,7 @@ render(){
       onPressClose = {()=>this.setState({blockTickVisible: false,addToBlockVisible:false, addToBlockVisibleUpper:false})}/>
 
 
-      <Animated.Image source={{uri: 'loading' + global.themeForImages}}
-        style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
-        position: 'absolute', top: getStatusBarHeight() + headerHeight + this.width/6+(this.width/2)*(7/6)/2-this.width/30, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
+    
 
       <Animated.Image source={{uri: 'logorenkli'}}
         style={{transform: [ {rotateY: spinY}, {rotateX: spinZ}] ,width: this.width*(2/15), height: this.width*(2/15),
