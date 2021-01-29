@@ -293,7 +293,7 @@ logoAnimation(){
      toValue: 1,
      duration: 800,
      easing: Easing.linear,
-     useNativeDriver: true
+
      }
    ),
    Animated.timing(
@@ -302,7 +302,7 @@ logoAnimation(){
      toValue: 1,
      duration: 800,
      easing: Easing.linear,
-     useNativeDriver: true
+
     }
    ),
    Animated.timing(
@@ -311,7 +311,7 @@ logoAnimation(){
      toValue: 0,
      duration: 800,
      easing: Easing.linear,
-     useNativeDriver: true
+
     }
   ),
   Animated.timing(
@@ -320,7 +320,7 @@ logoAnimation(){
     toValue: 0,
     duration: 800,
     easing: Easing.linear,
-    useNativeDriver: true
+
    }
   )
   ]
