@@ -145,9 +145,7 @@ async initializeFavoriteUsersScreen(){
   await this.getFavoriteUserUids()
   console.log("global.favoriteUsersListeners: ", global.favoriteUsersListeners)
   console.log("noOfFavUsers: ", noOfFavUsers)
-  if(global.favoriteUsersListeners < noOfFavUsers){
-    await this.createUsernameArray()
-  }
+  await this.createUsernameArray()
 }
 
   async getFavoriteUserUids(){
@@ -172,10 +170,13 @@ async initializeFavoriteUsersScreen(){
       })
   }
   async createUsernameArray(){
+    console.log("createUsernameArray - entered ")
     for(let i = global.favoriteUsersListeners; i < noOfFavUsers; i++){
+      console.log("createUsernameArray: ", i)
       await this.getImageURL(favoriteUserUids[i], i)
       await this.getUsernameOfTheUid(favoriteUserUids[i], i)
     }
+    this.setState({loadingDone: true, reRender: !this.state.reRender})
     global.favoriteUsersListeners = noOfFavUsers
   }
 
@@ -264,11 +265,11 @@ deleteFavUser(){
       imageUrls.splice(i,1)
       favoriteUserUids.splice(i,1)
       usernameListener[i].off()
+      global.favoriteUsersListeners = global.favoriteUsersListeners - 1
       usernameListener.splice(i,1)
       favoriteUserUsernames.splice(i,1)
       noOfFavUsers = noOfFavUsers - 1
     }
-
   }
   global.removedFromFavList = true
   colorArray = []

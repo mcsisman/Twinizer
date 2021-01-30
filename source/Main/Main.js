@@ -191,6 +191,8 @@ constructor(props){
     this.spinValueY = new Animated.Value(0);
     this.spinValueZ = new Animated.Value(0);
     var test = "xxx"
+    isFav = false;
+    isBlock = false;
   }
 
 async componentDidMount(){
@@ -1197,33 +1199,55 @@ async createEmailDistanceArrays(gender, country, fn){
   }
   else if (fn == "filterDone with all") {
     console.log("filterDone with all")
+    var itemsIndex = 0;
     for (let i = 0; i < mainEmailArray.length; i++){
       if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
-        emailArray.push(mainEmailArray[i]);
-        usernameArray.push(mainUsernameArray[i]);
-        countryArray.push(mainCountryArray[i]);
-        genderArray.push(mainGenderArray[i]);
-        distanceArray.push(mainDistanceArray[i]);
-        if (mainEmailArray[i] in mainPhotoArray){
-          console.log("mainEmailArray[i] in mainPhotoArray: ", mainEmailArray[i] in mainPhotoArray, mainEmailArray[i])
-          photoArray[mainEmailArray[i]] = mainPhotoArray[mainEmailArray[i]]
+        if(i % 6 == 0 && i != 0){
+          emailArray.push("ground")
+          countryArray.push("")
+          genderArray.push("ground")
+          usernameArray.push(lang.Advertisement)
+          distanceArray.push("ground");
+          itemsIndex++;
+        }
+        else{
+          emailArray.push(mainEmailArray[i-itemsIndex]);
+          usernameArray.push(mainUsernameArray[i-itemsIndex]);
+          countryArray.push(mainCountryArray[i-itemsIndex]);
+          genderArray.push(mainGenderArray[i-itemsIndex]);
+          distanceArray.push(mainDistanceArray[i-itemsIndex]);
+          if (mainEmailArray[i-itemsIndex] in mainPhotoArray){
+            console.log("mainEmailArray[i-itemsIndex] in mainPhotoArray: ", mainEmailArray[i-itemsIndex] in mainPhotoArray, mainEmailArray[i-itemsIndex])
+            photoArray[mainEmailArray[i-itemsIndex]] = mainPhotoArray[mainEmailArray[i-itemsIndex]]
+          }
         }
       }
     }
   }
   else if (fn == "filterDone with all genders") {
     console.log("filterDone with all genders")
+    var itemsIndex = 0;
     for (let i = 0; i < mainEmailArray.length; i++){
       if (mainCountryArray[i] == country){
         if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
-          emailArray.push(mainEmailArray[i]);
-          usernameArray.push(mainUsernameArray[i]);
-          countryArray.push(mainCountryArray[i]);
-          genderArray.push(mainGenderArray[i]);
-          distanceArray.push(mainDistanceArray[i]);
-          if (mainEmailArray[i] in mainPhotoArray){
-            console.log("mainEmailArray[i] in mainPhotoArray: ", mainEmailArray[i] in mainPhotoArray, mainEmailArray[i])
-            photoArray[mainEmailArray[i]] = mainPhotoArray[mainEmailArray[i]]
+          if(i % 6 == 0 && i != 0){
+            emailArray.push("ground")
+            countryArray.push("")
+            genderArray.push("ground")
+            usernameArray.push(lang.Advertisement)
+            distanceArray.push("ground");
+            itemsIndex++;
+          }
+          else{
+            emailArray.push(mainEmailArray[i-itemsIndex]);
+            usernameArray.push(mainUsernameArray[i-itemsIndex]);
+            countryArray.push(mainCountryArray[i-itemsIndex]);
+            genderArray.push(mainGenderArray[i-itemsIndex]);
+            distanceArray.push(mainDistanceArray[i-itemsIndex]);
+            if (mainEmailArray[i-itemsIndex] in mainPhotoArray){
+              console.log("mainEmailArray[i-itemsIndex] in mainPhotoArray: ", mainEmailArray[i-itemsIndex] in mainPhotoArray, mainEmailArray[i-itemsIndex])
+              photoArray[mainEmailArray[i-itemsIndex]] = mainPhotoArray[mainEmailArray[i-itemsIndex]]
+            }
           }
         }
       }
@@ -1231,18 +1255,29 @@ async createEmailDistanceArrays(gender, country, fn){
   }
   else if (fn == "filterDone with all countries") {
     console.log("filterDone with all countries")
+    var itemsIndex = 0;
     for (let i = 0; i < mainEmailArray.length; i++){
       if (mainGenderArray[i] == gender){
         if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
-          emailArray.push(mainEmailArray[i]);
-          usernameArray.push(mainUsernameArray[i]);
-          countryArray.push(mainCountryArray[i]);
-          genderArray.push(mainGenderArray[i]);
-          distanceArray.push(mainDistanceArray[i]);
-          if (mainEmailArray[i] in mainPhotoArray){
-            console.log("mainEmailArray[i] in mainPhotoArray: ", mainEmailArray[i] in mainPhotoArray, mainEmailArray[i])
-            photoArray[mainEmailArray[i]] = mainPhotoArray[mainEmailArray[i]]
-            console.log("photoArray.length for = ", i, Object.keys(photoArray).length)
+          if(i % 6 == 0 && i != 0){
+            emailArray.push("ground")
+            countryArray.push("")
+            genderArray.push("ground")
+            usernameArray.push(lang.Advertisement)
+            distanceArray.push("ground");
+            itemsIndex++;
+          }
+          else{
+            emailArray.push(mainEmailArray[i-itemsIndex]);
+            usernameArray.push(mainUsernameArray[i-itemsIndex]);
+            countryArray.push(mainCountryArray[i-itemsIndex]);
+            genderArray.push(mainGenderArray[i-itemsIndex]);
+            distanceArray.push(mainDistanceArray[i-itemsIndex]);
+            if (mainEmailArray[i-itemsIndex] in mainPhotoArray){
+              console.log("mainEmailArray[i-itemsIndex] in mainPhotoArray: ", mainEmailArray[i-itemsIndex] in mainPhotoArray, mainEmailArray[i-itemsIndex])
+              photoArray[mainEmailArray[i-itemsIndex]] = mainPhotoArray[mainEmailArray[i-itemsIndex]]
+              console.log("photoArray.length for = ", i, Object.keys(photoArray).length)
+            }
           }
         }
       }
@@ -1250,18 +1285,28 @@ async createEmailDistanceArrays(gender, country, fn){
   }
   else if (fn == "filterDone") {
     console.log("filterDone")
+    var itemsIndex = 0;
     for (let i = 0; i < mainEmailArray.length; i++){
       if (mainCountryArray[i] == country && mainGenderArray[i] == gender){
         if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
-          console.log("country, gender: ", mainEmailArray[i], country, mainCountryArray[i], gender, mainGenderArray[i])
-          emailArray.push(mainEmailArray[i]);
-          usernameArray.push(mainUsernameArray[i]);
-          countryArray.push(mainCountryArray[i]);
-          genderArray.push(mainGenderArray[i]);
-          distanceArray.push(mainDistanceArray[i]);
-          if (mainEmailArray[i] in mainPhotoArray){
-            console.log("mainEmailArray[i] in mainPhotoArray: ", mainEmailArray[i] in mainPhotoArray, mainEmailArray[i])
-            photoArray[mainEmailArray[i]] = mainPhotoArray[mainEmailArray[i]]
+          if(i % 6 == 0 && i != 0){
+            emailArray.push("ground")
+            countryArray.push("")
+            genderArray.push("ground")
+            usernameArray.push(lang.Advertisement)
+            distanceArray.push("ground");
+            itemsIndex++;
+          }
+          else{
+            emailArray.push(mainEmailArray[i-itemsIndex]);
+            usernameArray.push(mainUsernameArray[i-itemsIndex]);
+            countryArray.push(mainCountryArray[i-itemsIndex]);
+            genderArray.push(mainGenderArray[i-itemsIndex]);
+            distanceArray.push(mainDistanceArray[i-itemsIndex]);
+            if (mainEmailArray[i-itemsIndex] in mainPhotoArray){
+              console.log("mainEmailArray[i-itemsIndex] in mainPhotoArray: ", mainEmailArray[i-itemsIndex] in mainPhotoArray, mainEmailArray[i-itemsIndex])
+              photoArray[mainEmailArray[i-itemsIndex]] = mainPhotoArray[mainEmailArray[i-itemsIndex]]
+            }
           }
         }
       }
@@ -1693,6 +1738,7 @@ uploadSearchPhoto = async (uri) => {
                 console.log("Embedder updated")
                     this.setState({
                       messageButtonDisabled: true,
+                      backgroundOpacity:0.2,
                       messageButtonOpacity: 0,
                       isVisible2: false,
                       uri0: null,
@@ -1760,6 +1806,7 @@ uploadSearchPhoto = async (uri) => {
                        this.setState({
                          messageButtonDisabled: true,
                          messageButtonOpacity: 0,
+                         backgroundOpacity:0.2,
                          isVisible2: false,
                          uri0: null,
                          uri1: null,

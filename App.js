@@ -42,6 +42,8 @@ import SettingsScreen from './source/Settings/Settings';
 import AboutScreen from './source/Settings/About';
 import LibraryLicencesScreen from './source/Settings/LibraryLicences';
 import DisplayLicenceScreen from './source/Settings/DisplayLicence';
+import DisplayPrivacyScreen from './source/Settings/DisplayPrivacy';
+import DisplayTermsScreen from './source/Settings/DisplayTerms';
 import FavoriteUsersScreen from './source/Settings/FavoriteUsers';
 import BlockedUsersScreen from './source/Settings/BlockedUsers';
 import ThemeSettingsScreen from './source/Settings/ThemeSettings';
@@ -679,6 +681,24 @@ function MyTabs() {
           },
         }}
         name="DisplayLicence" component={DisplayLicenceScreen} />
+        <Stack.Screen options={{
+          gestureEnabled: true, gestureDirection: "horizontal",
+          cardStyleInterpolator: forHorizontalModal,
+          transitionSpec: {
+            open: config2,
+            close: config2,
+          },
+        }}
+        name="DisplayPrivacy" component={DisplayPrivacyScreen} />
+        <Stack.Screen options={{
+          gestureEnabled: true, gestureDirection: "horizontal",
+          cardStyleInterpolator: forHorizontalModal,
+          transitionSpec: {
+            open: config2,
+            close: config2,
+          },
+        }}
+        name="DisplayTerms" component={DisplayTermsScreen} />
       </Stack.Navigator>
       </NavigationContainer>
     );

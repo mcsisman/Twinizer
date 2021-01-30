@@ -3,6 +3,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
+import RNFS from 'react-native-fs'
 import {navigate, route} from './RootNavigation'
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -25,13 +26,8 @@ import {Image,
   } from 'react-native';
 
 import licences from './Licences';
-import LibraryLicencesScreen from './LibraryLicences';
-import DisplayPrivacyScreen from './DisplayPrivacy';
-import DisplayTermsScreen from './DisplayTerms';
-
 import CustomHeader from '../Components/Common/Header/CustomHeader'
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
-import SettingsButton from '../Components/Settings/Common/SettingsButton'
 import language from '../Utils/Languages/lang.json'
 
 if(Platform.OS === 'android'){
@@ -40,23 +36,25 @@ if(Platform.OS === 'android'){
 if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
-var lang = language[global.lang]
-export default class AboutScreen extends Component<{}>{
+
+export default class DisplayTermsScreen extends Component<{}>{
   constructor(props){
     super(props);
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
-      reRender: "o"
+      reRender: "o",
+      text: ""
     }
   }
   static navigationOptions = {
       header: null,
   };
   componentDidMount(){
-    console.log("ABOUT COMPONENT DID MOUNT")
+    console.log("terms COMPONENT DID MOUNT")
     this._subscribe = this.props.navigation.addListener('focus', () => {
       console.log("subscribe")
+      //this.setState({text: licences.licence})
       this.setState({reRender: "ok"})
     })
   }
@@ -64,17 +62,6 @@ export default class AboutScreen extends Component<{}>{
     console.log("LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG")
     this.setState({reRender: "ok"})
     return "TESTTTT"
-  }
-
-  goLicences(){
-    global.licences = licences.licences
-    this.props.navigation.navigate("LibraryLicences")
-  }
-  goPrivacy(){
-    this.props.navigation.navigate("DisplayPrivacy")
-  }
-  goTerms(){
-    this.props.navigation.navigate("DisplayTerms")
   }
 
   render(){
@@ -86,31 +73,29 @@ export default class AboutScreen extends Component<{}>{
       <ModifiedStatusBar/>
 
       <CustomHeader
-      whichScreen = {"About"}
+      whichScreen = {"DisplayTerms"}
       isFilterVisible = {this.state.showFilter}
-      onPress = {()=> this.props.navigation.navigate("Settings")}
-      title = {lang.AboutTwinizer}>
+      onPress = {()=> this.props.navigation.navigate("About")}
+      title = {lang.TermsOfUse}>
       </CustomHeader>
 
       <ScrollView
-      style = {{height: this.height-this.width/7 - headerHeight - getStatusBarHeight(), width: this.width, flex: 1, flexDirection: 'column'}}>
+      style = {{height: this.height-this.width/7 - headerHeight - getStatusBarHeight(), width: this.width,  flex: 1, flexDirection: 'column'}}>
       <View
-      style = {{height: this.width/9}}/>
-      <SettingsButton
-      onPress = {()=> this.goPrivacy()}
-      text = {lang.PrivacyPolicy}/>
+      style = {{height: this.width/25}}/>
 
       <View
-      style = {{height: this.width/9}}/>
-      <SettingsButton
-      onPress = {()=> this.goTerms()}
-      text = {lang.TermsOfUse}/>
+      style = {{ alignItems: "center", height: this.width/12}}>
+      <Text
+        style = {{fontSize: 15, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
+        LOL
+      </Text>
+      </View>
 
-      <View
-      style = {{height: this.width/9}}/>
-      <SettingsButton
-      onPress = {()=> this.goLicences()}
-      text = {lang.Licences}/>
+      <Text
+        style = {{fontSize: 15, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
+        {this.state.text}
+      </Text>
 
       </ScrollView>
 

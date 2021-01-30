@@ -29,6 +29,7 @@ import licences from './Licences';
 
 import CustomHeader from '../Components/Common/Header/CustomHeader'
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
+import language from '../Utils/Languages/lang.json'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -101,6 +102,7 @@ export default class LibraryLicencesScreen extends Component<{}>{
 }
 
   render(){
+    var lang = language[global.lang]
     const {navigate} = this.props.navigation;
     return(
       <View
@@ -111,7 +113,7 @@ export default class LibraryLicencesScreen extends Component<{}>{
       whichScreen = {"LibraryLicences"}
       isFilterVisible = {this.state.showFilter}
       onPress = {()=> this.props.navigation.navigate("About")}
-      title = "Licences">
+      title = {lang.Licences}>
       </CustomHeader>
 
       <FlatList
