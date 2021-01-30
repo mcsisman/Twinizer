@@ -99,6 +99,7 @@
     "BlockUserInfoPt2": " ?",
     "DontShowThisDialogAgain": "Don't show this dialog again",
     "Cancel": "Cancel",
+    "Agree": "Agree",
     "CancelCap": "CANCEL",
 
     "Edit": "Edit",
@@ -264,6 +265,7 @@
     "BlockUserInfoPt2": " adlı kullanıcıyı engellemek istediğinize emin misiniz?",
     "DontShowThisDialogAgain": "Bu mesajı tekrar gösterme.",
     "Cancel": "İptal",
+    "Agree": "Onayla",
     "CancelCap": "İPTAL",
 
     "Edit": "Düzenle",

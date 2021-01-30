@@ -27,6 +27,7 @@ import LoginScreen from './Login';
 import CustomHeader from '../Components/Common/Header/CustomHeader'
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 import OvalButton from '../Components/Common/OvalButton/OvalButton'
+import TermsAndPrivacyModal from '../Components/Login/TermsAndPrivacyModal'
 import language from '../Utils/Languages/lang.json'
 
 if(Platform.OS === 'android'){
@@ -43,6 +44,8 @@ export default class NewAccountScreen extends Component<{}>{
     super(props);
     this.state = {
       reRender: true,
+      termsAndPrivacyIsVisible: false,
+      selectedTxt: "Terms",
       usernameColor: "black",
       splashOver : false,
       isim : "",
@@ -143,7 +146,8 @@ writeUserData(userId, name, email, imageUrl) {
         Alert.alert('',lang.PasswordCharacter);
       }
       else {
-        this.SignUp(this.state.email, this.state.password)
+        this.setState({termsAndPrivacyIsVisible:true})
+        //this.SignUp(this.state.email, this.state.password)
       }
     }
     else{
@@ -266,6 +270,23 @@ writeUserData(userId, name, email, imageUrl) {
 
         </View>
         </View>
+
+        <TermsAndPrivacyModal
+        isVisible = {this.state.termsAndPrivacyIsVisible}
+        txtCancel= {lang.Cancel}
+        txtOk= {lang.Agree}
+        txtTerms= {lang.TermsOfUse}
+        txtPrivacy= {lang.PrivacyPolicy}
+        onPressClose = {()=> {this.setState({termsAndPrivacyIsVisible:false})}}
+        onPressOk= {() => {
+          this.SignUp(this.state.email, this.state.password)
+          this.setState({termsAndPrivacyIsVisible:false})
+        }}
+        onPressTerms= {() => {this.setState({selectedTxt: "Terms"})}}
+        onPressPrivacy= {() => {this.setState({selectedTxt: "Privacy"})}}
+        selected= {this.state.selectedTxt}
+        txt= {this.state.selectedTxt === "Terms" ? "Terms yazısı": "Privacy yazısı"}/>
+
         </TouchableOpacity>
 
       );
