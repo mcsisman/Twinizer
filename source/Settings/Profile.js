@@ -77,6 +77,7 @@ export default class ProfileScreen extends Component<{}>{
       newPhoto: false,
       profilePhoto: "",
       loadingDone: false,
+      loadingDonePhoto: false,
       loadingOpacity: 0,
       userUsername: "",
       userGender: "",
@@ -104,11 +105,11 @@ export default class ProfileScreen extends Component<{}>{
   }
 
   async componentDidMount(){
-    this.setState({loadingDone: false})
+    this.setState({loadingDone: false, loadingDonePhoto: false})
     this.spinAnimation()
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       infoChanged = false
-      this.setState({loadingDone: false, goBackInfoModalVisible:false})
+      this.setState({loadingDone: false, goBackInfoModalVisible:false, loadingDonePhoto: false})
       this.spinAnimation()
       await this.checkIfUserDataExistsInLocalAndSaveIfNot()
       console.log("subscribe")
@@ -116,7 +117,7 @@ export default class ProfileScreen extends Component<{}>{
     })
     this._subscribe = this.props.navigation.addListener('blur', async () => {
       infoChanged = false
-      this.setState({loadingDone: false, goBackInfoModalVisible:false})
+      this.setState({loadingDone: false, goBackInfoModalVisible:false, loadingDonePhoto: false})
       this.spinAnimation()
     })
     global.popUp = () => {
@@ -237,14 +238,14 @@ static navigationOptions = {
         EncryptedStorage.setItem(auth().currentUser.uid + 'userName', this.state.userUsername)
         EncryptedStorage.setItem(auth().currentUser.uid + 'userBio', this.state.userBio)
         await EncryptedStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
-        this.setState({profilePhoto:  "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg"})
+
       }).catch(error => {
         console.log(error)
       });
    }
    else{
 
-     this.setState({ profilePhoto: "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg", loadingDone: true, userGender: currentUserGender,
+     this.setState({ loadingDonePhoto: true, profilePhoto: "file://" + RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg", loadingDone: true, userGender: currentUserGender,
      userCountry: currentUserCountry, userUsername: currentUserUsername, userBio: currentUserBio, bioLimit: currentUserBio.length, userPhotoCount: currentUserPhotoCount })
      console.log("LOCAL USER DATA IS NOT NULL:", this.state.profilePhoto)
    }
@@ -276,7 +277,7 @@ static navigationOptions = {
       })
       .then((res) => {
         console.log('The file saved to ', res.path())
-        this.setState({loadingDone: true, profilePhoto:  "file://" + res.path()})
+        this.setState({profilePhoto:  "file://" + res.path(), loadingDonePhoto: true})
       }).catch(error => {
         console.log(error)
       });
@@ -494,10 +495,12 @@ static navigationOptions = {
 
         <View
         style={{opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}>
+
         <TouchableOpacity
         activeOpacity = {1}
-        disabled = {this.state.upperComponentsDisabled}
-        style={{opacity: this.state.upperComponentsOpacity, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius:12, borderBottomRightRadius:12, width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)}}
+        disabled = {this.state.upperComponentsDisabled || !this.state.loadingDonePhoto}
+        style={{opacity: this.state.upperComponentsOpacity, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius:12, borderBottomRightRadius:12,
+        width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6), justifyContent: "center", alignItems: "center", backgroundColor: "gray"}}
         onPress = {()=> {Keyboard.dismiss(), this.setState({imageViewerVisible: true})}}>
 
         <Image
@@ -505,6 +508,10 @@ static navigationOptions = {
         source = {{uri:this.state.profilePhoto}}>
         </Image>
 
+        <Animated.Image source={{uri: 'loading' + global.themeForImages}}
+          style={{position: "absolute", transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15),
+          opacity: this.state.loadingDonePhoto ? 0 : 1}}
+        />
         </TouchableOpacity>
 
         <View

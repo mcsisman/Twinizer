@@ -202,7 +202,7 @@ static navigationOptions = {
     backgroundColor = backgroundColor.slice(0, -2)
     backgroundColor = backgroundColor + "0.2)"
     const {navigate} = this.props.navigation;
-    if(!this.state.loadingDone){
+    if(false){
       return(
         <View
         style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
@@ -243,11 +243,20 @@ static navigationOptions = {
         <View
         style={{opacity: this.state.upperComponentsOpacity, width: this.width/2, height: "100%", justifyContent: "center", alignItems: "center"}}>
 
+        <View
+        style={{justifyContent: "center", alignItems: "center", backgroundColor:"gray",opacity: this.state.upperComponentsOpacity, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius:12, borderBottomRightRadius:12,
+        width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)}}
+        >
         <Image
-        style={{opacity: this.state.upperComponentsOpacity, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius:12, borderBottomRightRadius:12, width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)}}
+        style={{opacity: this.state.upperComponentsOpacity, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius:12, borderBottomRightRadius:12,
+        width: this.width/2*(8/10), height: this.width/2*(8/10)*(7/6)}}
         source = {{uri:this.state.profilePhoto}}>
         </Image>
-
+        <Animated.Image source={{uri: 'loading' + global.themeForImages}}
+          style={{position: "absolute",  transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15),
+          opacity: this.state.loadingDone ? 0 : 1}}
+        />
+        </View>
         </View>
 
         <View

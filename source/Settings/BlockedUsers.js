@@ -79,6 +79,7 @@ export default class BlockedUsersScreen extends Component<{}>{
     this.setState({loadingDone: false})
     this.spinAnimation()
     this._subscribe = this.props.navigation.addListener('focus', async () => {
+      this.setState({loadingDone: false})
       this.spinAnimation()
       focusedtoThisScreen = true
       if(global.selectedBlockedUserIndex != null && !global.removeFromBlockedUser){

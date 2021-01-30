@@ -382,7 +382,7 @@ removeFromUser(){
     })
     const {navigate} = this.props.navigation;
 
-    if(!this.state.loadingDone){
+    if(false){
       return(
         <View
         style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
