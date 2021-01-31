@@ -29,6 +29,7 @@ import licences from './Licences';
 import CustomHeader from '../Components/Common/Header/CustomHeader'
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 import language from '../Utils/Languages/lang.json'
+import texts from '../termsAndPrivacy.json'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -85,16 +86,12 @@ export default class DisplayTermsScreen extends Component<{}>{
       style = {{height: this.width/25}}/>
 
       <View
-      style = {{ alignItems: "center", height: this.width/12}}>
-      <Text
-        style = {{fontSize: 15, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
-        LOL
-      </Text>
+      style = {{ alignItems: "center", height: this.width/20}}>
       </View>
 
       <Text
         style = {{fontSize: 15, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
-        {this.state.text}
+        {texts["terms"]}
       </Text>
 
       </ScrollView>

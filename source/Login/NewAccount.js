@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import RNFS from 'react-native-fs'
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { createStackNavigator} from '@react-navigation/stack';
 import { Header } from 'react-navigation-stack';
@@ -29,6 +30,7 @@ import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 import OvalButton from '../Components/Common/OvalButton/OvalButton'
 import TermsAndPrivacyModal from '../Components/Login/TermsAndPrivacyModal'
 import language from '../Utils/Languages/lang.json'
+import texts from '../termsAndPrivacy.json'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -38,6 +40,8 @@ if(Platform.OS === 'ios'){
 }
 var keyboardHeight;
 var keyboardYcord;
+var termsTxt;
+var privacyTxt;
 
 export default class NewAccountScreen extends Component<{}>{
   constructor(props){
@@ -126,6 +130,8 @@ writeUserData(userId, name, email, imageUrl) {
       });
   };
   check(){
+    Keyboard.dismiss()
+    this.setState({keyboardOpen: false})
     var lang = language[global.lang]
     if(this.state.sifre == this.state.sifre2 ){
       if(this.state.isim == ""  ){
@@ -173,6 +179,15 @@ writeUserData(userId, name, email, imageUrl) {
       return false
     }
   }
+  handleClick = (path) => {
+   fetch(path)
+   .then((r) => r.text())
+   .then(text  => {
+     return text
+     console.log(text);
+   })
+ }
+
   render(){
     var lang = language[global.lang]
     var keyboardAvoidingHeight;
@@ -285,7 +300,7 @@ writeUserData(userId, name, email, imageUrl) {
         onPressTerms= {() => {this.setState({selectedTxt: "Terms"})}}
         onPressPrivacy= {() => {this.setState({selectedTxt: "Privacy"})}}
         selected= {this.state.selectedTxt}
-        txt= {this.state.selectedTxt === "Terms" ? "Terms yazısı": "Privacy yazısı"}/>
+        txt= {this.state.selectedTxt === "Terms" ? texts["terms"]: texts["privacy"]}/>
 
         </TouchableOpacity>
 
