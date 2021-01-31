@@ -1161,9 +1161,10 @@ async createEmailDistanceArrays(gender, country, fn){
       var length = Object.keys(dict).length;
       console.log(length);
       var itemsIndex = 0;
+      var ccc = 0;
       for(let i = 0; i < length; i++){
        if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(items[i][0]) == false){
-         if(i % 6 == 0 && i != 0){
+         if(ccc % 6 == 0 && ccc != 0){
            emailArray.push("ground")
            countryArray.push("")
            genderArray.push("ground")
@@ -1183,7 +1184,7 @@ async createEmailDistanceArrays(gender, country, fn){
            mainUsernameArray.push(((usersDict[items[i-itemsIndex][0]]).split("_"))[2]);
            mainDistanceArray.push(items[i-itemsIndex][1]);
          }
-
+         ccc++;
        }
       }
       console.log(items);
@@ -1200,9 +1201,10 @@ async createEmailDistanceArrays(gender, country, fn){
   else if (fn == "filterDone with all") {
     console.log("filterDone with all")
     var itemsIndex = 0;
+    var ccc = 0;
     for (let i = 0; i < mainEmailArray.length; i++){
       if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
-        if(i % 6 == 0 && i != 0){
+        if(ccc % 6 == 0 && ccc != 0){
           emailArray.push("ground")
           countryArray.push("")
           genderArray.push("ground")
@@ -1221,16 +1223,18 @@ async createEmailDistanceArrays(gender, country, fn){
             photoArray[mainEmailArray[i-itemsIndex]] = mainPhotoArray[mainEmailArray[i-itemsIndex]]
           }
         }
+        ccc++;
       }
     }
   }
   else if (fn == "filterDone with all genders") {
     console.log("filterDone with all genders")
     var itemsIndex = 0;
+    var ccc = 0;
     for (let i = 0; i < mainEmailArray.length; i++){
       if (mainCountryArray[i] == country){
         if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
-          if(i % 6 == 0 && i != 0){
+          if(ccc % 6 == 0 && ccc != 0){
             emailArray.push("ground")
             countryArray.push("")
             genderArray.push("ground")
@@ -1249,6 +1253,7 @@ async createEmailDistanceArrays(gender, country, fn){
               photoArray[mainEmailArray[i-itemsIndex]] = mainPhotoArray[mainEmailArray[i-itemsIndex]]
             }
           }
+          ccc++;
         }
       }
     }
@@ -1256,10 +1261,11 @@ async createEmailDistanceArrays(gender, country, fn){
   else if (fn == "filterDone with all countries") {
     console.log("filterDone with all countries")
     var itemsIndex = 0;
+    var ccc = 0;
     for (let i = 0; i < mainEmailArray.length; i++){
       if (mainGenderArray[i] == gender){
         if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
-          if(i % 6 == 0 && i != 0){
+          if(ccc % 6 == 0 && ccc != 0){
             emailArray.push("ground")
             countryArray.push("")
             genderArray.push("ground")
@@ -1279,6 +1285,7 @@ async createEmailDistanceArrays(gender, country, fn){
               console.log("photoArray.length for = ", i, Object.keys(photoArray).length)
             }
           }
+          ccc++;
         }
       }
     }
@@ -1286,10 +1293,11 @@ async createEmailDistanceArrays(gender, country, fn){
   else if (fn == "filterDone") {
     console.log("filterDone")
     var itemsIndex = 0;
+    var ccc = 0;
     for (let i = 0; i < mainEmailArray.length; i++){
       if (mainCountryArray[i] == country && mainGenderArray[i] == gender){
         if (blockedUsers == null || blockedUsers.length == 0 || blockedUsersSet.has(mainEmailArray[i]) == false){
-          if(i % 6 == 0 && i != 0){
+          if(ccc % 6 == 0 && ccc != 0){
             emailArray.push("ground")
             countryArray.push("")
             genderArray.push("ground")
@@ -1308,6 +1316,7 @@ async createEmailDistanceArrays(gender, country, fn){
               photoArray[mainEmailArray[i-itemsIndex]] = mainPhotoArray[mainEmailArray[i-itemsIndex]]
             }
           }
+          ccc++;
         }
       }
     }
@@ -1485,6 +1494,7 @@ async filterDone(){
   this.setState({
     messageButtonDisabled: true,
     messageButtonOpacity: 0,
+    backgroundOpacity: 0.2,
     isVisible2: false,
     uri0: null,
     uri1: null,

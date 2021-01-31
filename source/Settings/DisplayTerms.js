@@ -90,7 +90,7 @@ export default class DisplayTermsScreen extends Component<{}>{
       </View>
 
       <Text
-        style = {{fontSize: 15, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
+        style = {{paddingLeft: 10, paddingRight: 10, fontSize: 15, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
         {texts["terms"]}
       </Text>
 
