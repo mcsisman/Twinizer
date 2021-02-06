@@ -56,10 +56,6 @@ import language from './source/Utils/Languages/lang.json'
 if (!global.btoa) { global.btoa = encode }
 
 if (!global.atob) { global.atob = decode }
-global.fromChat = false
-global.emailArrayLength = 0
-global.addedMsgs = {}
-global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,1)", "rgba(255,255,255,1)"]
   class Appp extends React.Component {
 
     constructor() {
@@ -74,6 +70,7 @@ global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,
 
 
       this._subscribe = this.props.navigation.addListener('focus', async () => {
+        this.initializeGlobalVariables()
         global.keyboardHeight = await EncryptedStorage.getItem('keyboardHeight')
         console.log("APPJSTE KEYBOARD1:", global.keyboardHeight)
         if(global.keyboardHeight != undefined && global.keyboardHeight != null){
@@ -86,7 +83,6 @@ global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,
         console.log("subscribe")
 
         const user = auth().currentUser;
-        await this.setTheme(user)
         if (user) {
           this.setState({ loading: false, authenticated: true });
 
@@ -105,6 +101,37 @@ global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,
       }
 
       console.log("LOCAL:", )
+    }
+    initializeGlobalVariables(){
+      global.fromChat = false
+      global.emailArrayLength = 0
+      global.addedMsgs = {}
+      global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,1)", "rgba(255,255,255,1)"]
+      global.functionNumber = -1
+      global.messages = []
+      global.msgFromMain = false
+      global.playerIdArray = {}
+      global.removeFromFavUser = false
+      global.removeFromBlockedUser = false
+      global.removedFromBlockedList = false
+      global.removedFromFavList = false
+      global.selectedFavUserIndex = null
+      global.selectedBlockedUserIndex = null
+      global.favoriteUsersListeners = 0
+      global.blockedUsersListeners = 0
+      global.messagesFirstTime = true
+      global.fromHistorySearch = false
+      global.flag1 = true;
+      global.flag2 = true;
+      global.flag3 = true;
+      global.flag4 = true;
+      global.flag5 = true;
+      global.flag6 = true;
+      global.flag7 = true;
+      global.flag8 = true;
+      global.welcomeOpacity = 0;
+      global.width = Math.round(Dimensions.get('screen').width);
+      global.height = Math.round(Dimensions.get('screen').height);
     }
     async setTheme(user){
       // Theme color
@@ -148,16 +175,19 @@ global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,
         if(this.state.authenticated){
           var storageRef = storage().ref("Embeddings/" + auth().currentUser.uid + ".pickle")
           console.log("STORAGE REF: ", storageRef)
-          storageRef.getDownloadURL().then(data =>{
+          storageRef.getDownloadURL().then( async data =>{
             console.log("EMBEDDING VAR: ", auth().currentUser.uid)
             console.log("DATA: ", data)
+            await this.setTheme(true)
             navigate("Tabs")
-          }).catch(function(error) {
+          }).catch( async error => {
             console.log("EMBEDDING YOK: ", auth().currentUser.uid)
+            await this.setTheme(true)
             navigate("UserInfo")
           });
         }
         else{
+          this.setTheme(false)
           navigate("Login")
         }
         return (
@@ -170,31 +200,6 @@ global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,
     }
   }
 console.disableYellowBox = true;
-  global.functionNumber = -1
-  global.messages = []
-  global.msgFromMain = false
-  global.playerIdArray = {}
-  global.removeFromFavUser = false
-  global.removeFromBlockedUser = false
-  global.removedFromBlockedList = false
-  global.removedFromFavList = false
-  global.selectedFavUserIndex = null
-  global.selectedBlockedUserIndex = null
-  global.favoriteUsersListeners = 0
-  global.blockedUsersListeners = 0
-  global.messagesFirstTime = true
-  global.fromHistorySearch = false
-  global.flag1 = true;
-  global.flag2 = true;
-  global.flag3 = true;
-  global.flag4 = true;
-  global.flag5 = true;
-  global.flag6 = true;
-  global.flag7 = true;
-  global.flag8 = true;
-  global.welcomeOpacity = 0;
-  global.width = Math.round(Dimensions.get('screen').width);
-  global.height = Math.round(Dimensions.get('screen').height);
 
 
   if(global.language == "tr_TR"){

@@ -26,6 +26,7 @@ import NewAccountScreen from './NewAccount';
 import UserInfoScreen from '../ProfileSteps/UserInfo';
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 import language from '../Utils/Languages/lang.json'
+import themes from '../../source/Settings/Themes';
 
 
 if(Platform.OS === 'android'){
@@ -77,6 +78,36 @@ _keyboardDidHide = () => {
   this.setState({keyboardOpen: false})
 };
 
+async setTheme(user){
+  // Theme color
+  if(user){
+    var themeColor = await EncryptedStorage.getItem(auth().currentUser.uid + 'theme')
+    console.log("STORAGEDAN GELEN THEME COLOR:", themeColor)
+    if(themeColor == null || themeColor == undefined){
+      themeColor = "Original"
+    }
+    global.themeColor = themes.getTheme(themeColor)
+    global.themeForImages = themes.getThemeForImages(themeColor)
+    var mode = await EncryptedStorage.getItem(auth().currentUser.uid + 'mode')
+    if(mode == null || mode == undefined){
+      mode = "false"
+    }
+    if(mode == "true"){
+      global.isDarkMode = true
+    }
+    else{
+      global.isDarkMode = false
+    }
+    global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,1)", "rgba(255,255,255,1)"]
+  }
+  else{
+    global.themeColor =  themes.getTheme("Original")
+    global.themeForImages = themes.getThemeForImages("Original")
+    global.isDarkMode = false
+  }
+
+}
+
 Login = (email, password) => {
   var lang = language[global.lang]
     const {navigate} = this.props.navigation;
@@ -86,13 +117,15 @@ Login = (email, password) => {
              if(auth().currentUser.emailVerified){
                var storageRef = storage().ref("Embeddings/" + auth().currentUser.uid + ".pickle")
                console.log("STORAGE REF: ", storageRef)
-               await storageRef.getDownloadURL().then(data =>{
+               await storageRef.getDownloadURL().then(async data =>{
                  console.log("EMBEDDING VAR: ", auth().currentUser.uid)
                  console.log("DATA: ", data)
+                 await this.setTheme(true)
                  navigate('Tabs', { screen: 'Main' })
                  //navigate("UserInfo")
                }).catch(function(error) {
                  console.log("EMBEDDING YOK: ", auth().currentUser.uid)
+                 this.setTheme(false)
                  navigate("UserInfo")
                });
              user = auth().currentUser

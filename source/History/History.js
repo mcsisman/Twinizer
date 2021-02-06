@@ -68,6 +68,7 @@ export default class HistoryScreen extends Component<{}>{
     loadingDone = false
   }
 async componentDidMount(){
+  this.initializeVars()
   lang = language[global.lang]
   this._subscribe = this.props.navigation.addListener('focus', async () => {
 
@@ -110,6 +111,17 @@ async componentDidMount(){
     console.log("LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG")
     this.setState({reRender: "ok"})
     return "TESTTTT"
+  }
+  initializeVars(){
+    console.log("history initializeVars")
+    ourBlue = 'rgba(77,120,204,1)'
+    colorArray = []
+    doneColor = 'rgba(128,128,128,1)'
+    isSelectedArray = []
+    noOfSearch = 0;
+    uriArray = []
+    dateArray = []
+    loadingDone = false
   }
   historyBoxAnimation(reset){
     if(this.state.editText == "Cancel" || reset == "reset"){
@@ -303,7 +315,7 @@ async createDateArray(){
 }
 
 async getLastSearchNo(){
-  var lastSearch;
+  var lastSearch = null;
   lastSearch = await EncryptedStorage.getItem(auth().currentUser.uid + 'lastSearch')
   if(lastSearch == null){
     lastSearch = "0";
@@ -331,7 +343,7 @@ async getHistoryImageArray(){
 }
 async getHistoryPhotoPath(whichBox){
   var historyArray = []
-  var photoName;
+  var photoName = "";
   historyArray = await this.getHistoryImageArray()
   photoName = historyArray[whichBox]["lastSearch"]
   var path = "file://" + RNFS.DocumentDirectoryPath + "/search-photos/" + photoName.toString() +".jpg"
@@ -339,10 +351,10 @@ async getHistoryPhotoPath(whichBox){
 }
 async getHistoryDate(whichBox){
   var historyArray = []
-  var historyDate;
+  var historyDate = null;
   historyArray = await this.getHistoryImageArray()
-  date = historyArray[whichBox]["searchDate"]
-  return date;
+  historyDate = historyArray[whichBox]["searchDate"]
+  return historyDate;
 }
 selectAll(){
   if(this.state.allSelected){

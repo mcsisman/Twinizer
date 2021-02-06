@@ -198,7 +198,7 @@ constructor(props){
 async componentDidMount(){
 
   //this.logoAnimation() not working properly on ios transform: [ {rotateY: spinY}, {rotateX: spinZ}]
-
+  this.initializeVars()
     interstitial.onAdEvent(type => {
       if(type === AdEventType.ERROR){
         console.log("error geldi tekrar load et")
@@ -231,7 +231,7 @@ async componentDidMount(){
     this._subscribe = this.props.navigation.addListener('focus', async () => {
 
 
-
+      console.log("distanceArray: ", distanceArray)
       this.setState({reRender: "ok"})
       global.fromChat = false
       if(global.removedFromFavList){
@@ -364,6 +364,44 @@ async checkIfAlreadySearching(){
       this.setState({searchOnIsVisible: true});
     }
   })
+}
+
+initializeVars(){
+  console.log("main initializeVars")
+  distanceArray = [];
+  usernameArray = [];
+  emailArray = [];
+  genderArray = [];
+  countryArray = [];
+  photoArray = {};
+  mainDistanceArray = [];
+  mainUsernameArray = [];
+  mainEmailArray = [];
+  mainGenderArray = [];
+  mainCountryArray = [];
+  mainPhotoArray = {};
+  dict = {};
+  bioDict = {};
+  usersDict = {};
+  hepsi = true;
+  flagIs20 = false;
+  currentUserGender;
+  currentUserCountry;
+  playerId;
+  currentUserUsername;
+  currentUserBio;
+  resultCounter;
+  funcnumval = 0;
+  isFav = false;
+  isBlock = false;
+  addingToWhichList = "";
+  listToAdd = ""
+  favoriteUsers = []
+  blockedUsers = []
+  favoriteUsersSet = new Set();
+  blockedUsersSet = new Set();
+  favShowThisDialog = "true"
+  blockShowThisDialog = "true"
 }
 
 checkUri2FavOrBlocked(){
