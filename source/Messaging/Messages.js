@@ -118,7 +118,7 @@ export default class MessagesScreen extends Component<{}>{
     scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight()
   }
 componentDidMount(){
-
+  this.initializeVars()
   lang = language[global.lang]
   global.newMsgListenerArray = []
   global.currentProcessUidArray = {}
@@ -163,6 +163,42 @@ resetTrashColors(){
   for( let  i = 0; i < messageColorArray.length; i++){
     messageColorArray[i] = "trashgray"
   }
+}
+initializeVars(){
+  console.log("messages initializeVars")
+  testVar = 0
+  didSync = false
+  afterDelete = false
+  scrollViewHeight = this.height-this.width/7 - this.width/9 - headerHeight - getStatusBarHeight();
+  doneMessageColor = 'rgba(128,128,128,1)'
+  doneRequestColor = 'rgba(128,128,128,1)'
+  messageColorArray = []
+  requestColorArray = []
+  localMessages = [];
+  messageLastSeenArray = []
+  requestLastSeenArray = []
+  newRequest = false
+  uidArray = []
+  dataArray = []
+  noOfConversations = -1
+  otherUserUid = ""
+  count = 0
+  nonRequestUids = []
+  messageArray = []
+  noOfNonRequests = 0
+  requestArray = []
+  photoArray = []
+  requestPhotoArray = []
+  messagePhotoArray = []
+  requestUsernameArray = []
+  messageUsernameArray = []
+  conversationUidArray = []
+  conversationUsernameArray = []
+  differenceArray = []
+  differenceArrayIndexes = []
+  urlArray = []
+  fromChat = false
+  usernameListener = []
 }
 messageBoxAnimation(reset){ // reset is to reset the message box position when leaving the screen
   if(this.state.editText == "Cancel" || reset == "reset"){
