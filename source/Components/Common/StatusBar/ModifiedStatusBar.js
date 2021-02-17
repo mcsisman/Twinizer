@@ -23,7 +23,6 @@ export default class ModifiedStatusBar extends Component {
 
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
-    console.log("IS DARK MODE NE:", global.isDarkMode)
     StatusBar.setBarStyle("dark-content")
     return(
 
