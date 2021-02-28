@@ -134,6 +134,7 @@ Login = (email, password) => {
                Alert.alert("", lang.EmailNotVerified )
              }
         }).catch(error => {
+          console.log("error2:", error)
           Alert.alert(lang.PlsTryAgain, lang.WrongEmailPassword)
       })
 
