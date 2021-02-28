@@ -68,7 +68,7 @@ class FirebaseSvc {
             image
           };
           firstTime = false
-          if(!global.currentProcessUidArray[global.receiverUid]){
+          if(global.currentProcessUidArray == undefined || !global.currentProcessUidArray[global.receiverUid]){
             database().ref('Messages/' + auth().currentUser.uid + "/" + global.receiverUid + "/" + messageKey).remove()
             await EncryptedStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
               .then(req => {
@@ -234,7 +234,7 @@ class FirebaseSvc {
         image
       };
       global.msgToDisplay = msg
-      if(!global.currentProcessUidArray[global.receiverUid]){
+      if(global.currentProcessUidArray == undefined || !global.currentProcessUidArray[global.receiverUid]){
         var localMsgs = []
         await EncryptedStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
           .then(req => {

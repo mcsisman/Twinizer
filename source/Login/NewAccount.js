@@ -78,10 +78,15 @@ export default class NewAccountScreen extends Component<{}>{
       this.setState({reRender: !this.state.reRender})
     })
   };
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
   static navigationOptions = {
       header: null,
   };
   _keyboardDidShow = (e) => {
+    console.log("did show")
     const { height, screenX, screenY, width } = e.endCoordinates
     keyboardHeight = height
     if(global.keyboardHeight == null || global.keyboardHeight == undefined){
@@ -197,14 +202,14 @@ writeUserData(userId, name, email, imageUrl) {
     else{
       keyboardAvoidingHeight = global.keyboardHeight + this.navBarHeight;
     }
-    console.log("avoid:", keyboardAvoidingHeight)
     const {navigate} = this.props.navigation;
       return(
 
         <TouchableOpacity
         activeOpacity = {1}
-        style={{width: this.width, height: this.height, flex:1, alignItems: 'center',bottom: this.state.keyboardOpen && global.keyboardHeight != null && global.keyboardHeight != undefined ? keyboardAvoidingHeight - ((this.height - getStatusBarHeight() - headerHeight)-this.height/2)/2 + this.width/50: 0}}
+        style={{backgroundColor:"green", width: this.width, height: this.height, flex:1, alignItems: 'center',bottom: this.state.keyboardOpen && global.keyboardHeight != null && global.keyboardHeight != undefined ? keyboardAvoidingHeight - ((this.height - getStatusBarHeight() - headerHeight)-this.height/2)/2 + this.width/50: 0}}
          onPress={()=> {
+           console.log("touchable pressed")
            Keyboard.dismiss()
            this.setState({keyboardOpen: false})} }>
 
@@ -215,13 +220,15 @@ writeUserData(userId, name, email, imageUrl) {
         onPress = {()=> this.props.navigation.goBack()}/>
 
         <View
-        style={{backgroundColor: "rgba(255,255,255,1)", width: this.width, height: this.height - getStatusBarHeight() - headerHeight, alignItems: 'center', justifyContent: "center", flex:1}}>
+        style={{backgroundColor: "rgba(255,255,255,0)", width: this.width, height: this.height - getStatusBarHeight() - headerHeight, alignItems: 'center', justifyContent: "center", flex:1}}>
         <View
         style={{width: this.width, height: this.height/2, alignItems: 'center',}}>
         <View
         style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
-        onFocus = {()=> this.setState({keyboardOpen: true})}
+        onFocus = {()=>
+          {console.log("onfocus")
+          this.setState({keyboardOpen: true})}}
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}
         placeholder= {lang.Email}
         keyboardType= "email-address"
@@ -234,7 +241,9 @@ writeUserData(userId, name, email, imageUrl) {
         <View
         style={{width: this.width, height: "16%", alignItems: 'center', justifyContent: "center"}}>
         <TextInput
-        onFocus = {()=> this.setState({keyboardOpen: true})}
+        onFocus = {()=>
+          {console.log("onfocus2")
+          this.setState({keyboardOpen: true})}}
         maxLength = {15}
         value = {this.state.isim}
         placeholderTextColor={global.isDarkMode ? global.darkModeColors[3]: 'rgba(0,0,0,0.4)'}

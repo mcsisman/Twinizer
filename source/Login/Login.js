@@ -62,7 +62,10 @@ componentDidMount(){
   this.keyboardDidShowListener = Keyboard.addListener("keyboardDidHide", this._keyboardDidHide);
   this.keyboardDidHideListener = Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
 };
-
+componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
 _keyboardDidShow = (e) => {
   const { height, screenX, screenY, width } = e.endCoordinates
   keyboardHeight = height
