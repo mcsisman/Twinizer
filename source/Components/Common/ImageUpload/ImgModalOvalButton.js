@@ -63,7 +63,9 @@ export default class ImgModalOvalButton extends Component {
       borderTopLeftRadius: this.props.borderRadius, borderBottomRightRadius: this.props.borderRadius, borderColor: this.props.borderColor, borderWidth: this.props.borderWidth}}
       onPress={this.props.onPress }
       disabled = {this.props.disabled}>
-      <Text style={{color: this.props.textColor, fontSize: this.props.textFontSize}}>
+      <Text style={{color: this.props.textColor, fontSize: this.props.textFontSize}}
+      adjustsFontSizeToFit={true}
+        numberOfLines={1}>
         {this.props.title}
       </Text>
       </TouchableOpacity>

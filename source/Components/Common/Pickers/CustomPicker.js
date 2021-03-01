@@ -64,6 +64,10 @@ export default class CustomPicker extends Component {
         height: this.props.height, position: 'absolute', right: this.props.right, bottom: this.props.bottom, borderBottomColor: this.props.borderBottomColor, borderColor: this.props.borderColor,
         borderBottomWidth: this.props.borderBottomWidth, borderTopWidth: this.props.borderWidth, borderRightWidth: this.props.borderWidth, borderLeftWidth: this.props.borderWidth }}>
         <ModalSelector
+        cancelTextStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
+        optionTextStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
+        optionContainerStyle = {{backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}
+        cancelStyle = {{backgroundColor: global.isDarkMode ? global.darkModeColors[0] : "rgba(242,242,242,1)"}}
         onModalOpen = {this.props.open}
         backdropPressToClose = {true}
         touchableActiveOpacity = {1}
@@ -92,6 +96,10 @@ export default class CustomPicker extends Component {
         height: this.props.height, right: this.props.right, bottom: this.props.bottom, borderBottomColor: this.props.borderBottomColor, borderColor: this.props.borderColor,
         borderBottomWidth: this.props.borderBottomWidth, borderTopWidth: this.props.borderWidth, borderRightWidth: this.props.borderWidth, borderLeftWidth: this.props.borderWidth }}>
         <ModalSelector
+        cancelStyle = {{backgroundColor: global.isDarkMode ? global.darkModeColors[0] : "rgba(242,242,242,1)"}}
+        cancelTextStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
+        optionTextStyle = {{color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}
+        optionContainerStyle = {{backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}
         onModalOpen = {this.props.open}
         backdropPressToClose = {true}
         touchableActiveOpacity = {1}

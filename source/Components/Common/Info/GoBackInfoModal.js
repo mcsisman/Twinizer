@@ -94,15 +94,16 @@ export default class GoBackInfoModal extends Component {
       flexDirection: 'column',
       bottom: screenHeight*(1/10)}}>
 
-      <View style={{paddingTop: 10, paddingBottom: 10, width: screenWidth*(5.5/10), flex:1}}>
+      <View style={{paddingTop: 10, paddingBottom: 10, width: screenWidth*(8/10), flex:1}}>
 
       <Text style={{ color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" ,fontSize: this.props.alertFontSize*(screenWidth/360)}}>
       {this.props.txtAlert}
       </Text>
       </View>
 
-      <View style={{justifyContent: 'center', alignItems: 'center', flexDirection: "column", flex:1}}>
       <View style={{justifyContent: 'center', alignItems: 'center', flexDirection: "row", flex:1}}>
+      <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: "row", flex:1}}>
+
       <TouchableOpacity
       activeOpacity = {1}
       style={{ borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,
@@ -113,6 +114,9 @@ export default class GoBackInfoModal extends Component {
       {this.props.txtOk}
       </Text>
       </TouchableOpacity>
+      </View>
+
+      <View style={{justifyContent: 'center', alignItems: 'center', flexDirection: "row", flex:1}}>
       <TouchableOpacity
       activeOpacity = {1}
       style={{ borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,
@@ -124,6 +128,8 @@ export default class GoBackInfoModal extends Component {
       </Text>
       </TouchableOpacity>
       </View>
+
+      <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: "row", flex:1}}>
       <TouchableOpacity
       activeOpacity = {1}
       style={{ borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,
@@ -134,6 +140,7 @@ export default class GoBackInfoModal extends Component {
       {this.props.txtCancel}
       </Text>
       </TouchableOpacity>
+      </View>
       </View>
 
       </View>

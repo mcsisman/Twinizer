@@ -73,7 +73,7 @@ export default class DeleteMessageModal extends Component {
       borderBottomLeftRadius: 8, borderTopRightRadius: 8,
       borderTopLeftRadius: 8, borderBottomRightRadius: 8,
       backgroundColor: global.isDarkMode ? global.darkModeColors[0] : "rgba(255,255,255,1)",
-      width: screenWidth*(6.5/10),
+      width: screenWidth*(8.5/10),
       paddingTop: 10,
       paddingBottom: 0,
       alignItems: 'center',
@@ -81,7 +81,7 @@ export default class DeleteMessageModal extends Component {
       flexDirection: 'column',
       bottom: screenHeight*(1/10)}}>
 
-      <View style={{paddingTop: 10, paddingBottom: 10, width: screenWidth*(6/10), flex:1}}>
+      <View style={{paddingTop: 10, paddingBottom: 10, width: screenWidth*(8/10), flex:1}}>
 
       <Text style={{ marginLeft: 2, marginRight: 2, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: this.props.alertFontSize*(screenWidth/360)}}>
       {this.props.txtAlert}
@@ -89,11 +89,11 @@ export default class DeleteMessageModal extends Component {
       </View>
       <View
 
-      style={{ flexDirection: 'row', width: screenWidth*(6/10), height:screenWidth*(1.5/10), justifyContent: 'center',
+      style={{ flexDirection: 'row', width: screenWidth*(8/10), height:screenWidth*(1.5/10), justifyContent: 'center',
       paddingLeft: 15, paddingRight: 15}}>
 
       <View
-      style={{ width: screenWidth*(3/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
+      style={{ width: screenWidth*(4/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
       <ImgModalOvalButton
       activeOpacity = {0.7}
       title = {lang.ClearMessageHistory}
@@ -106,7 +106,7 @@ export default class DeleteMessageModal extends Component {
       </View>
 
       <View
-      style={{width: screenWidth*(3/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
+      style={{width: screenWidth*(4/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
       <ImgModalOvalButton
       activeOpacity = {0.7}
       title = {lang.RemoveChat}

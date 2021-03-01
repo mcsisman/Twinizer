@@ -670,7 +670,7 @@ static navigationOptions = {
         txtAlert = {lang.DidntSave}
         txtOk = {lang.YES}
         txtSave = {lang.Save}
-        txtCancel = {lang.Cancel}
+        txtCancel = {lang.CancelCap}
         onPressOk = {()=>this.props.navigation.goBack()}
         onPressSave = {()=>{
           this.setState({goBackInfoModalVisible:false})

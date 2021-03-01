@@ -112,6 +112,7 @@ export default class PhotoPopUpModal extends Component {
             {this.props.username}
           </Text>
           <TouchableOpacity
+          activeOpacity = {0.8}
           style={{width: this.width*(2/15), height: this.width*(2/15), right: 0, position:'absolute', top:0}}
            onPress={this.props.onPressCancel}>
            <Image source={{uri: 'cross' + global.themeForImages}}
@@ -128,6 +129,7 @@ export default class PhotoPopUpModal extends Component {
           </View>
 
           <TouchableOpacity
+          activeOpacity = {1}
           style={{width: this.width*(9/10), height: this.width*(8/10)*(7/6)}}
           onPress={this.props.onPressImage}>
           <Image source={{uri: this.props.imgSource}}

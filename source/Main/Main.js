@@ -2160,7 +2160,7 @@ render(){
 
 
       <PhotoPopUpModal
-      isVisible = {true}
+      isVisible = {this.state.openProfileIsVisible}
       onPressImage = {() => {
         this.props.navigation.setOptions({tabBarVisible: false})
         this.setState({imageViewerVisible: true})

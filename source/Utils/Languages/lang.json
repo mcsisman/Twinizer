@@ -134,7 +134,7 @@
     "Profile": "Profile",
     "Save": "SAVE",
     "DeleteMyAccount": "Delete my Account",
-    "DidntSave": "Warning! Your changes have not been saved. Do you still want to continue",
+    "DidntSave": "Warning! Your changes have not been saved. Do you still wish to go back without saving?",
     "GoBack": "Go Back Without Saving",
     "YourChangesHaveBeenSaved": "Your changes have been saved",
     "LogOutSuccess": "You have logged out successfully.",

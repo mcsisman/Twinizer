@@ -129,6 +129,21 @@ async goBack(){
     var lang = language[global.lang]
     var s = lang.SelectYourBirthday
     const { date } = this.state.date;
+    var todayYear = new Date().getFullYear() - 18;
+    var todayMonth = new Date().getMonth() + 1
+    var today = new Date().getDate()
+    if(today.length = 1){
+      today = "0" + today
+    }
+    if(todayMonth.length = 1){
+      todayMonth = "0" + todayMonth
+    }
+    var maxDate = todayMonth + "-" + today + "-" + todayYear
+    console.log("y:", todayYear)
+    console.log("m:", todayMonth)
+    console.log("d:", today)
+    console.log( "date:", maxDate)
+
     return(
 
       <View
@@ -206,8 +221,8 @@ async goBack(){
         showIcon={true}
         placeholder = {lang.SelectYourBirthday}
         format="MM-DD-YYYY"
-        minDate="05-15-1900"
-        maxDate="05-15-2010"
+        minDate="01-01-1921"
+        maxDate={maxDate}
         disabled={false}
         confirmBtnText="Confirm"
         cancelBtnText="Cancel"

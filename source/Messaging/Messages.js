@@ -129,12 +129,15 @@ componentDidMount(){
     newRequest = false
     if(global.messagesFirstTime){
       this.initializeMessageScreen()
+      console.log("messages ilk giriş chat")
     }
     else{
       if(global.fromChat){
+        console.log("from chat")
         this.startFromLocal()
       }
       else{
+        console.log("düz setstate")
         this.setState({loadingDone: true, loadingOpacity: 0, editPressed: false, cancelPressed: false, editText: "Edit", messageBoxDisabled: false})
       }
     }
