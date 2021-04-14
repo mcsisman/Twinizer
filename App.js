@@ -562,12 +562,12 @@ function MyTabs() {
         }}
         name="ThemeSettings" component={ThemeSettingsScreen} />
         <Stack.Screen options={{
-          gestureEnabled: true,
+          gestureEnabled: false,
 
         }}
         name="NewAccount" component={NewAccountScreen} />
         <Stack.Screen options={{
-          gestureEnabled: true, gestureDirection: "horizontal",
+          gestureEnabled: false, gestureDirection: "horizontal",
           cardStyleInterpolator: forHorizontalModal,
           transitionSpec: {
             open: config2,

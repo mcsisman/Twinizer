@@ -207,7 +207,7 @@ writeUserData(userId, name, email, imageUrl) {
 
         <TouchableOpacity
         activeOpacity = {1}
-        style={{backgroundColor:"green", width: this.width, height: this.height, flex:1, alignItems: 'center',bottom: this.state.keyboardOpen && global.keyboardHeight != null && global.keyboardHeight != undefined ? keyboardAvoidingHeight - ((this.height - getStatusBarHeight() - headerHeight)-this.height/2)/2 + this.width/50: 0}}
+        style={{width: this.width, height: this.height, flex:1, alignItems: 'center',bottom: this.state.keyboardOpen && global.keyboardHeight != null && global.keyboardHeight != undefined ? keyboardAvoidingHeight - ((this.height - getStatusBarHeight() - headerHeight)-this.height/2)/2 + this.width/50: 0}}
          onPress={()=> {
            console.log("touchable pressed")
            Keyboard.dismiss()
