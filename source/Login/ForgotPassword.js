@@ -36,7 +36,8 @@ export default class ForgotPasswordScreen extends Component<{}>{
     super(props);
     this.state = {
       splashOver : false,
-      email: ""
+      email: "",
+      sendEmailDisabled: false,
     }
     var lang = language[global.lang]
     this.height = Math.round(Dimensions.get('screen').height);
@@ -49,16 +50,21 @@ static navigationOptions = {
     header: null,
 };
   check(){
+    console.log("CHECK")
+    this.setState({sendEmailDisabled: true})
     var lang = language[global.lang]
     const {navigate} = this.props.navigation;
     if(this.state.email == "" || this.state.email == null || this.state.email == undefined){
+      this.setState({sendEmailDisabled: false})
       Alert.alert(lang.PlsTryAgain, lang.EmailNotRegistered)
     }
     else{
       auth().sendPasswordResetEmail(this.state.email)
         .then(function (user) {
+          this.setState({sendEmailDisabled: false})
           Alert.alert("", lang.PlsCheckEmail)
         }).catch(error => {
+          this.setState({sendEmailDisabled: false})
           Alert.alert(lang.PlsTryAgain, lang.EmailNotRegistered)
         })
     }
@@ -95,6 +101,7 @@ static navigationOptions = {
 
 
       <OvalButton
+      disabled = {this.state.sendEmailDisabled}
       backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
       opacity = {1}
       bottom = {(this.height*25)/100}

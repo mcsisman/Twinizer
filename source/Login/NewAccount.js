@@ -57,7 +57,8 @@ export default class NewAccountScreen extends Component<{}>{
       sifre2:"",
       email:"",
       gender: "",
-      verificationSended: false
+      verificationSended: false,
+      agreeDisabled: false,
     }
     var lang = language[global.lang]
     this.props.navigation.setParams({ otherParam: lang.SignUp })
@@ -109,32 +110,41 @@ writeUserData(userId, name, email, imageUrl) {
   });
 }
     SignUp = (email, password) => {
+      console.log("SIGNUP")
+      this.setState({agreeDisabled: true})
       var lang = language[global.lang]
       const {navigate} = this.props.navigation;
       auth().createUserWithEmailAndPassword(this.state.email, this.state.sifre).then(() => {
         console.log(database().ref('/Users/' + auth().currentUser.uid + "/i"))
+
         database().ref('/Users/' + auth().currentUser.uid + "/i").set({
           u: this.state.isim,
         }).catch(error => {
+          this.setState({agreeDisabled: false})
           console.log("Can't update database")
         });
         EncryptedStorage.setItem(auth().currentUser.uid + 'userName', this.state.isim)
         auth().currentUser.sendEmailVerification().catch(error => {
+          this.setState({agreeDisabled: false})
           Alert.alert(lang.PlsTryAgain, lang.SendEmailFailed)
         });
+        this.setState({agreeDisabled: false})
         navigate('Login')
         Alert.alert('',lang.VerificationSent);
       }).catch(error => {
         console.log("Create account error: ", error.message)
         if(error.message == '[auth/invalid-email] The email address is badly formatted.'){
+          this.setState({agreeDisabled: false})
             Alert.alert(lang.PlsTryAgain,lang.InvalidEmail);
         }
         else{
+          this.setState({agreeDisabled: false})
             Alert.alert(lang.PlsTryAgain,lang.EmailAlready);
         }
       });
   };
   check(){
+
     Keyboard.dismiss()
     this.setState({keyboardOpen: false})
     var lang = language[global.lang]
@@ -154,6 +164,7 @@ writeUserData(userId, name, email, imageUrl) {
         Alert.alert('',lang.PlsEnterEmail);
       }
       else if (this.state.sifre.length < 6 && this.state.sifre2.length < 6 ) {
+        this.setState({sendEmailDisabled: false})
         Alert.alert('',lang.PasswordCharacter);
       }
       else {
@@ -282,6 +293,7 @@ writeUserData(userId, name, email, imageUrl) {
         </View>
         <View
         style={{width: this.width, height: "36%", alignItems: 'center', justifyContent: "center"}}>
+
         <OvalButton
         opacity = {1}
         backgroundColor = {global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}
@@ -296,6 +308,7 @@ writeUserData(userId, name, email, imageUrl) {
         </View>
 
         <TermsAndPrivacyModal
+        agreeDisabled = {this.state.agreeDisabled}
         isVisible = {this.state.termsAndPrivacyIsVisible}
         txtCancel= {lang.Cancel}
         txtOk= {lang.Agree}

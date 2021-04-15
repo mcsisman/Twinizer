@@ -47,7 +47,8 @@ export default class LoginScreen extends Component<{}>{
       isim : "",
       sifre : "",
       keyboardOpen: false,
-      tryagain: 0
+      tryagain: 0,
+      loginDisabled: false,
     }
     this.height = Math.round(Dimensions.get('screen').height);
     this.windowHeight = Math.round(Dimensions.get('window').height);
@@ -72,7 +73,6 @@ _keyboardDidShow = (e) => {
   if(global.keyboardHeight == null || global.keyboardHeight == undefined){
 
     global.keyboardHeight = keyboardHeight
-    console.log("global:", global.keyboardHeight)
     EncryptedStorage.setItem('keyboardHeight', (global.keyboardHeight).toString())
     this.setState({keyboardOpen: true})
   }
@@ -85,7 +85,6 @@ async setTheme(user){
   // Theme color
   if(user){
     var themeColor = await EncryptedStorage.getItem(auth().currentUser.uid + 'theme')
-    console.log("STORAGEDAN GELEN THEME COLOR:", themeColor)
     if(themeColor == null || themeColor == undefined){
       themeColor = "Original"
     }
@@ -136,13 +135,17 @@ Login = (email, password) => {
              else{
                Alert.alert("", lang.EmailNotVerified )
              }
+             this.setState({loginDisabled: false})
         }).catch(error => {
           console.log("error2:", error)
           Alert.alert(lang.PlsTryAgain, lang.WrongEmailPassword)
+          this.setState({loginDisabled: false})
       })
 
   };
   check(){
+    console.log("CHECK")
+    this.setState({loginDisabled: true})
     this.Login(this.state.isim, this.state.sifre)
   }
 
@@ -177,7 +180,6 @@ Login = (email, password) => {
           activeOpacity = {1}
           style={{position: "absolute", alignItems: 'center',width: this.width, height: this.height,bottom: this.state.keyboardOpen && global.keyboardHeight != null && global.keyboardHeight != undefined ? keyboardAvoidingHeight: 0 }}
            onPress={()=> {
-             console.log("keyboardavoid:", keyboardAvoidingHeight)
              Keyboard.dismiss()
              this.setState({keyboardOpen: false})} }>
           <ImageBackground
@@ -204,8 +206,7 @@ Login = (email, password) => {
           placeholderTextColor="rgba(255,255,255,0.7)"
           placeholder={lang.Email}
           keyboardType= "email-address"
-          onFocus = {()=>{console.log("keyboardavoid:", keyboardAvoidingHeight)
-         this.setState({keyboardOpen: true})}}
+          onFocus = {()=>{this.setState({keyboardOpen: true})}}
           style={{ fontFamily: fontFam, paddingLeft: 0, paddingBottom:this.width/50, fontSize: 17*(this.width/360), width: this.width*(6/10),
            borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
            onChangeText={(text) => this.setState({isim: text})}>
@@ -217,8 +218,7 @@ Login = (email, password) => {
           placeholderTextColor="rgba(255,255,255,0.7)"
           placeholder={lang.Password}
           secureTextEntry
-          onFocus = {()=>{console.log("keyboardavoid:", keyboardAvoidingHeight)
-         this.setState({keyboardOpen: true})}}
+          onFocus = {()=>{this.setState({keyboardOpen: true})}}
           style={{fontFamily: fontFam, paddingLeft: 0, paddingBottom: this.width/50, fontSize: 17*(this.width/360), width: this.width*(6/10),
            backgroundColor: 'rgba(255,255,255,0)', borderColor: 'rgba(241,51,18,0)', borderBottomColor: 'white', borderBottomWidth: 1}}
            onChangeText={(text) => this.setState({sifre: text})}>
@@ -227,6 +227,7 @@ Login = (email, password) => {
 
         <View style = {{ width:"100%", height: "34%", alignItems: "center", justifyContent: "center"}}>
         <TouchableOpacity
+        disabled = {this.state.loginDisabled}
         activeOpacity = {1}
         style={{justifyContent: 'center', position: 'absolute', backgroundColor: 'rgba(255,255,255, 0)',
           paddingLeft: 15, paddingRight: 15, height: (this.height*6)/100, flex:1}}

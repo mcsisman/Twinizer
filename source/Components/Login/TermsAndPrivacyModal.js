@@ -46,6 +46,7 @@ export default class TermsAndPrivacyModal extends Component {
    animationIn: PropTypes.string,
    animationOut: PropTypes.string,
    backdropOpacity: PropTypes.number,
+   agreeDisabled: PropTypes.bool,
  }
  static defaultProps = {
    okFontSize: 15,
@@ -145,6 +146,7 @@ export default class TermsAndPrivacyModal extends Component {
       <View
       style={{ width: screenWidth*(4/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
       <ImgModalOvalButton
+      disabled = {this.props.agreeDisabled}
       activeOpacity = {0.7}
       title = {this.props.txtOk}
       textColor = {global.themeColor}
