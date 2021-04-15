@@ -73,10 +73,6 @@ componentDidMount(){
 static navigationOptions = {
     header: null,
 };
-writeGenderToDatabase(){
-    this.props.navigation.navigate("ProfileUpload")
-}
-
 
 maleSelected(){
 
@@ -282,7 +278,7 @@ async goBack(){
       title = {lang.Next}
       textColor = {this.state.buttonOpacity}
       opacity = {this.state.opacity}
-      onPress = { ()=> this.writeGenderToDatabase()}
+      onPress = { ()=> this.props.navigation.navigate("ProfileUpload")}
       disabled = {this.state.disabled}
       borderColor = {this.state.buttonOpacity}/>
 

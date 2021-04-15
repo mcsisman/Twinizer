@@ -97,8 +97,9 @@ navigateToMain(){
 }
 
 async writeCountryToDatabase(){
+  console.log("CHECK")
   var lang = language[global.lang]
-  this.setState({loadingOpacity: 1})
+  this.setState({loadingOpacity: 1, disabled: true})
   this.spinAnimation()
   try{
     if((global.globalBio).length < 101){
@@ -139,6 +140,7 @@ async writeCountryToDatabase(){
           var dict = doc.data()
           console.log("dict: ", dict)
           if(dict["result"] < 0){
+            this.setState({disabled: false})
             Alert.alert(lang.Error, lang.CheckPhotos )
             updateDone = false;
           }
@@ -152,6 +154,7 @@ async writeCountryToDatabase(){
             navigate("Tabs")
           }
           else {
+            this.setState({disabled: false})
             Alert.alert(lang.SomethingWentWrong, lang.CreateAccountFailed)
           }
         }
@@ -159,9 +162,11 @@ async writeCountryToDatabase(){
       })
     }
     else {
+      this.setState({disabled: false})
       Alert.alert(lang.Error, lang.CharLengthExceeded)
     }
   } catch (error) {
+    this.setState({disabled: false})
     Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
   }
 }

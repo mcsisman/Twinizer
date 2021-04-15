@@ -115,6 +115,7 @@ export default class ImageUploadScreen extends React.Component {
       )).start()
   }
 uploadPhoto = async (uri1, uri2, uri3, uri4) => {
+  this.setState({disabled: true})
   var lang = language[global.lang]
     this.setState({loadingOpacity: 1})
     this.spinAnimation()
@@ -145,22 +146,26 @@ uploadPhoto = async (uri1, uri2, uri3, uri4) => {
               uploadDone4 = true;
             }).catch(function(error) {
               var lang = language[global.lang]
+              this.setState({disabled: false})
               Alert.alert(lang.Error, lang.CouldntUploadImg)
             });
           }).catch(function(error) {
             var lang = language[global.lang]
+            this.setState({disabled: false})
             Alert.alert(lang.Error, lang.CouldntUploadImg )
           });
         }).catch(function(error) {
           var lang = language[global.lang]
+          this.setState({disabled: false})
           Alert.alert(lang.Error, lang.CouldntUploadImg )
         });
       }).catch(function(error) {
         var lang = language[global.lang]
+        this.setState({disabled: false})
         Alert.alert(lang.Error, lang.CouldntUploadImg )
       });
       this.spinValue = new Animated.Value(0)
-      this.setState({loadingOpacity: 0})
+      this.setState({loadingOpacity: 0, disabled: false})
     if(uploadDone1 && uploadDone2 && uploadDone3 && uploadDone4){
       const {navigate} = this.props.navigation;
       global.welcomeOpacity = 1;
