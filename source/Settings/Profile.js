@@ -480,15 +480,10 @@ static navigationOptions = {
         style={{backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)", width: this.width, height: this.height, flex:1, flexDirection: "column", alignItems: "center"}}>
         <ModifiedStatusBar/>
 
-        <CustomHeader
-        whichScreen = {"Profile"}
-        onPress = {()=> this.onPressGoBack()}
-        isFilterVisible = {this.state.showFilter}
-        title = {lang.Profile}>
-        </CustomHeader>
+
 
         <View
-        style={{ bottom: this.state.keyboardOpen ? (this.height - headerHeight - getStatusBarHeight())/2 : 0, width: this.width, height: this.height - headerHeight - getStatusBarHeight(), flexDirection: "column", alignItems: "center" }}>
+        style={{ position:"absolute", bottom: this.state.keyboardOpen ? (this.height - headerHeight - getStatusBarHeight())/2 : 0, width: this.width, height: this.height - headerHeight - getStatusBarHeight(), flexDirection: "column", alignItems: "center" }}>
 
         <View
         style={{opacity: this.state.upperComponentsOpacity, width: this.width, height: (this.height - headerHeight - getStatusBarHeight())/2, flexDirection: "row" }}>
@@ -691,7 +686,12 @@ static navigationOptions = {
           position: 'absolute', bottom: (this.height)*(20/100) - (getStatusBarHeight()) + (this.width*3/10*(7/6)) + this.width/30 - this.width/7,
           left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 
-
+          <CustomHeader
+          whichScreen = {"Profile"}
+          onPress = {()=> this.onPressGoBack()}
+          isFilterVisible = {this.state.showFilter}
+          title = {lang.Profile}>
+          </CustomHeader>
       </TouchableOpacity>
 
           );

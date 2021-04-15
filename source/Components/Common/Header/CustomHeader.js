@@ -29,6 +29,10 @@ export default class CustomHeader extends Component {
     whichScreen: PropTypes.string,
     isFilterVisible: PropTypes.bool,
     editPressed: PropTypes.string,
+    isProfile: PropTypes.bool,
+  }
+  static defaultProps = {
+    isProfile: false
   }
   render(){
     var lang = language[global.lang]
@@ -59,7 +63,7 @@ export default class CustomHeader extends Component {
       if(this.props.editPressed == "Cancel"){
         return(
           <View
-          style = {{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', height: headerHeight,
+          style = {{ position: this.props.isProfile ? "absolute" : "relative", top: this.props.isProfile ? getStatusBarHeight() : 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', height: headerHeight,
           width: this.width, right: 0, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
           <Text style = {{fontSize: 24*this.width/360, color: global.themeColor, fontWeight: 'bold'}}>
           {this.props.title}
@@ -70,7 +74,7 @@ export default class CustomHeader extends Component {
       else{
         return(
           <View
-          style = {{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', height: headerHeight, flexDirection: "row",
+          style = {{position: this.props.isProfile ? "absolute" : "relative", top: this.props.isProfile ? getStatusBarHeight() : 0,  backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', height: headerHeight, flexDirection: "row",
           width: this.width, right: 0, borderBottomWidth: 1.5, borderColor: 'rgba(181,181,181,0.5)',}}>
 
           <View
