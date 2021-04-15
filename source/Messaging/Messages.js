@@ -132,7 +132,7 @@ componentDidMount(){
       console.log("messages ilk giriş chat")
     }
     else{
-      if(global.fromChat){
+      if(global.fromChat || global.enteredChatFromMain){
         console.log("from chat")
         this.startFromLocal()
       }
@@ -422,9 +422,10 @@ async getUsernameOfTheUid(){
       await EncryptedStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
     }
     else{
-      if(!global.comingFromChat){
+      if(!global.comingFromChat && !global.enteredChatFromMain){
         global.fromChatOfUid = ""
       }
+      global.enteredChatFromMain = false
       global.comingFromChat = false
       var localUsernames = []
       await EncryptedStorage.getItem(auth().currentUser.uid + 'message_usernames')
@@ -654,7 +655,7 @@ getMessagesData = async callback =>{
             }
           })
           .then(json => localMsgs = json)
-          console.log("TEST1:", localMsgs)
+
           if(localMsgs != null && localMsgs != undefined && localMsgs.length != 0){
             data = localMsgs[localMsgs.length - 1]
           }
@@ -805,12 +806,14 @@ getMessagesData = async callback =>{
   })
   var lastLocalKey = await this.getLastLocalMessage()
 
+  console.log("fromchatofuid:", global.fromChatOfUid)
   var uidCount = count;
-  if(!global.newMsgListenerArray[count].isOpen && global.fromChatOfUid != global.newMsgListenerArray[count].uid){
+  if((!global.newMsgListenerArray[count].isOpen && global.fromChatOfUid != global.newMsgListenerArray[count].uid)){
     global.listenersCreated = true
     global.newMsgListenerArray[count].isOpen = true
     global.newMsgListenerArray[count].listenerID = database().ref('Messages/' + auth().currentUser.uid + "/" + uidArray[count]).orderByKey().endAt("A").startAt("-");
     testVar = 1
+    console.log("LISTENER CREATED FOR:", uidArray[count])
     await global.newMsgListenerArray[count].listenerID.on('value', async snapshot => await this.syncLocalMessages(snapshot, uidCount));
   }
 };
@@ -827,7 +830,7 @@ async getLastLocalMessage(){
       }
     })
     .then(json => localMessages[count] = json)
-    console.log("TEST1:", localMessages[count])
+
     if(localMessages[count] != null && localMessages[count] != undefined && localMessages[count].length != 0){
       var key = localMessages[count][localMessages[count].length - 1]._id
       lastLocalKey = key + "z";

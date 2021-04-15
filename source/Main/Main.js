@@ -992,11 +992,19 @@ async sendFirstMessage(){
   //global.receiverUsername = usernameArray[global.swipeCount]
   console.log("sendfirst start")
   global.msgFromMain = true
+  global.enteredChatFromMain = true
   global.receiverUid = "p9UY4QQtEnRTWBYDfgG4pyHiyZg2"
   global.receiverMail = "cemil.sisman@ug.bilkent.edu.tr"
   global.receiverGender = "Male"
   global.receiverCountry = "Australia"
   global.receiverUsername = "cemil ug"
+  global.fromChatOfUid = global.receiverUid
+  for( let  i = 0; i < global.newMsgListenerArray.length; i++){
+    if(global.receiverUid == global.newMsgListenerArray[i].uid){
+      global.newMsgListenerArray[i].isOpen = false
+    }
+  }
+
   //global.firstMessage = true
   //global.playerIdArray[global.receiverUid] = await EncryptedStorage.getItem(global.receiverUid + "playerId")
   console.log("global.playerIdArray: ", global.playerIdArray)
@@ -2160,7 +2168,7 @@ render(){
 
 
       <PhotoPopUpModal
-      isVisible = { true || this.state.openProfileIsVisible}
+      isVisible = {this.state.openProfileIsVisible}
       onPressImage = {() => {
         this.props.navigation.setOptions({tabBarVisible: false})
         this.setState({imageViewerVisible: true})
