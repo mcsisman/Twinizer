@@ -301,11 +301,18 @@ library = () =>{
   ImagePicker.openPicker({
     cropping: true
   }).then(image1 => {
-    this.setState({
-      photoPath: image1.path,
-      photo: {uri: image1.path},
-    });
-    this.imageSelected()
+    var lang = language[global.lang]
+    if(image1.size > global.imageSizeLimit){
+      Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+    }
+    else{
+      this.setState({
+        photoPath: image1.path,
+        photo: {uri: image1.path},
+      });
+      this.imageSelected()
+    }
+
   });
 };
 
@@ -316,11 +323,18 @@ camera = () => {
   ImagePicker.openCamera({
     cropping: true
   }).then(image1 => {
-    this.setState({
-      photoPath: image1.path,
-      photo: {uri: image1.path},
-    });
-    this.imageSelected()
+    var lang = language[global.lang]
+    if(image1.size > global.imageSizeLimit){
+      Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+    }
+    else{
+      this.setState({
+        photoPath: image1.path,
+        photo: {uri: image1.path},
+      });
+      this.imageSelected()
+    }
+
 });
 };
 imageSelected(){

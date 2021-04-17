@@ -103,6 +103,7 @@ if (!global.atob) { global.atob = decode }
       console.log("LOCAL:", )
     }
     initializeGlobalVariables(){
+      global.imageSizeLimit = 20000000;
       global.fromChat = false
       global.emailArrayLength = 0
       global.addedMsgs = {}

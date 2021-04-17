@@ -1928,15 +1928,22 @@ library = () =>{
     cropping: true
   }).then(image => {
     global.welcomeOpacity = 0;
-    this.setState({
-      photoPath: image.path,
-      photo: {uri: image.path},
-      borderOpacity: 0,
-      opacity: 0,
-      isVisible1: false,
-      disabled: false,
-      btnOpacity: 1,
-    });
+    var lang = language[global.lang]
+    if(image.size > global.imageSizeLimit){
+      Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+    }
+    else{
+      this.setState({
+        photoPath: image.path,
+        photo: {uri: image.path},
+        borderOpacity: 0,
+        opacity: 0,
+        isVisible1: false,
+        disabled: false,
+        btnOpacity: 1,
+      });
+    }
+
   });
 };
 camera = () => {
@@ -1948,16 +1955,21 @@ camera = () => {
     height: 700,
     cropping: true
   }).then(image => {
-    console.log(image);
     global.welcomeOpacity = 0;
-    this.setState({
-      photoPath: image.path,
-      photo: {uri: image.path},
-      borderOpacity: 0,
-      opacity: 0,
-      disabled: false,
-      btnOpacity: 1,
-    });
+    var lang = language[global.lang]
+    if(image.size > global.imageSizeLimit){
+      Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+    }
+    else{
+      this.setState({
+        photoPath: image.path,
+        photo: {uri: image.path},
+        borderOpacity: 0,
+        opacity: 0,
+        disabled: false,
+        btnOpacity: 1,
+      });
+    }
 });
 };
 

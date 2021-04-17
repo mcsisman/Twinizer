@@ -184,46 +184,73 @@ library = (selectedPhoto) =>{
       console.log(image);
 
       if(selectedPhoto == 1){
-        this.setState({
-          photo1: {uri: image.path},
-          str1: '/2.jpg',
-          profilePhoto1: image.path,
-          borderOpacity1: 0,
-          disabled1: false,
-          opacity1: 0,
-        });
+        var lang = language[global.lang]
+        if(image.size > global.imageSizeLimit){
+          Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+        }
+        else{
+          this.setState({
+            photo1: {uri: image.path},
+            str1: '/2.jpg',
+            profilePhoto1: image.path,
+            borderOpacity1: 0,
+            disabled1: false,
+            opacity1: 0,
+          });
+        }
+
       }
       else if(selectedPhoto == 2){
-        this.setState({
-          photo2: {uri: image.path},
-          str2: '/3.jpg',
-          profilePhoto2: image.path,
-          borderOpacity2: 0,
-          disabled2: false,
-          opacity2: 0,
-        });
+        var lang = language[global.lang]
+        if(image.size > global.imageSizeLimit){
+          Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+        }
+        else{
+          this.setState({
+            photo2: {uri: image.path},
+            str2: '/3.jpg',
+            profilePhoto2: image.path,
+            borderOpacity2: 0,
+            disabled2: false,
+            opacity2: 0,
+          });
+        }
+
       }
       else if(selectedPhoto == 3){
-        this.setState({
-          photo3: {uri: image.path},
-          str3: '/4.jpg',
-          profilePhoto3: image.path,
-          borderOpacity3: 0,
-          disabled3: false,
-          opacity3: 0,
-        });
+        var lang = language[global.lang]
+        if(image.size > global.imageSizeLimit){
+          Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+        }
+        else{
+          this.setState({
+            photo3: {uri: image.path},
+            str3: '/4.jpg',
+            profilePhoto3: image.path,
+            borderOpacity3: 0,
+            disabled3: false,
+            opacity3: 0,
+          });
+        }
+
       }
       else if(selectedPhoto == 4){
-        this.setState({
-          photo4: {uri: image.path},
-          str4: '/5.jpg',
-          profilePhoto4: image.path,
-          borderOpacity4: 0,
-          disabled4: false,
-          opacity4: 0,
-        });
-      }
+        var lang = language[global.lang]
+        if(image.size > global.imageSizeLimit){
+          Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+        }
+        else{
+          this.setState({
+            photo4: {uri: image.path},
+            str4: '/5.jpg',
+            profilePhoto4: image.path,
+            borderOpacity4: 0,
+            disabled4: false,
+            opacity4: 0,
+          });
+        }
 
+      }
       if(!this.state.disabled1 && !this.state.disabled2 && !this.state.disabled3 && !this.state.disabled4){
         this.setState({
           opacity: 1,
@@ -245,44 +272,72 @@ camera = (selectedPhoto) => {
       console.log(image);
 
       if(selectedPhoto == 1){
-        this.setState({
-          photo1: {uri: image.path},
-          str1: '/2.jpg',
-          profilePhoto1: image.path,
-          borderOpacity1: 0,
-          disabled1: false,
-          opacity1: 0,
-        });
+        var lang = language[global.lang]
+        if(image.size > global.imageSizeLimit){
+          Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+        }
+        else{
+          this.setState({
+            photo1: {uri: image.path},
+            str1: '/2.jpg',
+            profilePhoto1: image.path,
+            borderOpacity1: 0,
+            disabled1: false,
+            opacity1: 0,
+          });
+        }
+
       }
       else if(selectedPhoto == 2){
-        this.setState({
-          photo2: {uri: image.path},
-          str2: '/3.jpg',
-          profilePhoto2: image.path,
-          borderOpacity2: 0,
-          disabled2: false,
-          opacity2: 0,
-        });
+        var lang = language[global.lang]
+        if(image.size > global.imageSizeLimit){
+          Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+        }
+        else{
+          this.setState({
+            photo2: {uri: image.path},
+            str2: '/3.jpg',
+            profilePhoto2: image.path,
+            borderOpacity2: 0,
+            disabled2: false,
+            opacity2: 0,
+          });
+        }
+
       }
       else if(selectedPhoto == 3){
-        this.setState({
-          photo3: {uri: image.path},
-          str3: '/4.jpg',
-          profilePhoto3: image.path,
-          borderOpacity3: 0,
-          disabled3: false,
-          opacity3: 0,
-        });
+        var lang = language[global.lang]
+        if(image.size > global.imageSizeLimit){
+          Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+        }
+        else{
+          this.setState({
+            photo3: {uri: image.path},
+            str3: '/4.jpg',
+            profilePhoto3: image.path,
+            borderOpacity3: 0,
+            disabled3: false,
+            opacity3: 0,
+          });
+        }
+
       }
       else if(selectedPhoto == 4){
-        this.setState({
-          photo4: {uri: image.path},
-          str4: '/5.jpg',
-          profilePhoto4: image.path,
-          borderOpacity4: 0,
-          disabled4: false,
-          opacity4: 0,
-        });
+        var lang = language[global.lang]
+        if(image.size > global.imageSizeLimit){
+          Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+        }
+        else{
+          this.setState({
+            photo4: {uri: image.path},
+            str4: '/5.jpg',
+            profilePhoto4: image.path,
+            borderOpacity4: 0,
+            disabled4: false,
+            opacity4: 0,
+          });
+        }
+
       }
 
       if(!this.state.disabled1 && !this.state.disabled2 && !this.state.disabled3 && !this.state.disabled4){

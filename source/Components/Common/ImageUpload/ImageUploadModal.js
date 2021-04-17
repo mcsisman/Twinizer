@@ -14,6 +14,7 @@ import {
   Image,
   StatusBar
 } from 'react-native';
+import language from '../../../Utils/Languages/lang.json'
 
 if(Platform.OS === 'android'){
   var headerHeight = Header.HEIGHT
@@ -53,6 +54,7 @@ export default class ImageUploadModal extends Component {
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
+    var lang = language[global.lang]
     return(
       <Modal /*RESİM MODALI*/
       style = {{alignItems: 'center'}}
@@ -71,7 +73,7 @@ export default class ImageUploadModal extends Component {
       borderTopLeftRadius: 4, borderBottomRightRadius: 4,
       backgroundColor: global.isDarkMode ? global.darkModeColors[0] : "rgba(255,255,255,1)",
 
-      height: screenWidth*(2.5/10),
+      height: screenWidth*(3.5/10),
       flexDirection: 'column',
       bottom: this.props.bottom
       }}>
@@ -96,10 +98,18 @@ export default class ImageUploadModal extends Component {
       </View>
 
       <View
+      style={{marginLeft: 10, marginRight: 10, width: "100%", height:screenWidth*(1/10), justifyContent: 'center', alignItems:'center',}}>
+      <Text style={{ color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: this.props.fontSize*(80/100)*(screenWidth/360)}}>
+      {lang.ImageSizeLimit}
+      </Text>
+      </View>
+
+      <View
       style={{width:"80%",flexDirection: 'row', left: 0, height:screenWidth*(1.5/10), justifyContent:"center", }}>
 
       <View
       style={{width: "50%",height:screenWidth*(1.5/10),justifyContent: 'center', alignItems:'center',}}>
+
 
       <ImgModalOvalButton
       title = {this.props.txtOpenLibrary}

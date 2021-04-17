@@ -1,6 +1,8 @@
 {
   "langEN":
   {
+    "ImageSizeExceeded": "Your image exceeds the size limit. Please try again.",
+    "ImageSizeLimit": "*Warning! Image size limit is 20MB.",
     "MainNoFace": "Could not detect a face in your photo. Please try with a new one.",
     "MaleSmall": "Male",
     "FemaleSmall": "Female",
@@ -168,6 +170,8 @@
   },
   "langTR":
   {
+    "ImageSizeExceeded": "Yüklediğiniz resim boyut sınırını aşıyor. Lütfen tekrar deneyin.",
+    "ImageSizeLimit": "*Uyarı! Resim boyut limiti 20MB'tır.",
     "MainNoFace": "Fotoğrafınızda yüz bulunamadı. Lütfen yeni bir fotoğraf yükleyin.",
     "MaleSmall": "Erkek",
     "FemaleSmall": "Kadın",

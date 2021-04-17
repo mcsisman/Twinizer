@@ -131,16 +131,22 @@ library = () =>{
     height: 700,
     cropping: true
   }).then(image => {
-    console.log(image);
-    this.setState({
-      photo: {uri: image.path},
-      borderOpacity: 0,
-      str: '/1.jpg',
-      opacity: 0,
-      disabled: false,
-      btnOpacity: 1,
-      profilePhoto: image.path
-    });
+    var lang = language[global.lang]
+    if(image.size > global.imageSizeLimit){
+      Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+    }
+    else{
+      this.setState({
+        photo: {uri: image.path},
+        borderOpacity: 0,
+        str: '/1.jpg',
+        opacity: 0,
+        disabled: false,
+        btnOpacity: 1,
+        profilePhoto: image.path
+      });
+    }
+
   });
 };
 camera = () => {
@@ -152,16 +158,22 @@ camera = () => {
     height: 700,
     cropping: true
   }).then(image => {
-    console.log(image);
-    this.setState({
-      photo: {uri: image.path},
-      borderOpacity: 0,
-      str: '/1.jpg',
-      opacity: 0,
-      disabled: false,
-      btnOpacity: 1,
-      profilePhoto: image.path
-    });
+    var lang = language[global.lang]
+    if(image.size > global.imageSizeLimit){
+      Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+    }
+    else{
+      this.setState({
+        photo: {uri: image.path},
+        borderOpacity: 0,
+        str: '/1.jpg',
+        opacity: 0,
+        disabled: false,
+        btnOpacity: 1,
+        profilePhoto: image.path
+      });
+    }
+
 
 });
 };

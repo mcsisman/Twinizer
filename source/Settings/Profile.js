@@ -397,10 +397,16 @@ static navigationOptions = {
       height: 700,
       cropping: true
     }).then(image => {
-      this.setState({
-        newPhoto: true,
-        profilePhoto: image.path,
-      });
+      var lang = language[global.lang]
+      if(image.size > global.imageSizeLimit){
+        Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+      }
+      else{
+        this.setState({
+          newPhoto: true,
+          profilePhoto: image.path,
+        });
+      }
     });
   };
   camera = () => {
@@ -412,11 +418,16 @@ static navigationOptions = {
       height: 700,
       cropping: true
     }).then(image => {
-      console.log(image);
-      this.setState({
-        newPhoto: true,
-        profilePhoto: image.path,
-      });
+      var lang = language[global.lang]
+      if(image.size > global.imageSizeLimit){
+        Alert.alert(lang.Warning, lang.ImageSizeExceeded);
+      }
+      else{
+        this.setState({
+          newPhoto: true,
+          profilePhoto: image.path,
+        });
+      }
   });
   };
   onPressDelete(){
