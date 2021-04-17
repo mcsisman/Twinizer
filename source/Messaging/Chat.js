@@ -90,7 +90,8 @@ export default class ChatScreen extends React.Component<Props> {
       test: "",
       photoPopUpIsVisible: false,
       keyboardOpen: false,
-      test123: "123"
+      test123: "123",
+      imageSendDisabled: false,
     }
     this.windowHeight = Math.round(Dimensions.get('window').height);
     this.navbarHeight = this.height - this.windowHeight
@@ -255,6 +256,7 @@ onPressInfo(){
   this.setState({photoPopUpIsVisible: true})
 }
 sendMsgWithImage = async (text) =>{
+  this.setState({imageSendDisabled: true})
   var messages;
   for( i = 0; i < images.length; i++){
     if( i != 0 ){
@@ -270,7 +272,8 @@ sendMsgWithImage = async (text) =>{
   this.setState({
     currentIndex: 0,
     msgText: " ",
-    renderImageChatScreen: false
+    renderImageChatScreen: false,
+    imageSendDisabled: false,
   })
 }
 
@@ -562,6 +565,7 @@ render() {
           onPressCross = {()=> this.closeImageMessage()}/>
 
           <ChatSendImgBottomBar
+            sendDisabled = {this.state.imageSendDisabled}
             onPressPlus = {()=> this.onPressPlus()}
             keyboardOpen = {this.state.keyboardOpen}
             keyboardHeight = {keyboardHeight}

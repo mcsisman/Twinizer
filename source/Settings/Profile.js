@@ -87,6 +87,7 @@ export default class ProfileScreen extends Component<{}>{
       isVisible: false,
       bioOpacity: 1,
       bioLimit: 0,
+      saveBtnDisabled: false,
       upperComponentsOpacity: 1,
       upperComponentsDisabled: false,
       test: "TEST",
@@ -284,8 +285,9 @@ static navigationOptions = {
     }
 
   async onPressSave(){
+    console.log("SAVE")
     var lang = language[global.lang]
-    this.setState({loadingOpacity: 1})
+    this.setState({loadingOpacity: 1, saveBtnDisabled: true})
     try{
       if(this.state.newPhoto){
         var uploadDone = false
@@ -314,10 +316,11 @@ static navigationOptions = {
         p: this.state.userPhotoCount
       }).then(() => {
         infoChanged = false
-        this.setState({saveInfoModalVisible:true, loadingOpacity:0})
+        this.setState({saveInfoModalVisible:true, loadingOpacity:0, saveBtnDisabled: false})
         this.spinValue = new Animated.Value(0)
       })
     } catch(error){
+      this.setState({saveBtnDisabled: false})
       Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
     }
   }
@@ -612,6 +615,7 @@ static navigationOptions = {
         style = {{height: this.width/20}}/>
 
         <TouchableOpacity
+        disabled = {this.state.saveBtnDisabled}
         activeOpacity = {1}
         style={{ borderBottomLeftRadius: 12, borderTopRightRadius: 12, borderTopLeftRadius: 12, borderBottomRightRadius: 12,
         justifyContent: 'center', alignItems: 'center', backgroundColor: backgroundColor, paddingLeft: 15, paddingRight: 15, paddingTop: 5, paddingBottom:5}}

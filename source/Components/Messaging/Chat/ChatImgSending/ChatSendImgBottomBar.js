@@ -33,7 +33,8 @@ export default class ChatSendImgBottomBar extends Component {
    keyboardHeight: PropTypes.number,
    keyboardYcord: PropTypes.number,
    onPressPlus: PropTypes.func,
-   onPressSend: PropTypes.func
+   onPressSend: PropTypes.func,
+   sendDisabled: PropTypes.bool,
  }
  static defaultProps = {
  }
@@ -87,6 +88,7 @@ export default class ChatSendImgBottomBar extends Component {
       <View
       style={{width: this.width*2/10, height: "100%", justifyContent:"flex-end", alignItems: "center",  right: 0, position: "absolute" }}>
       <TouchableOpacity
+      disabled = {this.props.sendDisabled}
       activeOpacity = {1}
       onPress = {this.props.onPressSend}
       style={{paddingLeft: 8, paddingRight: 8, borderBottomRightRadius: 36, borderBottomLeftRadius:36, height: "87%",

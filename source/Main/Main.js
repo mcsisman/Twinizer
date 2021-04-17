@@ -1603,6 +1603,7 @@ async searchDone(value){
   isFav = false
   isBlock = false
   this.setState({
+    disabled: true,
     notifIsVisible: true,
     showFilter: false,
     loadingOpacity: 1,
@@ -2138,7 +2139,7 @@ render(){
       isVisible = {this.state.notifIsVisible}
       txtAlert = {lang.TwinizingProcessInfo}
       txtGotIt = {lang.GotIt}
-      onPressClose = {()=> {this.setState({notifIsVisible:false}), interstitial.show()}}/>
+      onPressClose = {()=> {this.setState({notifIsVisible:false, disabled: false}), interstitial.show()}}/>
 
       <ImageUploadModal
       isVisible={this.state.isVisible1}
