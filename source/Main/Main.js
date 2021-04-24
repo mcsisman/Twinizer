@@ -1603,6 +1603,10 @@ async searchDone(value){
   isFav = false
   isBlock = false
   this.setState({
+    filterButtonOpacity: 0.4,
+    disabledSearch: true,
+    gender: null,
+    country: null,
     disabled: true,
     notifIsVisible: true,
     showFilter: false,
