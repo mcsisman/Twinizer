@@ -287,6 +287,7 @@ static navigationOptions = {
   async onPressSave(){
     console.log("SAVE")
     var lang = language[global.lang]
+    this.spinAnimation()
     this.setState({loadingOpacity: 1, saveBtnDisabled: true})
     try{
       if(this.state.newPhoto){
@@ -402,6 +403,7 @@ static navigationOptions = {
         Alert.alert(lang.Warning, lang.ImageSizeExceeded);
       }
       else{
+        infoChanged = true;
         this.setState({
           newPhoto: true,
           profilePhoto: image.path,
@@ -423,6 +425,7 @@ static navigationOptions = {
         Alert.alert(lang.Warning, lang.ImageSizeExceeded);
       }
       else{
+        infoChanged = true;
         this.setState({
           newPhoto: true,
           profilePhoto: image.path,
@@ -489,6 +492,7 @@ static navigationOptions = {
     else{
       return(
         <TouchableOpacity
+        disabled = {this.state.loadingOpacity == 1 ? true : false}
         onPress = {()=> this.onPressScreen()}
         activeOpacity = {1}
         style={{backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)", width: this.width, height: this.height, flex:1, flexDirection: "column", alignItems: "center"}}>
@@ -497,7 +501,8 @@ static navigationOptions = {
 
 
         <View
-        style={{ position:"absolute", bottom: this.state.keyboardOpen ? (this.height - headerHeight - getStatusBarHeight())/2 : 0, width: this.width, height: this.height - headerHeight - getStatusBarHeight(), flexDirection: "column", alignItems: "center" }}>
+        pointerEvents= {this.state.loadingOpacity == 1 ? "none": null}
+        style={{position:"absolute", bottom: this.state.keyboardOpen ? (this.height - headerHeight - getStatusBarHeight())/2 : 0, width: this.width, height: this.height - headerHeight - getStatusBarHeight(), flexDirection: "column", alignItems: "center" }}>
 
         <View
         style={{opacity: this.state.upperComponentsOpacity, width: this.width, height: (this.height - headerHeight - getStatusBarHeight())/2, flexDirection: "row" }}>
@@ -529,7 +534,7 @@ static navigationOptions = {
 
         <TouchableOpacity
         activeOpacity = {1}
-        disabled = {this.state.upperComponentsDisabled}
+        disabled = {this.state.upperComponentsDisabled || this.state.loadingOpacity == 1 ? true : false}
         onPress = {()=> this.onPressEdit()}
         style={{opacity: this.state.upperComponentsOpacity, position:"absolute", width: "50%",
         height: "70%", justifyContent: "center", alignItems: "center"}}>
