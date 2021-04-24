@@ -163,6 +163,7 @@ constructor(props){
       swipeable: -global.width,
       openProfileIsVisible: false,
       messageButtonOpacity: 0,
+      sadfaceOpacity: 0,
       messageButtonDisabled: true,
       loadingOpacity: 0,
       photo: ""
@@ -563,6 +564,9 @@ swipeRelease(){
           ]).start()
           console.log(this.state.uri2);
           this.setState({showAd: true})
+          if(emailArray.length == 0 || emailArray[0] == null){
+            this.setState({messageButtonOpacity: 0, sadfaceOpacity: 1})
+          }
         }
     }
   }
@@ -1450,9 +1454,13 @@ async allFunctionsCompleted(){
           swipeableDisabled: false,
           messageButtonDisabled: false,
           messageButtonOpacity: 1,
+          sadfaceOpacity: 0,
           showFilter: true,
           loadingOpacity: 0
         })
+        if(emailArray.length == 0 || emailArray[0] == null){
+          this.setState({messageButtonOpacity: 0, sadfaceOpacity: 1})
+        }
         this.checkUri2FavOrBlocked()
         this.spinValue = new Animated.Value(0)
         console.log(photoArray)
@@ -1540,6 +1548,7 @@ async filterDone(){
   this.setState({
     messageButtonDisabled: true,
     messageButtonOpacity: 0,
+    sadfaceOpacity: 0,
     backgroundOpacity: 0.2,
     isVisible2: false,
     uri0: null,
@@ -1576,22 +1585,44 @@ async filterDone(){
       //this.downloadImages(i);
     }
   }
-  this.setState({
-    uri0: null,
-    uri1: null,
-    uri2: photoArray[emailArray[0]],
-    uri3: photoArray[emailArray[1]],
-    uri4: photoArray[emailArray[2]],
-    uri5: photoArray[emailArray[3]],
-    uri2_username: usernameArray[0],
-    uri2_country: countryArray[0],
-    uri2_gender: genderArray[0],
-    uri2_bio: bioDict[emailArray[0]],
-    backgroundOpacity: 0,
-    swipeableDisabled: false,
-    messageButtonDisabled: false,
-    messageButtonOpacity: 1
-  })
+  if(emailArray.length == 0 || emailArray[0] == null){
+    this.setState({
+      uri0: null,
+      uri1: null,
+      uri2: photoArray[emailArray[0]],
+      uri3: photoArray[emailArray[1]],
+      uri4: photoArray[emailArray[2]],
+      uri5: photoArray[emailArray[3]],
+      uri2_username: usernameArray[0],
+      uri2_country: countryArray[0],
+      uri2_gender: genderArray[0],
+      uri2_bio: bioDict[emailArray[0]],
+      backgroundOpacity: 0,
+      swipeableDisabled: false,
+      messageButtonDisabled: false,
+      messageButtonOpacity: 0,
+      sadfaceOpacity: 1
+    })
+  }
+  else{
+    this.setState({
+      uri0: null,
+      uri1: null,
+      uri2: photoArray[emailArray[0]],
+      uri3: photoArray[emailArray[1]],
+      uri4: photoArray[emailArray[2]],
+      uri5: photoArray[emailArray[3]],
+      uri2_username: usernameArray[0],
+      uri2_country: countryArray[0],
+      uri2_gender: genderArray[0],
+      uri2_bio: bioDict[emailArray[0]],
+      backgroundOpacity: 0,
+      swipeableDisabled: false,
+      messageButtonDisabled: false,
+      messageButtonOpacity: 1,
+      sadfaceOpacity: 0
+    })
+  }
   this.checkUri2FavOrBlocked()
   console.log(this.state.uri2_bio);
   console.log(this.state.uri2);
@@ -1614,6 +1645,7 @@ async searchDone(value){
     backgroundOpacity: 0.2,
     messageButtonDisabled: true,
     messageButtonOpacity: 0,
+    sadfaceOpacity: 0,
     isVisible2: false,
     uri0: null,
     uri1: null,
@@ -1801,6 +1833,7 @@ uploadSearchPhoto = async (uri) => {
                       messageButtonDisabled: true,
                       backgroundOpacity:0.2,
                       messageButtonOpacity: 0,
+                      sadfaceOpacity: 0,
                       isVisible2: false,
                       uri0: null,
                       uri1: null,
@@ -1867,6 +1900,7 @@ uploadSearchPhoto = async (uri) => {
                        this.setState({
                          messageButtonDisabled: true,
                          messageButtonOpacity: 0,
+                         sadfaceOpacity: 0,
                          backgroundOpacity:0.2,
                          isVisible2: false,
                          uri0: null,
@@ -2092,6 +2126,20 @@ render(){
 
 
       </Swipeable>
+
+      <View style = {{alignItems: 'center', justifyContent: 'flex-end', opacity: this.state.sadfaceOpacity, flex: 1, flexDirection: "column", width: this.width, height: global.width*(5/10)*(3/2)}}>
+      <View style = {{ alignItems: 'center', justifyContent: 'center', width: global.width*(5/10), height: global.width*(5/10)}}>
+      <Image source={{uri: 'sadface' + global.themeForImages}}
+        style={{width: this.width/2.5, height: this.width/2.5, opacity: 0.4}}/>
+      </View>
+
+      <View style = {{justifyContent: "center", opacity: 0.7, alignItems: 'center', width: this.width, height: global.width*(5/10)*(1/2)}}>
+      <Text
+        style = {{fontSize: 20*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" }}>
+        No results.
+      </Text>
+      </View>
+      </View>
 
       <View
       style = {{opacity: this.state.messageButtonOpacity && (global.swipeCount % 6 != 0 || global.swipeCount == 0) ? 1 : 0 , backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
