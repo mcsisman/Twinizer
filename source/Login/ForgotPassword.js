@@ -54,17 +54,19 @@ static navigationOptions = {
     this.setState({sendEmailDisabled: true})
     var lang = language[global.lang]
     const {navigate} = this.props.navigation;
+    console.log(this.state.email)
     if(this.state.email == "" || this.state.email == null || this.state.email == undefined){
       this.setState({sendEmailDisabled: false})
       Alert.alert(lang.PlsTryAgain, lang.EmailNotRegistered)
     }
     else{
       auth().sendPasswordResetEmail(this.state.email)
-        .then(function (user) {
+        .then(user => {
           this.setState({sendEmailDisabled: false})
           Alert.alert("", lang.PlsCheckEmail)
         }).catch(error => {
           this.setState({sendEmailDisabled: false})
+          console.log(error)
           Alert.alert(lang.PlsTryAgain, lang.EmailNotRegistered)
         })
     }

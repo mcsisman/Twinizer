@@ -125,7 +125,7 @@ Login = (email, password) => {
                  await this.setTheme(true)
                  //navigate('Tabs', { screen: 'Main' })
                  navigate("UserInfo")
-               }).catch(function(error) {
+               }).catch(error => {
                  console.log("EMBEDDING YOK: ", auth().currentUser.uid)
                  this.setTheme(false)
                  navigate("UserInfo")

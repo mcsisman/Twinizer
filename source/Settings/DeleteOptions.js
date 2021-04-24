@@ -205,7 +205,7 @@ async deletePress(email, password){
        storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/search-photo.jpg").delete()
        storage().ref("Photos/" + auth().currentUser.uid + "/SearchPhotos/vec.pickle").delete()
 
-       auth().currentUser.delete().then(function() {
+       auth().currentUser.delete().then(() => {
          console.log("LOGOUT SUCCESSFUL")
          this.props.navigation.dispatch(StackActions.popToTop());
        })

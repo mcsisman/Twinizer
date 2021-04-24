@@ -65,6 +65,7 @@ export default class UserInfoScreen extends Component<{}>{
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     global.globalGender = "";
+    global.globalBirthday = "";
     global.globalCountry = "";
     this.props.navigation.setParams({ otherParam: lang.CompleteYourProfile })
   }

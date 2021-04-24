@@ -117,7 +117,7 @@ async writeCountryToDatabase(){
         g: global.globalGender,
         c: global.globalCountry,
         b: global.globalBio,
-        d: global.globalGender,
+        d: global.globalBirthday,
         p: 0
       }).then(async function() {
           var randFloat = Math.random()
@@ -127,6 +127,7 @@ async writeCountryToDatabase(){
           }).then(function() {
 
             EncryptedStorage.setItem(auth().currentUser.uid + 'userGender', global.globalGender)
+            EncryptedStorage.setItem(auth().currentUser.uid + 'userBirthday', global.globalBirthday)
             EncryptedStorage.setItem(auth().currentUser.uid + 'userCountry', global.globalCountry)
             EncryptedStorage.setItem(auth().currentUser.uid + 'userBio', global.globalBio)
             EncryptedStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(0))
