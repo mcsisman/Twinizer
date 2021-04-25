@@ -43,7 +43,8 @@ export default class SwipeableBigImg extends Component {
    onPress: PropTypes.func,
    backgroundOpacity: PropTypes.number,
    disabled: PropTypes.bool,
-   showAd: PropTypes.bool
+   showAd: PropTypes.bool,
+   sadfaceOpacity: PropTypes.number
  }
 
   render(){
@@ -80,6 +81,20 @@ export default class SwipeableBigImg extends Component {
          width: this.props.width, height: this.props.height, top: this.props.top, right: this.props.right , borderBottomLeftRadius: 16, borderTopRightRadius: 16,
          borderTopLeftRadius: 16, borderBottomRightRadius: 16}}>
 
+         <View style = {{alignItems: 'center', justifyContent: 'center', opacity: this.props.sadfaceOpacity, flex: 1, flexDirection: "column", width: "100%", height: "100%"}}>
+         <View style = {{ alignItems: 'center', justifyContent: 'center', width: "56%", height: "70%"}}>
+         <Image source={{uri: 'sadface' + global.themeForImages}}
+           style={{width: "100%", height: "100%", opacity: 0.4}}/>
+         </View>
+         <View style = {{justifyContent: "center", opacity: 0.7, alignItems: 'center', width: "100%", height: "10%"}}/>
+         <View style = {{justifyContent: "center", opacity: 0.7, alignItems: 'center', width: "100%", height: "20%"}}>
+         <Text
+           style = {{fontSize: 20*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" }}>
+           No results.
+         </Text>
+         </View>
+         </View>
+
          <TouchableOpacity
          disabled = {this.props.disabled}
          activeOpacity = {1}
@@ -92,6 +107,7 @@ export default class SwipeableBigImg extends Component {
            borderTopLeftRadius: 16, borderBottomRightRadius: 16 }}
          />
          </TouchableOpacity>
+
          <View
            style={{opacity: this.props.isFavorite, justifyContent: 'center', alignItems: 'center', width: '24%', height: '16%', backgroundColor: "rgba(128,128,128,0.5)",
            borderTopLeftRadius: 16,borderBottomRightRadius: 16}}
