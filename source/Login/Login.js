@@ -51,7 +51,7 @@ export default class LoginScreen extends Component<{}>{
       keyboardOpen: false,
       tryagain: 0,
       loginDisabled: false,
-      loadingOpacity: 1
+      loadingOpacity: 0
     }
     this.spinValue = new Animated.Value(0)
     this.height = Math.round(Dimensions.get('screen').height);
