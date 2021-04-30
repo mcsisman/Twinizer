@@ -201,6 +201,15 @@ static navigationOptions = {
       return false
     }
   }
+  checkIfBioValid(text){
+    var regex = /^[A-Za-z0-9. ]+$/
+    if(regex.test(text)){
+      return true
+    }
+    else{
+      return false
+    }
+  }
 
   async checkIfUserDataExistsInLocalAndSaveIfNot(){
     // from asyncstorage part
@@ -298,7 +307,8 @@ static navigationOptions = {
   async onPressSave(){
     var lang = language[global.lang]
     if(this.checkIfUsernameValid(this.state.userUsername)){
-      if(this.checkIfUsernameValid(this.state.userBio)){
+      console.log("BİO:", this.state.userBio)
+      if(this.checkIfBioValid(this.state.userBio)){
         this.spinAnimation()
         this.setState({loadingOpacity: 1, saveBtnDisabled: true})
         try{

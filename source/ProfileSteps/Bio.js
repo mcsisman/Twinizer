@@ -97,7 +97,7 @@ navigateToMain(){
 }
 checkIfBioValid(text){
   var regex = /^[A-Za-z0-9. ]+$/
-  if(regex.test(text) &&  text.length >= 3){
+  if(regex.test(text)){
     return true
   }
   else{
