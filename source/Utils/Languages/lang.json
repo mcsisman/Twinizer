@@ -1,6 +1,7 @@
 {
   "langEN":
   {
+    "InvalidBio": "Your bio can only contain numbers, letters and dots. Please try again.",
     "ImageSizeExceeded": "Your image exceeds the size limit. Please try again.",
     "ImageSizeLimit": "*Warning! Image size limit is 20MB.",
     "MainNoFace": "Could not detect a face in your photo. Please try with a new one.",
@@ -170,6 +171,7 @@
   },
   "langTR":
   {
+    "InvalidBio": "Lütfen bionuzda harf, sayı ve nokta işaretinden başka karakter kullanmayınız.",
     "ImageSizeExceeded": "Yüklediğiniz resim boyut sınırını aşıyor. Lütfen tekrar deneyin.",
     "ImageSizeLimit": "*Uyarı! Resim boyut limiti 20MB'tır.",
     "MainNoFace": "Fotoğrafınızda yüz bulunamadı. Lütfen yeni bir fotoğraf yükleyin.",

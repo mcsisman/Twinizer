@@ -44,6 +44,7 @@ export default class ProfileBioButton extends Component {
         style={{ opacity: this.props.opacity,  borderColor:"gray", borderWidth: 0.4, borderRadius: 8,
         backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)",flexDirection: 'column', alignItems: 'center'}}>
       <TextInput
+        blurOnSubmit = {true}
         onFocus = {this.props.onFocus}
         defaultValue = {this.props.defaultText}
         multiline = {true}

@@ -95,80 +95,93 @@ navigateToMain(){
   const {navigate} = this.props.navigation;
   navigate("MyTabs")
 }
-
+checkIfBioValid(text){
+  var regex = /^[A-Za-z0-9. ]+$/
+  if(regex.test(text) &&  text.length >= 3){
+    return true
+  }
+  else{
+    return false
+  }
+}
 async writeCountryToDatabase(){
   console.log("CHECK")
   var lang = language[global.lang]
-  this.setState({loadingOpacity: 1, disabled: true})
-  this.spinAnimation()
-  try{
-    if((global.globalBio).length < 101){
-      if(global.globalBio == ""){
-        global.globalBio = " ";
-      }
-      console.log(writeDone)
-      const funcdone_Ref = firestore().collection(auth().currentUser.uid).doc('Funcdone');
-      await funcdone_Ref.set({
-        key: 0
-      }).then(()=>{
-        console.log("funcdone was initialized")
-      })
-      await database().ref('Users/' + auth().currentUser.uid + "/i").update({
-        g: global.globalGender,
-        c: global.globalCountry,
-        b: global.globalBio,
-        d: global.globalBirthday,
-        p: 0
-      }).then(async function() {
-          var randFloat = Math.random()
-          const updateRef = firestore().collection('Functions').doc('Model');
-          await updateRef.set({
-            name: auth().currentUser.uid + "_" + randFloat.toString()
-          }).then(function() {
-
-            EncryptedStorage.setItem(auth().currentUser.uid + 'userGender', global.globalGender)
-            EncryptedStorage.setItem(auth().currentUser.uid + 'userBirthday', global.globalBirthday)
-            EncryptedStorage.setItem(auth().currentUser.uid + 'userCountry', global.globalCountry)
-            EncryptedStorage.setItem(auth().currentUser.uid + 'userBio', global.globalBio)
-            EncryptedStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(0))
-            console.log("bilgiler locale kaydedildi:", auth().currentUser.uid)
-          })
-      });
-      var result_ref = firestore().collection(auth().currentUser.uid).doc('ModelResult').onSnapshot(async (doc) =>{
-        console.log("listenerStarted: ", listenerStarted)
-        var lang = language[global.lang]
-        if(listenerStarted){
-          var dict = doc.data()
-          console.log("dict: ", dict)
-          if(dict["result"] < 0){
-            this.setState({disabled: false})
-            Alert.alert(lang.Error, lang.CheckPhotos )
-            updateDone = false;
-          }
-          else{
-            updateDone = true;
-          }
-          if (updateDone){
-            this.setState({loadingOpacity: 0})
-            this.spinValue = new Animated.Value(0)
-            const {navigate} = this.props.navigation;
-            navigate("Tabs")
-          }
-          else {
-            this.setState({disabled: false})
-            Alert.alert(lang.SomethingWentWrong, lang.CreateAccountFailed)
-          }
+  if(!this.checkIfBioValid(global.globalBio)){
+    Alert.alert(lang.Warning, lang.InvalidBio)
+  }
+  else{
+    this.setState({loadingOpacity: 1, disabled: true})
+    this.spinAnimation()
+    try{
+      if((global.globalBio).length < 101){
+        if(global.globalBio == ""){
+          global.globalBio = " ";
         }
-        listenerStarted = true
-      })
-    }
-    else {
+        console.log(writeDone)
+        const funcdone_Ref = firestore().collection(auth().currentUser.uid).doc('Funcdone');
+        await funcdone_Ref.set({
+          key: 0
+        }).then(()=>{
+          console.log("funcdone was initialized")
+        })
+        await database().ref('Users/' + auth().currentUser.uid + "/i").update({
+          g: global.globalGender,
+          c: global.globalCountry,
+          b: global.globalBio,
+          d: global.globalBirthday,
+          p: 0
+        }).then(async function() {
+            var randFloat = Math.random()
+            const updateRef = firestore().collection('Functions').doc('Model');
+            await updateRef.set({
+              name: auth().currentUser.uid + "_" + randFloat.toString()
+            }).then(function() {
+
+              EncryptedStorage.setItem(auth().currentUser.uid + 'userGender', global.globalGender)
+              EncryptedStorage.setItem(auth().currentUser.uid + 'userBirthday', global.globalBirthday)
+              EncryptedStorage.setItem(auth().currentUser.uid + 'userCountry', global.globalCountry)
+              EncryptedStorage.setItem(auth().currentUser.uid + 'userBio', global.globalBio)
+              EncryptedStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(0))
+              console.log("bilgiler locale kaydedildi:", auth().currentUser.uid)
+            })
+        });
+        var result_ref = firestore().collection(auth().currentUser.uid).doc('ModelResult').onSnapshot(async (doc) =>{
+          console.log("listenerStarted: ", listenerStarted)
+          var lang = language[global.lang]
+          if(listenerStarted){
+            var dict = doc.data()
+            console.log("dict: ", dict)
+            if(dict["result"] < 0){
+              this.setState({disabled: false})
+              Alert.alert(lang.Error, lang.CheckPhotos )
+              updateDone = false;
+            }
+            else{
+              updateDone = true;
+            }
+            if (updateDone){
+              this.setState({loadingOpacity: 0})
+              this.spinValue = new Animated.Value(0)
+              const {navigate} = this.props.navigation;
+              navigate("Tabs")
+            }
+            else {
+              this.setState({disabled: false})
+              Alert.alert(lang.SomethingWentWrong, lang.CreateAccountFailed)
+            }
+          }
+          listenerStarted = true
+        })
+      }
+      else {
+        this.setState({disabled: false})
+        Alert.alert(lang.Error, lang.CharLengthExceeded)
+      }
+    } catch (error) {
       this.setState({disabled: false})
-      Alert.alert(lang.Error, lang.CharLengthExceeded)
+      Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
     }
-  } catch (error) {
-    this.setState({disabled: false})
-    Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
   }
 }
 

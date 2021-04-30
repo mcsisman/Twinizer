@@ -42,6 +42,7 @@ export default class MultilineTextInput extends Component {
       <View
         style={{flexDirection: 'column', position: 'absolute', width: this.width*(7/10), alignItems: 'center'}}>
       <TextInput
+        blurOnSubmit = {true}
         multiline = {true}
         maxLength = {100}
         placeholderTextColor = {global.isDarkMode ? "rgba(255,255,255,0.4)": "rgba(0,0,0,0.4)"}
