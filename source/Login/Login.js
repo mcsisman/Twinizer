@@ -123,8 +123,8 @@ Login = (email, password) => {
                  console.log("EMBEDDING VAR: ", auth().currentUser.uid)
                  console.log("DATA: ", data)
                  await this.setTheme(true)
-                 //navigate('Tabs', { screen: 'Main' })
-                 navigate("UserInfo")
+                 navigate('Tabs', { screen: 'Main' })
+                 //navigate("UserInfo")
                }).catch(error => {
                  console.log("EMBEDDING YOK: ", auth().currentUser.uid)
                  this.setTheme(false)

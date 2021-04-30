@@ -2099,6 +2099,7 @@ render(){
       width = {this.widthAnimation}
       height = {this.heightAnimation}
       onPress = {()=>this.setState({openProfileIsVisible: true})}
+      sadfaceOpacity = {this.state.sadfaceOpacity}
       backgroundOpacity = {this.state.backgroundOpacity}/>
 
       <Animated.View style = {{height: this.width*5/10*(7/6), width: this.emptyWidthAnimation}}/>
@@ -2126,20 +2127,6 @@ render(){
 
 
       </Swipeable>
-
-      <View style = {{alignItems: 'center', justifyContent: 'flex-end', opacity: this.state.sadfaceOpacity, flex: 1, flexDirection: "column", width: this.width, height: global.width*(5/10)*(3/2)}}>
-      <View style = {{ alignItems: 'center', justifyContent: 'center', width: global.width*(5/10), height: global.width*(5/10)}}>
-      <Image source={{uri: 'sadface' + global.themeForImages}}
-        style={{width: this.width/2.5, height: this.width/2.5, opacity: 0.4}}/>
-      </View>
-
-      <View style = {{justifyContent: "center", opacity: 0.7, alignItems: 'center', width: this.width, height: global.width*(5/10)*(1/2)}}>
-      <Text
-        style = {{fontSize: 20*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)" }}>
-        No results.
-      </Text>
-      </View>
-      </View>
 
       <View
       style = {{opacity: this.state.messageButtonOpacity && (global.swipeCount % 6 != 0 || global.swipeCount == 0) ? 1 : 0 , backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,

@@ -53,6 +53,7 @@ export default class AuthenticationModal extends Component {
    console.log("DELETE PRESS")
    this.setState({authenticationVisible: false})
    try{
+     var autheticated = false
      if(auth().currentUser.email == email){
        await auth()
         .signInWithEmailAndPassword(email, password)
