@@ -73,7 +73,7 @@ export default class ImageUploadModal extends Component {
       borderTopLeftRadius: 4, borderBottomRightRadius: 4,
       backgroundColor: global.isDarkMode ? global.darkModeColors[0] : "rgba(255,255,255,1)",
 
-      height: screenWidth*(3.5/10),
+      height: screenWidth*(2.5/10),
       flexDirection: 'column',
       bottom: this.props.bottom
       }}>
@@ -95,13 +95,6 @@ export default class ImageUploadModal extends Component {
          style={{width: '45%', height: '45%', right:'27.5%', bottom: '27.5%', position: 'absolute' }}
        />
       </TouchableOpacity>
-      </View>
-
-      <View
-      style={{marginLeft: 10, marginRight: 10, width: "100%", height:screenWidth*(1/10), justifyContent: 'center', alignItems:'center',}}>
-      <Text style={{ color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: this.props.fontSize*(80/100)*(screenWidth/360)}}>
-      {lang.ImageSizeLimit}
-      </Text>
       </View>
 
       <View
