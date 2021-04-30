@@ -191,6 +191,17 @@ static navigationOptions = {
         }
       )).start()
   }
+
+  checkIfUsernameValid(text){
+    var regex = /^[A-Za-z0-9. ]+$/
+    if(regex.test(text) &&  text.length >= 3){
+      return true
+    }
+    else{
+      return false
+    }
+  }
+
   async checkIfUserDataExistsInLocalAndSaveIfNot(){
     // from asyncstorage part
 
@@ -285,45 +296,51 @@ static navigationOptions = {
     }
 
   async onPressSave(){
-    console.log("SAVE")
     var lang = language[global.lang]
-    this.spinAnimation()
-    this.setState({loadingOpacity: 1, saveBtnDisabled: true})
-    try{
-      if(this.state.newPhoto){
-        var uploadDone = false
-        var storageRef = storage().ref();
-        var metadata = {
-          contentType: 'image/jpeg',
-        };
-        const response = await fetch(this.state.profilePhoto);
-        const blob = await response.blob();
-        var ref1 = storageRef.child("Photos/" + auth().currentUser.uid + "/1.jpg");
-        await ref1.put(blob)
-        RNFS.copyFile(this.state.profilePhoto, RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg");
-        this.setState({profilePhoto: this.state.profilePhoto + '?' + new Date(), userPhotoCount: this.state.userPhotoCount + 1})
-      }
-      EncryptedStorage.setItem(auth().currentUser.uid + 'userGender', this.state.userGender)
-      EncryptedStorage.setItem(auth().currentUser.uid + 'userCountry', this.state.userCountry)
-      EncryptedStorage.setItem(auth().currentUser.uid + 'userName', this.state.userUsername)
-      EncryptedStorage.setItem(auth().currentUser.uid + 'userBio', this.state.userBio)
-      await EncryptedStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
+    if(this.checkIfUsernameValid(this.state.userUsername)){
+      this.spinAnimation()
+      this.setState({loadingOpacity: 1, saveBtnDisabled: true})
+      try{
+        if(this.state.newPhoto){
+          var uploadDone = false
+          var storageRef = storage().ref();
+          var metadata = {
+            contentType: 'image/jpeg',
+          };
+          const response = await fetch(this.state.profilePhoto);
+          const blob = await response.blob();
+          var ref1 = storageRef.child("Photos/" + auth().currentUser.uid + "/1.jpg");
+          await ref1.put(blob)
+          RNFS.copyFile(this.state.profilePhoto, RNFS.DocumentDirectoryPath + "/" + auth().currentUser.uid + "profile.jpg");
+          this.setState({profilePhoto: this.state.profilePhoto + '?' + new Date(), userPhotoCount: this.state.userPhotoCount + 1})
+        }
+        EncryptedStorage.setItem(auth().currentUser.uid + 'userGender', this.state.userGender)
+        EncryptedStorage.setItem(auth().currentUser.uid + 'userCountry', this.state.userCountry)
+        EncryptedStorage.setItem(auth().currentUser.uid + 'userName', this.state.userUsername)
+        EncryptedStorage.setItem(auth().currentUser.uid + 'userBio', this.state.userBio)
+        await EncryptedStorage.setItem(auth().currentUser.uid + 'userPhotoCount', JSON.stringify(this.state.userPhotoCount))
 
-      await database().ref('Users/' + auth().currentUser.uid + "/i").update({
-        g: this.state.userGender,
-        c: this.state.userCountry,
-        b: this.state.userBio,
-        u: this.state.userUsername,
-        p: this.state.userPhotoCount
-      }).then(() => {
-        infoChanged = false
-        this.setState({saveInfoModalVisible:true, loadingOpacity:0, saveBtnDisabled: false})
-        this.spinValue = new Animated.Value(0)
-      })
-    } catch(error){
-      this.setState({saveBtnDisabled: false})
-      Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
+        await database().ref('Users/' + auth().currentUser.uid + "/i").update({
+          g: this.state.userGender,
+          c: this.state.userCountry,
+          b: this.state.userBio,
+          u: this.state.userUsername,
+          p: this.state.userPhotoCount
+        }).then(() => {
+          infoChanged = false
+          this.setState({saveInfoModalVisible:true, loadingOpacity:0, saveBtnDisabled: false})
+          this.spinValue = new Animated.Value(0)
+        })
+      } catch(error){
+        this.setState({saveBtnDisabled: false})
+        Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed)
+      }
     }
+    else{
+      Alert.alert(lang.Warning, lang.InvalidUsername)
+    }
+
+
   }
   onCountryValueChange(value){
     if(this.state.userCountry != value.label){
@@ -554,6 +571,7 @@ static navigationOptions = {
 
 
         <TextInput
+        maxLength = {15}
         ref = {"test"}
         defaultValue = {this.state.userUsername}
         editable = {!this.state.upperComponentsDisabled}
