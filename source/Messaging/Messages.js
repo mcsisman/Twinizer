@@ -360,8 +360,10 @@ async getUsernameOfTheUid(){
         conversationUsernameArray[i] = snapshot.val()
         await this.updatePlayerIds(snapshot, i)
       })
+      console.log("conversationusernameArray:", conversationUsernameArray[i])
       const index = i
       usernameListener[i] = database().ref('Users/' + conversationUidArray[i]);
+      await EncryptedStorage.setItem(auth().currentUser.uid + 'message_usernames', JSON.stringify(conversationUsernameArray))
       await usernameListener[i].on('child_changed', async snap => await this.createUsernameArray(snap, index, conversationUidArray[index]));
     }
 
@@ -439,6 +441,7 @@ async getUsernameOfTheUid(){
         })
         .then(json => localUsernames = json)
       conversationUsernameArray = localUsernames
+      console.log("GERİ DÖNÜŞ?:", conversationUsernameArray)
       newRequest = true
     }
     }
