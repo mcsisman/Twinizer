@@ -18,7 +18,9 @@ import {Image,
    TextInput,
    Alert,
    Platform,
-   Keyboard
+   Keyboard,
+   Animated,
+   Easing
   } from 'react-native';
 import MainScreen from '../Main/Main';
 import ForgotPasswordScreen from './ForgotPassword';
@@ -49,7 +51,9 @@ export default class LoginScreen extends Component<{}>{
       keyboardOpen: false,
       tryagain: 0,
       loginDisabled: false,
+      loadingOpacity: 1
     }
+    this.spinValue = new Animated.Value(0)
     this.height = Math.round(Dimensions.get('screen').height);
     this.windowHeight = Math.round(Dimensions.get('window').height);
     this.width = Math.round(Dimensions.get('screen').width);
@@ -80,7 +84,21 @@ _keyboardDidShow = (e) => {
 _keyboardDidHide = () => {
   this.setState({keyboardOpen: false})
 };
-
+spinAnimation(){
+  console.log("SPIN ANIMATION")
+  this.spinValue = new Animated.Value(0)
+  // First set up animation
+  Animated.loop(
+  Animated.timing(
+      this.spinValue,
+      {
+        toValue: 1,
+        duration: 1000,
+        easing: Easing.linear,
+        useNativeDriver: true
+      }
+    )).start()
+}
 async setTheme(user){
   // Theme color
   if(user){
@@ -123,33 +141,43 @@ Login = (email, password) => {
                  console.log("EMBEDDING VAR: ", auth().currentUser.uid)
                  console.log("DATA: ", data)
                  await this.setTheme(true)
+                 this.setState({loadingOpacity: 0})
                  navigate('Tabs', { screen: 'Main' })
                  //navigate("UserInfo")
                }).catch(error => {
                  console.log("EMBEDDING YOK: ", auth().currentUser.uid)
                  this.setTheme(false)
+                 this.setState({loadingOpacity: 0})
                  navigate("UserInfo")
                });
              user = auth().currentUser
              }
              else{
+               this.setState({loadingOpacity: 0})
                Alert.alert("", lang.EmailNotVerified )
              }
              this.setState({loginDisabled: false})
         }).catch(error => {
           console.log("error2:", error)
           Alert.alert(lang.PlsTryAgain, lang.WrongEmailPassword)
-          this.setState({loginDisabled: false})
+          this.setState({loginDisabled: false, loadingOpacity: 0})
       })
 
   };
   check(){
     console.log("CHECK")
-    this.setState({loginDisabled: true})
-    this.Login(this.state.isim, this.state.sifre)
+    if(this.state.isim != "" && this.state.sifre != ""){
+      this.spinAnimation()
+      this.setState({loginDisabled: true, loadingOpacity: 1})
+      this.Login(this.state.isim, this.state.sifre)
+    }
   }
 
   render(){
+    const spin = this.spinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '360deg']
+    })
     var fontFam;
     if(Platform.OS == "android"){
       fontFam = ""
@@ -213,7 +241,7 @@ Login = (email, password) => {
           </TextInput>
           </View>
 
-          <View style = {{ width:"100%", height: "33%", alignItems: "center", justifyContent: "center"}}>
+          <View style = {{width:"100%", height: "33%", alignItems: "center", justifyContent: "center"}}>
           <TextInput
           placeholderTextColor="rgba(255,255,255,0.7)"
           placeholder={lang.Password}
@@ -225,7 +253,7 @@ Login = (email, password) => {
         </TextInput>
         </View>
 
-        <View style = {{ width:"100%", height: "34%", alignItems: "center", justifyContent: "center"}}>
+        <View style = {{width:"100%", height: "34%", alignItems: "center", justifyContent: "center"}}>
         <TouchableOpacity
         disabled = {this.state.loginDisabled}
         activeOpacity = {1}
@@ -237,9 +265,11 @@ Login = (email, password) => {
         </Text>
         </TouchableOpacity>
         </View>
-
-
         </View>
+        <Animated.Image source={{uri: 'loadingwhite'}}
+          style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15),  opacity: this.state.loadingOpacity}}
+        />
+
         <TouchableOpacity
         activeOpacity = {1}
         style={{position: 'absolute',
