@@ -44,7 +44,7 @@ export default class UserInfoScreen extends Component<{}>{
     var lang = language[global.lang]
     super(props);
     this.state = {
-      showDatePicker: false,
+      showDatePicker: true,
       dateTextColor: "gray",
       pickerTextColor: "gray",
       splashOver : false,
