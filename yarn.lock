@@ -1139,6 +1139,13 @@
     sudo-prompt "^9.0.0"
     wcwidth "^1.0.1"
 
+"@react-native-community/datetimepicker@^3.4.7":
+  version "3.4.7"
+  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-3.4.7.tgz#84613cda2cf06315530628cdf07c77076eae5ec3"
+  integrity sha512-T5MG05ekf9iLSdpBPDbXcOUP6c9pNVhCEVCp9jfjQxj+4dpVQMiCSyLJdPM543uv9KloIZZ71vs+Um01AbwO7A==
+  dependencies:
+    invariant "^2.2.4"
+
 "@react-native-community/eslint-config@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/eslint-config/-/eslint-config-2.0.0.tgz#35dcc529a274803fc4e0a6b3d6c274551fb91774"
@@ -5824,6 +5831,11 @@ react-native-crypto-js@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/react-native-crypto-js/-/react-native-crypto-js-1.0.0.tgz#e677e022e147f41b35614416c92d655f87e2450a"
   integrity sha512-FNbLuG/HAdapQoybeZSoes1PWdOj0w242gb+e1R0hicf3Gyj/Mf8M9NaED2AnXVOX01b2FXomwUiw1xP1K+8sA==
+
+react-native-date-picker@^3.2.10:
+  version "3.2.10"
+  resolved "https://registry.yarnpkg.com/react-native-date-picker/-/react-native-date-picker-3.2.10.tgz#5e690db8e628255d8390e33b1e6f8fa9477f6fb9"
+  integrity sha512-/fA+htnZcr3rBw3eaOR/DvMwGLDTg59MCiiluin5YcHBxNZQYs/uYp/l6Hf719qZXndPGcixS46YIgso4Jf4gg==
 
 react-native-datepicker@^1.7.2:
   version "1.7.2"

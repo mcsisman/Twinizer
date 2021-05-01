@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { createStackNavigator} from '@react-navigation/stack';
 import { NavigationContainer, StackActions, CommonActions, navigation } from '@react-navigation/native';
 import { Header } from 'react-navigation-stack';
-import DatePicker from 'react-native-datepicker'
+import DateTimePicker from '@react-native-community/datetimepicker'
 import auth from '@react-native-firebase/auth';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import {Image,
@@ -44,11 +44,12 @@ export default class UserInfoScreen extends Component<{}>{
     var lang = language[global.lang]
     super(props);
     this.state = {
+      showDatePicker: false,
       dateTextColor: "gray",
       pickerTextColor: "gray",
       splashOver : false,
       color: 'rgba(0,0,0,0.4)',
-      date:false,
+      date:new Date(),
       buttonOpacity: global.themeColor,
       opacity: 0.4,
       disabled: true,
@@ -135,7 +136,7 @@ async goBack(){
     if(todayMonth.length = 1){
       todayMonth = "0" + todayMonth
     }
-    var maxDate = todayMonth + "-" + today + "-" + todayYear
+    var maxDate = todayYear + "-" + todayMonth + "-" + today
     console.log("y:", todayYear)
     console.log("m:", todayMonth)
     console.log("d:", today)
@@ -208,58 +209,59 @@ async goBack(){
       selectedValue = {this.state.selectedValue}/>
       </View>
       <View
-      style={{width: this.width, height: "50%", flexDirection: 'column', flex:1, alignItems: 'center', justifyContent:"center"}}>
+      style={{backgroundColor:"red", width: this.width, height: "50%", flexDirection: 'column', flex:1, alignItems: 'center', justifyContent:"center"}}>
+      {this.state.showDatePicker &&(
+        <DateTimePicker
+          style={{borderBottomWidth: 2, borderBottomColor: global.themeColor, activeOpacity: 1, width: this.width*(60/100), height: this.width*(12/100), alignItems: "center",}}
+          value={this.state.date}
+          display = "spinner"
+          showIcon={true}
+          placeholder = {lang.SelectYourBirthday}
+          format="MM-DD-YYYY"
+          minimumDate= {new Date("1921-01-01")}
+          maximumDate={new Date(maxDate)}
+          disabled={false}
+          confirmBtnText="Confirm"
+          cancelBtnText="Cancel"
+          customStyles={{
+            placeholderText:{
+              justifyContent: 'center',
+              alignItems: 'center',
+              fontSize: 20*(this.width/360),
+              color:this.state.dateTextColor,
+              paddingBottom: 0,
+            },
+            dateText:{
+              justifyContent: 'center',
+              alignItems: 'center',
+              fontSize: 20*(this.width/360),
+              color:this.state.dateTextColor,
+              paddingBottom: 0,
+            },
+            dateIcon: {
+              width: 0,
+              height: 0,
+              marginLeft: 0,
+              paddingBottom: 0,
+            },
+            dateInput: {
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+              borderWidth: 0,
+            }
+          }}
+          onChange={(event, date) => {
+            if(date == null || global.globalGender == "" || global.globalGender == null || global.globalCountry == null || global.globalCountry == ""){
+              this.setState({disabled: true, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 0.4})
+            }
+            else{
+              this.setState({disabled: false, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 1})
+            }
+            global.globalBirthday = date
+          }}
+        />
+      )}
 
-      <DatePicker
-        style={{borderBottomWidth: 2, borderBottomColor: global.themeColor, activeOpacity: 1, width: this.width*(60/100), height: this.width*(12/100), alignItems: "center",}}
-        date={this.state.date}
-        mode="date"
-        androidMode="spinner"
-        showIcon={true}
-        placeholder = {lang.SelectYourBirthday}
-        format="MM-DD-YYYY"
-        minDate="01-01-1921"
-        maxDate={maxDate}
-        disabled={false}
-        confirmBtnText="Confirm"
-        cancelBtnText="Cancel"
-        customStyles={{
-          placeholderText:{
-            justifyContent: 'center',
-            alignItems: 'center',
-            fontSize: 20*(this.width/360),
-            color:this.state.dateTextColor,
-            paddingBottom: 0,
-          },
-          dateText:{
-            justifyContent: 'center',
-            alignItems: 'center',
-            fontSize: 20*(this.width/360),
-            color:this.state.dateTextColor,
-            paddingBottom: 0,
-          },
-          dateIcon: {
-            width: 0,
-            height: 0,
-            marginLeft: 0,
-            paddingBottom: 0,
-          },
-          dateInput: {
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            borderWidth: 0,
-          }
-        }}
-        onDateChange={(date) => {
-          if(date == null || global.globalGender == "" || global.globalGender == null || global.globalCountry == null || global.globalCountry == ""){
-            this.setState({disabled: true, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 0.4})
-          }
-          else{
-            this.setState({disabled: false, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 1})
-          }
-          global.globalBirthday = date
-        }}
-      />
       </View>
       </View>
 

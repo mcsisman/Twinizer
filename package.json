@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.11.0",
+    "@react-native-community/datetimepicker": "^3.4.7",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-firebase/admob": "^10.5.1",
     "@react-native-firebase/app": "^10.5.0",
@@ -26,6 +27,7 @@
     "react": "16.13.1",
     "react-native": "0.63.4",
     "react-native-crypto-js": "^1.0.0",
+    "react-native-date-picker": "^3.2.10",
     "react-native-datepicker": "^1.7.2",
     "react-native-encrypted-storage": "^4.0.1",
     "react-native-fs": "^2.16.6",
