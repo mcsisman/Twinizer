@@ -12,7 +12,6 @@ import { navigationRef } from './source/RootNavigation';
 import AsyncStorage from '@react-native-community/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {
-  SafeAreaView,
   StyleSheet,
   Animated,
   ScrollView,
@@ -52,7 +51,7 @@ import ProfileFavUserScreen from './source/Settings/ProfileFavUser';
 import ProfileBlockedUserScreen from './source/Settings/ProfileBlockedUser';
 import themes from './source/Settings/Themes';
 import language from './source/Utils/Languages/lang.json'
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 
 if (!global.btoa) { global.btoa = encode }
 
@@ -397,13 +396,13 @@ export function forHorizontalModal({
 }
 function MyTabBar({ state, descriptors, navigation }) {
   const focusedOptions = descriptors[state.routes[state.index].key].options;
-
+  global.insets = useSafeAreaInsets()
   if (focusedOptions.tabBarVisible === false || state.index == 4) {
     return null;
   }
-
+  console.log("GLOBAL INSET:", global.insets)
   return (
-    <View style={{ flexDirection: 'row', backgroundColor: global.isDarkMode ? global.darkModeColors[0] : 'rgba(188,192,204,0.5)' }}>
+    <View style={{flexDirection: 'row', backgroundColor: global.isDarkMode ? global.darkModeColors[0] : 'rgba(188,192,204,0.5)' }}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
@@ -521,6 +520,7 @@ function MyTabs() {
  function App({navigation}) {
 
     return (
+      <SafeAreaProvider>
       <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
 
@@ -711,6 +711,7 @@ function MyTabs() {
         name="DisplayTerms" component={DisplayTermsScreen} />
       </Stack.Navigator>
       </NavigationContainer>
+      </SafeAreaProvider>
     );
   }
 
