@@ -57,7 +57,7 @@ var firstTime = true
 var images = []
 var keyboardHeight;
 var keyboardYcord;
-
+var insets;
 type Props = {
   name?: string,
   avatar?: string,
@@ -106,6 +106,7 @@ export default class ChatScreen extends React.Component<Props> {
     this.keyboardDidHideListener = Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       global.callback = async (data, noOfNewMsgs) => {
+        this.getInsets()
         var localMessages = []
         await EncryptedStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
           .then(req => {
@@ -245,7 +246,9 @@ componentWillUnmount() {
   this.keyboardDidShowListener.remove();
   this.keyboardDidHideListener.remove();
 }
-
+getInsets(){
+  insets = useSafeAreaInsets()
+}
 sendMsg = (messages) => {
   firebaseSvc.send(messages, "f")
   this.setState(previousState => ({
@@ -543,7 +546,7 @@ onLongPress(context, message) {
 }
 
 render() {
-  var insets = useSafeAreaInsets()
+
   lang = language[global.lang]
   var renderKeyboardHeight;
     if(this.state.messages != undefined){
