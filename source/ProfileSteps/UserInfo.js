@@ -229,7 +229,7 @@ getStringFromDateObject(date){
       selectedValue = {this.state.selectedValue}/>
       </View>
       <View
-      style={{width: this.width, height: "50%", flexDirection: 'column',  flex:1, alignItems: 'center', justifyContent:"center"}}>
+      style={{width: this.width, height: this.width*(12/100), flexDirection: 'column',  flex:1, alignItems: 'center', justifyContent:"center"}}>
       <TouchableOpacity
       activeOpacity = {1}
       style = {{height: "50%", width: this.width*(60/100), borderBottomColor: global.themeColor, borderBottomWidth: 2, alignItems: 'flex-start', justifyContent:"center" }}
@@ -239,8 +239,14 @@ getStringFromDateObject(date){
       {this.getStringFromDateObject(this.state.date)}
       </Text>
       </TouchableOpacity>
+
+
+      </View>
+      </View>
+
       {this.state.showDatePicker &&(
         <DateTimePicker
+        style = {{ position: "absolute", top: "50%", width: this.width*7/10, height: this.width*12/100, alignItems: 'center', justifyContent:"center"}}
           value={this.state.date}
           display = "spinner"
           minimumDate= {new Date("1921-01-01")}
@@ -262,11 +268,6 @@ getStringFromDateObject(date){
           }}
         />
       )}
-
-      </View>
-      </View>
-
-
       <View
       style={{width: this.width, height: "34%", flexDirection: 'column', flex:1, alignItems: 'center', justifyContent: "center"}}>
 
