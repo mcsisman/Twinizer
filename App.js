@@ -404,7 +404,9 @@ function MyTabBar({ state, descriptors, navigation }) {
   console.log("GLOBAL INSET:", global.insets)
   return (
     <View style={{bottom: Platform.OS === 'android' ? 0 : global.insets.bottom, flexDirection: 'row', backgroundColor: global.isDarkMode ? global.darkModeColors[0] : 'rgba(188,192,204,0.5)' }}>
-      {state.routes.map((route, index) => {
+    <View
+    style = {{height: this.height, width: this.width, position:"absolute", bottom:-this.height/2, backgroundColor: global.isDarkMode ? "purple" : "rgba(242,242,242,1)"}}/>
+    {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
           options.tabBarLabel !== undefined

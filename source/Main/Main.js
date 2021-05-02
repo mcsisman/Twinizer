@@ -33,7 +33,8 @@ import {Image,
    Easing,
    Button,
    Animated,
-   Platform
+   Platform,
+   ScrollView
   } from 'react-native';
 import ChatScreen from '../Messaging/Chat';
 
@@ -2030,7 +2031,7 @@ render(){
       outputRange: ['0deg', '180deg']
     })
     return(
-      <View
+      <ScrollView
       style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
       <ModifiedStatusBar/>
 
@@ -2040,8 +2041,7 @@ render(){
       isFilterVisible = {this.state.showFilter}
       title = {"Twinizer"}>
       </CustomHeader>
-      <View
-      style = {{height: this.height, width: this.width, position:"absolute", bottom:-this.height/2, backgroundColor: global.isDarkMode ? "purple" : "rgba(242,242,242,1)"}}/>
+
 
       <BigImgInfo
       opacity = {this.state.messageButtonOpacity}
@@ -2300,7 +2300,7 @@ render(){
         }}/>
 
 
-    </View>
+    </ScrollView>
 
         );
   }}
