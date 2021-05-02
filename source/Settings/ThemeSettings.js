@@ -169,7 +169,7 @@ export default class ThemeSettingsScreen extends Component<{}>{
       borderRightWidth = {0.5}
       borderBottomWidth = {0.5}
       borderTopLeftRadius = {12}
-      color = {"rgba(241,51,18,1)"}
+      color = {"rgba(242,119,97,1)"}
       whichTheme = {lang.Original}
       bottom = {this.width*0.35}
       right = {this.width*0.35}/>
