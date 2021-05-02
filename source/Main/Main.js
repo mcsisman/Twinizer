@@ -2041,7 +2041,7 @@ render(){
       title = {"Twinizer"}>
       </CustomHeader>
       <View
-      style = {{height: global.insets.bottom, width: this.width, position:"absolute", bottom: global.insets.bottom, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}/>
+      style = {{height: 2*global.insets.bottom, width: this.width, position:"absolute", bottom:-2*global.insets.bottom, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}/>
 
       <BigImgInfo
       opacity = {this.state.messageButtonOpacity}
