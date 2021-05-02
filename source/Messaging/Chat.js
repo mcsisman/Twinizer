@@ -14,7 +14,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import ImagePicker from 'react-native-image-crop-picker';
 import RNFS from 'react-native-fs';
 import ImageViewer from 'react-native-image-zoom-viewer';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 
 import MessagesScreen from './Messages'
 
@@ -57,7 +57,6 @@ var firstTime = true
 var images = []
 var keyboardHeight;
 var keyboardYcord;
-var insets = 0;
 type Props = {
   name?: string,
   avatar?: string,
@@ -106,7 +105,6 @@ export default class ChatScreen extends React.Component<Props> {
     this.keyboardDidHideListener = Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       global.callback = async (data, noOfNewMsgs) => {
-        this.getInsets()
         var localMessages = []
         await EncryptedStorage.getItem(auth().currentUser.uid + global.receiverUid + '/messages')
           .then(req => {
@@ -246,9 +244,7 @@ componentWillUnmount() {
   this.keyboardDidShowListener.remove();
   this.keyboardDidHideListener.remove();
 }
-getInsets(){
-  insets = useSafeAreaInsets()
-}
+
 sendMsg = (messages) => {
   firebaseSvc.send(messages, "f")
   this.setState(previousState => ({
@@ -620,7 +616,7 @@ render() {
           style = {{ position: 'absolute', height: Platform.OS === 'android' ? this.state.giftedChatHeight : this.height - this.statusBarHeaderTotalHeight,
           width: this.width, top: this.statusBarHeaderTotalHeight, right: 0}}>
           <GiftedChat
-          bottomOffset={insets.bottom}
+          bottomOffset={global.insets.bottom}
           keyboardShouldPersistTaps = {"never"}
           placeholder = {""}
           onLongPress={this.onLongPress}

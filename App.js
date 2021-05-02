@@ -52,6 +52,7 @@ import ProfileFavUserScreen from './source/Settings/ProfileFavUser';
 import ProfileBlockedUserScreen from './source/Settings/ProfileBlockedUser';
 import themes from './source/Settings/Themes';
 import language from './source/Utils/Languages/lang.json'
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 if (!global.btoa) { global.btoa = encode }
 
@@ -135,6 +136,7 @@ if (!global.atob) { global.atob = decode }
       global.height = Math.round(Dimensions.get('screen').height);
     }
     async setTheme(user){
+      global.insets = useSafeAreaInsets()
       // Theme color
       if(user){
         var themeColor = await EncryptedStorage.getItem(auth().currentUser.uid + 'theme')
