@@ -1,6 +1,18 @@
 {
   "langEN":
   {
+    "January": "January",
+    "February": "February",
+    "March": "March",
+    "April": "April",
+    "May": "May",
+    "June": "June",
+    "July": "July",
+    "August": "August",
+    "September": "September",
+    "October": "October",
+    "November": "November",
+    "December": "December",
     "InvalidBio": "Your bio can only contain numbers, letters and dots. Please try again.",
     "ImageSizeExceeded": "Your image exceeds the size limit. Please try again.",
     "ImageSizeLimit": "*Warning! Image size limit is 20MB.",
@@ -171,6 +183,18 @@
   },
   "langTR":
   {
+    "January": "Ocak",
+    "February": "Şubat",
+    "March": "Mart",
+    "April": "Nisan",
+    "May": "Mayıs",
+    "June": "Haziran",
+    "July": "Temmuz",
+    "August": "Ağustos",
+    "September": "Eylül",
+    "October": "Ekim",
+    "November": "Kasım",
+    "December": "Aralık",
     "InvalidBio": "Lütfen bionuzda harf, sayı ve nokta işaretinden başka karakter kullanmayınız.",
     "ImageSizeExceeded": "Yüklediğiniz resim boyut sınırını aşıyor. Lütfen tekrar deneyin.",
     "ImageSizeLimit": "*Uyarı! Resim boyut limiti 20MB'tır.",

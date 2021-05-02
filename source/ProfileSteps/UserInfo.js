@@ -49,7 +49,8 @@ export default class UserInfoScreen extends Component<{}>{
       pickerTextColor: "gray",
       splashOver : false,
       color: 'rgba(0,0,0,0.4)',
-      date:new Date(),
+      dateSet: false,
+      date: new Date(),
       buttonOpacity: global.themeColor,
       opacity: 0.4,
       disabled: true,
@@ -79,11 +80,11 @@ static navigationOptions = {
 maleSelected(){
 
   if (global.globalCountry == null || global.globalCountry == "" || global.globalBirthday == null || global.globalBirthday == ""){ // MALE IS SELECTED, COUNTRY IS NOT SELECTED
-    this.setState({showDatePicker: true, maleBG: global.themeColor, maleText: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", femaleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)" ,
+    this.setState({maleBG: global.themeColor, maleText: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", femaleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)" ,
     femaleText: global.themeColor, disabled: true,  buttonOpacity: global.themeColor, gender: "Male", opacity: 0.4})
   }
   else { // MALE IS SELECTED, COUNTRY IS SELECTED
-    this.setState({showDatePicker: true, maleBG: global.themeColor, maleText: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", femaleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
+    this.setState({maleBG: global.themeColor, maleText: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", femaleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
     femaleText: global.themeColor, disabled: false, buttonOpacity: global.themeColor, gender: "Male", opacity: 1})
   }
   global.globalGender = "Male";
@@ -122,7 +123,26 @@ async goBack(){
   });
   this.props.navigation.dispatch(StackActions.popToTop());
 }
+getStringFromDateObject(date){
+  var lang = language[global.lang]
+  if(!this.state.dateSet){
+    return lang.SelectYourBirthday
+  }
 
+  let month = date.getMonth();
+  let day = date.getDate();
+  let year = date.getFullYear();
+  let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  let monthWritten =lang[months[month]];
+  console.log("AY:", monthWritten)
+  if(global.lang == "langTR"){
+    return day + " " + monthWritten + " " + year
+  }
+  else{
+    return monthWritten + " " + day + ", " + year
+  }
+
+}
   render(){
     var lang = language[global.lang]
     var s = lang.SelectYourBirthday
@@ -209,54 +229,29 @@ async goBack(){
       selectedValue = {this.state.selectedValue}/>
       </View>
       <View
-      style={{backgroundColor:"red", width: this.width, height: "50%", flexDirection: 'column', flex:1, alignItems: 'center', justifyContent:"center"}}>
+      style={{width: this.width, height: "50%", flexDirection: 'column',  flex:1, alignItems: 'center', justifyContent:"center"}}>
+      <TouchableOpacity
+      activeOpacity = {1}
+      style = {{height: "50%", width: this.width*(60/100), borderBottomColor: global.themeColor, borderBottomWidth: 2, alignItems: 'flex-start', justifyContent:"center" }}
+      onPress = {()=> this.setState({showDatePicker: true})}>
+      <Text
+      style = {{fontSize: 18*(this.width/360), color: this.state.dateSet ? global.themeColor: "gray" }}>
+      {this.getStringFromDateObject(this.state.date)}
+      </Text>
+      </TouchableOpacity>
       {this.state.showDatePicker &&(
         <DateTimePicker
-          style={{borderBottomWidth: 2, borderBottomColor: global.themeColor, activeOpacity: 1, width: this.width*(60/100), height: this.width*(12/100), alignItems: "center",}}
           value={this.state.date}
           display = "spinner"
-          showIcon={true}
-          placeholder = {lang.SelectYourBirthday}
-          format="MM-DD-YYYY"
           minimumDate= {new Date("1921-01-01")}
           maximumDate={new Date(maxDate)}
-          disabled={false}
-          confirmBtnText="Confirm"
-          cancelBtnText="Cancel"
-          customStyles={{
-            placeholderText:{
-              justifyContent: 'center',
-              alignItems: 'center',
-              fontSize: 20*(this.width/360),
-              color:this.state.dateTextColor,
-              paddingBottom: 0,
-            },
-            dateText:{
-              justifyContent: 'center',
-              alignItems: 'center',
-              fontSize: 20*(this.width/360),
-              color:this.state.dateTextColor,
-              paddingBottom: 0,
-            },
-            dateIcon: {
-              width: 0,
-              height: 0,
-              marginLeft: 0,
-              paddingBottom: 0,
-            },
-            dateInput: {
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              borderWidth: 0,
-            }
-          }}
           onChange={(event, date) => {
             if(event.type == "set"){
               if(date == null || global.globalGender == "" || global.globalGender == null || global.globalCountry == null || global.globalCountry == ""){
-                this.setState({showDatePicker: false, disabled: true, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 0.4})
+                this.setState({dateSet: true, showDatePicker: false, disabled: true, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 0.4})
               }
               else{
-                this.setState({showDatePicker: false, disabled: false, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 1})
+                this.setState({dateSet: true, showDatePicker: false, disabled: false, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 1})
               }
               global.globalBirthday = date
             }
