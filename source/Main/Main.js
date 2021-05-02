@@ -2296,6 +2296,9 @@ render(){
           this.props.navigation.setOptions({tabBarVisible: true})
           this.setState({imageViewerVisible: false})
         }}/>
+
+        <View
+        style = {{height: global.insets.bottom, position:"absolute", bottom: -global.insets.bottom, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}/>
     </View>
 
         );
