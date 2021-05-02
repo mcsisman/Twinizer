@@ -136,7 +136,7 @@ if (!global.atob) { global.atob = decode }
       global.height = Math.round(Dimensions.get('screen').height);
     }
     async setTheme(user){
-      global.insets = useSafeAreaInsets()
+
       // Theme color
       if(user){
         var themeColor = await EncryptedStorage.getItem(auth().currentUser.uid + 'theme')
@@ -469,6 +469,7 @@ const Tab = createBottomTabNavigator();
 
 function MyTabs() {
   var lang = language[global.lang]
+  global.insets = useSafeAreaInsets()
   return (
     <Tab.Navigator tabBar={props => <MyTabBar {...props} />}
       headerMode = {"none"}
