@@ -403,7 +403,7 @@ function MyTabBar({ state, descriptors, navigation }) {
   }
   console.log("GLOBAL INSET:", global.insets)
   return (
-    <View style={{flexDirection: 'row', backgroundColor: global.isDarkMode ? global.darkModeColors[0] : 'rgba(188,192,204,0.5)' }}>
+    <View style={{bottom: Platform.OS === 'android' ? 0 : global.insets.bottom, flexDirection: 'row', backgroundColor: global.isDarkMode ? global.darkModeColors[0] : 'rgba(188,192,204,0.5)' }}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
