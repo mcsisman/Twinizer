@@ -58,7 +58,7 @@ export default class MessageBox extends Component {
     return(
       <Animated.View
         style = {{left: this.props.left, alignItems: 'center', height: this.msgBoxHeight, width: this.width + this.width*(3/16),
-        borderBottomWidth: 1 ,borderBottomColor: 'rgba(181,181,181,0.7)', backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)", flexDirection: "row", flex: 1}}>
+        borderBottomWidth: 1 ,borderBottomColor: 'rgba(181,181,181,0.7)', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", flexDirection: "row", flex: 1}}>
 
         <TouchableOpacity
         activeOpacity = {1}
@@ -92,7 +92,7 @@ export default class MessageBox extends Component {
         <View
         style = {{height: this.msgBoxHeight*2/6, justifyContent: 'center', width: this.width*45/80,}}>
         <Text
-        style = {{fontSize: 18*this.width/360, color: global.isDarkMode ? global.themeColor : "rgba(0,0,0,1)"}}>
+        style = {{fontSize: 18*this.width/360, color: global.isDarkMode ? "white" : "rgba(0,0,0,1)"}}>
           {this.props.senderName}
         </Text>
         </View>
@@ -109,7 +109,7 @@ export default class MessageBox extends Component {
 
           <Text
           numberOfLines={2}
-          style = {{fontStyle: messageText == lang.NoMessage ? "italic" : "normal" ,fontSize: 16*this.width/360, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(128,128,128,1)", width: this.props.isPhoto ? this.width*36/80 : this.width*45/80}}>
+          style = {{fontStyle: messageText == lang.NoMessage ? "italic" : "normal" ,fontSize: 16*this.width/360, color: global.isDarkMode ? "rgba(200,200,200,1)" : "rgba(128,128,128,1)", width: this.props.isPhoto ? this.width*36/80 : this.width*45/80}}>
             {messageText}
           </Text>
         </View>

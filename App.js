@@ -155,7 +155,7 @@ if (!global.atob) { global.atob = decode }
         else{
           global.isDarkMode = false
         }
-        global.darkModeColors = ["rgba(21,32,43,1)", "rgba(25,39,52,1)", "rgba(37,51,65,1)", "rgba(255,255,255,1)"]
+        global.darkModeColors = ["#2f3136", "#202225", "#1b1d23", "rgba(255,255,255,1)"]
       }
       else{
         global.themeColor =  themes.getTheme("Original")

@@ -47,8 +47,8 @@ export default class FavoriteUserBox extends Component {
     this.width = Math.round(Dimensions.get('screen').width);
     return(
       <Animated.View
-        style = {{left: this.props.left, borderTopWidth:1, borderBottomWidth:1, borderColor: global.isDarkMode ? global.darkModeColors[2] : 'rgba(128,128,128,0.3)' ,
-        backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)", flexDirection: "row", flex:1, justifyContent: 'center',
+        style = {{left: this.props.left, borderBottomWidth:1, borderColor: global.isDarkMode ? 'rgba(181,181,181,0.7)' : 'rgba(128,128,128,0.3)' ,
+        backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", flexDirection: "row", flex:1, justifyContent: 'center',
         width: this.width*19/16, height: this.width/3}}>
 
       <TouchableOpacity

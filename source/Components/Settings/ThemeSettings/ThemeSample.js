@@ -46,7 +46,7 @@ export default class ThemeSample extends Component {
     this.width = Math.round(Dimensions.get('screen').width);
     var backgroundColor;
     if(this.props.selected){
-      backgroundColor = global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(144,144,144,1)"
+      backgroundColor = global.isDarkMode ? global.darkModeColors[2] : "rgba(144,144,144,1)"
     }
     else{
       backgroundColor = null
@@ -61,7 +61,7 @@ export default class ThemeSample extends Component {
        onPress={this.props.onPress}>
 
        <Text
-       style = {{marginTop: 5, color:this.props.selected ? "white" : "rgba(100,100,100,1)", fontSize: 18*this.width/360}}>
+       style = {{marginTop: 5, color:this.props.selected ? "white" : "rgba(133,133,133,1)", fontSize: 18*this.width/360}}>
        {this.props.whichTheme}
        </Text>
 

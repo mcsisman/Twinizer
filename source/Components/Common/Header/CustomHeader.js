@@ -87,7 +87,7 @@ export default class CustomHeader extends Component {
           style={{position: 'absolute',  width: Math.min(this.width/6, headerHeight*4/5), height: Math.min(this.width/6, headerHeight*4/5), justifyContent: 'center', alignItems: 'center',
           backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', }}>
           <Image
-          style={{position: 'absolute', width: '70%', height: '70%'}}
+          style={{position: 'absolute', width: '60%', height: '60%'}}
           source={{uri: messageColor}}>
           </Image>
           </TouchableOpacity>
@@ -111,7 +111,7 @@ export default class CustomHeader extends Component {
           style={{position: 'absolute',  width: Math.min(this.width/6, headerHeight*4/5), height: Math.min(this.width/6, headerHeight*4/5), justifyContent: 'center', alignItems: 'center',
           backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)', }}>
           <Image
-          style={{position: 'absolute', width: '70.11%', height: '67%'}}
+          style={{position: 'absolute', width: '62.8%', height: '60%'}}
           source={{uri: requestColor}}>
           </Image>
           </TouchableOpacity>
@@ -140,13 +140,13 @@ export default class CustomHeader extends Component {
           backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)'}}>
 
           <TouchableOpacity
-          activeOpacity = {1}
+          activeOpacity = {0.85}
           onPress = {this.props.onPress}
           disabled = {!this.props.isFilterVisible}
           style={{opacity: filterOpacity, width: Math.min(this.width/6, headerHeight *4/5)*(196/211), height: Math.min(this.width/6, headerHeight *4/5), justifyContent: 'center', alignItems: 'center',
           backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)'}}>
           <Image
-          style={{position: 'absolute', width: '65%', height: '65%'}}
+          style={{position: 'absolute', width: '52%', height: '52%'}}
           source={{uri: "filter" + global.themeForImages}}>
           </Image>
           </TouchableOpacity>

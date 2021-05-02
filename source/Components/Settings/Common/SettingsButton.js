@@ -41,8 +41,8 @@ export default class SettingsButton extends Component {
     return(
       <TouchableOpacity
       activeOpacity = {1}
-      style={{ borderTopWidth:1, borderBottomWidth: this.props.noBottomBorder ? 0 : 1, borderColor: global.isDarkMode ? global.darkModeColors[2] : 'rgba(128,128,128,0.3)' ,
-      backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,1)", flexDirection: "row", flex:1, justifyContent: 'center', width: this.width, height: this.width/8}}
+      style={{ borderTopWidth:1, borderBottomWidth: this.props.noBottomBorder ? 0 : 1, borderColor: global.isDarkMode ? global.darkModeColors[0] : 'rgba(128,128,128,0.3)' ,
+      backgroundColor: global.isDarkMode ? global.darkModeColors[2] : "rgba(255,255,255,1)", flexDirection: "row", flex:1, justifyContent: 'center', width: this.width, height: this.width/8}}
       onPress={this.props.onPress}>
       <View
       style={{justifyContent: 'center', position: 'absolute', width: this.width*7/8, height: this.width/8, bottom: 0, left: 0}}>

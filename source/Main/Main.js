@@ -2129,7 +2129,8 @@ render(){
       </Swipeable>
 
       <View
-      style = {{opacity: this.state.messageButtonOpacity && (global.swipeCount % 6 != 0 || global.swipeCount == 0) ? 1 : 0 , backgroundColor: global.isDarkMode ? "rgba(0,0,0,0.2)" : "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
+      style = {{opacity: this.state.messageButtonOpacity && (global.swipeCount % 6 != 0 || global.swipeCount == 0) ? 1 : 0 ,
+      backgroundColor: global.isDarkMode ? global.darkModeColors[2]: "rgba(181,181,181,0.6)" , flexDirection: "row", width: this.width/2, height: this.width/10, left: this.width/4,
       borderBottomLeftRadius: 16, borderBottomRightRadius: 16, borderTopLeftRadius: 16, borderTopRightRadius: 16,
       }}>
       <FavoriteUserButton
