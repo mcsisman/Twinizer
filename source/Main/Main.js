@@ -2040,6 +2040,8 @@ render(){
       isFilterVisible = {this.state.showFilter}
       title = {"Twinizer"}>
       </CustomHeader>
+      <View
+      style = {{height: global.insets.bottom, width: this.width, position:"absolute", bottom: global.insets.bottom, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}/>
 
       <BigImgInfo
       opacity = {this.state.messageButtonOpacity}
@@ -2297,8 +2299,7 @@ render(){
           this.setState({imageViewerVisible: false})
         }}/>
 
-        <View
-        style = {{height: global.insets.bottom, position:"absolute", bottom: -global.insets.bottom, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}/>
+
     </View>
 
         );
