@@ -119,12 +119,14 @@ export default class TermsAndPrivacyModal extends Component {
 
       <ScrollView
       style = {{height: screenHeight*(5/10), width: screenWidth*(8/10), flex: 1, flexDirection: 'column'}}>
+      <View flex={1} onStartShouldSetResponder={() => true}>
       <View
       style = {{height: screenWidth/25}}/>
       <Text
         style = {{paddingLeft: 10, paddingRight: 10, paddingTop: 3, fontSize: 15, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)"}}>
         {this.props.txt}
       </Text>
+      </View>
       </ScrollView>
 
       <View
