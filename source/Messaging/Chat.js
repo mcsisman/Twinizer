@@ -72,7 +72,7 @@ if(Platform.OS === 'ios'){
 export default class ChatScreen extends React.Component<Props> {
 
   constructor(props) {
-    this.insets = useSafeAreaInsets()
+
     super(props);
     this.onLongPress = this.onLongPress.bind(this);
     this.height = Math.round(Dimensions.get('screen').height);
@@ -543,6 +543,7 @@ onLongPress(context, message) {
 }
 
 render() {
+  var insets = useSafeAreaInsets()
   lang = language[global.lang]
   var renderKeyboardHeight;
     if(this.state.messages != undefined){
