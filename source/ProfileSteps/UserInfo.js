@@ -44,7 +44,7 @@ export default class UserInfoScreen extends Component<{}>{
     var lang = language[global.lang]
     super(props);
     this.state = {
-      showDatePicker: true,
+      showDatePicker: false,
       dateTextColor: "gray",
       pickerTextColor: "gray",
       splashOver : false,
@@ -79,11 +79,11 @@ static navigationOptions = {
 maleSelected(){
 
   if (global.globalCountry == null || global.globalCountry == "" || global.globalBirthday == null || global.globalBirthday == ""){ // MALE IS SELECTED, COUNTRY IS NOT SELECTED
-    this.setState({maleBG: global.themeColor, maleText: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", femaleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)" ,
+    this.setState({showDatePicker: true, maleBG: global.themeColor, maleText: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", femaleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)" ,
     femaleText: global.themeColor, disabled: true,  buttonOpacity: global.themeColor, gender: "Male", opacity: 0.4})
   }
   else { // MALE IS SELECTED, COUNTRY IS SELECTED
-    this.setState({maleBG: global.themeColor, maleText: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", femaleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
+    this.setState({showDatePicker: true, maleBG: global.themeColor, maleText: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", femaleBG: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
     femaleText: global.themeColor, disabled: false, buttonOpacity: global.themeColor, gender: "Male", opacity: 1})
   }
   global.globalGender = "Male";
@@ -251,13 +251,19 @@ async goBack(){
             }
           }}
           onChange={(event, date) => {
-            if(date == null || global.globalGender == "" || global.globalGender == null || global.globalCountry == null || global.globalCountry == ""){
-              this.setState({disabled: true, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 0.4})
+            if(event.type == "set"){
+              if(date == null || global.globalGender == "" || global.globalGender == null || global.globalCountry == null || global.globalCountry == ""){
+                this.setState({showDatePicker: false, disabled: true, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 0.4})
+              }
+              else{
+                this.setState({showDatePicker: false, disabled: false, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 1})
+              }
+              global.globalBirthday = date
             }
             else{
-              this.setState({disabled: false, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 1})
+              this.setState({showDatePicker: false})
             }
-            global.globalBirthday = date
+
           }}
         />
       )}
