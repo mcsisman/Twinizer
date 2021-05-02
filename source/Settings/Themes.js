@@ -8,7 +8,7 @@ class Themes {
       return "rgba(77,120,204,1)"
     }
     if(themeColor == "Original"){
-      return "rgba(241,51,18,1)"
+      return "rgba(242,119,97,1)"
     }
     if(themeColor == "Green"){
       return "rgba(115,201,144,1)"

@@ -14,6 +14,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import ImagePicker from 'react-native-image-crop-picker';
 import RNFS from 'react-native-fs';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import MessagesScreen from './Messages'
 
@@ -71,6 +72,7 @@ if(Platform.OS === 'ios'){
 export default class ChatScreen extends React.Component<Props> {
 
   constructor(props) {
+    this.insets = useSafeAreaInsets()
     super(props);
     this.onLongPress = this.onLongPress.bind(this);
     this.height = Math.round(Dimensions.get('screen').height);
@@ -614,7 +616,7 @@ render() {
           style = {{ position: 'absolute', height: Platform.OS === 'android' ? this.state.giftedChatHeight : this.height - this.statusBarHeaderTotalHeight,
           width: this.width, top: this.statusBarHeaderTotalHeight, right: 0}}>
           <GiftedChat
-
+          bottomOffset={insets.bottom}
           keyboardShouldPersistTaps = {"never"}
           placeholder = {""}
           onLongPress={this.onLongPress}
