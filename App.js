@@ -397,6 +397,7 @@ export function forHorizontalModal({
 function MyTabBar({ state, descriptors, navigation }) {
   const focusedOptions = descriptors[state.routes[state.index].key].options;
   global.insets = useSafeAreaInsets()
+  console.log("INSETS:", global.insets)
   if (focusedOptions.tabBarVisible === false || state.index == 4) {
     return null;
   }
