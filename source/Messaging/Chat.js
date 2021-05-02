@@ -57,7 +57,7 @@ var firstTime = true
 var images = []
 var keyboardHeight;
 var keyboardYcord;
-var insets;
+var insets = 0;
 type Props = {
   name?: string,
   avatar?: string,
