@@ -78,7 +78,7 @@ export default class DatePickerIOSModal extends Component {
 
       <DateTimePicker
       textColor = {global.themeColor}
-      style = {{ width: screenWidth*(8/10), opacity: 1, height:screenWidth*(6/10)}}
+      style = {{ borderWidth: 1, borderColor: "gray", width: screenWidth*(8/10), opacity: 1, height:screenWidth*(6/10)}}
         value={this.state.date}
         display = "spinner"
         minimumDate= {new Date("1921-01-01")}
