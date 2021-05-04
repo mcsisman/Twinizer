@@ -10,7 +10,8 @@ import {
   StyleSheet,
   Dimensions,
   Image,
-  StatusBar
+  StatusBar,
+  Platform
 } from 'react-native';
 
 export default class ModifiedStatusBar extends Component {
@@ -23,8 +24,11 @@ export default class ModifiedStatusBar extends Component {
 
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
-    StatusBar.setTranslucent(true);
-    StatusBar.setBackgroundColor("transparent");
+    if(Platform.OS === "android"){
+      StatusBar.setTranslucent(true);
+      StatusBar.setBackgroundColor("transparent");
+    }
+
     return(
 
       <StatusBar

@@ -45,7 +45,7 @@ export default class DatePickerIOSModal extends Component {
   render(){
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
-
+    console.log("render date picker ios modal")
 
     return(
 
@@ -89,7 +89,7 @@ export default class DatePickerIOSModal extends Component {
             global.globalBirthday = date*/
           }
           else{
-            console.log("SET DEĞİLLL")
+            console.log("________________SET DEĞİLLL______________")
           }
 
         }}
