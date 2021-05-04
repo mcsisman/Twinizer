@@ -564,6 +564,7 @@ render() {
       keyboardHeight = 0
     }
     if(this.state.renderImageChatScreen){
+      console.log("HEEY:", this.state.keyboardOpen ? (this.height-getStatusBarHeight())*8/12 - global.keyboardHeight: (this.height-getStatusBarHeight())*10/12)
         return(
           <SafeAreaView>
           <View
@@ -573,15 +574,31 @@ render() {
           <View
           style={{ width: this.width, height: (this.height-getStatusBarHeight())/12, position:"absolute", bottom: getStatusBarHeight(), backgroundColor:"black"}}/>
 
-          <View
-          style={{ backgroundColor:"black", width: this.width, height: (this.height-getStatusBarHeight())*10/12, top: (this.height-getStatusBarHeight())/12, flexDirection:"column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
-          <ImageViewer
-          backgroundColor= {"black"}
-          index = {this.state.currentIndex}
-          onChange={async (index) => { this.setState({ currentIndex: index }) }}
-          imageUrls={images}
-          onClick = {()=> Keyboard.dismiss()}/>
-          </View>
+          { !this.state.keyboardOpen &&(
+            <View
+            style={{ backgroundColor:"black", width: this.width, height:(this.height-getStatusBarHeight())*10/12, top: (this.height-getStatusBarHeight())/12, flexDirection:"column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
+            <ImageViewer
+            backgroundColor= {"black"}
+            index = {this.state.currentIndex}
+            onChange={async (index) => { this.setState({ currentIndex: index }) }}
+            imageUrls={images}
+            onClick = {()=> Keyboard.dismiss()}/>
+            </View>
+          )}
+
+          { this.state.keyboardOpen &&(
+            <View
+            style={{ backgroundColor:"black", width: this.width, height: (this.height-getStatusBarHeight())*9/12 - global.keyboardHeight, top: (this.height-getStatusBarHeight())/12, flexDirection:"column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
+            <ImageViewer
+            backgroundColor= {"black"}
+            index = {this.state.currentIndex}
+            onChange={async (index) => { this.setState({ currentIndex: index }) }}
+            imageUrls={images}
+            onClick = {()=> Keyboard.dismiss()}/>
+            </View>
+          )}
+
+
           <ChatSendImgTopBar
           height = {(this.height-getStatusBarHeight())/12}
           onPressTrash = {()=> this.deleteImageFromArray()}
