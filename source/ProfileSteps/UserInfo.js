@@ -80,6 +80,7 @@ static navigationOptions = {
 };
 updateDateState(dateSet, date){
   this.setState({dateSet: dateSet, date: date})
+  console.log("DATE SET Mİ:", dateSet)
   if(this.state.dateSet){
     console.log("date set:", this.state.date)
     if(date == null || global.globalGender == "" || global.globalGender == null || global.globalCountry == null || global.globalCountry == ""){
