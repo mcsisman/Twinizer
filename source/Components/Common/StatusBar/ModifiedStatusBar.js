@@ -17,8 +17,11 @@ export default class ModifiedStatusBar extends Component {
 
   static propTypes = {
    color: PropTypes.string,
+   isChatImageSender: PropTypes.bool,
  }
-
+ static defaultProps = {
+   isChatImageSender: false,
+ }
   render(){
 
     this.height = Math.round(Dimensions.get('screen').height);
@@ -31,7 +34,7 @@ export default class ModifiedStatusBar extends Component {
     return(
 
       <StatusBar
-      barStyle = {global.isDarkMode ? "light-content": 'dark-content'} />
+      barStyle = {global.isDarkMode || this.props.isChatImageSender ? "light-content": 'dark-content'} />
 
     )
   }

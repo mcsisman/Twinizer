@@ -570,9 +570,10 @@ render() {
           <View
           style={{ width: this.width, height: this.height, top: 0, flexDirection:"column"}}>
 
-          <ModifiedStatusBar/>
+          <ModifiedStatusBar
+          isChatImageSender = {true}/>
           <View
-          style={{ width: this.width, height: (this.height-getStatusBarHeight())/12, position:"absolute", bottom: this.state.keyboardOpen ? global.keyboardHeight + this.navbarHeight + getStatusBarHeight(): getStatusBarHeight(), backgroundColor:"black"}}/>
+          style={{ width: this.width, height:this.height*4, position:"absolute", bottom:-this.height, backgroundColor:"black"}}/>
 
           { !this.state.keyboardOpen &&(
             <View

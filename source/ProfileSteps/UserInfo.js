@@ -48,7 +48,6 @@ export default class UserInfoScreen extends Component<{}>{
     this.state = {
       iosDatePickerVisible: false,
       showDatePicker: false,
-      dateTextColor: "gray",
       pickerTextColor: "gray",
       splashOver : false,
       color: 'rgba(0,0,0,0.4)',
@@ -81,6 +80,14 @@ static navigationOptions = {
 };
 updateDateState(dateSet, date){
   this.setState({dateSet: dateSet, date: date})
+  if(this.state.dateSet){
+    if(date == null || global.globalGender == "" || global.globalGender == null || global.globalCountry == null || global.globalCountry == ""){
+      this.setState({disabled: true, buttonOpacity: global.themeColor, opacity: 0.4})
+    }
+    else{
+      this.setState({disabled:false, buttonOpacity: global.themeColor, opacity: 1})
+    }
+  }
 }
 maleSelected(){
 
@@ -258,10 +265,10 @@ getStringFromDateObject(date){
           onChange={(event, date) => {
             if(event.type == "set"){
               if(date == null || global.globalGender == "" || global.globalGender == null || global.globalCountry == null || global.globalCountry == ""){
-                this.setState({dateSet: true, showDatePicker: false, disabled: true, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 0.4})
+                this.setState({dateSet: true, showDatePicker: false, disabled: true, date: date, buttonOpacity: global.themeColor, opacity: 0.4})
               }
               else{
-                this.setState({dateSet: true, showDatePicker: false, disabled: false, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 1})
+                this.setState({dateSet: true, showDatePicker: false, disabled: false, date: date, buttonOpacity: global.themeColor, opacity: 1})
               }
               global.globalBirthday = date
             }
