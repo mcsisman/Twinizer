@@ -264,7 +264,10 @@ getStringFromDateObject(date){
               global.globalBirthday = date
             }
             else{
-              this.setState({showDatePicker: false})
+              if(Platform.OS === "Android"){
+                this.setState({showDatePicker: false})
+              }
+
               console.log("--------------------------------------SETİN ELSİNE GİRDİ------------------------------")
             }
 
