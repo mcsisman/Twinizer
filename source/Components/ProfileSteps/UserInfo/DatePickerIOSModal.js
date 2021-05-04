@@ -85,7 +85,6 @@ export default class DatePickerIOSModal extends Component {
         maximumDate={new Date(this.props.maxDate)}
         onChange={(event, date) => {
           this.setState({dateSet: true, date: date, })
-          console.log("________________SEÇİLEN TARİH______________", this.state.date)
         }}
       />
 
@@ -100,7 +99,7 @@ export default class DatePickerIOSModal extends Component {
       activeOpacity = {0.7}
       title = {lang.Cancel}
       textColor = {global.themeColor}
-      onPress = {()=>this.updateState(this.state.dateSet, this.state.date)}
+      onPress = {()=>this.props.onPressClose()}
       borderColor = {'rgba(241,51,18,0)'}
       borderRadius = {0}
       textFontSize = {20*(screenWidth/360)}
