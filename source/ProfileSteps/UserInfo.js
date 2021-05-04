@@ -233,23 +233,23 @@ getStringFromDateObject(date){
       textColor = {this.state.pickerTextColor}
       selectedValue = {this.state.selectedValue}/>
       </View>
+
       <View
-      style={{width: this.width, height: this.width*(12/100), flexDirection: 'column',  flex:1, alignItems: 'center', justifyContent:"center"}}>
+      style={{ width: this.width, height: this.width*(24/100), flexDirection: 'column',  alignItems: 'center', justifyContent:"center"}}>
       <TouchableOpacity
       activeOpacity = {1}
-      style = {{height: "50%", width: this.width*(60/100), borderBottomColor: global.themeColor, borderBottomWidth: 2, alignItems: 'flex-start', justifyContent:"center" }}
+      style = {{ paddingBottom: 5, height: "50%", width: this.width*(60/100), borderBottomColor: global.themeColor, borderBottomWidth: 2, alignItems: 'flex-start', justifyContent:"flex-end" }}
       onPress = {()=> this.setState({showDatePicker: true, iosDatePickerVisible: Platform.OS === "android" ? false : true})}>
       <Text
-      style = {{fontSize: 18*(this.width/360), color: this.state.dateSet ? global.themeColor: "gray" }}>
+      style = {{ fontSize: 18*(this.width/360), color: this.state.dateSet ? global.themeColor: "gray" }}>
       {this.getStringFromDateObject(this.state.date)}
       </Text>
       </TouchableOpacity>
-
-
-      </View>
       </View>
 
-      {this.state.showDatePicker && Platform.OS === "Android" &&(
+      </View>
+
+      {this.state.showDatePicker && Platform.OS == "android" &&(
         <DateTimePicker
         style = {{ width: 300, opacity: 1, height: 300, marginTop: 50}}
           value={this.state.date}
