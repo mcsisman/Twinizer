@@ -167,6 +167,7 @@ Login = (email, password) => {
   check(){
     console.log("CHECK")
     if(this.state.isim != "" && this.state.sifre != ""){
+      Keyboard.dismiss()
       this.spinAnimation()
       this.setState({loginDisabled: true, loadingOpacity: 1})
       this.Login(this.state.isim, this.state.sifre)
