@@ -21,6 +21,7 @@ import {Image,
 
 import ProfileUploadScreen from './ProfileUpload';
 
+import DatePickerIOSModal from '../Components/ProfileSteps/UserInfo/DatePickerIOSModal'
 import CustomHeader from '../Components/Common/Header/CustomHeader'
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 import OvalButton from '../Components/Common/OvalButton/OvalButton'
@@ -45,6 +46,7 @@ export default class UserInfoScreen extends Component<{}>{
     var lang = language[global.lang]
     super(props);
     this.state = {
+      iosDatePickerVisible: false,
       showDatePicker: false,
       dateTextColor: "gray",
       pickerTextColor: "gray",
@@ -234,7 +236,7 @@ getStringFromDateObject(date){
       <TouchableOpacity
       activeOpacity = {1}
       style = {{height: "50%", width: this.width*(60/100), borderBottomColor: global.themeColor, borderBottomWidth: 2, alignItems: 'flex-start', justifyContent:"center" }}
-      onPress = {()=> this.setState({showDatePicker: true})}>
+      onPress = {()=> this.setState({showDatePicker: true, iosDatePickerVisible: Platform.OS == "ios" ? true : false})}>
       <Text
       style = {{fontSize: 18*(this.width/360), color: this.state.dateSet ? global.themeColor: "gray" }}>
       {this.getStringFromDateObject(this.state.date)}
@@ -245,7 +247,7 @@ getStringFromDateObject(date){
       </View>
       </View>
 
-      {this.state.showDatePicker &&(
+      {this.state.showDatePicker && Platform.OS === "Android" &&(
         <DateTimePicker
         style = {{ width: 300, opacity: 1, height: 300, marginTop: 50}}
           value={this.state.date}
@@ -254,7 +256,6 @@ getStringFromDateObject(date){
           maximumDate={new Date(maxDate)}
           onChange={(event, date) => {
             if(event.type == "set"){
-              console.log("--------------------------------------SETE GİRDİ------------------------------")
               if(date == null || global.globalGender == "" || global.globalGender == null || global.globalCountry == null || global.globalCountry == ""){
                 this.setState({dateSet: true, showDatePicker: false, disabled: true, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 0.4})
               }
@@ -264,16 +265,20 @@ getStringFromDateObject(date){
               global.globalBirthday = date
             }
             else{
-              if(Platform.OS === "Android"){
-                this.setState({showDatePicker: false})
-              }
-
-              console.log("--------------------------------------SETİN ELSİNE GİRDİ------------------------------")
+              this.setState({showDatePicker: false})
             }
 
           }}
         />
       )}
+
+      <DatePickerIOSModal
+      isVisible = {this.state.searchOnIsVisible}
+      txtAlert = {"There is already a Twinizing process going on. You can automatically cancel it and start a new process by uploading a new image."}
+      txtGotIt = {lang.GotIt}
+      onPressClose = {()=>this.setState({iosDatePickerVisible:false})}/>
+      />
+
       <View
       style={{width: this.width, height: "34%", flexDirection: 'column', flex:1, alignItems: 'center', justifyContent: "center"}}>
 
