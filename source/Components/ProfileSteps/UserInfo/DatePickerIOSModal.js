@@ -67,7 +67,7 @@ export default class DatePickerIOSModal extends Component {
       isVisible={this.props.isVisible}>
       <View style={{
       borderRadius: 8, borderWidth: 0.3, borderColor: "rgba(0,0,0,4)",
-      backgroundColor: global.isDarkMode ? global.darkModeColors[1],
+      backgroundColor: global.darkModeColors[1],
       width: screenWidth*(8/10),
       paddingTop: 10,
       paddingBottom: 15,
@@ -102,7 +102,7 @@ export default class DatePickerIOSModal extends Component {
       onPress = {()=>this.props.onPressClose()}
       borderColor = {'rgba(241,51,18,0)'}
       borderRadius = {0}
-      textFontSize = {20*(screenWidth/360)}
+      textFontSize = {16*(screenWidth/360)}
       borderWidth = {0}/>
       </View>
 
@@ -115,7 +115,7 @@ export default class DatePickerIOSModal extends Component {
       onPress = {()=>this.updateState(this.state.dateSet, this.state.date)}
       borderColor = {'rgba(241,51,18,0)'}
       borderRadius = {0}
-      textFontSize = {20*(screenWidth/360)}
+      textFontSize = {16*(screenWidth/360)}
       borderWidth = {0}/>
       </View>
 
