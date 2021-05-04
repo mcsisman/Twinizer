@@ -78,7 +78,7 @@ export default class DatePickerIOSModal extends Component {
 
       <DateTimePicker
       textColor = {global.themeColor}
-      style = {{ borderWidth: 1, borderColor: "gray", width: screenWidth*(8/10), opacity: 1, height:screenWidth*(6/10)}}
+      style = {{ width: screenWidth*(8/10), opacity: 1, height:screenWidth*(6/10)}}
         value={this.state.date}
         display = "spinner"
         minimumDate= {new Date("1921-01-01")}
@@ -97,7 +97,7 @@ export default class DatePickerIOSModal extends Component {
       style={{ width: screenWidth*(4/10), height:screenWidth*(1.5/10), justifyContent: 'center', alignItems:'center'}}>
       <ImgModalOvalButton
       activeOpacity = {0.7}
-      title = {lang.Cancel}
+      title = {lang.CancelCap}
       textColor = {global.themeColor}
       onPress = {()=>this.props.onPressClose()}
       borderColor = {'rgba(241,51,18,0)'}
