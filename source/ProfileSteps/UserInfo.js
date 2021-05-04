@@ -81,13 +81,17 @@ static navigationOptions = {
 updateDateState(dateSet, date){
   this.setState({dateSet: dateSet, date: date})
   if(this.state.dateSet){
+    console.log("date set:", this.state.date)
     if(date == null || global.globalGender == "" || global.globalGender == null || global.globalCountry == null || global.globalCountry == ""){
+      console.log("date set if")
       this.setState({disabled: true, buttonOpacity: global.themeColor, opacity: 0.4})
     }
     else{
+      console.log("date set else")
       this.setState({disabled:false, buttonOpacity: global.themeColor, opacity: 1})
     }
     global.globalBirthday = date
+    console.log("global birthday:", global.globalBirthday)
   }
 }
 maleSelected(){
