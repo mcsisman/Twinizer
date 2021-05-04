@@ -1600,7 +1600,7 @@ async filterDone(){
       uri2_gender: genderArray[0],
       uri2_bio: bioDict[emailArray[0]],
       backgroundOpacity: 0,
-      swipeableDisabled: false,
+      swipeableDisabled: true,
       messageButtonDisabled: false,
       messageButtonOpacity: 0,
       sadfaceOpacity: 1
