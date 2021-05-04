@@ -247,7 +247,7 @@ getStringFromDateObject(date){
 
       {this.state.showDatePicker &&(
         <DateTimePicker
-        style = {{ position: "absolute", top: "50%", width: this.width*7/10, height: this.width*12/100, alignItems: 'center', justifyContent:"center"}}
+        style = {{ width: 300, opacity: 1, height: 30, marginTop: 50}}
           value={this.state.date}
           display = "spinner"
           minimumDate= {new Date("1921-01-01")}
