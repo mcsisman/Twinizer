@@ -99,7 +99,7 @@ export default class DatePickerIOSModal extends Component {
       activeOpacity = {0.7}
       title = {lang.Cancel}
       textColor = {global.themeColor}
-      onPress = {this.updateState(this.state.dateSet, this.state.date)}
+      onPress = {()=>this.updateState(this.state.dateSet, this.state.date)}
       borderColor = {'rgba(241,51,18,0)'}
       borderRadius = {0}
       textFontSize = {20*(screenWidth/360)}
@@ -112,7 +112,7 @@ export default class DatePickerIOSModal extends Component {
       activeOpacity = {0.7}
       title = {lang.OK}
       textColor = {global.themeColor}
-      onPress = {this.updateState(this.state.dateSet, this.state.date)}
+      onPress = {()=>this.updateState(this.state.dateSet, this.state.date)}
       borderColor = {'rgba(241,51,18,0)'}
       borderRadius = {0}
       textFontSize = {20*(screenWidth/360)}
