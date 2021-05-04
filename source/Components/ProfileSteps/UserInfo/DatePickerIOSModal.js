@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {createStackNavigator, Header} from 'react-navigation-stack';
 import Modal from "react-native-modal";
 import PropTypes from 'prop-types';
-import language from '../Utils/Languages/lang.json'
+import language from '../../../../Utils/Languages/lang.json'
 import ImgModalOvalButton from '../../Common/ImageUpload/ImgModalOvalButton'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import {
