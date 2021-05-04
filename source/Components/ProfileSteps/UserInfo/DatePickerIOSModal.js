@@ -45,7 +45,7 @@ export default class DatePickerIOSModal extends Component {
 
  updateState(dateSet, date){
    this.props.updateDateState(dateSet, date);
-   this.props.onPressClose
+   this.props.onPressClose()
  }
   render(){
     var lang = language[global.lang]
