@@ -273,9 +273,8 @@ getStringFromDateObject(date){
       )}
 
       <DatePickerIOSModal
+      maxDate={maxDate}
       isVisible = {this.state.searchOnIsVisible}
-      txtAlert = {"There is already a Twinizing process going on. You can automatically cancel it and start a new process by uploading a new image."}
-      txtGotIt = {lang.GotIt}
       onPressClose = {()=>this.setState({iosDatePickerVisible:false})}/>
 
       <View
