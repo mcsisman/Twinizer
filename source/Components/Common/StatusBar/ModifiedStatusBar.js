@@ -11,7 +11,6 @@ import {
   Dimensions,
   Image,
   StatusBar,
-  Platform
 } from 'react-native';
 
 export default class ModifiedStatusBar extends Component {
