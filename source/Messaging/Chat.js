@@ -623,7 +623,7 @@ render() {
         <ModifiedStatusBar/>
 
         <View
-          style = {{ position: 'absolute', height: Platform.OS === 'android' ? this.state.giftedChatHeight : this.height - this.statusBarHeaderTotalHeight,
+          style = {{ position: 'absolute', height: Platform.OS === 'android' ? this.state.giftedChatHeight : this.height - this.statusBarHeaderTotalHeight -global.insets.bottom,
           width: this.width, top: headerHeight , right: 0}}>
           <GiftedChat
           isKeyboardInternallyHandled = {Platform.OS === 'android' ? false : true}
