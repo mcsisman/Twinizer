@@ -81,7 +81,7 @@ static navigationOptions = {
 updateDateState(dateSet, date){
   this.setState({dateSet: dateSet, date: date})
   console.log("DATE SET Mİ:", dateSet)
-  if(this.state.dateSet){
+  if(dateSet){
     console.log("date set:", this.state.date)
     if(date == null || global.globalGender == "" || global.globalGender == null || global.globalCountry == null || global.globalCountry == ""){
       console.log("date set if")
