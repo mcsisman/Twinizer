@@ -273,7 +273,7 @@ Login = (email, password) => {
         <TouchableOpacity
         activeOpacity = {1}
         style={{position: 'absolute',
-         padding:this.width/50, bottom: this.width/35 + global.insets.bottom, right: this.width*(2/100)}}
+         padding:this.width/50, bottom: this.width/35 + global.insets == undefined ? 0 : global.insets.bottom, right: this.width*(2/100)}}
          onPress={()=>navigate("NewAccount") }>
         <Text style={{
           fontFamily: fontFam,
@@ -288,7 +288,7 @@ Login = (email, password) => {
         <TouchableOpacity
         activeOpacity = {1}
         style={{position: 'absolute',
-         padding:this.width/50, bottom: this.width/35 + global.insets.bottom, left: this.width*(2/100)}}
+         padding:this.width/50, bottom: this.width/35 + global.insets == undefined ? 0 : global.insets.bottom, left: this.width*(2/100)}}
          onPress={()=> navigate( "ForgotPassword") }>
         <Text style={{fontFamily: fontFam, textAlign: 'left', color: 'white', fontSize: 18*(this.width/360)}}>
           {lang.ForgotPassword}
