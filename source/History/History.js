@@ -7,6 +7,7 @@ import { NavigationContainer, navigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import {Image,
    Text,
    View,
@@ -15,7 +16,6 @@ import {Image,
    KeyboardAvoidingView,
    StatusBar,
    Platform,
-   ScrollView,
    Alert,
    FlatList,
    Animated,
@@ -419,7 +419,7 @@ render(){
   const {navigate} = this.props.navigation;
   if(!loadingDone){
     return(
-      <View
+      <SafeAreaView
       style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
       <ModifiedStatusBar/>
 
@@ -433,12 +433,12 @@ render(){
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15),
         position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
       />
-      </View>
+      </SafeAreaView>
     )
   }
   else{
     return(
-      <View
+      <SafeAreaView
       style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
       <ModifiedStatusBar/>
 
@@ -481,7 +481,7 @@ render(){
       backgroundColor = {global.themeColor}/>
       </View>
 
-    </View>
+    </SafeAreaView>
 
     );
   }

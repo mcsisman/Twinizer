@@ -7,7 +7,7 @@ import { NavigationEvents} from 'react-navigation';
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFetchBlob from 'rn-fetch-blob'
-
+import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
@@ -20,7 +20,6 @@ import {Image,
    TouchableOpacity,
    ImageBackground,
    StatusBar,
-   SafeAreaView,
    ScrollView,
    Animated,
    Easing,
@@ -1580,7 +1579,7 @@ render(){
 
   if(!this.state.loadingDone){ // IF PAGE IS LOADING
       return(
-        <View
+        <SafeAreaView
         style={{width: this.width, height: this.height, top: 0, alignItems: 'center', flex: 1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
 
         <ModifiedStatusBar/>
@@ -1594,12 +1593,12 @@ render(){
           style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15), position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}
         />
 
-        </View>
+        </SafeAreaView>
       )
   }
   else{ // PAGE IS LOADED
     return(
-      <View
+      <SafeAreaView
       style={{width: this.width, height: this.height, flex:1, flexDirection: 'column', alignItems: 'center', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
       <ModifiedStatusBar/>
 
@@ -1638,7 +1637,7 @@ render(){
       onPressDelete = {this.state.whichScreen == "left" ? ()=> this.deleteMessagesPressed() : ()=> this.deleteRequestPressed()}
       txtAlert = {lang.MessagesDeleteInfo}/>
 
-      </View>
+      </SafeAreaView>
     )
   }
   };

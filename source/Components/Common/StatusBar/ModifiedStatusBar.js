@@ -23,17 +23,13 @@ export default class ModifiedStatusBar extends Component {
 
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
-    StatusBar.setBarStyle("dark-content")
+    StatusBar.setTranslucent(true);
+    StatusBar.setBackgroundColor("transparent");
     return(
 
-      <View style={{backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'white', width: this.width, height:getStatusBarHeight()}}>
       <StatusBar
-      translucent
-      barStyle = {global.isDarkMode ? "light-content" : 'dark-content'}
-      backgroundColor="transparent" />
-      <View style={{width: this.width, height:getStatusBarHeight(), backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'white' }}>
-      </View>
-      </View>
+      barStyle = {global.isDarkMode ? "light-content": 'dark-content'} />
+
     )
   }
 }

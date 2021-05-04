@@ -21,7 +21,7 @@ import MessagesScreen from './Messages'
 import ModifiedStatusBar from '../Components/Common/StatusBar/ModifiedStatusBar'
 import ImageUploadModal from '../Components/Common/ImageUpload/ImageUploadModal'
 import ImageViewerModal from '../Components/Common/ImageViewer/ImageViewerModal'
-
+import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import ChatterInfo from '../Components/Messaging/Chat/ChatterInfo/ChatterInfo'
 import ChatSendImgBottomBar from '../Components/Messaging/Chat/ChatImgSending/ChatSendImgBottomBar'
 import ChatSendImgTopBar from '../Components/Messaging/Chat/ChatImgSending/ChatSendImgTopBar'
@@ -565,22 +565,30 @@ render() {
     }
     if(this.state.renderImageChatScreen){
         return(
+          <SafeAreaView>
           <View
-          style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, flexDirection:"column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
+          style={{ width: this.width, height: this.height, top: 0, flexDirection:"column"}}>
 
           <ModifiedStatusBar/>
+          <View
+          style={{ width: this.width, height: (this.height-getStatusBarHeight())/12, position:"absolute", bottom: getStatusBarHeight(), backgroundColor:"black"}}/>
 
+          <View
+          style={{ backgroundColor:"black", width: this.width, height: (this.height-getStatusBarHeight())*10/12, top: (this.height-getStatusBarHeight())/12, flexDirection:"column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
           <ImageViewer
+          backgroundColor= {"black"}
           index = {this.state.currentIndex}
           onChange={async (index) => { this.setState({ currentIndex: index }) }}
           imageUrls={images}
           onClick = {()=> Keyboard.dismiss()}/>
-
+          </View>
           <ChatSendImgTopBar
+          height = {(this.height-getStatusBarHeight())/12}
           onPressTrash = {()=> this.deleteImageFromArray()}
           onPressCross = {()=> this.closeImageMessage()}/>
 
           <ChatSendImgBottomBar
+            height = {(this.height-getStatusBarHeight())/12}
             sendDisabled = {this.state.imageSendDisabled}
             onPressPlus = {()=> this.onPressPlus()}
             keyboardOpen = {this.state.keyboardOpen}
@@ -597,12 +605,14 @@ render() {
           onPressCancel = {()=>this.setState({ isVisible1: false}) }
           onPressCamera = {this.camera}
           onPressLibrary = {this.library}/>
+
           </View>
+          </SafeAreaView>
         )
     }
     else{
       return(
-        <View
+        <SafeAreaView
         style={{backgroundColor: "white", width: this.width, height: this.height, top: 0, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
 
         <View
@@ -614,7 +624,7 @@ render() {
 
         <View
           style = {{ position: 'absolute', height: Platform.OS === 'android' ? this.state.giftedChatHeight : this.height - this.statusBarHeaderTotalHeight,
-          width: this.width, top: this.statusBarHeaderTotalHeight, right: 0}}>
+          width: this.width, top: headerHeight , right: 0}}>
           <GiftedChat
           isKeyboardInternallyHandled = {Platform.OS === 'android' ? false : true}
           bottomOffset={global.insets.bottom}
@@ -674,7 +684,7 @@ render() {
         }}/>
 
         </View>
-        </View>
+        </SafeAreaView>
       )
 
     }

@@ -9,6 +9,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import RNFS from 'react-native-fs'
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
+import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import {Image,
    Text,
    View,
@@ -186,7 +187,7 @@ camera = () => {
     })
     const { photo } = this.state;
     return (
-      <View style={{width: this.width, height: this.height, top: 0, alignItems: 'center',flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
+      <SafeAreaView style={{width: this.width, height: this.height, top: 0, alignItems: 'center',flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
 
       <ModifiedStatusBar/>
 
@@ -274,7 +275,7 @@ camera = () => {
 
 
 
-      </View>
+      </SafeAreaView>
     );
   }
 }

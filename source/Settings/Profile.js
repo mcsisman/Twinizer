@@ -13,6 +13,7 @@ import storage from '@react-native-firebase/storage';
 import OneSignal from 'react-native-onesignal'
 import firestore from '@react-native-firebase/firestore';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import {Image,
    Text,
    View,
@@ -504,7 +505,7 @@ static navigationOptions = {
     const {navigate} = this.props.navigation;
     if(!this.state.loadingDone){
       return(
-        <View
+        <SafeAreaView
         style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
         <ModifiedStatusBar/>
 
@@ -518,23 +519,24 @@ static navigationOptions = {
           style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15),
           position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingDone ? 0 : 1}}
         />
-        </View>
+        </SafeAreaView>
       )
     }
     else{
       return(
+        <SafeAreaView style = {{flex: 1,width: this.width, height: this.height, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)",}}>
         <TouchableOpacity
         disabled = {this.state.loadingOpacity == 1 ? true : false}
         onPress = {()=> this.onPressScreen()}
         activeOpacity = {1}
-        style={{backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)", width: this.width, height: this.height, flex:1, flexDirection: "column", alignItems: "center"}}>
+        style={{backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)", width: this.width, height: this.height, flexDirection: "column", alignItems: "center"}}>
         <ModifiedStatusBar/>
 
 
 
         <View
         pointerEvents= {this.state.loadingOpacity == 1 ? "none": null}
-        style={{position:"absolute", bottom: this.state.keyboardOpen ? (this.height - headerHeight - getStatusBarHeight())/2 : 0, width: this.width, height: this.height - headerHeight - getStatusBarHeight(), flexDirection: "column", alignItems: "center" }}>
+        style={{position:"absolute", bottom: this.state.keyboardOpen ? (this.height - headerHeight-getStatusBarHeight())/2 : 0, width: this.width, height: this.height - headerHeight, flexDirection: "column", alignItems: "center" }}>
 
         <View
         style={{opacity: this.state.upperComponentsOpacity, width: this.width, height: (this.height - headerHeight - getStatusBarHeight())/2, flexDirection: "row" }}>
@@ -687,7 +689,7 @@ static navigationOptions = {
 
         <AuthenticationModal
         isKeyboardOpen={this.state.keyboardOpenAuth}
-        modalBottom = {(this.height - getStatusBarHeight() - global.keyboardHeight - this.width*8/10)/2 + global.keyboardHeight }
+        modalBottom = {(this.height + getStatusBarHeight() - global.keyboardHeight - this.width*8/10)/2 + global.keyboardHeight }
         isVisible = {this.state.authenticationVisible}
         onPressEnter = {() => {this.deletePress()}}
         onPressCancel = {() => {this.setState({authenticationVisible: false})}}
@@ -746,7 +748,7 @@ static navigationOptions = {
           title = {lang.Profile}>
           </CustomHeader>
       </TouchableOpacity>
-
+      </SafeAreaView>
           );
     }
 

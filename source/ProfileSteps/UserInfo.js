@@ -5,6 +5,7 @@ import { Header } from 'react-navigation-stack';
 import DateTimePicker from '@react-native-community/datetimepicker'
 import auth from '@react-native-firebase/auth';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import {Image,
    Text,
    View,
@@ -164,7 +165,7 @@ getStringFromDateObject(date){
 
     return(
 
-      <View
+      <SafeAreaView
       style={{width: this.width, height: this.height, top: 0, flex:1, flexDirection: 'column', alignItems: 'center', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
 
       <ModifiedStatusBar/>
@@ -300,7 +301,7 @@ getStringFromDateObject(date){
       </View>
 
 
-      </View>
+      </SafeAreaView>
 
         );
   }

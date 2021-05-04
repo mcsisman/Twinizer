@@ -28,7 +28,8 @@ export default class MultilineTextInput extends Component {
   static propTypes = {
    onChangeText: PropTypes.func,
    characterLimit: PropTypes.string,
-   characterNo: PropTypes.number
+   characterNo: PropTypes.number,
+   placeHolder: PropTypes.string,
 
 
  }
@@ -46,7 +47,7 @@ export default class MultilineTextInput extends Component {
         multiline = {true}
         maxLength = {100}
         placeholderTextColor = {global.isDarkMode ? "rgba(255,255,255,0.4)": "rgba(0,0,0,0.4)"}
-        placeholder= {"Hello World!"}
+        placeholder= {this.props.placeHolder}
         style={{ paddingLeft: 0, paddingBottom: 0, color: global.isDarkMode ? global.darkModeColors[3] : "rgba(0,0,0,1)", fontSize: 18*(this.width/360), width: this.width*(9/10), flex:1, borderColor: global.themeColor, borderBottomWidth: 2}}
         onChangeText={this.props.onChangeText}>
       </TextInput>

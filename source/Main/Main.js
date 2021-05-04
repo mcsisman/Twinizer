@@ -18,6 +18,7 @@ import Swipeable from 'react-native-swipeable';
 import RNFetchBlob from 'rn-fetch-blob'
 import AsyncStorage from '@react-native-community/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import  { AdEventType, admob, InterstitialAd, RewardedAd, BannerAd, TestIds, MaxAdContentRating } from '@react-native-firebase/admob';
 import {Image,
    Text,
@@ -2031,7 +2032,7 @@ render(){
       outputRange: ['0deg', '180deg']
     })
     return(
-      <ScrollView
+      <SafeAreaView
       style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
       <ModifiedStatusBar/>
 
@@ -2286,7 +2287,7 @@ render(){
 
       <Animated.Image source={{uri: 'loading' + global.themeForImages}}
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
-        position: 'absolute', top: getStatusBarHeight() + headerHeight + this.width/6+(this.width/2)*(7/6)/2-this.width/30, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
+        position: 'absolute', top: + headerHeight + this.width/6+(this.width/2)*(7/6)/2-this.width/30, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 
 
 
@@ -2300,7 +2301,7 @@ render(){
         }}/>
 
 
-    </ScrollView>
+    </SafeAreaView>
 
         );
   }}

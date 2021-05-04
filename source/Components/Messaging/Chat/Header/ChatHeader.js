@@ -39,7 +39,7 @@ export default class ChatHeader extends Component {
     return(
       <View
       style = {{ position: 'absolute', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)", height: headerHeight,
-      width: this.width, top: getStatusBarHeight(), right: 0, borderBottomWidth: 2, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
+      width: this.width, top: 0, right: 0, borderBottomWidth: 2, borderColor: 'rgba(181,181,181,0.5)', justifyContent: 'center', alignItems: 'center'}}>
 
       <TouchableOpacity
       activeOpacity = {0.3}

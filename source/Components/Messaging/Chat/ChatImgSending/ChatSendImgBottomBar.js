@@ -35,6 +35,7 @@ export default class ChatSendImgBottomBar extends Component {
    onPressPlus: PropTypes.func,
    onPressSend: PropTypes.func,
    sendDisabled: PropTypes.bool,
+   height: PropTypes.number
  }
  static defaultProps = {
  }
@@ -45,21 +46,21 @@ export default class ChatSendImgBottomBar extends Component {
     this.navbarHeight = this.height - this.windowHeight
     var bottom = 0;
     if(this.props.keyboardOpen){
-      bottom = this.props.keyboardHeight + this.navbarHeight;
+      bottom = this.props.keyboardHeight + this.navbarHeight + getStatusBarHeight() ;
     }
     else{
-      bottom = 0
+      bottom = getStatusBarHeight()
     }
     return(
       <View
-      style={{width: this.width, height: this.width/5, justifyContent: "center", bottom: bottom, position:"absolute", alignItems:"center"}}>
+      style={{width: this.width, height: this.props.height, justifyContent: "center", bottom: bottom, position:"absolute", alignItems:"center"}}>
 
       <View
-      style={{ width: this.width, left: 0, height: this.width/10, bottom: "25%",
+      style={{ width: this.width, left: 0, height: this.width/10,
       position: "absolute", justifyContent:"flex-start", alignItems:"flex-end", flexDirection: "row"}}>
 
       <View
-      style={{ left: this.width *0.25/10, width: this.width*0.87/10, height: this.width*0.87/10, justifyContent:"flex-end", alignItems: "flex-end"}}>
+      style={{left: this.width *0.25/10, width: this.width*0.87/10, height: this.width*0.87/10, justifyContent:"flex-end", alignItems: "flex-end"}}>
       <TouchableOpacity
       onPress = {this.props.onPressPlus}
       activeOpacity = {1}

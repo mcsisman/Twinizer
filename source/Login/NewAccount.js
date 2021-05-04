@@ -8,6 +8,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import AsyncStorage from '@react-native-community/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import {Image,
    Text,
    View,
@@ -215,10 +216,10 @@ writeUserData(userId, name, email, imageUrl) {
     }
     const {navigate} = this.props.navigation;
       return(
-
+        <SafeAreaView style = {{flex: 1,width: this.width, height: this.height, backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)",}}>
         <TouchableOpacity
         activeOpacity = {1}
-        style={{width: this.width, height: this.height, flex:1, alignItems: 'center',bottom: this.state.keyboardOpen && global.keyboardHeight != null && global.keyboardHeight != undefined ? keyboardAvoidingHeight - ((this.height - getStatusBarHeight() - headerHeight)-this.height/2)/2 + this.width/50: 0}}
+        style={{width: this.width, height: this.height, flex:1, alignItems: 'center',bottom: this.state.keyboardOpen && global.keyboardHeight != null && global.keyboardHeight != undefined ? keyboardAvoidingHeight - ((this.height - headerHeight)-this.height/2)/2 + this.width/50: 0}}
          onPress={()=> {
            console.log("touchable pressed")
            Keyboard.dismiss()
@@ -325,7 +326,7 @@ writeUserData(userId, name, email, imageUrl) {
         txt= {this.state.selectedTxt === "Terms" ? texts["terms"]: texts["privacy"]}/>
 
         </TouchableOpacity>
-
+        </SafeAreaView>
       );
   }
 }

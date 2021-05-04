@@ -10,6 +10,7 @@ import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import AsyncStorage from '@react-native-community/async-storage';
+import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import {Image,
    Text,
    View,
@@ -357,7 +358,7 @@ camera = (selectedPhoto) => {
       outputRange: ['0deg', '360deg']
     })
     return (
-      <View style={{width: this.width, height: this.height, top: 0, flex:1, flexDirection:'column', alignItems: 'center', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
+      <SafeAreaView style={{width: this.width, height: this.height, top: 0, flex:1, flexDirection:'column', alignItems: 'center', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
 
       <ModifiedStatusBar/>
 
@@ -495,7 +496,7 @@ camera = (selectedPhoto) => {
       onPressClose = {()=>this.setState({isVisible2:false}) }/>
 
 
-      </View>
+      </SafeAreaView>
     );
   }
 }

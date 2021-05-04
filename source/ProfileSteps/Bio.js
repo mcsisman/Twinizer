@@ -10,6 +10,7 @@ import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import Modal from "react-native-modal";
 import EncryptedStorage from 'react-native-encrypted-storage';
+import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import {Image,
    Text,
    View,
@@ -200,7 +201,7 @@ valueChange(value){
     })
 
     return(
-      <View
+      <SafeAreaView
       style={{flex:1, flexDirection: 'column', alignItems: 'center', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
 
       <TouchableOpacity
@@ -228,6 +229,7 @@ valueChange(value){
       style={{width: this.width, height: "49.5%", flexDirection: 'column', alignItems: 'center', justifyContent: "flex-start"}}>
 
       <MultilineTextInput
+      placeHolder = {lang.HelloWorld}
       onChangeText = {(text) => this.valueChange(text)}
       characterNo = {this.state.bioLimit}/>
       </View>
@@ -276,7 +278,7 @@ valueChange(value){
       onPressClose = {()=>this.setState({isVisible2:false}) }/>
 
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
 
         );
   }

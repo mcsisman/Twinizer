@@ -6,7 +6,7 @@ import { NavigationContainer, navigation } from '@react-navigation/native';
 import RNFS from 'react-native-fs'
 import {navigate, route} from './RootNavigation'
 import AsyncStorage from '@react-native-community/async-storage';
-
+import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import {Image,
    Text,
    View,
@@ -69,7 +69,7 @@ export default class DisplayLicenceScreen extends Component<{}>{
     var lang = language[global.lang]
     const {navigate} = this.props.navigation;
     return(
-      <View
+      <SafeAreaView
       style={{ backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)" ,width: this.width, height: this.height, flex:1, flexDirection: "column"}}>
       <ModifiedStatusBar/>
 
@@ -100,7 +100,7 @@ export default class DisplayLicenceScreen extends Component<{}>{
 
       </ScrollView>
 
-    </View>
+    </SafeAreaView>
 
         );
   }}

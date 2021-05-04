@@ -10,7 +10,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
-
+import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import {Image,
    Text,
    View,
@@ -204,7 +204,7 @@ static navigationOptions = {
     const {navigate} = this.props.navigation;
     if(false){
       return(
-        <View
+        <SafeAreaView
         style={{width: this.width, height: this.height, flex:1, flexDirection: "column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)"}}>
         <ModifiedStatusBar/>
 
@@ -218,12 +218,12 @@ static navigationOptions = {
           style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height:this.width*(1/15),
           position: 'absolute', top: this.height/3, left: this.width*(7/15) , opacity: this.state.loadingDone ? 0 : 1}}
         />
-        </View>
+        </SafeAreaView>
       )
     }
     else{
       return(
-        <View
+        <SafeAreaView
         style={{backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(242,242,242,1)", width: this.width, height: this.height, flex:1, flexDirection: "column", alignItems: "center"}}>
         <ModifiedStatusBar/>
 
@@ -343,7 +343,7 @@ static navigationOptions = {
         onPressAdd= {async ()=> await this.buttonClicked("fav")}
         onPressClose = {()=>this.setState({favModalVisible:false})}/>
 
-      </View>
+      </SafeAreaView>
 
           );
     }

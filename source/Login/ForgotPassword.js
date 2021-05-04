@@ -4,6 +4,7 @@ import { Header } from 'react-navigation-stack';
 import { NavigationContainer, navigation } from '@react-navigation/native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import auth from '@react-native-firebase/auth';
+import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import {Image,
    Text,
    View,
@@ -76,6 +77,7 @@ static navigationOptions = {
     var lang = language[global.lang]
     const {navigate} = this.props.navigation;
     return(
+      <SafeAreaView style={{flex:1, flexDirection: 'column', backgroundColor: global.isDarkMode ? global.darkModeColors[1] : 'rgba(255,255,255,1)'}}>
       <KeyboardAvoidingView behavior="padding"
       keyboardVerticalOffset = {-(this.height*20)/100}
       enabled
@@ -116,6 +118,7 @@ static navigationOptions = {
       </View>
       </TouchableOpacity>
       </KeyboardAvoidingView>
+      </SafeAreaView>
         );
   }
 }
