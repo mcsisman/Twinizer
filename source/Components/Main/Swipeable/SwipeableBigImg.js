@@ -109,7 +109,7 @@ export default class SwipeableBigImg extends Component {
          </TouchableOpacity>
 
          <View
-           style={{opacity: this.props.isFavorite, justifyContent: 'center', alignItems: 'center', width: '24%', height: '16%', backgroundColor: "rgba(128,128,128,0.5)",
+           style={{opacity: this.props.isFavorite, justifyContent: 'center', position:"absolute", top:0, alignItems: 'center', width: '24%', height: '16%', backgroundColor: "rgba(128,128,128,0.5)",
            borderTopLeftRadius: 16,borderBottomRightRadius: 16}}
            onPress={this.props.onPress}
            disabled = {this.props.disabled}>
@@ -120,7 +120,7 @@ export default class SwipeableBigImg extends Component {
 
          </View>
          <View
-           style={{opacity: this.props.isBlocked, justifyContent: 'center', alignItems: 'center', bottom: '16%', left: '76%', width: '24%', height: '16%', backgroundColor: "rgba(128,128,128,0.5)",
+           style={{opacity: this.props.isBlocked, justifyContent: 'center', position:"absolute", alignItems: 'center', top: 0, left: '76%', width: '24%', height: '16%', backgroundColor: "rgba(128,128,128,0.5)",
            borderTopRightRadius: 16,borderBottomLeftRadius: 16}}
            onPress={this.props.onPress}
            disabled = {this.props.disabled}>
