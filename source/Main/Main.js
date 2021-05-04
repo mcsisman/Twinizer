@@ -296,7 +296,6 @@ export default class MainScreen extends Component<{}> {
     header: null,
   };
   updateState = () => {
-    Math.pow(5, 'aa');
     console.log('LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG');
     this.setState({reRender: 'ok'});
     return 'TESTTTT';
