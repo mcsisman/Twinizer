@@ -67,7 +67,7 @@ export default class DatePickerIOSModal extends Component {
       isVisible={this.props.isVisible}>
       <View style={{
       borderRadius: 8, borderWidth: 0.3, borderColor: "rgba(0,0,0,4)",
-      backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)",
+      backgroundColor: global.isDarkMode ? global.darkModeColors[1],
       width: screenWidth*(8/10),
       paddingTop: 10,
       paddingBottom: 15,
