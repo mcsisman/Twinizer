@@ -29,7 +29,6 @@
     "react-native-crypto-js": "^1.0.0",
     "react-native-date-picker": "^3.2.10",
     "react-native-datepicker": "^1.7.2",
-    "react-native-device-info": "^8.1.2",
     "react-native-encrypted-storage": "^4.0.1",
     "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "^1.6.1",

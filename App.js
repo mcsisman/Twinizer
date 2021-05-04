@@ -52,7 +52,6 @@ import ProfileBlockedUserScreen from './source/Settings/ProfileBlockedUser';
 import themes from './source/Settings/Themes';
 import language from './source/Utils/Languages/lang.json'
 import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
-import DeviceInfo from 'react-native-device-info';
 
 if (!global.btoa) { global.btoa = encode }
 
@@ -104,8 +103,6 @@ if (!global.atob) { global.atob = decode }
       console.log("LOCAL:", )
     }
     initializeGlobalVariables(){
-      global.hasNotch = DeviceInfo.hasNotch();
-      console.log("HAS NOTCH?:", global.hasNotch)
       global.imageSizeLimit = 20000000;
       global.fromChat = false
       global.emailArrayLength = 0
