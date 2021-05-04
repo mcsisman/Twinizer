@@ -2019,7 +2019,7 @@ render(){
       var emptyScreenHeight = this.height -( getStatusBarHeight() + headerHeight + this.width/6 + this.width/2*(7/6) + this.width/10 + this.width*(3/10)*(7/6) + this.width/10 + this.width/7)
     }
     else{
-      var emptyScreenHeight = this.height -( getStatusBarHeight() + headerHeight + this.width/6 + this.width/2*(7/6) + this.width/10 + this.width*(3/10)*(7/6) + this.width/10 + this.width/7) - global.insets.bottomg
+      var emptyScreenHeight = this.height -( getStatusBarHeight() + headerHeight + this.width/6 + this.width/2*(7/6) + this.width/10 + this.width*(3/10)*(7/6) + this.width/10 + this.width/7) - global.insets.bottom
     }
 
     const {navigate} = this.props.navigation;
