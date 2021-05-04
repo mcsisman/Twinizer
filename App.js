@@ -625,7 +625,7 @@ function MyTabs() {
         }}
         name="UserInfo" component={UserInfoScreen} />
         <Stack.Screen options={{
-          gestureEnabled: true, gestureDirection: "horizontal",
+          gestureEnabled: false, gestureDirection: "horizontal",
           cardStyleInterpolator: forHorizontalModal,
           transitionSpec: {
             open: config2,

@@ -465,8 +465,8 @@ get user() {
   };
 }
 onPressPlus(){
-  this.setState({isVisible1: true})
   Keyboard.dismiss()
+  this.setState({isVisible1: true, keyboardOpen: false})
 }
 closeImageMessage(){
   images = []
@@ -572,7 +572,7 @@ render() {
 
           <ModifiedStatusBar/>
           <View
-          style={{ width: this.width, height: (this.height-getStatusBarHeight())/12, position:"absolute", bottom: getStatusBarHeight(), backgroundColor:"black"}}/>
+          style={{ width: this.width, height: (this.height-getStatusBarHeight())/12, position:"absolute", bottom: this.state.keyboardOpen ? global.keyboardHeight + this.navbarHeight + getStatusBarHeight(): getStatusBarHeight(), backgroundColor:"black"}}/>
 
           { !this.state.keyboardOpen &&(
             <View
@@ -588,7 +588,7 @@ render() {
 
           { this.state.keyboardOpen &&(
             <View
-            style={{ backgroundColor:"black", width: this.width, height: (this.height-getStatusBarHeight())*9/12 - global.keyboardHeight, top: (this.height-getStatusBarHeight())/12, flexDirection:"column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
+            style={{ backgroundColor:"black", width: this.width, height: (this.height-getStatusBarHeight())*10/12 - global.keyboardHeight - this.navbarHeight, top: (this.height-getStatusBarHeight())/12, flexDirection:"column", backgroundColor: global.isDarkMode ? global.darkModeColors[1] : "rgba(255,255,255,1)"}}>
             <ImageViewer
             backgroundColor= {"black"}
             index = {this.state.currentIndex}
@@ -614,6 +614,7 @@ render() {
             onPressSend = {()=>this.sendMsgWithImage(this.state.msgText)}
             sendText = {lang.Send}/>
           <ImageUploadModal
+          bottom = {this.keyboardOpen ? 55: 0}
           isVisible={this.state.isVisible1}
           txtUploadPhoto = {lang.UploadAPhoto}
           txtCancel = {""}

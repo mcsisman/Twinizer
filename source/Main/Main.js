@@ -2055,6 +2055,8 @@ render(){
       username = {this.state.uri2_username}
       country = {this.state.uri2_country}/>
 
+
+
       <Swipeable
       style = {{width: this.width*501, left: -this.width*250,
       height: this.width*(5/10)*(7/6) }}
@@ -2081,6 +2083,8 @@ render(){
 
       onLeftActionIncomplete = {()=> this.leftActionIncomplete()}
       onRightActionIncomplete = {()=> this.rightActionIncomplete()}>
+
+
 
       <View style = {{position: "absolute",flexDirection: "row", width: this.width*27/10, right: this.state.swipeableContentRight, justifyContent:"center", alignItems: "center"}}>
 
@@ -2134,8 +2138,16 @@ render(){
 
       </View>
 
-
+      {this.state.loadingOpacity == 1 &&(
+        <View style = {{ position:"absolute", top:0, width: this.width, left: this.width*250,
+        height: this.width*(5/10)*(7/6), alignItems: "center", justifyContent:"center" }}>
+        <Animated.Image source={{uri: 'loading' + global.themeForImages}}
+        style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15)}}/>
+        </View>
+      )}
       </Swipeable>
+
+
 
       <View
       style = {{opacity: this.state.messageButtonOpacity && (global.swipeCount % 6 != 0 || global.swipeCount == 0) ? 1 : 0 ,
@@ -2291,9 +2303,7 @@ render(){
       onPressClose = {()=>this.setState({blockTickVisible: false,addToBlockVisible:false, addToBlockVisibleUpper:false})}/>
 
 
-      <Animated.Image source={{uri: 'loading' + global.themeForImages}}
-        style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
-        position: 'absolute', top: + getStatusBarHeight() + headerHeight + this.width/6+(this.width/2)*(7/6)/2-this.width/30, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
+
 
 
 
