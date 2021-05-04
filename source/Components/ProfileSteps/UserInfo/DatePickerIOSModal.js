@@ -25,7 +25,6 @@ var screenHeight = Math.round(Dimensions.get('screen').height);
 var screenWidth = Math.round(Dimensions.get('screen').width);
 export default class DatePickerIOSModal extends Component {
   constructor(props){
-    var lang = language[global.lang]
     super(props);
     this.state = {
       date: new Date(),
