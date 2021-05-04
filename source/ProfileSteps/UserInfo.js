@@ -87,6 +87,7 @@ updateDateState(dateSet, date){
     else{
       this.setState({disabled:false, buttonOpacity: global.themeColor, opacity: 1})
     }
+    global.globalBirthday = date
   }
 }
 maleSelected(){
