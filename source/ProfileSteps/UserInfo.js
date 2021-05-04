@@ -254,6 +254,7 @@ getStringFromDateObject(date){
           maximumDate={new Date(maxDate)}
           onChange={(event, date) => {
             if(event.type == "set"){
+              console.log("sete girdi")
               if(date == null || global.globalGender == "" || global.globalGender == null || global.globalCountry == null || global.globalCountry == ""){
                 this.setState({dateSet: true, showDatePicker: false, disabled: true, dateTextColor: global.themeColor, date: date, buttonOpacity: global.themeColor, opacity: 0.4})
               }
