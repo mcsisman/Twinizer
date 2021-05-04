@@ -79,7 +79,9 @@ componentDidMount(){
 static navigationOptions = {
     header: null,
 };
-
+updateDateState(dateSet, date){
+  this.setState({dateSet: dateSet, date: date})
+}
 maleSelected(){
 
   if (global.globalCountry == null || global.globalCountry == "" || global.globalBirthday == null || global.globalBirthday == ""){ // MALE IS SELECTED, COUNTRY IS NOT SELECTED
@@ -273,6 +275,7 @@ getStringFromDateObject(date){
       )}
 
       <DatePickerIOSModal
+      updateDateState={(dateSet, date)=>this.updateDateState(dateSet, date)}
       maxDate={maxDate}
       isVisible = {this.state.iosDatePickerVisible}
       onPressClose = {()=>this.setState({iosDatePickerVisible:false})}/>
