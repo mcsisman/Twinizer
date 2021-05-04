@@ -35,7 +35,7 @@ export default class DatePickerIOSModal extends Component {
   static propTypes = {
     maxDate: PropTypes.string,
     isVisible: PropTypes.bool,
-    onPressClose: ProPTypes.func,
+    onPressClose: PropTypes.func,
  }
  static defaultProps = {
  }
