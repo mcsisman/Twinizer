@@ -236,7 +236,7 @@ getStringFromDateObject(date){
       <TouchableOpacity
       activeOpacity = {1}
       style = {{height: "50%", width: this.width*(60/100), borderBottomColor: global.themeColor, borderBottomWidth: 2, alignItems: 'flex-start', justifyContent:"center" }}
-      onPress = {()=> this.setState({showDatePicker: true, iosDatePickerVisible: Platform.OS == "ios" ? true : false})}>
+      onPress = {()=> this.setState({showDatePicker: true, iosDatePickerVisible: Platform.OS === "android" ? false : true})}>
       <Text
       style = {{fontSize: 18*(this.width/360), color: this.state.dateSet ? global.themeColor: "gray" }}>
       {this.getStringFromDateObject(this.state.date)}
@@ -274,7 +274,7 @@ getStringFromDateObject(date){
 
       <DatePickerIOSModal
       maxDate={maxDate}
-      isVisible = {this.state.searchOnIsVisible}
+      isVisible = {this.state.iosDatePickerVisible}
       onPressClose = {()=>this.setState({iosDatePickerVisible:false})}/>
 
       <View
