@@ -2293,7 +2293,7 @@ render(){
 
       <Animated.Image source={{uri: 'loading' + global.themeForImages}}
         style={{transform: [{rotate: spin}] ,width: this.width*(1/15), height: this.width*(1/15),
-        position: 'absolute', top: + headerHeight + this.width/6+(this.width/2)*(7/6)/2-this.width/30, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
+        position: 'absolute', top: + getStatusBarHeight() + headerHeight + this.width/6+(this.width/2)*(7/6)/2-this.width/30, left: this.width*(7/15) , opacity: this.state.loadingOpacity}}/>
 
 
 
