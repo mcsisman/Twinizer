@@ -49,6 +49,7 @@ import {
   Animated,
   Platform,
   ScrollView,
+  Keyboard,
 } from 'react-native';
 import ChatScreen from '../Messaging/Chat';
 
@@ -128,6 +129,8 @@ export default class MainScreen extends Component<{}> {
   constructor(props) {
     super(props);
     this.height = Math.round(Dimensions.get('screen').height);
+    this.windowHeight = Math.round(Dimensions.get('window').height);
+    global.navBarHeight = this.height - this.windowHeight;
     this.width = Math.round(Dimensions.get('screen').width);
     global.activationDistanceLeft = this.width * (2.5 / 10);
     global.deactivationDistanceLeft = this.width * (2.5 / 10);
@@ -182,7 +185,7 @@ export default class MainScreen extends Component<{}> {
       sadfaceOpacity: 0,
       messageButtonDisabled: true,
       loadingOpacity: 0,
-      photo: '',
+      photo: null,
     };
     (global.swipeCount = 0),
       (this.activationCount = 0),
@@ -295,6 +298,7 @@ export default class MainScreen extends Component<{}> {
   static navigationOptions = {
     header: null,
   };
+
   updateState = () => {
     console.log('LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG');
     this.setState({reRender: 'ok'});
@@ -1251,7 +1255,7 @@ export default class MainScreen extends Component<{}> {
       this.setState({gender: 'Female'});
     }
     if (value == 'Tüm Cinsiyetler') {
-      value == 'All Genders';
+      value = 'All Genders';
       this.setState({gender: 'All Genders'});
     }
     this.setState({gender: value});
@@ -2494,8 +2498,8 @@ export default class MainScreen extends Component<{}> {
             disabled={
               this.state.messageButtonOpacity &&
               (global.swipeCount % 6 != 0 || global.swipeCount == 0)
-                ? 0
-                : 1
+                ? false
+                : true
             }
             onPress={() => this.addToFavButtonClicked('onMain')}
             opacity={
@@ -2512,8 +2516,8 @@ export default class MainScreen extends Component<{}> {
             disabled={
               this.state.messageButtonOpacity &&
               (global.swipeCount % 6 != 0 || global.swipeCount == 0)
-                ? 0
-                : 1
+                ? false
+                : true
             }
             onPress={() => this.sendFirstMessage()}
             opacity={
@@ -2527,8 +2531,8 @@ export default class MainScreen extends Component<{}> {
             disabled={
               this.state.messageButtonOpacity &&
               (global.swipeCount % 6 != 0 || global.swipeCount == 0)
-                ? 0
-                : 1
+                ? false
+                : true
             }
             onPress={() => this.addToBlockButtonClicked('onMain')}
             borderBottomRightRadius={16}
@@ -2626,7 +2630,13 @@ export default class MainScreen extends Component<{}> {
           onBackdropPress={() => this.setState({isVisible2: false})}
           onValueChangeGender={(value) => this.valueChangeGender(value.label)}
           onValueChangeCountry={(value) => this.valueChangeCountry(value.label)}
-          genderSelectedValue={this.state.gender}
+          genderSelectedValue={
+            lang[
+              this.state.gender == 'All Genders'
+                ? 'AllGenders'
+                : this.state.gender + 'Small'
+            ]
+          }
           countrySelectedValue={this.state.country}
           placeHolder1={this.state.placeHolder1}
           placeHolder2={this.state.placeHolder2}
