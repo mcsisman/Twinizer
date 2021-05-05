@@ -2774,9 +2774,9 @@ export default class MainScreen extends Component<{}> {
         <View
           style={{
             position: 'absolute',
-            height: 3 * global.insets.bottom,
+            height: global.insets.bottom,
             width: this.width,
-            bottom: -global.insets.bottom,
+            bottom: -global.insets.bottom - this.width / 7,
             backgroundColor: global.isDarkMode
               ? global.darkModeColors[0]
               : 'rgba(188,192,204,0.5)',
