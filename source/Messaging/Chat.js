@@ -728,7 +728,7 @@ export default class ChatScreen extends React.Component<Props> {
             />
 
             <ChatSendImgBottomBar
-              onFocus={() => this.setState({keyboardOpen: false})}
+              onFocus={() => this.setState({keyboardOpen: true})}
               height={(this.height - getStatusBarHeight()) / 12}
               sendDisabled={this.state.imageSendDisabled}
               onPressPlus={() => this.onPressPlus()}
