@@ -565,6 +565,15 @@ export default class ChatScreen extends React.Component<Props> {
   }
 
   async deleteMessage(message) {
+    console.log('SİLİNECEK MESAJ İD:', message.id, '___', message.text);
+    for (let i = 0; i < messageArray.length; i++) {
+      console.log(
+        'SİLİNMEDEN ÖNCE MESAJLAR:',
+        messageArray[i].id,
+        '___',
+        messageArray[i].text,
+      );
+    }
     var messageId;
     messageId = message.id;
     messageArray = this.state.messages;
@@ -574,6 +583,15 @@ export default class ChatScreen extends React.Component<Props> {
         break;
       }
     }
+    for (let i = 0; i < messageArray.length; i++) {
+      console.log(
+        'SİLİNDİKTEN SONRA MESAJLAR:',
+        messageArray[i].id,
+        '___',
+        messageArray[i].text,
+      );
+    }
+
     this.setState({messages: messageArray});
 
     await EncryptedStorage.getItem(
@@ -600,20 +618,21 @@ export default class ChatScreen extends React.Component<Props> {
     );
   }
   onLongPress(context, message) {
-    /* Disabled for now, bugged.
-  const options = [lang.DeleteMessage, lang.Cancel];
-  const cancelButtonIndex = options.length - 1;
-  context.actionSheet().showActionSheetWithOptions({
-    options,
-    cancelButtonIndex,
-  },
-  (buttonIndex) => {
-    switch (buttonIndex) {
-    case 0:
-      this.deleteMessage(message)
-      break;
-    }
-  });*/
+    const options = [lang.DeleteMessage, lang.Cancel];
+    const cancelButtonIndex = options.length - 1;
+    context.actionSheet().showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+      },
+      (buttonIndex) => {
+        switch (buttonIndex) {
+          case 0:
+            this.deleteMessage(message);
+            break;
+        }
+      },
+    );
   }
 
   render() {
