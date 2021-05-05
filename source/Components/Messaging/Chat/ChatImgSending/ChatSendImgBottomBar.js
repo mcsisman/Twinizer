@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {createStackNavigator, Header} from 'react-navigation-stack';
-import Modal from "react-native-modal";
+import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {
   View,
   Platform,
@@ -13,101 +13,160 @@ import {
   Dimensions,
   Image,
   StatusBar,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
 } from 'react-native';
 
-if(Platform.OS === 'android'){
-  var headerHeight = Header.HEIGHT
+if (Platform.OS === 'android') {
+  var headerHeight = Header.HEIGHT;
 }
-if(Platform.OS === 'ios'){
-  var headerHeight = Header.HEIGHT
+if (Platform.OS === 'ios') {
+  var headerHeight = Header.HEIGHT;
 }
 var screenHeight = Math.round(Dimensions.get('screen').height);
 var screenWidth = Math.round(Dimensions.get('screen').width);
 export default class ChatSendImgBottomBar extends Component {
-
-
   static propTypes = {
-   onChangeText: PropTypes.func,
-   keyboardOpen: PropTypes.bool,
-   keyboardHeight: PropTypes.number,
-   keyboardYcord: PropTypes.number,
-   onPressPlus: PropTypes.func,
-   onPressSend: PropTypes.func,
-   sendDisabled: PropTypes.bool,
-   height: PropTypes.number
- }
- static defaultProps = {
- }
-  render(){
+    onChangeText: PropTypes.func,
+    keyboardOpen: PropTypes.bool,
+    keyboardHeight: PropTypes.number,
+    keyboardYcord: PropTypes.number,
+    onPressPlus: PropTypes.func,
+    onPressSend: PropTypes.func,
+    sendDisabled: PropTypes.bool,
+    height: PropTypes.number,
+  };
+  static defaultProps = {};
+  render() {
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.windowHeight = Math.round(Dimensions.get('window').height);
-    this.navbarHeight = this.height - this.windowHeight
+    this.navbarHeight = this.height - this.windowHeight;
     var bottom = 0;
-    if(this.props.keyboardOpen){
-      bottom = this.props.keyboardHeight + this.navbarHeight + getStatusBarHeight() ;
+    if (this.props.keyboardOpen) {
+      bottom =
+        this.props.keyboardHeight + this.navbarHeight + getStatusBarHeight();
+    } else {
+      bottom = getStatusBarHeight();
     }
-    else{
-      bottom = getStatusBarHeight()
-    }
-    return(
+    return (
       <View
-      style={{width: this.width, height: this.props.height, justifyContent: "center", bottom: bottom, position:"absolute", alignItems:"center"}}>
+        style={{
+          width: this.width,
+          height: this.props.height,
+          justifyContent: 'center',
+          bottom: bottom,
+          position: 'absolute',
+          alignItems: 'center',
+        }}>
+        <View
+          style={{
+            width: this.width,
+            left: 0,
+            height: this.width / 10,
+            position: 'absolute',
+            justifyContent: 'flex-start',
+            alignItems: 'flex-end',
+            flexDirection: 'row',
+          }}>
+          <View
+            style={{
+              left: (this.width * 0.25) / 10,
+              width: (this.width * 0.87) / 10,
+              height: (this.width * 0.87) / 10,
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+            }}>
+            <TouchableOpacity
+              onPress={this.props.onPressPlus}
+              activeOpacity={1}
+              style={{
+                borderTopLeftRadius: 555,
+                borderTopRightRadius: 555,
+                borderBottomLeftRadius: 555,
+                borderBottomRightRadius: 555,
+                backgroundColor: 'rgba(255,255,255,0.8)',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                height: '100%',
+              }}>
+              <Image
+                source={{uri: 'circleplus' + global.themeForImages}}
+                style={{width: '100%', height: '100%'}}
+              />
+            </TouchableOpacity>
+          </View>
 
-      <View
-      style={{ width: this.width, left: 0, height: this.width/10,
-      position: "absolute", justifyContent:"flex-start", alignItems:"flex-end", flexDirection: "row"}}>
+          <View
+            style={{
+              backgroundColor: 'white',
+              width: (this.width * 6.5) / 10,
+              borderTopLeftRadius: 24,
+              position: 'absolute',
+              right: (this.width * 2.125) / 10,
+              borderTopRightRadius: 24,
+              borderBottomLeftRadius: 24,
+              paddingTop: 0,
+              paddingBottom: 0,
+              borderBottomRightRadius: 24,
+            }}>
+            <TextInput
+              style={{
+                height: (this.width * 0.87) / 10,
+                paddingLeft: 10,
+                paddingRight: 10,
+                fontSize: 15 * (this.width / 360),
+                paddingTop: 3.5,
+                paddingBottom: 3.5,
+              }}
+              onFocus={this.props.onFocus}
+              placeholderTextColor="rgba(0,0,0,0.5)"
+              placeholder={''}
+              onChangeText={this.props.onChangeText}></TextInput>
+          </View>
 
-      <View
-      style={{left: this.width *0.25/10, width: this.width*0.87/10, height: this.width*0.87/10, justifyContent:"flex-end", alignItems: "flex-end"}}>
-      <TouchableOpacity
-      onPress = {this.props.onPressPlus}
-      activeOpacity = {1}
-      style={{borderTopLeftRadius:555, borderTopRightRadius: 555, borderBottomLeftRadius: 555, borderBottomRightRadius: 555,
-         backgroundColor:"rgba(255,255,255,0.8)", justifyContent:"center", alignItems: "center", width: "100%", height: "100%"}}>
-
-      <Image source={{uri: "circleplus" + global.themeForImages}}
-        style={{width: "100%", height: "100%"}}
-      />
-
-      </TouchableOpacity>
+          <View
+            style={{
+              width: (this.width * 2) / 10,
+              height: '100%',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              right: 0,
+              position: 'absolute',
+            }}>
+            <TouchableOpacity
+              disabled={this.props.sendDisabled}
+              activeOpacity={1}
+              onPress={this.props.onPressSend}
+              style={{
+                paddingLeft: 8,
+                paddingRight: 8,
+                borderBottomRightRadius: 36,
+                borderBottomLeftRadius: 36,
+                height: '87%',
+                borderTopLeftRadius: 36,
+                borderTopRightRadius: 36,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: global.themeColor,
+                borderColor: global.themeColor,
+                borderWidth: 1,
+              }}>
+              <Text
+                adjustsFontSizeToFit={true}
+                numberOfLines={1}
+                style={{
+                  fontSize: 14 * (this.width / 360),
+                  fontWeight: 'bold',
+                  color: 'white',
+                }}>
+                {this.props.sendText}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
-
-      <View
-        style={{ backgroundColor:"white", width: this.width*6.5/10, borderTopLeftRadius: 24, position:"absolute", right: this.width*2.125/10,
-        borderTopRightRadius: 24, borderBottomLeftRadius: 24, paddingTop: 0, paddingBottom: 0, borderBottomRightRadius: 24, }}>
-      <TextInput
-        style={{height: this.width*0.87/10,paddingLeft: 10, paddingRight: 10,  fontSize: 15*(this.width/360) , paddingTop: 3.5, paddingBottom: 3.5}}
-
-        placeholderTextColor='rgba(0,0,0,0.5)'
-        placeholder= {""}
-        onChangeText={this.props.onChangeText}>
-      </TextInput>
-      </View>
-
-      <View
-      style={{width: this.width*2/10, height: "100%", justifyContent:"flex-end", alignItems: "center",  right: 0, position: "absolute" }}>
-      <TouchableOpacity
-      disabled = {this.props.sendDisabled}
-      activeOpacity = {1}
-      onPress = {this.props.onPressSend}
-      style={{paddingLeft: 8, paddingRight: 8, borderBottomRightRadius: 36, borderBottomLeftRadius:36, height: "87%",
-        borderTopLeftRadius:36, borderTopRightRadius:36, justifyContent:"center", alignItems: "center", backgroundColor: global.themeColor,
-        borderColor: global.themeColor, borderWidth: 1}}>
-      <Text
-      adjustsFontSizeToFit={true}
-      numberOfLines={1}
-      style = {{fontSize: 14*(this.width/360), fontWeight: "bold",  color: "white"}}>
-      {this.props.sendText}
-      </Text>
-      </TouchableOpacity>
-      </View>
-
-      </View>
-
-      </View>
-    )
+    );
   }
 }
 
