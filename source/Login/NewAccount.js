@@ -241,6 +241,7 @@ export default class NewAccountScreen extends Component<{}> {
             ? global.darkModeColors[1]
             : 'rgba(242,242,242,1)',
         }}>
+        <ModifiedStatusBar />
         <TouchableOpacity
           activeOpacity={1}
           style={{
@@ -262,8 +263,6 @@ export default class NewAccountScreen extends Component<{}> {
             Keyboard.dismiss();
             this.setState({keyboardOpen: false});
           }}>
-          <ModifiedStatusBar />
-
           <CustomHeader
             title={lang.SignUp}
             onPress={() => this.props.navigation.goBack()}

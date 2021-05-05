@@ -257,6 +257,7 @@ export default class CountryScreen extends Component<{}> {
             ? global.darkModeColors[1]
             : 'rgba(242,242,242,1)',
         }}>
+        <ModifiedStatusBar />
         <TouchableOpacity
           activeOpacity={1}
           style={{
@@ -266,8 +267,6 @@ export default class CountryScreen extends Component<{}> {
             alignItems: 'center',
           }}
           onPress={() => Keyboard.dismiss()}>
-          <ModifiedStatusBar />
-
           <CustomHeader
             title={lang.CompleteYourProfile}
             onPress={() => this.props.navigation.goBack()}
