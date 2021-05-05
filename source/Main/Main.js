@@ -2771,17 +2771,6 @@ export default class MainScreen extends Component<{}> {
             this.setState({imageViewerVisible: false});
           }}
         />
-        <View
-          style={{
-            position: 'absolute',
-            height: 2 * global.insets.bottom,
-            width: this.width,
-            bottom: -global.insets.bottom - this.width / 7,
-            backgroundColor: global.isDarkMode
-              ? global.darkModeColors[0]
-              : 'rgba(188,192,204,0.5)',
-          }}
-        />
       </SafeAreaView>
     );
   }

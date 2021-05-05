@@ -544,6 +544,17 @@ function MyTabBar({state, descriptors, navigation}) {
           </TouchableOpacity>
         );
       })}
+      <View
+        style={{
+          position: 'absolute',
+          height: global.insets.bottom,
+          width: this.width,
+          bottom: -global.insets.bottom,
+          backgroundColor: global.isDarkMode
+            ? global.darkModeColors[0]
+            : 'rgba(188,192,204,0.5)',
+        }}
+      />
     </View>
   );
 }
