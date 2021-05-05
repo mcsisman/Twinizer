@@ -73,6 +73,7 @@ var firstTime = true;
 var images = [];
 var keyboardHeight;
 var keyboardYcord;
+var constLocalMsgs = [];
 type Props = {
   name?: string,
   avatar?: string,
@@ -92,6 +93,8 @@ export default class ChatScreen extends React.Component<Props> {
     this.width = Math.round(Dimensions.get('screen').width);
     this.statusBarHeaderTotalHeight = getStatusBarHeight() + headerHeight;
     this.state = {
+      noOfLoadedMsgs: 0,
+      isLoadingEarlierMessages: false,
       giftedChatHeight: this.height - this.statusBarHeaderTotalHeight,
       imageViewerVisible: false,
       msgText: ' ',
@@ -137,16 +140,32 @@ export default class ChatScreen extends React.Component<Props> {
             }
           })
           .then((json) => (localMessages = json));
+        var number;
+        var tempArr = [];
+        if (localMessages != null) {
+          if (localMessages.length < 20) {
+            this.setState({noOfLoadedMsgs: localMessages.length});
+            number = 0;
+          } else {
+            this.setState({noOfLoadedMsgs: 20});
+            number = localMessages.length - 20;
+          }
+          for (i = 0; i < this.state.noOfLoadedMsgs; i++) {
+            tempArr.push(localMessages[i]);
+          }
+        }
         if (noOfNewMsgs == 1) {
+          console.log('TEST 1');
           localMessages.reverse();
           this.setState({
-            messages: localMessages,
+            messages: tempArr,
           });
           this.setState({reRender: !this.state.reRender});
         } else {
+          console.log('TEST 2');
           localMessages.reverse();
           this.setState({
-            messages: localMessages,
+            messages: tempArr,
           });
           this.setState({reRender: !this.state.reRender});
         }
@@ -242,8 +261,25 @@ export default class ChatScreen extends React.Component<Props> {
                           })
                           .then((json) => (localMessages = json));
                       localMessages.reverse();
+                      console.log('TEST 3');
+
+                      var number;
+                      let tempArr = [];
+                      if (localMessages != null) {
+                        if (localMessages.length < 20) {
+                          this.setState({noOfLoadedMsgs: localMessages.length});
+                          number = 0;
+                        } else {
+                          this.setState({noOfLoadedMsgs: 20});
+                          number = localMessages.length - 20;
+                        }
+                        for (i = 0; i < this.state.noOfLoadedMsgs; i++) {
+                          tempArr.push(localMessages[i]);
+                        }
+                      }
+
                       this.setState((previousState) => ({
-                        messages: localMessages,
+                        messages: tempArr,
                       }));
                       this.setState({reRender: !this.state.reRender});
                     });
@@ -253,7 +289,7 @@ export default class ChatScreen extends React.Component<Props> {
                 });
             }
           }
-        } else {
+        } /*else {
           await this.getLastLocalMessages();
           messageArray.reverse();
           var downloadURL;
@@ -300,7 +336,7 @@ export default class ChatScreen extends React.Component<Props> {
                 });
             });
           }
-        }
+        }*/
         firstTime = false;
       }
     });
@@ -313,8 +349,40 @@ export default class ChatScreen extends React.Component<Props> {
     this.keyboardDidHideListener.remove();
   }
 
+  async loadEarlierMessages() {
+    var newLoadedMsgs = [];
+    this.setState({isLoadingEarlierMessages: true});
+    console.log('MESSAGE ARRAY:', messageArray.length);
+    messageArray = this.state.messages;
+    var number;
+    console.log('LOCAL MESSAGES LENGTH:', constLocalMsgs.length);
+    console.log('noof:', this.state.noOfLoadedMsgs);
+    if (constLocalMsgs != null) {
+      if (constLocalMsgs.length < 20 + this.state.noOfLoadedMsgs) {
+        number = constLocalMsgs.length - this.state.noOfLoadedMsgs;
+      } else {
+        number = 20;
+      }
+      for (
+        i = constLocalMsgs.length - this.state.noOfLoadedMsgs - 1;
+        i >= constLocalMsgs.length - (number + this.state.noOfLoadedMsgs);
+        i--
+      ) {
+        newLoadedMsgs.push(constLocalMsgs[i]);
+      }
+
+      var joined = this.state.messages.concat(newLoadedMsgs);
+      this.setState({
+        messages: joined,
+        noOfLoadedMsgs: this.state.noOfLoadedMsgs + number,
+        isLoadingEarlierMessages: false,
+      });
+    }
+  }
+
   sendMsg = (messages) => {
     firebaseSvc.send(messages, 'f');
+
     this.setState((previousState) => ({
       messages: GiftedChat.append(previousState.messages, messages[0]),
     }));
@@ -808,6 +876,9 @@ export default class ChatScreen extends React.Component<Props> {
                 right: 0,
               }}>
               <GiftedChat
+                loadEarlier={constLocalMsgs.length > this.state.noOfLoadedMsgs}
+                onLoadEarlier={() => this.loadEarlierMessages()}
+                isLoadingEarlier={this.state.isLoadingEarlierMessages}
                 isKeyboardInternallyHandled={
                   Platform.OS === 'android' ? false : true
                 }
@@ -916,13 +987,17 @@ export default class ChatScreen extends React.Component<Props> {
     var number;
     if (localMessages != null) {
       if (localMessages.length < 20) {
+        this.setState({noOfLoadedMsgs: localMessages.length});
         number = 0;
       } else {
+        this.setState({noOfLoadedMsgs: 20});
         number = localMessages.length - 20;
       }
       for (i = number; i < localMessages.length; i++) {
         messageArray.push(localMessages[i]);
       }
+
+      constLocalMsgs = localMessages;
     }
   }
   resetVariables() {
