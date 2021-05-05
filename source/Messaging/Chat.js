@@ -684,7 +684,10 @@ export default class ChatScreen extends React.Component<Props> {
                   this.setState({currentIndex: index});
                 }}
                 imageUrls={images}
-                onClick={() => Keyboard.dismiss()}
+                onClick={() => {
+                  Keyboard.dismiss();
+                  this.setState({keyboardOpen: false});
+                }}
               />
             </View>
 
@@ -711,7 +714,10 @@ export default class ChatScreen extends React.Component<Props> {
                   this.setState({currentIndex: index});
                 }}
                 imageUrls={images}
-                onClick={() => Keyboard.dismiss()}
+                onClick={() => {
+                  Keyboard.dismiss();
+                  this.setState({keyboardOpen: false});
+                }}
               />
             </View>
 
