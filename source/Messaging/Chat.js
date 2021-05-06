@@ -463,7 +463,7 @@ export default class ChatScreen extends React.Component<Props> {
           photoPath: image1.path,
           photo: {uri: image1.path},
         });
-        this.imageSelected();
+        this.imageSelected(image1.width, image1.height);
       }
     });
   };
@@ -483,13 +483,25 @@ export default class ChatScreen extends React.Component<Props> {
           photoPath: image1.path,
           photo: {uri: image1.path},
         });
-        this.imageSelected();
+        this.imageSelected(image1.width, image1.height);
       }
     });
   };
-  imageSelected() {
+  imageSelected(width, height) {
     this.setState({renderImageChatScreen: false});
-    var image = {url: this.state.photoPath};
+    let imgWidth,
+      imgHeight = 0;
+
+    console.log('WIDTH:', width);
+    console.log('HEIGHT:', height);
+    let ratio = height / width;
+    console.log('ratio:', ratio);
+    imgWidth = this.width;
+    imgHeight = ratio * this.width;
+
+    console.log('IMG_WIDTH:', imgWidth);
+    console.log('IMG_HEIGHT:', imgHeight);
+    var image = {url: this.state.photoPath, width: imgWidth, height: imgHeight};
 
     images.push(image);
     this.setState({renderImageChatScreen: true});
