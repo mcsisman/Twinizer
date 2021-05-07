@@ -291,6 +291,8 @@ export default class NewAccountScreen extends Component<{}> {
                   justifyContent: 'center',
                 }}>
                 <TextInput
+                  spellCheck={false}
+                  autoCorrect={false}
                   onFocus={() => {
                     console.log('onfocus');
                     this.setState({keyboardOpen: true});
@@ -325,6 +327,8 @@ export default class NewAccountScreen extends Component<{}> {
                   justifyContent: 'center',
                 }}>
                 <TextInput
+                  spellCheck={false}
+                  autoCorrect={false}
                   onFocus={() => {
                     console.log('onfocus2');
                     this.setState({keyboardOpen: true});
@@ -364,6 +368,8 @@ export default class NewAccountScreen extends Component<{}> {
                   justifyContent: 'center',
                 }}>
                 <TextInput
+                  spellCheck={false}
+                  autoCorrect={false}
                   onFocus={() => this.setState({keyboardOpen: true})}
                   placeholderTextColor={
                     global.isDarkMode
@@ -398,6 +404,8 @@ export default class NewAccountScreen extends Component<{}> {
                   justifyContent: 'center',
                 }}>
                 <TextInput
+                  spellCheck={false}
+                  autoCorrect={false}
                   onFocus={() => this.setState({keyboardOpen: true})}
                   placeholderTextColor={
                     global.isDarkMode

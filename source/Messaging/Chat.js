@@ -7,6 +7,7 @@ import {
   Time,
   GiftedChat,
   LoadEarlier,
+  Actions,
 } from 'react-native-gifted-chat';
 import RNFetchBlob from 'rn-fetch-blob';
 import firebaseSvc from './FirebaseSvc';
@@ -93,6 +94,8 @@ export default class ChatScreen extends React.Component<Props> {
     this.width = Math.round(Dimensions.get('screen').width);
     this.statusBarHeaderTotalHeight = getStatusBarHeight() + headerHeight;
     this.state = {
+      bubbleImageWidth: 100,
+      bubbleImageHeight: 100,
       noOfLoadedMsgs: 0,
       isLoadingEarlierMessages: false,
       giftedChatHeight: this.height - this.statusBarHeaderTotalHeight,
@@ -491,16 +494,9 @@ export default class ChatScreen extends React.Component<Props> {
     this.setState({renderImageChatScreen: false});
     let imgWidth,
       imgHeight = 0;
-
-    console.log('WIDTH:', width);
-    console.log('HEIGHT:', height);
     let ratio = height / width;
-    console.log('ratio:', ratio);
     imgWidth = this.width;
     imgHeight = ratio * this.width;
-
-    console.log('IMG_WIDTH:', imgWidth);
-    console.log('IMG_HEIGHT:', imgHeight);
     var image = {url: this.state.photoPath, width: imgWidth, height: imgHeight};
 
     images.push(image);
@@ -575,8 +571,13 @@ export default class ChatScreen extends React.Component<Props> {
   }
   renderMessageImage = (props) => {
     let image = props.currentMessage.image;
-
-    return <MessageImage {...props} imageProps={{key: this.state.reRender}} />;
+    return (
+      <MessageImage
+        {...props}
+        imageStyle={{width: this.width / 3, height: this.width / 3}}
+        imageProps={{key: this.state.reRender}}
+      />
+    );
   };
   renderLoadEarlier(props) {
     var lang = language[global.lang];
@@ -591,13 +592,73 @@ export default class ChatScreen extends React.Component<Props> {
         {...props}
         alwaysShowSend={true}
         label={lang.Send}
+        containerStyle={{height: 44, justifyContent: 'flex-end'}}
         textStyle={{
           color: global.themeColor,
+          fontWeight: '600',
+          fontSize: 17,
+          marginBottom: 12,
+          marginLeft: 10,
+          marginRight: 10,
         }}></Send>
     );
   }
+
+  renderActions = (props) => {
+    return (
+      <View style={{alignItems: 'flex-end', flexDirection: 'row'}}>
+        <View
+          style={{
+            marginLeft: 10,
+            width: 50,
+            height: 30,
+            bottom: 7,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={{
+              width: 50,
+              height: 44,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            onPress={() => {
+              this.setState({isVisible1: true});
+            }}>
+            <Image
+              style={{width: 24 * 1.1506, height: 24}}
+              source={{uri: 'camera' + global.themeForImages}}></Image>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
   messengerBarContainer(props) {
     return (
+      /*<View style={{alignItems: 'flex-end', flexDirection: 'row'}}>
+        <View
+          style={{
+            width: 50,
+            height: 44,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <TouchableOpacity
+            style={{
+              width: 50,
+              height: 44,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            onPress={() => this.onPressCamera()}>
+            <Image
+              style={{width: 24 * 1.1506, height: 24}}
+              source={{uri: 'camera' + global.themeForImages}}></Image>
+          </TouchableOpacity>
+        </View>
+      </View>*/
       <InputToolbar
         {...props}
         containerStyle={{
@@ -888,6 +949,8 @@ export default class ChatScreen extends React.Component<Props> {
                 right: 0,
               }}>
               <GiftedChat
+                renderActions={this.renderActions}
+                locale={'tr-TR'}
                 loadEarlier={constLocalMsgs.length > this.state.noOfLoadedMsgs}
                 onLoadEarlier={() => this.loadEarlierMessages()}
                 isLoadingEarlier={this.state.isLoadingEarlierMessages}

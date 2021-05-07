@@ -313,6 +313,8 @@ export default class LoginScreen extends Component<{}> {
                     justifyContent: 'center',
                   }}>
                   <TextInput
+                    spellCheck={false}
+                    autoCorrect={false}
                     placeholderTextColor="rgba(255,255,255,0.7)"
                     placeholder={lang.Email}
                     keyboardType="email-address"
@@ -342,6 +344,8 @@ export default class LoginScreen extends Component<{}> {
                     justifyContent: 'center',
                   }}>
                   <TextInput
+                    spellCheck={false}
+                    autoCorrect={false}
                     placeholderTextColor="rgba(255,255,255,0.7)"
                     placeholder={lang.Password}
                     secureTextEntry

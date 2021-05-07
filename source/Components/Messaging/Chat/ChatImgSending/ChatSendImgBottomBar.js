@@ -111,6 +111,8 @@ export default class ChatSendImgBottomBar extends Component {
               borderBottomRightRadius: 24,
             }}>
             <TextInput
+              spellCheck={false}
+              autoCorrect={false}
               style={{
                 height: (this.width * 0.87) / 10,
                 paddingLeft: 10,

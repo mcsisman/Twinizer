@@ -826,6 +826,8 @@ export default class ProfileScreen extends Component<{}> {
                     alignItems: 'center',
                   }}>
                   <TextInput
+                    spellCheck={false}
+                    autoCorrect={false}
                     maxLength={15}
                     ref={'test'}
                     defaultValue={this.state.userUsername}
