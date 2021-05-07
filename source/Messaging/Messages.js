@@ -214,7 +214,7 @@ export default class MessagesScreen extends Component<{}> {
     ) {
       if (Platform.OS === 'ios') {
         this.turnOffAllListeners();
-        this.props.navigation.pop();
+        this.props.navigation.navigate('Tabs');
       }
 
       console.log('App has come to the background!');
