@@ -22,6 +22,7 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {
+  AppState,
   Image,
   Text,
   View,
@@ -99,6 +100,7 @@ export default class MessagesScreen extends Component<{}> {
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
+      appState: AppState.currentState,
       deleteModalVisible: false,
       allSelected: false,
       reRender: 'ok',
@@ -141,6 +143,7 @@ export default class MessagesScreen extends Component<{}> {
     global.newMsgListenerArray = [];
     global.currentProcessUidArray = {};
     this._subscribe = this.props.navigation.addListener('focus', async () => {
+      AppState.addEventListener('change', this._handleAppStateChange);
       global.fromChatOfUid = '';
       global.fromMessages = true;
       scrollViewHeight =
@@ -172,6 +175,7 @@ export default class MessagesScreen extends Component<{}> {
     });
 
     this._subscribe = this.props.navigation.addListener('blur', async () => {
+      AppState.removeEventListener('change', this._handleAppStateChange);
       this.messageBoxAnimation('reset');
       this.spinAnimation();
       this.resetTrashColors();
@@ -191,6 +195,24 @@ export default class MessagesScreen extends Component<{}> {
   static navigationOptions = {
     header: null,
   };
+  _handleAppStateChange = (nextAppState) => {
+    console.log('APP STATE:', this.state.appState);
+    if (
+      (this.state.appState == 'inactive' ||
+        this.state.appState == 'background') &&
+      nextAppState === 'active'
+    ) {
+      console.log('App has come to the foreground!');
+    }
+    if (
+      (nextAppState == 'inactive' || nextAppState == 'background') &&
+      this.state.appState === 'active'
+    ) {
+      console.log('App has come to the background!');
+    }
+    this.setState({appState: nextAppState});
+  };
+
   resetTrashColors() {
     for (let i = 0; i < requestColorArray.length; i++) {
       requestColorArray[i] = 'trashgray';
