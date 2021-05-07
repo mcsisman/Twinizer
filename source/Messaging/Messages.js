@@ -5,6 +5,7 @@ import {
   NavigationContainer,
   CommonActions,
   navigation,
+  StackActions,
 } from '@react-navigation/native';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {NavigationEvents} from 'react-navigation';
@@ -138,13 +139,11 @@ export default class MessagesScreen extends Component<{}> {
       getStatusBarHeight();
   }
   componentDidMount() {
-    console.log('BURAYA MI 1');
     this.initializeVars();
     lang = language[global.lang];
     global.newMsgListenerArray = [];
     global.currentProcessUidArray = {};
     this._subscribe = this.props.navigation.addListener('focus', async () => {
-      console.log('BURAYA MI 2');
       AppState.addEventListener('change', this._handleAppStateChange);
       global.fromChatOfUid = '';
       global.fromMessages = true;
@@ -191,7 +190,6 @@ export default class MessagesScreen extends Component<{}> {
     });
   }
   componentWillUnmount() {
-    console.log('BURAYA MI 3');
     this.resetVariables();
   }
 
@@ -211,6 +209,7 @@ export default class MessagesScreen extends Component<{}> {
       (nextAppState == 'inactive' || nextAppState == 'background') &&
       this.state.appState === 'active'
     ) {
+      this.props.navigation.pop();
       console.log('App has come to the background!');
     }
     this.setState({appState: nextAppState});

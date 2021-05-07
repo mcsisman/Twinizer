@@ -21,6 +21,7 @@ import {
   NavigationContainer,
   CommonActions,
   navigation,
+  StackActions,
 } from '@react-navigation/native';
 import {Header} from 'react-navigation-stack';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
@@ -94,6 +95,7 @@ export default class ChatScreen extends React.Component<Props> {
     this.width = Math.round(Dimensions.get('screen').width);
     this.statusBarHeaderTotalHeight = getStatusBarHeight() + headerHeight;
     this.state = {
+      appState: AppState.currentState,
       bubbleImageWidth: 100,
       bubbleImageHeight: 100,
       noOfLoadedMsgs: 0,
@@ -130,6 +132,7 @@ export default class ChatScreen extends React.Component<Props> {
       this._keyboardDidShow,
     );
     this._subscribe = this.props.navigation.addListener('focus', async () => {
+      AppState.addEventListener('change', this._handleAppStateChange);
       global.callback = async (data, noOfNewMsgs) => {
         var localMessages = [];
         await EncryptedStorage.getItem(
@@ -347,7 +350,7 @@ export default class ChatScreen extends React.Component<Props> {
 
   componentWillUnmount() {
     clearInterval(lastSeenInterval);
-
+    AppState.removeEventListener('change', this._handleAppStateChange);
     this.keyboardDidShowListener.remove();
     this.keyboardDidHideListener.remove();
   }
@@ -704,7 +707,23 @@ export default class ChatScreen extends React.Component<Props> {
       }
     }
   }
-
+  _handleAppStateChange = (nextAppState) => {
+    if (
+      (this.state.appState == 'inactive' ||
+        this.state.appState == 'background') &&
+      nextAppState === 'active'
+    ) {
+      console.log('App has come to the foreground!');
+    }
+    if (
+      (nextAppState == 'inactive' || nextAppState == 'background') &&
+      this.state.appState === 'active'
+    ) {
+      this.props.navigation.pop();
+      console.log('App has come to the background!');
+    }
+    this.setState({appState: nextAppState});
+  };
   async deleteMessage(message) {
     console.log('SİLİNECEK MESAJ İD:', message.id, '___', message.text);
     for (let i = 0; i < messageArray.length; i++) {
