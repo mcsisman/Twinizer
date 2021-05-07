@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Header} from 'react-navigation-stack';
+import RNRestart from 'react-native-restart';
 import {
   NavigationContainer,
   CommonActions,
@@ -209,7 +210,7 @@ export default class MessagesScreen extends Component<{}> {
       (nextAppState == 'inactive' || nextAppState == 'background') &&
       this.state.appState === 'active'
     ) {
-      this.props.navigation.pop();
+      RNRestart.Restart();
       console.log('App has come to the background!');
     }
     this.setState({appState: nextAppState});
