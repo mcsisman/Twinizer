@@ -720,7 +720,7 @@ export default class ChatScreen extends React.Component<Props> {
       (nextAppState == 'inactive' || nextAppState == 'background') &&
       this.state.appState === 'active'
     ) {
-      RNRestart.Restart();
+      this.props.navigation.pop();
       console.log('App has come to the background!');
     }
     this.setState({appState: nextAppState});

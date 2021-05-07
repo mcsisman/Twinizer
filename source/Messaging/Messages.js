@@ -55,6 +55,8 @@ if (Platform.OS === 'android') {
 if (Platform.OS === 'ios') {
   var headerHeight = Header.HEIGHT;
 }
+var snapshotListener;
+var playerIdListener;
 var lang = language[global.lang];
 var testVar = 0;
 var syncRef;
@@ -156,6 +158,7 @@ export default class MessagesScreen extends Component<{}> {
         getStatusBarHeight();
       newRequest = false;
       if (global.messagesFirstTime) {
+        console.log('MESSAGES FIRST TIME');
         this.initializeMessageScreen();
         console.log('messages ilk giriş chat');
       } else {
@@ -209,7 +212,10 @@ export default class MessagesScreen extends Component<{}> {
       (nextAppState == 'inactive' || nextAppState == 'background') &&
       this.state.appState === 'active'
     ) {
-      RNRestart.Restart();
+      if (Platform.OS === 'ios') {
+      }
+      this.turnOffAllListeners();
+      this.props.navigation.pop();
       console.log('App has come to the background!');
     }
     this.setState({appState: nextAppState});
@@ -395,7 +401,7 @@ export default class MessagesScreen extends Component<{}> {
   }
 
   async updatePlayerIds(snapshot, index) {
-    database()
+    playerIdListener = database()
       .ref('/PlayerIds/' + conversationUidArray[index])
       .on('child_changed', (snap) => {
         console.log('PLAYER ID DEGISTI LISTENERI');
@@ -585,7 +591,7 @@ export default class MessagesScreen extends Component<{}> {
     var docRef = db
       .collection(auth().currentUser.uid)
       .doc('MessageInformation');
-    await docRef.onSnapshot(async (doc) => {
+    snapshotListener = await docRef.onSnapshot(async (doc) => {
       if (!afterDelete) {
         if (!newRequest) {
           if (doc.exists) {
@@ -1368,6 +1374,15 @@ export default class MessagesScreen extends Component<{}> {
     ).start();
   }
 
+  turnOffAllListeners() {
+    for (let i = 0; i < global.newMsgListenerArray.length; i++) {
+      var x = global.newMsgListenerArray[i].listenerID;
+      x.off(); //Msg Listeners
+      usernameListener[i].off(); //Username Listeners
+    }
+    snapshotListener();
+    //playerIdListener.off();
+  }
   navigateToChat(receiverUid, receiverPhoto, receiverUsername) {
     global.fromChat = true;
     global.messageRemoved = false;
