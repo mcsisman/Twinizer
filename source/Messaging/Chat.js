@@ -722,7 +722,7 @@ export default class ChatScreen extends React.Component<Props> {
     ) {
       if (Platform.OS === 'ios') {
         console.log('Chatteki handle');
-        this.props.navigation.navigate('Tabs');
+        this.props.navigation.navigate('Tabs', {screen: 'Main'});
       }
     }
     this.setState({appState: nextAppState});
