@@ -177,7 +177,6 @@ export default class MessagesScreen extends Component<{}> {
     });
 
     this._subscribe = this.props.navigation.addListener('blur', async () => {
-      AppState.removeEventListener('change', this._handleAppStateChange);
       this.messageBoxAnimation('reset');
       this.spinAnimation();
       this.resetTrashColors();

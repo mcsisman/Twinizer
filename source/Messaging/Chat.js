@@ -17,6 +17,7 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import AsyncStorage from '@react-native-community/async-storage';
 import {createStackNavigator} from '@react-navigation/stack';
+import RNRestart from 'react-native-restart';
 import {
   NavigationContainer,
   CommonActions,
@@ -719,7 +720,7 @@ export default class ChatScreen extends React.Component<Props> {
       (nextAppState == 'inactive' || nextAppState == 'background') &&
       this.state.appState === 'active'
     ) {
-      this.props.navigation.pop();
+      RNRestart.Restart();
       console.log('App has come to the background!');
     }
     this.setState({appState: nextAppState});
