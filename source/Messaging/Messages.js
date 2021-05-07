@@ -213,9 +213,10 @@ export default class MessagesScreen extends Component<{}> {
       this.state.appState === 'active'
     ) {
       if (Platform.OS === 'ios') {
+        this.turnOffAllListeners();
+        this.props.navigation.pop();
       }
-      this.turnOffAllListeners();
-      this.props.navigation.pop();
+
       console.log('App has come to the background!');
     }
     this.setState({appState: nextAppState});
