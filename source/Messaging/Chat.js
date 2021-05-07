@@ -721,10 +721,9 @@ export default class ChatScreen extends React.Component<Props> {
       this.state.appState === 'active'
     ) {
       if (Platform.OS === 'ios') {
-        this.props.navigation.pop();
+        console.log('Chatteki handle');
+        this.props.navigation.navigate('Tabs');
       }
-
-      console.log('App has come to the background!');
     }
     this.setState({appState: nextAppState});
   };

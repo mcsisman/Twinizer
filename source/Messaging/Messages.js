@@ -146,8 +146,8 @@ export default class MessagesScreen extends Component<{}> {
     lang = language[global.lang];
     global.newMsgListenerArray = [];
     global.currentProcessUidArray = {};
+    AppState.addEventListener('change', this._handleAppStateChange);
     this._subscribe = this.props.navigation.addListener('focus', async () => {
-      AppState.addEventListener('change', this._handleAppStateChange);
       global.fromChatOfUid = '';
       global.fromMessages = true;
       scrollViewHeight =
@@ -200,19 +200,18 @@ export default class MessagesScreen extends Component<{}> {
     header: null,
   };
   _handleAppStateChange = (nextAppState) => {
-    console.log('APP STATE:', this.state.appState);
     if (
       (this.state.appState == 'inactive' ||
         this.state.appState == 'background') &&
       nextAppState === 'active'
     ) {
-      console.log('App has come to the foreground!');
     }
     if (
       (nextAppState == 'inactive' || nextAppState == 'background') &&
       this.state.appState === 'active'
     ) {
       if (Platform.OS === 'ios') {
+        console.log('MESAJLARDAKİ HANDLE');
         this.turnOffAllListeners();
         this.props.navigation.navigate('Tabs');
       }
