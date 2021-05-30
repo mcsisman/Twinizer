@@ -598,7 +598,7 @@ export default class ChatScreen extends React.Component<Props> {
         label={lang.Send}
         containerStyle={{height: 44, justifyContent: 'flex-end'}}
         textStyle={{
-          color: global.themeColor,
+          color: global.isDarkMode ? 'rgba(222,222,222,1)' : 'rgba(22,22,22,1)',
           fontWeight: '600',
           fontSize: 17,
           marginBottom: 12,

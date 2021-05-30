@@ -152,9 +152,11 @@ export default class MessageBox extends Component {
                 }}>
                 <Image
                   style={{
+                    left: 0,
+                    position: 'absolute',
                     opacity: this.props.isPhoto ? 1 : 0,
-                    width: (this.width * 9) / 180,
-                    height: (this.width * 9) / 180,
+                    width: (this.width * 11) / 180,
+                    height: (this.width * 11 * 0.87) / 180,
                   }}
                   source={{uri: 'camera' + global.themeForImages}}
                 />

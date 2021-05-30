@@ -82,8 +82,8 @@ export default class ImageUploader extends Component {
           source={{uri: 'camera' + global.themeForImages}}
           style={{
             bottom: '30%',
-            width: this.props.width * (23 / 100),
-            height: this.props.width * (23 / 100),
+            width: this.props.width * (25 / 100),
+            height: this.props.width * (25 / 100) * 0.87,
             position: 'absolute',
             opacity: this.props.textOpacity,
             flex: 1,

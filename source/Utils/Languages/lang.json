@@ -1,6 +1,6 @@
 {
-  "langEN":
-  {
+  "langEN": {
+    "ChooseAnOption": "Please choose an option.",
     "January": "January",
     "February": "February",
     "March": "March",
@@ -23,14 +23,14 @@
     "Advertisement": "Advertisement",
     "OK": "OK",
     "InvalidUsername": "Your username cannot be shorter than 3 characters and can only consist of letters, numbers and dots.",
-    "CouldntUploadImg": "Couldn't upload the image. Try Again.." ,
+    "CouldntUploadImg": "Couldn't upload the image. Try Again..",
     "CharLengthExceeded": "You've exceeded the character limit.",
     "CreateAccountFailed": "Creating account is failed. Try Again..",
     "SomethingWentWrong": "Something went wrong.",
     "CheckPhotos": "Check your photos and be sure that there is a face in each of them.",
     "Error": "Error!",
     "DeleteAccount": "Are you sure you want to delete your account?",
-    "Enter" : "Enter",
+    "Enter": "Enter",
     "VerifyEmailPW": "Verify your email and password to delete your account.",
     "PlsCheckEmail": "We've sent a password reset link to your e-mail.",
     "LogoutSure": "Are you sure you want to log out?",
@@ -170,19 +170,9 @@
     "Licences": "Licences",
 
     "ConnectionFailed": "Connection Failed."
-
-
-
-
-
-
-
-
-
-
   },
-  "langTR":
-  {
+  "langTR": {
+    "ChooseAnOption": "Lütfen birini seçin.",
     "January": "Ocak",
     "February": "Şubat",
     "March": "Mart",
@@ -212,7 +202,7 @@
     "CheckPhotos": "Lütfen fotoğraflarınız kontrol edin ve hepsinde yüzünüzün görünür olduğundan emin olun.",
     "Error": "Hata!",
     "DeleteAccount": "Hesabınızı silmek istediğinizden emin misiniz?",
-    "Enter" : "Onayla",
+    "Enter": "Onayla",
     "VerifyEmailPW": "Hesabınızı silebilmek için lütfen e-posta adresinizi ve şifrenizi girin.",
     "PlsCheckEmail": "E-posta adresinize şifre sıfırlama bağlantısı gönderildi.",
     "LogoutSure": "Çıkış yapmak istediğinize emin misiniz?",
@@ -305,7 +295,7 @@
     "Done": "Onayla",
     "MessagesDeleteInfo": "Uyarı: Eğer bu mesaj kutusunu silerseniz, bu kullanıcıdan alacağınız bir sonraki mesaj İstekler kısmında görünecek. Aramada tekrar karşınıza çıkana kadar veya bu kişiden mesaj alana kadar bu kullanıcıya mesaj yollayamazsınız.",
     "ClearMessageHistory": "Sohbeti Temizle",
-    "RemoveChat": "Sohbeti Sil",
+    "RemoveChat": "Sohbeti Kaldır",
     "Requests": "İstekler",
     "NoRequests": "Hiç isteğiniz yok, üzgünüm...",
     "NoMessages": "Hiç mesajınız yok, üzgünüm...",

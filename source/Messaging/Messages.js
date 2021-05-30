@@ -2085,7 +2085,7 @@ export default class MessagesScreen extends Component<{}> {
                 ? () => this.deleteMessagesPressed()
                 : () => this.deleteRequestPressed()
             }
-            txtAlert={lang.MessagesDeleteInfo}
+            txtAlert={lang.ChooseAnOption}
           />
         </SafeAreaView>
       );
