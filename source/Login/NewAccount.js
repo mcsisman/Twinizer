@@ -29,6 +29,7 @@ import {
   StatusBar,
   Platform,
   Keyboard,
+  ScrollView,
 } from 'react-native';
 import LoginScreen from './Login';
 import CustomHeader from '../Components/Common/Header/CustomHeader';
@@ -231,6 +232,7 @@ export default class NewAccountScreen extends Component<{}> {
       keyboardAvoidingHeight = global.keyboardHeight + this.navBarHeight;
     }
     const {navigate} = this.props.navigation;
+    console.log('height:', this.height);
     return (
       <SafeAreaView
         style={{
@@ -242,247 +244,277 @@ export default class NewAccountScreen extends Component<{}> {
             : 'rgba(242,242,242,1)',
         }}>
         <ModifiedStatusBar />
-        <TouchableOpacity
-          activeOpacity={1}
-          style={{
-            width: this.width,
-            height: this.height,
-            flex: 1,
-            alignItems: 'center',
-            bottom:
-              this.state.keyboardOpen &&
-              global.keyboardHeight != null &&
-              global.keyboardHeight != undefined
-                ? keyboardAvoidingHeight -
-                  (this.height - headerHeight - this.height / 2) / 2 +
-                  this.width / 50
-                : 0,
-          }}
-          onPress={() => {
-            console.log('touchable pressed');
-            Keyboard.dismiss();
-            this.setState({keyboardOpen: false});
-          }}>
-          <CustomHeader
-            title={lang.SignUp}
-            onPress={() => this.props.navigation.goBack()}
-          />
-
+        <CustomHeader
+          title={lang.SignUp}
+          onPress={() => this.props.navigation.goBack()}
+        />
+        <ScrollView>
           <View
             style={{
-              backgroundColor: 'rgba(255,255,255,0)',
               width: this.width,
-              height: this.height - getStatusBarHeight() - headerHeight,
-              alignItems: 'center',
-              justifyContent: 'center',
-              flex: 1,
+              height: this.state.keyboardOpen
+                ? this.height -
+                  getStatusBarHeight() -
+                  headerHeight -
+                  this.navBarHeight +
+                  (this.height -
+                    getStatusBarHeight() -
+                    headerHeight -
+                    this.navBarHeight -
+                    this.height / 2) /
+                    2
+                : this.height -
+                  getStatusBarHeight() -
+                  headerHeight -
+                  this.navBarHeight,
             }}>
-            <View
+            <TouchableOpacity
+              activeOpacity={1}
               style={{
                 width: this.width,
-                height: this.height / 2,
+                height:
+                  this.height -
+                  getStatusBarHeight() -
+                  headerHeight -
+                  this.navBarHeight,
                 alignItems: 'center',
+                bottom:
+                  this.state.keyboardOpen &&
+                  global.keyboardHeight != null &&
+                  global.keyboardHeight != undefined
+                    ? (this.height -
+                        getStatusBarHeight() -
+                        headerHeight -
+                        this.navBarHeight -
+                        this.height / 2) /
+                      2
+                    : 0,
+              }}
+              onPress={() => {
+                console.log('touchable pressed');
+                Keyboard.dismiss();
+                this.setState({keyboardOpen: false});
               }}>
               <View
                 style={{
                   width: this.width,
-                  height: '16%',
+                  height:
+                    this.height -
+                    getStatusBarHeight() -
+                    headerHeight -
+                    this.navBarHeight,
                   alignItems: 'center',
                   justifyContent: 'center',
+                  flex: 1,
                 }}>
-                <TextInput
-                  spellCheck={false}
-                  autoCorrect={false}
-                  onFocus={() => {
-                    console.log('onfocus');
-                    this.setState({keyboardOpen: true});
-                  }}
-                  placeholderTextColor={
-                    global.isDarkMode
-                      ? global.darkModeColors[3]
-                      : 'rgba(0,0,0,0.4)'
-                  }
-                  placeholder={lang.Email}
-                  keyboardType="email-address"
-                  //returnKeyType="Next"
+                <View
                   style={{
-                    paddingLeft: 0,
-                    fontSize: 17 * (this.width / 360),
-                    paddingBottom: this.width / 50,
-                    position: 'absolute',
-                    width: this.width * (6 / 10),
-                    backgroundColor: 'rgba(255,255,255,0.2)',
-                    borderBottomColor: global.themeColor,
-                    borderBottomWidth: 2,
-                  }}
-                  onChangeText={(text) =>
-                    this.setState({email: text})
-                  }></TextInput>
+                    width: this.width,
+                    height: this.height / 2,
+                    alignItems: 'center',
+                  }}>
+                  <View
+                    style={{
+                      width: this.width,
+                      height: '16%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <TextInput
+                      spellCheck={false}
+                      autoCorrect={false}
+                      onFocus={() => {
+                        console.log('onfocus');
+                        this.setState({keyboardOpen: true});
+                      }}
+                      placeholderTextColor={
+                        global.isDarkMode
+                          ? global.darkModeColors[3]
+                          : 'rgba(0,0,0,0.4)'
+                      }
+                      placeholder={lang.Email}
+                      keyboardType="email-address"
+                      //returnKeyType="Next"
+                      style={{
+                        paddingLeft: 0,
+                        fontSize: 17 * (this.width / 360),
+                        paddingBottom: this.width / 50,
+                        position: 'absolute',
+                        width: this.width * (6 / 10),
+                        backgroundColor: 'rgba(255,255,255,0.2)',
+                        borderBottomColor: global.themeColor,
+                        borderBottomWidth: 2,
+                      }}
+                      onChangeText={(text) =>
+                        this.setState({email: text})
+                      }></TextInput>
+                  </View>
+                  <View
+                    style={{
+                      width: this.width,
+                      height: '16%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <TextInput
+                      spellCheck={false}
+                      autoCorrect={false}
+                      onFocus={() => {
+                        console.log('onfocus2');
+                        this.setState({keyboardOpen: true});
+                      }}
+                      maxLength={15}
+                      value={this.state.isim}
+                      placeholderTextColor={
+                        global.isDarkMode
+                          ? global.darkModeColors[3]
+                          : 'rgba(0,0,0,0.4)'
+                      }
+                      placeholder={lang.Username}
+                      //returnKeyType="Next"
+                      style={{
+                        color: this.state.usernameColor,
+                        paddingLeft: 0,
+                        fontSize: 17 * (this.width / 360),
+                        paddingBottom: this.width / 50,
+                        position: 'absolute',
+                        width: this.width * (6 / 10),
+                        backgroundColor: global.isDarkMode
+                          ? 'rgba(255,255,255,0)'
+                          : 'rgba(255,255,255,0.2)',
+                        borderColor: 'rgba(241,51,18,0)',
+                        borderBottomColor: global.themeColor,
+                        borderBottomWidth: 2,
+                      }}
+                      onChangeText={(text) =>
+                        this.onUsernameTextChange(text)
+                      }></TextInput>
+                  </View>
+                  <View
+                    style={{
+                      width: this.width,
+                      height: '16%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <TextInput
+                      spellCheck={false}
+                      autoCorrect={false}
+                      onFocus={() => this.setState({keyboardOpen: true})}
+                      placeholderTextColor={
+                        global.isDarkMode
+                          ? global.darkModeColors[3]
+                          : 'rgba(0,0,0,0.4)'
+                      }
+                      placeholder={lang.Password}
+                      secureTextEntry
+                      //returnKeyType="Next"
+                      style={{
+                        paddingLeft: 0,
+                        fontSize: 17 * (this.width / 360),
+                        paddingBottom: this.width / 50,
+                        position: 'absolute',
+                        width: this.width * (6 / 10),
+                        backgroundColor: global.isDarkMode
+                          ? 'rgba(255,255,255,0)'
+                          : 'rgba(255,255,255,0.2)',
+                        borderColor: 'rgba(241,51,18,0)',
+                        borderBottomColor: global.themeColor,
+                        borderBottomWidth: 2,
+                      }}
+                      onChangeText={(text) =>
+                        this.setState({sifre: text})
+                      }></TextInput>
+                  </View>
+                  <View
+                    style={{
+                      width: this.width,
+                      height: '16%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <TextInput
+                      spellCheck={false}
+                      autoCorrect={false}
+                      onFocus={() => this.setState({keyboardOpen: true})}
+                      placeholderTextColor={
+                        global.isDarkMode
+                          ? global.darkModeColors[3]
+                          : 'rgba(0,0,0,0.4)'
+                      }
+                      placeholder={lang.ConfirmPassword}
+                      secureTextEntry
+                      //returnKeyType="Next"
+                      style={{
+                        paddingLeft: 0,
+                        fontSize: 17 * (this.width / 360),
+                        paddingBottom: this.width / 50,
+                        position: 'absolute',
+                        width: this.width * (6 / 10),
+                        backgroundColor: global.isDarkMode
+                          ? 'rgba(255,255,255,0)'
+                          : 'rgba(255,255,255,0.2)',
+                        borderColor: 'rgba(241,51,18,0)',
+                        borderBottomColor: global.themeColor,
+                        borderBottomWidth: 2,
+                      }}
+                      onChangeText={(text) =>
+                        this.setState({sifre2: text})
+                      }></TextInput>
+                  </View>
+                  <View
+                    style={{
+                      width: this.width,
+                      height: (this.height * 18) / 100,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <OvalButton
+                      opacity={1}
+                      backgroundColor={
+                        global.isDarkMode
+                          ? global.darkModeColors[1]
+                          : 'rgba(255,255,255,1)'
+                      }
+                      title={lang.Create}
+                      textColor={global.themeColor}
+                      onPress={() => this.check()}
+                      borderColor={global.themeColor}
+                    />
+                  </View>
+                </View>
               </View>
-              <View
-                style={{
-                  width: this.width,
-                  height: '16%',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <TextInput
-                  spellCheck={false}
-                  autoCorrect={false}
-                  onFocus={() => {
-                    console.log('onfocus2');
-                    this.setState({keyboardOpen: true});
-                  }}
-                  maxLength={15}
-                  value={this.state.isim}
-                  placeholderTextColor={
-                    global.isDarkMode
-                      ? global.darkModeColors[3]
-                      : 'rgba(0,0,0,0.4)'
-                  }
-                  placeholder={lang.Username}
-                  //returnKeyType="Next"
-                  style={{
-                    color: this.state.usernameColor,
-                    paddingLeft: 0,
-                    fontSize: 17 * (this.width / 360),
-                    paddingBottom: this.width / 50,
-                    position: 'absolute',
-                    width: this.width * (6 / 10),
-                    backgroundColor: global.isDarkMode
-                      ? 'rgba(255,255,255,0)'
-                      : 'rgba(255,255,255,0.2)',
-                    borderColor: 'rgba(241,51,18,0)',
-                    borderBottomColor: global.themeColor,
-                    borderBottomWidth: 2,
-                  }}
-                  onChangeText={(text) =>
-                    this.onUsernameTextChange(text)
-                  }></TextInput>
-              </View>
-              <View
-                style={{
-                  width: this.width,
-                  height: '16%',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <TextInput
-                  spellCheck={false}
-                  autoCorrect={false}
-                  onFocus={() => this.setState({keyboardOpen: true})}
-                  placeholderTextColor={
-                    global.isDarkMode
-                      ? global.darkModeColors[3]
-                      : 'rgba(0,0,0,0.4)'
-                  }
-                  placeholder={lang.Password}
-                  secureTextEntry
-                  //returnKeyType="Next"
-                  style={{
-                    paddingLeft: 0,
-                    fontSize: 17 * (this.width / 360),
-                    paddingBottom: this.width / 50,
-                    position: 'absolute',
-                    width: this.width * (6 / 10),
-                    backgroundColor: global.isDarkMode
-                      ? 'rgba(255,255,255,0)'
-                      : 'rgba(255,255,255,0.2)',
-                    borderColor: 'rgba(241,51,18,0)',
-                    borderBottomColor: global.themeColor,
-                    borderBottomWidth: 2,
-                  }}
-                  onChangeText={(text) =>
-                    this.setState({sifre: text})
-                  }></TextInput>
-              </View>
-              <View
-                style={{
-                  width: this.width,
-                  height: '16%',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <TextInput
-                  spellCheck={false}
-                  autoCorrect={false}
-                  onFocus={() => this.setState({keyboardOpen: true})}
-                  placeholderTextColor={
-                    global.isDarkMode
-                      ? global.darkModeColors[3]
-                      : 'rgba(0,0,0,0.4)'
-                  }
-                  placeholder={lang.ConfirmPassword}
-                  secureTextEntry
-                  //returnKeyType="Next"
-                  style={{
-                    paddingLeft: 0,
-                    fontSize: 17 * (this.width / 360),
-                    paddingBottom: this.width / 50,
-                    position: 'absolute',
-                    width: this.width * (6 / 10),
-                    backgroundColor: global.isDarkMode
-                      ? 'rgba(255,255,255,0)'
-                      : 'rgba(255,255,255,0.2)',
-                    borderColor: 'rgba(241,51,18,0)',
-                    borderBottomColor: global.themeColor,
-                    borderBottomWidth: 2,
-                  }}
-                  onChangeText={(text) =>
-                    this.setState({sifre2: text})
-                  }></TextInput>
-              </View>
-              <View
-                style={{
-                  width: this.width,
-                  height: '36%',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <OvalButton
-                  opacity={1}
-                  backgroundColor={
-                    global.isDarkMode
-                      ? global.darkModeColors[1]
-                      : 'rgba(255,255,255,1)'
-                  }
-                  title={lang.Create}
-                  textColor={global.themeColor}
-                  onPress={() => this.check()}
-                  borderColor={global.themeColor}
-                />
-              </View>
-            </View>
-          </View>
 
-          <TermsAndPrivacyModal
-            agreeDisabled={this.state.agreeDisabled}
-            isVisible={this.state.termsAndPrivacyIsVisible}
-            txtCancel={lang.Cancel}
-            txtOk={lang.Agree}
-            txtTerms={lang.TermsOfUse}
-            txtPrivacy={lang.PrivacyPolicy}
-            onPressClose={() => {
-              this.setState({termsAndPrivacyIsVisible: false});
-            }}
-            onPressOk={() => {
-              this.SignUp(this.state.email, this.state.password);
-              this.setState({termsAndPrivacyIsVisible: false});
-            }}
-            onPressTerms={() => {
-              this.setState({selectedTxt: 'Terms'});
-            }}
-            onPressPrivacy={() => {
-              this.setState({selectedTxt: 'Privacy'});
-            }}
-            selected={this.state.selectedTxt}
-            txt={
-              this.state.selectedTxt === 'Terms'
-                ? texts['terms']
-                : texts['privacy']
-            }
-          />
-        </TouchableOpacity>
+              <TermsAndPrivacyModal
+                agreeDisabled={this.state.agreeDisabled}
+                isVisible={this.state.termsAndPrivacyIsVisible}
+                txtCancel={lang.Cancel}
+                txtOk={lang.Agree}
+                txtTerms={lang.TermsOfUse}
+                txtPrivacy={lang.PrivacyPolicy}
+                onPressClose={() => {
+                  this.setState({termsAndPrivacyIsVisible: false});
+                }}
+                onPressOk={() => {
+                  this.SignUp(this.state.email, this.state.password);
+                  this.setState({termsAndPrivacyIsVisible: false});
+                }}
+                onPressTerms={() => {
+                  this.setState({selectedTxt: 'Terms'});
+                }}
+                onPressPrivacy={() => {
+                  this.setState({selectedTxt: 'Privacy'});
+                }}
+                selected={this.state.selectedTxt}
+                txt={
+                  this.state.selectedTxt === 'Terms'
+                    ? texts['terms']
+                    : texts['privacy']
+                }
+              />
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }
