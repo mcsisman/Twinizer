@@ -1046,12 +1046,16 @@ export default class MainScreen extends Component<{}> {
     global.receiverCountry = 'Australia';
     global.receiverUsername = 'cemil ug';
     global.fromChatOfUid = global.receiverUid;
-    for (let i = 0; i < global.newMsgListenerArray.length; i++) {
-      if (global.receiverUid == global.newMsgListenerArray[i].uid) {
-        global.newMsgListenerArray[i].isOpen = false;
+    if (
+      global.newMsgListenerArray != undefined &&
+      global.newMsgListenerArray != null
+    ) {
+      for (let i = 0; i < global.newMsgListenerArray.length; i++) {
+        if (global.receiverUid == global.newMsgListenerArray[i].uid) {
+          global.newMsgListenerArray[i].isOpen = false;
+        }
       }
     }
-
     //global.firstMessage = true
     //global.playerIdArray[global.receiverUid] = await EncryptedStorage.getItem(global.receiverUid + "playerId")
     console.log('global.playerIdArray: ', global.playerIdArray);
