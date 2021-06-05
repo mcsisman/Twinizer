@@ -1375,9 +1375,11 @@ export default class MessagesScreen extends Component<{}> {
   turnOffAllListeners() {
     global.messagesFirstTime = true;
     for (let i = 0; i < global.newMsgListenerArray.length; i++) {
-      var x = global.newMsgListenerArray[i].listenerID;
-      x.off(); //Msg Listeners
-      usernameListener[i].off(); //Username Listeners
+      if (global.newMsgListenerArray[i].isOpen == true) {
+        var x = global.newMsgListenerArray[i].listenerID;
+        x.off(); //Msg Listeners
+        usernameListener[i].off(); //Username Listeners
+      }
     }
     snapshotListener();
     //playerIdListener.off();
