@@ -1385,6 +1385,7 @@ export default class MessagesScreen extends Component<{}> {
     //playerIdListener.off();
   }
   navigateToChat(receiverUid, receiverPhoto, receiverUsername) {
+    console.log('navigated to chat');
     global.fromChat = true;
     global.messageRemoved = false;
     global.check = false;
