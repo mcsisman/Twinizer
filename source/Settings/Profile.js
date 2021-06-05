@@ -3,6 +3,7 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 import ImagePicker from 'react-native-image-crop-picker';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Header} from 'react-navigation-stack';
+import {Snackbar} from 'react-native-paper';
 import {
   NavigationContainer,
   StackActions,
@@ -414,8 +415,7 @@ export default class ProfileScreen extends Component<{}> {
     if (this.checkIfUsernameValid(this.state.userUsername)) {
       console.log('BİO:', this.state.userBio);
       if (this.checkIfBioValid(this.state.userBio)) {
-        this.spinAnimation();
-        this.setState({loadingOpacity: 1, saveBtnDisabled: true});
+        this.setState({saveBtnDisabled: true});
         try {
           if (this.state.newPhoto) {
             var uploadDone = false;
@@ -1047,14 +1047,17 @@ export default class ProfileScreen extends Component<{}> {
               }
             />
 
-            <InfoModal
-              isVisible={this.state.saveInfoModalVisible}
-              txtAlert={lang.YourChangesHaveBeenSaved}
-              txtGotIt={lang.GotIt}
-              onPressClose={() => this.setState({saveInfoModalVisible: false})}
-              isKeyboardOpen={this.state.keyboardOpen}
-              keyboardHeight={global.keyboardHeight}
-            />
+            <Snackbar
+              duration={1000}
+              style={{
+                bottom: this.state.keyboardOpen
+                  ? global.keyboardHeight + this.navBarHeight + this.width / 7
+                  : this.width / 7,
+              }}
+              visible={this.state.saveInfoModalVisible}
+              onDismiss={() => this.setState({saveInfoModalVisible: false})}>
+              {lang.YourChangesHaveBeenSaved}
+            </Snackbar>
 
             <Animated.Image
               source={{uri: 'loading' + global.themeForImages}}

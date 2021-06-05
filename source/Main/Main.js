@@ -18,7 +18,7 @@ import Swipeable from 'react-native-swipeable';
 import RNFetchBlob from 'rn-fetch-blob';
 import AsyncStorage from '@react-native-community/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {FAB} from 'react-native-paper';
+import {FAB, Snackbar, Button} from 'react-native-paper';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -46,7 +46,6 @@ import {
   Alert,
   StatusBar,
   Easing,
-  Button,
   Animated,
   Platform,
   ScrollView,
@@ -2632,6 +2631,17 @@ export default class MainScreen extends Component<{}> {
               interstitial.show();
           }}
         />
+
+        <Snackbar
+          style={{
+            bottom: this.state.keyboardOpen
+              ? global.keyboardHeight + this.navBarHeight + this.width / 7
+              : this.width / 7,
+          }}
+          visible={this.state.saveInfoModalVisible}
+          onDismiss={() => this.setState({saveInfoModalVisible: false})}>
+          {lang.YourChangesHaveBeenSaved}
+        </Snackbar>
 
         <ImageUploadModal
           isVisible={this.state.isVisible1}
