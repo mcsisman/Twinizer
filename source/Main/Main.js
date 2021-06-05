@@ -18,6 +18,7 @@ import Swipeable from 'react-native-swipeable';
 import RNFetchBlob from 'rn-fetch-blob';
 import AsyncStorage from '@react-native-community/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {FAB} from 'react-native-paper';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -2590,11 +2591,25 @@ export default class MainScreen extends Component<{}> {
             alignItems: 'center',
             height: this.width / 10,
           }}>
-          <SearchButton
-            position="relative"
+          <FAB
+            style={{
+              opacity: this.state.btnOpacity,
+              backgroundColor: global.themeColor,
+              width: this.width / 10,
+              height: this.width / 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            small
+            icon={({size, color}) => (
+              <Image
+                source={{uri: 'search'}}
+                style={{width: '55%', height: '55%'}}
+              />
+            )}
+            animated={false}
             onPress={() => this.searchDone()}
             disabled={this.state.disabled}
-            opacity={this.state.btnOpacity}
           />
         </View>
 

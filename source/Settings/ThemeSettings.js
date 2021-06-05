@@ -319,9 +319,9 @@ export default class ThemeSettingsScreen extends Component<{}> {
                 onColor={global.darkModeColors[0]}
                 offColor={Colors.dark60}
                 thumbColor={Colors.dark20}
-                width={65}
-                height={30}
-                thumbSize={23}
+                width={this.width / 7}
+                height={((this.width / 7) * 30) / 60}
+                thumbSize={((this.width / 7) * 23) / 60}
                 value={this.state.darkMode}
                 onValueChange={async () => {
                   await this.setState({darkMode: !this.state.darkMode});
