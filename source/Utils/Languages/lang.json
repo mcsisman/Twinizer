@@ -1,5 +1,6 @@
 {
   "langEN": {
+    "ThisFieldIsRequired": "This field is required.",
     "ChooseAnOption": "Please choose an option.",
     "January": "January",
     "February": "February",
@@ -22,7 +23,8 @@
     "AllGenders": "All Genders",
     "Advertisement": "Advertisement",
     "OK": "OK",
-    "InvalidUsername": "Your username cannot be shorter than 3 characters and can only consist of letters, numbers and dots.",
+    "InvalidUsernameChar": "Can't be less than 3 characters.",
+    "InvalidUsernameType": "Use letters, numbers and \".\"",
     "CouldntUploadImg": "Couldn't upload the image. Try Again..",
     "CharLengthExceeded": "You've exceeded the character limit.",
     "CreateAccountFailed": "Creating account is failed. Try Again..",
@@ -73,8 +75,8 @@
     "PlsEnterEmailUsername": "Please enter your email address and username.",
     "PlsEnterUsername": "Please enter your username.",
     "PlsEnterEmail": "Please enter your email address",
-    "PasswordCharacter": "The password must be at least 6 characters.",
-    "PasswordMatch": "Your password and confirmation password must be identical.",
+    "PasswordCharacter": "Can't be less than 6 characters.",
+    "PasswordMatch": "Passwords must be identical.",
 
     "CompleteYourProfile": "Complete Your Profile",
     "PleaseEnterYourInformation": "Please fill the information below",
@@ -172,6 +174,7 @@
     "ConnectionFailed": "Connection Failed."
   },
   "langTR": {
+    "ThisFieldIsRequired": "Bu alan boş bırakılamaz.",
     "ChooseAnOption": "Lütfen birini seçin.",
     "January": "Ocak",
     "February": "Şubat",
@@ -194,7 +197,7 @@
     "AllGenders": "Tüm Cinsiyetler",
     "Advertisement": "Reklam",
     "OK": "TAMAM",
-    "InvalidUsername": "Kullanıcı adınız 3 karakterden kısa olamaz ve harf, sayı ve nokta işaretinden başka karakter içeremez.",
+    "InvalidUsername": "Kullanıcı adı geçersiz. Sadece sayı, harf veya nokta kullanın.",
     "CouldntUploadImg": "Resminiz kaydedilemedi, lütfen tekrar deneyin.",
     "CharLengthExceeded": "Karakter limitini aştınız.",
     "CreateAccountFailed": "Creating account is failed. Try Again..",
@@ -245,7 +248,7 @@
     "PlsEnterUsername": "Lütfen kullanıcı adınızı giriniz.",
     "PlsEnterEmail": "Lütfen e-posta adresinizi giriniz.",
     "PasswordCharacter": "Şifreniz en az 6 karakter olmalı.",
-    "PasswordMatch": "Onay şifrenizin doğru olduğundan emin olun",
+    "PasswordMatch": "Şifreleriniz aynı olmalı. ",
 
     "CompleteYourProfile": "Profilini Tamamla",
     "PleaseEnterYourInformation": "Lütfen aşağıdaki alanları doldurun",

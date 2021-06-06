@@ -8,6 +8,7 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import AsyncStorage from '@react-native-community/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {TextField} from 'react-native-ui-lib';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -29,6 +30,7 @@ import {
   StatusBar,
   Platform,
   Keyboard,
+  FlatList,
   ScrollView,
 } from 'react-native';
 import LoginScreen from './Login';
@@ -54,6 +56,7 @@ export default class NewAccountScreen extends Component<{}> {
   constructor(props) {
     super(props);
     this.state = {
+      keyboardOpen: false,
       reRender: true,
       termsAndPrivacyIsVisible: false,
       selectedTxt: 'Terms',
@@ -66,6 +69,11 @@ export default class NewAccountScreen extends Component<{}> {
       gender: '',
       verificationSended: false,
       agreeDisabled: false,
+      textInputHeight: 0,
+      emailErrorMsg: '',
+      usernameErrorMsg: '',
+      pwErrorMsg: '',
+      confirmPwErrorMsg: '',
     };
     var lang = language[global.lang];
     this.props.navigation.setParams({otherParam: lang.SignUp});
@@ -75,6 +83,7 @@ export default class NewAccountScreen extends Component<{}> {
     this.width = Math.round(Dimensions.get('screen').width);
     this.windowHeight = Math.round(Dimensions.get('window').height);
     this.navBarHeight = this.height - this.windowHeight;
+    this.textFieldHeight = 0;
   }
   componentDidMount() {
     var lang = language[global.lang];
@@ -114,6 +123,10 @@ export default class NewAccountScreen extends Component<{}> {
   };
   _keyboardDidHide = () => {
     this.setState({keyboardOpen: false});
+    this.flatListRef.scrollToOffset({
+      animated: false,
+      offset: 0,
+    });
     console.log('keyboard kapandı');
   };
   writeUserData(userId, name, email, imageUrl) {
@@ -173,29 +186,61 @@ export default class NewAccountScreen extends Component<{}> {
       });
   };
   check() {
+    var lang = language[global.lang];
+    var usernameErrorMsg = '';
+    var emailErrorMsg = '';
+    var pwErrorMsg = '';
+    var confirmPwErrorMsg = '';
+
+    if (this.state.isim == '') {
+      usernameErrorMsg = lang.ThisFieldIsRequired;
+    } else if (this.state.isim.length < 3) {
+      usernameErrorMsg = lang.InvalidUsernameChar;
+    } else if (!this.checkIfUsernameValid(this.state.isim)) {
+      usernameErrorMsg = lang.InvalidUsernameType;
+    } else {
+      usernameErrorMsg = '';
+    }
+
+    if (this.state.sifre == '') {
+      pwErrorMsg = lang.ThisFieldIsRequired;
+    } else if (this.state.sifre.length < 6) {
+      pwErrorMsg = lang.PasswordCharacter;
+    } else {
+      pwErrorMsg = '';
+    }
+    if (this.state.sifre2 == '') {
+      confirmPwErrorMsg = lang.ThisFieldIsRequired;
+    } else if (this.state.sifre2.length < 6) {
+      confirmPwErrorMsg = lang.PasswordCharacter;
+    } else if (this.state.sifre != this.state.sifre2) {
+      confirmPwErrorMsg = lang.PasswordMatch;
+    } else {
+      confirmPwErrorMsg = '';
+    }
+
+    emailErrorMsg = this.state.email == '' ? lang.ThisFieldIsRequired : '';
+
+    this.setState({
+      emailErrorMsg: emailErrorMsg,
+      usernameErrorMsg: usernameErrorMsg,
+      pwErrorMsg: pwErrorMsg,
+      confirmPwErrorMsg: confirmPwErrorMsg,
+    });
+  }
+  async onPressCreate() {
+    console.log('create');
+
     Keyboard.dismiss();
     this.setState({keyboardOpen: false});
-    var lang = language[global.lang];
-    if (this.state.sifre == this.state.sifre2) {
-      if (this.state.isim == '') {
-        if (this.state.email == '') {
-          Alert.alert('', lang.PlsEnterEmailUsername);
-        } else {
-          Alert.alert('', lang.PlsEnterUsername);
-        }
-      } else if (!this.checkIfUsernameValid(this.state.isim)) {
-        Alert.alert('', lang.InvalidUsername);
-      } else if (this.state.email == '') {
-        Alert.alert('', lang.PlsEnterEmail);
-      } else if (this.state.sifre.length < 6 && this.state.sifre2.length < 6) {
-        this.setState({sendEmailDisabled: false});
-        Alert.alert('', lang.PasswordCharacter);
-      } else {
-        this.setState({termsAndPrivacyIsVisible: true});
-        //this.SignUp(this.state.email, this.state.password)
-      }
-    } else {
-      Alert.alert('', lang.PasswordMatch);
+    await this.check();
+    if (
+      this.state.emailErrorMsg == '' &&
+      this.state.usernameErrorMsg == '' &&
+      this.state.pwErrorMsg == '' &&
+      this.state.confirmPwErrorMsg == ''
+    ) {
+      this.setState({termsAndPrivacyIsVisible: true});
     }
   }
   onUsernameTextChange(text) {
@@ -208,7 +253,7 @@ export default class NewAccountScreen extends Component<{}> {
   }
   checkIfUsernameValid(text) {
     var regex = /^[A-Za-z0-9. ]+$/;
-    if (regex.test(text) && text.length >= 3) {
+    if (regex.test(text)) {
       return true;
     } else {
       return false;
@@ -231,8 +276,8 @@ export default class NewAccountScreen extends Component<{}> {
     } else {
       keyboardAvoidingHeight = global.keyboardHeight + this.navBarHeight;
     }
+    console.log('RENDER SIGN UP');
     const {navigate} = this.props.navigation;
-    console.log('height:', this.height);
     return (
       <SafeAreaView
         style={{
@@ -248,273 +293,272 @@ export default class NewAccountScreen extends Component<{}> {
           title={lang.SignUp}
           onPress={() => this.props.navigation.goBack()}
         />
-        <ScrollView>
-          <View
-            style={{
-              width: this.width,
-              height: this.state.keyboardOpen
-                ? this.height -
-                  getStatusBarHeight() -
-                  headerHeight -
-                  this.navBarHeight +
-                  (this.height -
-                    getStatusBarHeight() -
-                    headerHeight -
-                    this.navBarHeight -
-                    this.height / 2) /
-                    2
-                : this.height -
-                  getStatusBarHeight() -
-                  headerHeight -
-                  this.navBarHeight,
-            }}>
-            <TouchableOpacity
-              activeOpacity={1}
-              style={{
-                width: this.width,
-                height:
-                  this.height -
-                  getStatusBarHeight() -
-                  headerHeight -
-                  this.navBarHeight,
-                alignItems: 'center',
-                bottom:
-                  this.state.keyboardOpen &&
-                  global.keyboardHeight != null &&
-                  global.keyboardHeight != undefined
-                    ? (this.height -
-                        getStatusBarHeight() -
-                        headerHeight -
-                        this.navBarHeight -
-                        this.height / 2) /
-                      2
-                    : 0,
-              }}
-              onPress={() => {
-                console.log('touchable pressed');
-                Keyboard.dismiss();
-                this.setState({keyboardOpen: false});
-              }}>
+
+        <FlatList
+          keyboardShouldPersistTaps={true}
+          style={{
+            flex: 1,
+          }}
+          ref={(ref) => {
+            this.flatListRef = ref;
+          }}
+          scrollEnabled={this.state.keyboardOpen}
+          nestedScrollEnabled={this.state.keyboardOpen}
+          renderItem={() => {
+            return (
               <View
                 style={{
                   width: this.width,
                   height:
-                    this.height -
-                    getStatusBarHeight() -
-                    headerHeight -
-                    this.navBarHeight,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flex: 1,
+                    this.height +
+                    (this.height -
+                      getStatusBarHeight() -
+                      headerHeight -
+                      this.navBarHeight -
+                      this.textFieldHeight * 3),
                 }}>
-                <View
+                <TouchableOpacity
+                  activeOpacity={1}
                   style={{
                     width: this.width,
-                    height: this.height / 2,
+                    height:
+                      this.height +
+                      (this.height -
+                        getStatusBarHeight() -
+                        headerHeight -
+                        this.navBarHeight -
+                        this.textFieldHeight * 3),
                     alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    console.log('touchable pressed');
+                    Keyboard.dismiss();
+                    this.setState({keyboardOpen: false});
                   }}>
                   <View
                     style={{
                       width: this.width,
-                      height: '16%',
+                      height:
+                        this.height -
+                        getStatusBarHeight() -
+                        headerHeight -
+                        this.navBarHeight,
                       alignItems: 'center',
-                      justifyContent: 'center',
+                      flex: 1,
                     }}>
-                    <TextInput
-                      spellCheck={false}
-                      autoCorrect={false}
-                      onFocus={() => {
-                        console.log('onfocus');
-                        this.setState({keyboardOpen: true});
-                      }}
-                      placeholderTextColor={
-                        global.isDarkMode
-                          ? global.darkModeColors[3]
-                          : 'rgba(0,0,0,0.4)'
-                      }
-                      placeholder={lang.Email}
-                      keyboardType="email-address"
-                      //returnKeyType="Next"
+                    <View
                       style={{
-                        paddingLeft: 0,
-                        fontSize: 17 * (this.width / 360),
-                        paddingBottom: this.width / 50,
-                        position: 'absolute',
-                        width: this.width * (6 / 10),
-                        backgroundColor: 'rgba(255,255,255,0.2)',
-                        borderBottomColor: global.themeColor,
-                        borderBottomWidth: 2,
-                      }}
-                      onChangeText={(text) =>
-                        this.setState({email: text})
-                      }></TextInput>
+                        width: this.width,
+                        height: this.height / 2,
+                        alignItems: 'center',
+                      }}>
+                      <View
+                        style={{
+                          width: this.width,
+                          paddingVertical: '3%',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <TextField
+                          style={{
+                            fontSize: 17 * (this.width / 360),
+                            width: this.width * (6 / 10),
+                          }}
+                          spellCheck={false}
+                          autoCorrect={false}
+                          onFocus={() => {
+                            this.flatListRef.scrollToOffset({
+                              animated: true,
+                              offset: this.textFieldHeight * 0,
+                            });
+                            this.setState({keyboardOpen: true});
+                          }}
+                          hideUnderline={false}
+                          underlineColor={
+                            this.state.emailErrorMsg == ''
+                              ? 'gray'
+                              : global.themeColor
+                          }
+                          floatingPlaceholder={true}
+                          floatOnFocus={true}
+                          centered={false}
+                          multiline={false}
+                          error={this.state.emailErrorMsg}
+                          placeholder={lang.Email}
+                          keyboardType="email-address"
+                          onChangeText={(text) => this.setState({email: text})}
+                        />
+                      </View>
+                      <View
+                        style={{
+                          width: this.width,
+                          paddingVertical: '3%',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <TextField
+                          style={{
+                            fontSize: 17 * (this.width / 360),
+                            width: this.width * (6 / 10),
+                          }}
+                          spellCheck={false}
+                          autoCorrect={false}
+                          onFocus={() => {
+                            this.flatListRef.scrollToOffset({
+                              animated: true,
+                              offset: this.textFieldHeight * 1,
+                            });
+                            this.setState({keyboardOpen: true});
+                          }}
+                          hideUnderline={false}
+                          underlineColor={
+                            this.state.usernameErrorMsg == ''
+                              ? 'gray'
+                              : global.themeColor
+                          }
+                          floatingPlaceholder={true}
+                          floatOnFocus={true}
+                          centered={false}
+                          multiline={false}
+                          error={this.state.usernameErrorMsg}
+                          placeholder={lang.Username}
+                          onChangeText={(text) =>
+                            this.onUsernameTextChange(text)
+                          }
+                        />
+                      </View>
+                      <View
+                        style={{
+                          width: this.width,
+                          paddingVertical: '3%',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <TextField
+                          style={{
+                            fontSize: 17 * (this.width / 360),
+                            width: this.width * (6 / 10),
+                          }}
+                          spellCheck={false}
+                          autoCorrect={false}
+                          onFocus={() => {
+                            this.flatListRef.scrollToOffset({
+                              animated: true,
+                              offset: this.textFieldHeight * 2,
+                            });
+                            this.setState({keyboardOpen: true});
+                          }}
+                          hideUnderline={false}
+                          underlineColor={
+                            this.state.pwErrorMsg == ''
+                              ? 'gray'
+                              : global.themeColor
+                          }
+                          floatingPlaceholder={true}
+                          floatOnFocus={true}
+                          centered={false}
+                          multiline={false}
+                          error={this.state.pwErrorMsg}
+                          placeholder={lang.Password}
+                          secureTextEntry
+                          onChangeText={(text) => this.setState({sifre: text})}
+                        />
+                      </View>
+                      <View
+                        onLayout={(event) => {
+                          this.textFieldHeight =
+                            event.nativeEvent.layout.height;
+                        }}
+                        style={{
+                          width: this.width,
+                          paddingVertical: '3%',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <TextField
+                          style={{
+                            fontSize: 17 * (this.width / 360),
+                            width: this.width * (6 / 10),
+                          }}
+                          spellCheck={false}
+                          autoCorrect={false}
+                          onFocus={() => {
+                            this.flatListRef.scrollToOffset({
+                              animated: true,
+                              offset: this.textFieldHeight * 3,
+                            });
+                            this.setState({keyboardOpen: true});
+                          }}
+                          hideUnderline={false}
+                          underlineColor={
+                            this.state.confirmPwErrorMsg == ''
+                              ? 'gray'
+                              : global.themeColor
+                          }
+                          floatingPlaceholder={true}
+                          floatOnFocus={true}
+                          centered={false}
+                          multiline={false}
+                          error={this.state.confirmPwErrorMsg}
+                          placeholder={lang.ConfirmPassword}
+                          secureTextEntry
+                          onChangeText={(text) => this.setState({sifre2: text})}
+                        />
+                      </View>
+                      <View
+                        style={{
+                          width: this.width,
+                          height: (this.height * 18) / 100,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <OvalButton
+                          opacity={1}
+                          backgroundColor={
+                            global.isDarkMode
+                              ? global.darkModeColors[1]
+                              : 'rgba(255,255,255,1)'
+                          }
+                          title={lang.Create}
+                          textColor={global.themeColor}
+                          onPress={() => this.onPressCreate()}
+                          borderColor={global.themeColor}
+                        />
+                      </View>
+                    </View>
                   </View>
-                  <View
-                    style={{
-                      width: this.width,
-                      height: '16%',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <TextInput
-                      spellCheck={false}
-                      autoCorrect={false}
-                      onFocus={() => {
-                        console.log('onfocus2');
-                        this.setState({keyboardOpen: true});
-                      }}
-                      maxLength={15}
-                      value={this.state.isim}
-                      placeholderTextColor={
-                        global.isDarkMode
-                          ? global.darkModeColors[3]
-                          : 'rgba(0,0,0,0.4)'
-                      }
-                      placeholder={lang.Username}
-                      //returnKeyType="Next"
-                      style={{
-                        color: this.state.usernameColor,
-                        paddingLeft: 0,
-                        fontSize: 17 * (this.width / 360),
-                        paddingBottom: this.width / 50,
-                        position: 'absolute',
-                        width: this.width * (6 / 10),
-                        backgroundColor: global.isDarkMode
-                          ? 'rgba(255,255,255,0)'
-                          : 'rgba(255,255,255,0.2)',
-                        borderColor: 'rgba(241,51,18,0)',
-                        borderBottomColor: global.themeColor,
-                        borderBottomWidth: 2,
-                      }}
-                      onChangeText={(text) =>
-                        this.onUsernameTextChange(text)
-                      }></TextInput>
-                  </View>
-                  <View
-                    style={{
-                      width: this.width,
-                      height: '16%',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <TextInput
-                      spellCheck={false}
-                      autoCorrect={false}
-                      onFocus={() => this.setState({keyboardOpen: true})}
-                      placeholderTextColor={
-                        global.isDarkMode
-                          ? global.darkModeColors[3]
-                          : 'rgba(0,0,0,0.4)'
-                      }
-                      placeholder={lang.Password}
-                      secureTextEntry
-                      //returnKeyType="Next"
-                      style={{
-                        paddingLeft: 0,
-                        fontSize: 17 * (this.width / 360),
-                        paddingBottom: this.width / 50,
-                        position: 'absolute',
-                        width: this.width * (6 / 10),
-                        backgroundColor: global.isDarkMode
-                          ? 'rgba(255,255,255,0)'
-                          : 'rgba(255,255,255,0.2)',
-                        borderColor: 'rgba(241,51,18,0)',
-                        borderBottomColor: global.themeColor,
-                        borderBottomWidth: 2,
-                      }}
-                      onChangeText={(text) =>
-                        this.setState({sifre: text})
-                      }></TextInput>
-                  </View>
-                  <View
-                    style={{
-                      width: this.width,
-                      height: '16%',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <TextInput
-                      spellCheck={false}
-                      autoCorrect={false}
-                      onFocus={() => this.setState({keyboardOpen: true})}
-                      placeholderTextColor={
-                        global.isDarkMode
-                          ? global.darkModeColors[3]
-                          : 'rgba(0,0,0,0.4)'
-                      }
-                      placeholder={lang.ConfirmPassword}
-                      secureTextEntry
-                      //returnKeyType="Next"
-                      style={{
-                        paddingLeft: 0,
-                        fontSize: 17 * (this.width / 360),
-                        paddingBottom: this.width / 50,
-                        position: 'absolute',
-                        width: this.width * (6 / 10),
-                        backgroundColor: global.isDarkMode
-                          ? 'rgba(255,255,255,0)'
-                          : 'rgba(255,255,255,0.2)',
-                        borderColor: 'rgba(241,51,18,0)',
-                        borderBottomColor: global.themeColor,
-                        borderBottomWidth: 2,
-                      }}
-                      onChangeText={(text) =>
-                        this.setState({sifre2: text})
-                      }></TextInput>
-                  </View>
-                  <View
-                    style={{
-                      width: this.width,
-                      height: (this.height * 18) / 100,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <OvalButton
-                      opacity={1}
-                      backgroundColor={
-                        global.isDarkMode
-                          ? global.darkModeColors[1]
-                          : 'rgba(255,255,255,1)'
-                      }
-                      title={lang.Create}
-                      textColor={global.themeColor}
-                      onPress={() => this.check()}
-                      borderColor={global.themeColor}
-                    />
-                  </View>
-                </View>
+                </TouchableOpacity>
               </View>
-
-              <TermsAndPrivacyModal
-                agreeDisabled={this.state.agreeDisabled}
-                isVisible={this.state.termsAndPrivacyIsVisible}
-                txtCancel={lang.Cancel}
-                txtOk={lang.Agree}
-                txtTerms={lang.TermsOfUse}
-                txtPrivacy={lang.PrivacyPolicy}
-                onPressClose={() => {
-                  this.setState({termsAndPrivacyIsVisible: false});
-                }}
-                onPressOk={() => {
-                  this.SignUp(this.state.email, this.state.password);
-                  this.setState({termsAndPrivacyIsVisible: false});
-                }}
-                onPressTerms={() => {
-                  this.setState({selectedTxt: 'Terms'});
-                }}
-                onPressPrivacy={() => {
-                  this.setState({selectedTxt: 'Privacy'});
-                }}
-                selected={this.state.selectedTxt}
-                txt={
-                  this.state.selectedTxt === 'Terms'
-                    ? texts['terms']
-                    : texts['privacy']
-                }
-              />
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
+            );
+          }}
+          data={[{bos: 'boş1', key: 'key1'}]}></FlatList>
+        <TermsAndPrivacyModal
+          agreeDisabled={this.state.agreeDisabled}
+          isVisible={this.state.termsAndPrivacyIsVisible}
+          txtCancel={lang.Cancel}
+          txtOk={lang.Agree}
+          txtTerms={lang.TermsOfUse}
+          txtPrivacy={lang.PrivacyPolicy}
+          onPressClose={() => {
+            this.setState({termsAndPrivacyIsVisible: false});
+          }}
+          onPressOk={() => {
+            this.SignUp(this.state.email, this.state.password);
+            this.setState({termsAndPrivacyIsVisible: false});
+          }}
+          onPressTerms={() => {
+            this.setState({selectedTxt: 'Terms'});
+          }}
+          onPressPrivacy={() => {
+            this.setState({selectedTxt: 'Privacy'});
+          }}
+          selected={this.state.selectedTxt}
+          txt={
+            this.state.selectedTxt === 'Terms'
+              ? texts['terms']
+              : texts['privacy']
+          }
+        />
       </SafeAreaView>
     );
   }
