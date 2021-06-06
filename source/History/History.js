@@ -7,6 +7,7 @@ import {NavigationContainer, navigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {FAB} from 'react-native-paper';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -581,26 +582,34 @@ export default class HistoryScreen extends Component<{}> {
           <View
             style={{
               opacity: this.state.editPressed || noOfSearch == 0 ? 0 : 1,
-              width: this.width / 7,
-              height: this.width / 7,
+              width: this.width / 8.5,
+              height: this.width / 8.5,
               bottom: this.width / 20,
-              borderBottomLeftRadius: 555,
-              borderTopRightRadius: 555,
-              borderTopLeftRadius: 555,
-              borderBottomRightRadius: 555,
               right: this.width / 20,
               flex: 1,
               alignItems: 'center',
               justifyContent: 'center',
               position: 'absolute',
             }}>
-            <SearchButton
-              opacity={this.state.opacity}
+            <FAB
+              style={{
+                opacity: this.state.opacity,
+                backgroundColor: global.themeColor,
+                width: this.width / 8.5,
+                height: this.width / 8.5,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              small
+              icon={({size, color}) => (
+                <Image
+                  source={{uri: 'search'}}
+                  style={{width: '55%', height: '55%'}}
+                />
+              )}
+              animated={false}
               onPress={() => this.onPressSearch()}
               disabled={this.state.disabled}
-              width={this.width / 7}
-              height={this.width / 7}
-              backgroundColor={global.themeColor}
             />
           </View>
         </SafeAreaView>

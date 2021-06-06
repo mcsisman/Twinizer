@@ -10,6 +10,7 @@ import firestore from '@react-native-firebase/firestore';
 import themes from './Themes';
 import {navigate, route} from './RootNavigation';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {Switch, Colors} from 'react-native-ui-lib'; //eslint-disable-line
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -57,7 +58,9 @@ export default class ThemeSettingsScreen extends Component<{}> {
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     this.state = {
+      darkMode: global.isDarkMode,
       tickVisible: global.isDarkMode,
+      themeColor: global.themeColor,
     };
   }
   async componentDidMount() {
@@ -71,13 +74,15 @@ export default class ThemeSettingsScreen extends Component<{}> {
   static navigationOptions = {
     header: null,
   };
-  onPress(selectedIndex) {
-    this.setState({
+  async onPress(selectedIndex) {
+    await this.setState({
       selected1: selectedIndex == 1 ? true : false,
       selected2: selectedIndex == 2 ? true : false,
       selected3: selectedIndex == 3 ? true : false,
       selected4: selectedIndex == 4 ? true : false,
     });
+
+    this.applyColorTheme();
   }
   async getSelectedTheme() {
     var themeColor = await EncryptedStorage.getItem(
@@ -133,16 +138,8 @@ export default class ThemeSettingsScreen extends Component<{}> {
       });
     }
   }
-  apply() {
-    var mode;
+  applyColorTheme() {
     var themeColor;
-    if (this.state.tickVisible) {
-      global.isDarkMode = true;
-      mode = 'true';
-    } else {
-      global.isDarkMode = false;
-      mode = 'false';
-    }
     if (this.state.selected1) {
       themeColor = 'Original';
     }
@@ -155,12 +152,37 @@ export default class ThemeSettingsScreen extends Component<{}> {
     if (this.state.selected4) {
       themeColor = 'Green';
     }
-
+    console.log('THEME COLOR:', themeColor);
     global.themeColor = themes.getTheme(themeColor);
     global.themeForImages = themes.getThemeForImages(themeColor);
-    this.setState({reRender: 'ok'});
+    this.setState({reRender: 'ok', themeColor: global.themeColor});
     this.props.route.params.update();
     EncryptedStorage.setItem(auth().currentUser.uid + 'theme', themeColor);
+  }
+  darkModeChanged() {
+    var mode;
+    if (this.state.darkMode) {
+      global.isDarkMode = true;
+      mode = 'true';
+    } else {
+      global.isDarkMode = false;
+      mode = 'false';
+    }
+    global.themeColor = themes.getTheme(themeColor);
+    global.themeForImages = themes.getThemeForImages(themeColor);
+    return mode;
+  }
+  async applyModeTheme() {
+    var mode;
+    if (this.state.darkMode) {
+      global.isDarkMode = true;
+      mode = 'true';
+    } else {
+      global.isDarkMode = false;
+      mode = 'false';
+    }
+    this.setState({reRender: 'ok'});
+    this.props.route.params.update();
     EncryptedStorage.setItem(auth().currentUser.uid + 'mode', mode);
   }
   render() {
@@ -266,80 +288,48 @@ export default class ThemeSettingsScreen extends Component<{}> {
 
           <View style={{height: emptyScreenHeight / 4}} />
 
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={() =>
-              this.setState({
-                tickVisible: this.state.tickVisible ? false : true,
-              })
-            }
+          <View
             style={{
-              borderTopWidth: 1,
-              borderBottomWidth: 1,
-              borderColor: 'rgba(128,128,128,0.3)',
-              backgroundColor: global.isDarkMode
-                ? 'rgba(0,0,0,0.1)'
-                : 'rgba(255,255,255,1)',
               flexDirection: 'row',
+              alignItems: 'center',
               justifyContent: 'center',
               width: this.width,
               height: this.width / 8,
             }}>
             <View
               style={{
+                alignItems: 'center',
                 justifyContent: 'center',
-                position: 'absolute',
-                width: (this.width * 7) / 8,
-                height: this.width / 8,
-                bottom: 0,
-                left: 0,
+                paddingLeft: '5%',
+                paddingRight: '5%',
+                flexDirection: 'row',
               }}>
               <Text
                 style={{
                   color: global.isDarkMode
                     ? global.darkModeColors[3]
                     : 'rgba(88,88,88,1)',
-                  fontSize: (18 * this.width) / 360,
-                  left: this.width / 20,
-                  position: 'absolute',
+                  fontSize: (16 * this.width) / 360,
                 }}>
                 {lang.EnableDarkMode}
               </Text>
-            </View>
 
-            <View
-              style={{
-                opacity: this.state.tickVisible ? 1 : 0,
-                justifyContent: 'center',
-                alignItems: 'flex-start',
-                position: 'absolute',
-                width: this.width / 10,
-                height: this.width / 10,
-                bottom: this.width / 80,
-                right: this.width / 80,
-              }}>
-              <Image
-                source={{uri: 'tick' + global.themeForImages}}
-                style={{width: '60%', height: '60%'}}
+              <Switch
+                style={{marginLeft: '10%'}}
+                onColor={global.darkModeColors[0]}
+                offColor={Colors.dark60}
+                thumbColor={Colors.dark20}
+                width={this.width / 7}
+                height={((this.width / 7) * 30) / 60}
+                thumbSize={((this.width / 7) * 23) / 60}
+                value={this.state.darkMode}
+                onValueChange={async () => {
+                  await this.setState({darkMode: !this.state.darkMode});
+                  this.applyModeTheme();
+                }}
               />
             </View>
-          </TouchableOpacity>
-
-          <View style={{height: emptyScreenHeight / 4}} />
-
-          <OvalButton
-            opacity={1}
-            backgroundColor={
-              global.isDarkMode
-                ? global.darkModeColors[1]
-                : 'rgba(242,242,242,1)'
-            }
-            title={lang.Apply}
-            position="relative"
-            textColor={global.themeColor}
-            onPress={() => this.apply()}
-            borderColor={global.themeColor}
-          />
+          </View>
         </View>
       </SafeAreaView>
     );

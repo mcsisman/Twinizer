@@ -162,7 +162,7 @@
     "Blue": "Blue",
     "Green": "Green",
     "Yellow": "Yellow",
-    "EnableDarkMode": "Enable Dark Mode",
+    "EnableDarkMode": "Dark Mode",
     "Apply": "APPLY",
 
     "PrivacyPolicy": "Privacy Policy",
@@ -322,7 +322,7 @@
     "DeleteMyAccount": "Hesabımı Sil",
     "DidntSave": "Uyarı! Değişiklikleriniz kaydedilmedi. Yine de devam etmek istiyor musunuz?",
     "GoBack": "Kaydetmeden geri git",
-    "YourChangesHaveBeenSaved": "Kayıt işlemi başarıyla tamamlandı.",
+    "YourChangesHaveBeenSaved": "Ayarlarınız kaydedildi.",
     "LogOutSuccess": "Hesabınızdan başarıyla çıkış yaptınız.",
     "DeleteAccountSuccess": "Hesabınız başarıyla silindi.",
 
@@ -332,7 +332,7 @@
     "Blue": "Mavi",
     "Green": "Yeşil",
     "Yellow": "Sarı",
-    "EnableDarkMode": "Karanlık Modu Etkinleştir",
+    "EnableDarkMode": "Karanlık Mod",
     "Apply": "UYGULA",
 
     "PrivacyPolicy": "Gizlilik Politikası",
