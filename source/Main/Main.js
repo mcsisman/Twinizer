@@ -442,6 +442,7 @@ export default class MainScreen extends Component<{}> {
       favoriteUsersSet.has(emailArray[global.swipeCount])
     ) {
       isFav = true;
+      isBlock = false;
     } else {
       isFav = false;
       if (
@@ -1213,6 +1214,7 @@ export default class MainScreen extends Component<{}> {
           auth().currentUser.uid + 'favoriteUsers',
           JSON.stringify(favoriteUsers),
         );
+        favoriteUsersSet.delete(uid);
       }
       blockedUsers.push(uid);
       blockedUsersSet.add(uid);
