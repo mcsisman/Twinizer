@@ -123,10 +123,7 @@ export default class NewAccountScreen extends Component<{}> {
   };
   _keyboardDidHide = () => {
     this.setState({keyboardOpen: false});
-    this.flatListRef.scrollToOffset({
-      animated: false,
-      offset: 0,
-    });
+
     console.log('keyboard kapandı');
   };
   writeUserData(userId, name, email, imageUrl) {
@@ -230,7 +227,10 @@ export default class NewAccountScreen extends Component<{}> {
   }
   async onPressCreate() {
     console.log('create');
-
+    this.flatListRef.scrollToOffset({
+      animated: true,
+      offset: this.textFieldHeight * 0,
+    });
     Keyboard.dismiss();
     this.setState({keyboardOpen: false});
     await this.check();
@@ -332,6 +332,10 @@ export default class NewAccountScreen extends Component<{}> {
                   }}
                   onPress={() => {
                     console.log('touchable pressed');
+                    this.flatListRef.scrollToOffset({
+                      animated: true,
+                      offset: 0,
+                    });
                     Keyboard.dismiss();
                     this.setState({keyboardOpen: false});
                   }}>
