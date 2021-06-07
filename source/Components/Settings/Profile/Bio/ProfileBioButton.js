@@ -40,10 +40,17 @@ export default class ProfileBioButton extends Component {
     return (
       <View
         style={{
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 1,
+          },
+          shadowOpacity: 0.2,
+          shadowRadius: 1,
+
+          elevation: 2,
           opacity: this.props.opacity,
-          borderColor: 'gray',
-          borderWidth: 0.4,
-          borderRadius: 8,
+          borderRadius: 4,
           backgroundColor: global.isDarkMode
             ? 'rgba(0,0,0,0.1)'
             : 'rgba(255,255,255,1)',

@@ -134,7 +134,7 @@ export default class CustomPicker extends Component {
             paddingLeft: 5,
             opacity: this.props.opacity,
             justifyContent: 'center',
-            borderRadius: this.props.borderRadius,
+            borderRadius: 2,
             backgroundColor: global.isDarkMode
               ? 'rgba(0,0,0,0.1)'
               : 'rgba(255,255,255,1)',
@@ -142,12 +142,15 @@ export default class CustomPicker extends Component {
             height: this.props.height,
             right: this.props.right,
             bottom: this.props.bottom,
-            borderBottomColor: this.props.borderBottomColor,
-            borderColor: this.props.borderColor,
-            borderBottomWidth: this.props.borderBottomWidth,
-            borderTopWidth: this.props.borderWidth,
-            borderRightWidth: this.props.borderWidth,
-            borderLeftWidth: this.props.borderWidth,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 1,
+
+            elevation: 2,
           }}>
           <ModalSelector
             cancelStyle={{

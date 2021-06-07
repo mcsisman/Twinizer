@@ -319,6 +319,10 @@ export default class ProfileScreen extends Component<{}> {
             userBio: snapshot.val().b,
             bioLimit: snapshot.val().b.length,
             userPhotoCount: snapshot.val().p,
+            selection: {
+              start: snapshot.val().u.length,
+              end: snapshot.val().u.length,
+            },
           });
           await this.getImageURL();
           await this.downloadImages();
@@ -363,6 +367,10 @@ export default class ProfileScreen extends Component<{}> {
         userBio: currentUserBio,
         bioLimit: currentUserBio.length,
         userPhotoCount: currentUserPhotoCount,
+        selection: {
+          start: currentUserUsername.length,
+          end: currentUserUsername.length,
+        },
       });
       console.log('LOCAL USER DATA IS NOT NULL:', this.state.profilePhoto);
     }
@@ -516,7 +524,13 @@ export default class ProfileScreen extends Component<{}> {
     if (this.state.userUsername != text) {
       infoChanged = true;
     }
-    this.setState({userUsername: text});
+    this.setState({
+      userUsername: text,
+      selection: {
+        start: text.length,
+        end: text.length,
+      },
+    });
   }
   valueChange(value) {
     if (this.state.userBio != value) {
@@ -832,24 +846,6 @@ export default class ProfileScreen extends Component<{}> {
                     ref={'test'}
                     defaultValue={this.state.userUsername}
                     editable={!this.state.upperComponentsDisabled}
-                    onBlur={() => {
-                      console.log('blur'),
-                        this.setState({selection: {start: 0, end: 0}});
-                    }}
-                    onFocus={() => {
-                      this.setState(
-                        {
-                          whichInput: 'username',
-                          selection: {
-                            start: this.state.userUsername.length,
-                            end: this.state.userUsername.length,
-                          },
-                        },
-                        () => {
-                          this.setState({selection: null});
-                        },
-                      );
-                    }}
                     selection={this.state.selection}
                     numberOfLines={1}
                     style={{
@@ -865,9 +861,17 @@ export default class ProfileScreen extends Component<{}> {
                       backgroundColor: global.isDarkMode
                         ? 'rgba(0,0,0,0.1)'
                         : 'rgba(255,255,255,1)',
-                      borderWidth: 0.4,
-                      borderColor: 'gray',
+                      shadowColor: '#000',
+                      shadowOffset: {
+                        width: 0,
+                        height: 1,
+                      },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 1,
+
+                      elevation: 2,
                       fontSize: 14 * (this.width / 360),
+                      borderRadius: 2,
                       width: (this.width / 2) * (8 / 10),
                       height: ((this.width / 2) * (8 / 10) * (7 / 6)) / 5,
                     }}
@@ -939,13 +943,12 @@ export default class ProfileScreen extends Component<{}> {
               <View
                 style={{
                   alignItems: 'center',
-                  justifyContent: 'flex-start',
+                  justifyContent: 'space-evenly',
                   width: this.width,
                   height:
                     (this.height - headerHeight - getStatusBarHeight()) / 2,
                   flexDirection: 'column',
                 }}>
-                <View style={{height: this.width / 20}} />
                 <ProfileBioButton
                   onFocus={() => this.keyboardWillShow()}
                   opacity={this.state.bioOpacity}
@@ -953,8 +956,6 @@ export default class ProfileScreen extends Component<{}> {
                   onChangeText={(text) => this.valueChange(text)}
                   characterNo={this.state.bioLimit}
                 />
-
-                <View style={{height: this.width / 20}} />
 
                 <TouchableOpacity
                   disabled={this.state.saveBtnDisabled}
@@ -981,7 +982,6 @@ export default class ProfileScreen extends Component<{}> {
                     {lang.Save}
                   </Text>
                 </TouchableOpacity>
-                <View style={{height: this.width / 20}} />
 
                 <LogoutButton
                   text={lang.DeleteMyAccount}
