@@ -64,7 +64,6 @@ class FirebaseSvc {
           '.jpg';
         console.log('image pathi:', image);
       }
-
       const message = {
         c,
         id,
@@ -75,38 +74,78 @@ class FirebaseSvc {
         image,
       };
       firstTime = false;
-      database()
-        .ref(
-          'Messages/' +
-            auth().currentUser.uid +
-            '/' +
-            global.receiverUid +
-            '/' +
-            messageKey,
+      if (
+        global.currentProcessUidArray == undefined ||
+        !global.currentProcessUidArray[global.receiverUid]
+      ) {
+        database()
+          .ref(
+            'Messages/' +
+              auth().currentUser.uid +
+              '/' +
+              global.receiverUid +
+              '/' +
+              messageKey,
+          )
+          .remove();
+        await EncryptedStorage.getItem(
+          auth().currentUser.uid + global.receiverUid + '/messages',
         )
-        .remove();
-      await EncryptedStorage.getItem(
-        auth().currentUser.uid + global.receiverUid + '/messages',
-      )
-        .then((req) => {
-          if (req) {
-            return JSON.parse(req);
-          } else {
-            return null;
-          }
-        })
-        .then((json) => (localMessages = json));
-      if (localMessages == null || localMessages.length == 0) {
-        localMessages = [message];
-      } else {
-        localMessages.push(message);
-      }
-      EncryptedStorage.setItem(
-        auth().currentUser.uid + global.receiverUid + '/messages',
-        JSON.stringify(localMessages),
-      );
+          .then((req) => {
+            if (req) {
+              return JSON.parse(req);
+            } else {
+              return null;
+            }
+          })
+          .then((json) => (localMessages = json));
+        if (localMessages == null || localMessages.length == 0) {
+          localMessages = [message];
+        } else {
+          localMessages.push(message);
+        }
+        await EncryptedStorage.setItem(
+          auth().currentUser.uid + global.receiverUid + '/messages',
+          JSON.stringify(localMessages),
+        );
 
-      return message;
+        return message;
+      } else {
+        if (!global.addedMsgs[global.receiverUid].includes(message.id)) {
+          database()
+            .ref(
+              'Messages/' +
+                auth().currentUser.uid +
+                '/' +
+                global.receiverUid +
+                '/' +
+                messageKey,
+            )
+            .remove();
+          await EncryptedStorage.getItem(
+            auth().currentUser.uid + global.receiverUid + '/messages',
+          )
+            .then((req) => {
+              if (req) {
+                return JSON.parse(req);
+              } else {
+                return null;
+              }
+            })
+            .then((json) => (localMessages = json));
+          if (localMessages == null || localMessages.length == 0) {
+            localMessages = [message];
+          } else {
+            localMessages.push(message);
+          }
+          EncryptedStorage.setItem(
+            auth().currentUser.uid + global.receiverUid + '/messages',
+            JSON.stringify(localMessages),
+          );
+          return message;
+        }
+        return null;
+      }
     } else {
       return null;
     }
@@ -219,12 +258,8 @@ class FirebaseSvc {
       };
 
       var pushedKey;
-
       pushedKey = this.ref.push(message).key;
-      console.log(
-        'MESSAGE PUSHED----------:----------:----------:----------:----------:----------: ',
-        pushedKey,
-      );
+
       // RESİMLİ MESAJSA
       var image;
       if (p == 't') {

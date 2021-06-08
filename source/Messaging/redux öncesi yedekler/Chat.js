@@ -134,37 +134,49 @@ export default class ChatScreen extends React.Component<Props> {
     );
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       AppState.addEventListener('change', this._handleAppStateChange);
-      var localMessages = [];
-      await EncryptedStorage.getItem(
-        auth().currentUser.uid + global.receiverUid + '/messages',
-      )
-        .then((req) => {
-          if (req) {
-            return JSON.parse(req);
+      global.callback = async (data, noOfNewMsgs) => {
+        var localMessages = [];
+        await EncryptedStorage.getItem(
+          auth().currentUser.uid + global.receiverUid + '/messages',
+        )
+          .then((req) => {
+            if (req) {
+              return JSON.parse(req);
+            } else {
+              return null;
+            }
+          })
+          .then((json) => (localMessages = json));
+        var number;
+        var tempArr = [];
+        if (localMessages != null) {
+          if (localMessages.length < 20) {
+            this.setState({noOfLoadedMsgs: localMessages.length});
+            number = 0;
           } else {
-            return null;
+            this.setState({noOfLoadedMsgs: 20});
+            number = localMessages.length - 20;
           }
-        })
-        .then((json) => (localMessages = json));
-      var number;
-      var tempArr = [];
-      if (localMessages != null) {
-        if (localMessages.length < 20) {
-          this.setState({noOfLoadedMsgs: localMessages.length});
-          number = 0;
+          for (i = 0; i < this.state.noOfLoadedMsgs; i++) {
+            tempArr.push(localMessages[i]);
+          }
+        }
+        if (noOfNewMsgs == 1) {
+          console.log('TEST 1');
+          localMessages.reverse();
+          this.setState({
+            messages: tempArr,
+          });
+          this.setState({reRender: !this.state.reRender});
         } else {
-          this.setState({noOfLoadedMsgs: 20});
-          number = localMessages.length - 20;
+          console.log('TEST 2');
+          localMessages.reverse();
+          this.setState({
+            messages: tempArr,
+          });
+          this.setState({reRender: !this.state.reRender});
         }
-        for (i = 0; i < this.state.noOfLoadedMsgs; i++) {
-          tempArr.push(localMessages[i]);
-        }
-      }
-      localMessages.reverse();
-      this.setState({
-        messages: tempArr,
-      });
-      this.setState({reRender: !this.state.reRender});
+      };
       this.resetVariables();
       this.spinAnimation();
       await this.getLastLocalMessages();
@@ -376,7 +388,6 @@ export default class ChatScreen extends React.Component<Props> {
   }
 
   sendMsg = (messages) => {
-    console.log('gönderilen mesaj: ', messages[0]);
     firebaseSvc.send(messages, 'f');
 
     this.setState((previousState) => ({

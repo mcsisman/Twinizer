@@ -147,6 +147,7 @@ class MessagesScreen extends Component<{}> {
     this.initializeVars();
     lang = language[global.lang];
     global.newMsgListenerArray = [];
+    global.currentProcessUidArray = {};
     AppState.addEventListener('change', this._handleAppStateChange);
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       global.fromChatOfUid = '';
@@ -159,11 +160,15 @@ class MessagesScreen extends Component<{}> {
         getStatusBarHeight();
       newRequest = false;
       if (global.messagesFirstTime) {
+        console.log('MESSAGES FIRST TIME');
         this.initializeMessageScreen();
+        console.log('messages ilk giriş chat');
       } else {
         if (global.fromChat || global.enteredChatFromMain) {
+          console.log('from chat');
           this.startFromLocal();
         } else {
+          console.log('düz setstate');
           this.setState({
             loadingDone: true,
             loadingOpacity: 0,
@@ -180,6 +185,7 @@ class MessagesScreen extends Component<{}> {
       this.messageBoxAnimation('reset');
       this.spinAnimation();
       this.resetTrashColors();
+      console.log('Buraya gelmiyürmü ');
       this.setState({
         editPressed: false,
         cancelPressed: false,
@@ -207,6 +213,7 @@ class MessagesScreen extends Component<{}> {
       this.state.appState === 'active'
     ) {
       if (Platform.OS === 'ios') {
+        console.log('MESAJLARDAKİ HANDLE');
         this.props.navigation.navigate('Tabs', {screen: 'Main'});
         this.turnOffAllListeners();
       }
@@ -223,6 +230,7 @@ class MessagesScreen extends Component<{}> {
     }
   }
   initializeVars() {
+    console.log('messages initializeVars');
     testVar = 0;
     didSync = false;
     afterDelete = false;
@@ -396,6 +404,7 @@ class MessagesScreen extends Component<{}> {
     playerIdListener = database()
       .ref('/PlayerIds/' + conversationUidArray[index])
       .on('child_changed', (snap) => {
+        console.log('PLAYER ID DEGISTI LISTENERI');
         global.playerIdArray[conversationUidArray[index]] = snap.val();
         //EncryptedStorage.setItem(conversationUidArray[index] + "playerId", snap.val())
       });
@@ -535,6 +544,7 @@ class MessagesScreen extends Component<{}> {
           })
           .then((json) => (localUsernames = json));
         conversationUsernameArray = localUsernames;
+        console.log('GERİ DÖNÜŞ?:', conversationUsernameArray);
         newRequest = true;
       }
     }
@@ -588,11 +598,13 @@ class MessagesScreen extends Component<{}> {
             conversationUidArray = await doc.data()['UidArray'];
             noOfConversations = conversationUidArray.length;
             for (let i = 0; i < noOfConversations; i++) {
+              global.addedMsgs[conversationUidArray[i]] = [];
               global.newMsgListenerArray[i] = {
                 isOpen: false,
                 uid: conversationUidArray[i],
                 listenerID: '',
               };
+              global.currentProcessUidArray[conversationUidArray[i]] = true;
             }
             await this.getUsernameOfTheUid();
             uidArray = await this.createUidPhotoArrays();
@@ -623,6 +635,9 @@ class MessagesScreen extends Component<{}> {
             uid: conversationUidArray[noOfConversations - 1],
             listenerID: '',
           };
+          global.currentProcessUidArray[
+            conversationUidArray[noOfConversations - 1]
+          ] = true;
 
           await this.getUsernameOfTheUid();
           uidArray = await this.createUidPhotoArrays();
@@ -651,6 +666,7 @@ class MessagesScreen extends Component<{}> {
       .then((json) => (localUids = json));
 
     if (localUids != null && localUids != undefined && localUids.length != 0) {
+      console.log('localde mesaj var');
       if (
         conversationUidArray.concat().sort().join(',') ===
         localUids.concat().sort().join(',')
@@ -738,6 +754,7 @@ class MessagesScreen extends Component<{}> {
     }
     for (let i = 0; i < conversationUidArray.length; i++) {
       let dirs = RNFetchBlob.fs.dirs;
+      console.log('DOCUMENT DIR NEYMİŞ:', dirs.DocumentDir);
       photoArray[i] =
         'file://' +
         dirs.DocumentDir +
@@ -813,6 +830,7 @@ class MessagesScreen extends Component<{}> {
         var snapVal = snapshot.val();
         var messageKey = Object.keys(snapVal)[0];
         const user = {_id: uidArray[count], r: auth().currentUser.uid};
+        console.log('messagesta1');
         const {p: p, c: numberStamp, text} = snapVal[messageKey];
         const id = messageKey;
         const _id = messageKey; //needed for giftedchat
@@ -885,6 +903,7 @@ class MessagesScreen extends Component<{}> {
               isReq = 'false';
             }
             this.setLocalIsRequest(uidArray[i], isReq);
+            console.log('SHOW?:', showBox);
             if (showBox == 'true' || showBox == undefined || showBox == null) {
               if (isReq == 'false') {
                 messageArray.push(dataArray[i]);
@@ -976,6 +995,7 @@ class MessagesScreen extends Component<{}> {
     });
     var lastLocalKey = await this.getLastLocalMessage();
 
+    console.log('fromchatofuid:', global.fromChatOfUid);
     var uidCount = count;
     if (
       !global.newMsgListenerArray[count].isOpen &&
@@ -991,7 +1011,7 @@ class MessagesScreen extends Component<{}> {
       testVar = 1;
       console.log('LISTENER CREATED FOR:', uidArray[count]);
       await global.newMsgListenerArray[count].listenerID.on(
-        'child_added',
+        'value',
         async (snapshot) => await this.syncLocalMessages(snapshot, uidCount),
       );
     }
@@ -1027,115 +1047,128 @@ class MessagesScreen extends Component<{}> {
     // remove k from snapshot data
     if (snapshot.val() != null) {
       var snapVal = snapshot.val();
+      var messageKey;
+      var noOfNewMsgs = Object.keys(snapVal).length;
+      global.addedMsgs[uidArray[uidCount]] = Object.keys(snapVal);
 
-      console.log(
-        'SNAPSHOT NE AQ----------:----------:----------:----------:----------:----------:----------::',
-        snapVal,
-      );
-      var messageKey = snapshot.key;
       await this.setShowMessageBox(uidArray[uidCount], 'true');
-      // REQUEST BOZULMUŞLSA REMOVEDAN MESSAGE KEY SİLİNECEK
-      database()
-        .ref(
-          'Messages/' +
-            auth().currentUser.uid +
-            '/' +
-            uidArray[uidCount] +
-            '/' +
-            messageKey,
-        )
-        .remove();
-      console.log('REMOVEA GELDİ MESSAGESTA');
+      var tempMsgs = localMessages;
+      if (noOfNewMsgs != 0) {
+        for (let i = noOfNewMsgs - 1; i >= 0; i--) {
+          messageKey = Object.keys(snapshot.val())[i];
+          database()
+            .ref(
+              'Messages/' + auth().currentUser.uid + '/' + uidArray[uidCount],
+            )
+            .remove();
+          global.currentProcessUidArray[uidArray[uidCount]] = true;
+          console.log('REMOVEA GELDİ MESSAGESTA');
 
-      const user = {_id: uidArray[uidCount], r: auth().currentUser.uid};
-      console.log('SNAP VAL:', snapVal);
-      console.log('SNAP VAL MESSAGE KEY:', 'i:', i, 'key:', messageKey);
-      const {p: p, c: numberStamp, text} = snapVal;
-      const id = messageKey;
-      const _id = messageKey; //needed for giftedchat
-      const c = numberStamp;
-      const createdAt = new Date(numberStamp);
+          const user = {_id: uidArray[uidCount], r: auth().currentUser.uid};
+          console.log('SNAP VAL:', snapVal);
+          console.log('SNAP VAL MESSAGE KEY:', 'i:', i, 'key:', messageKey);
+          const {p: p, c: numberStamp, text} = snapVal[messageKey];
+          const id = messageKey;
+          const _id = messageKey; //needed for giftedchat
+          const c = numberStamp;
+          const createdAt = new Date(numberStamp);
 
-      var image = '';
-      if (p == 't') {
-        image =
-          'file://' +
-          RNFS.DocumentDirectoryPath +
-          '/' +
-          auth().currentUser.uid +
-          '/' +
-          messageKey +
-          '.jpg' +
-          '#' +
-          new Date();
-      }
+          var image = '';
+          if (p == 't') {
+            image =
+              'file://' +
+              RNFS.DocumentDirectoryPath +
+              '/' +
+              auth().currentUser.uid +
+              '/' +
+              messageKey +
+              '.jpg' +
+              '#' +
+              new Date();
+          }
 
-      const msg = {
-        c,
-        id,
-        _id,
-        createdAt,
-        text,
-        user,
-        image,
-      };
-      console.log('LOCALE KAYDEDİLEN MESAJ KEYİ', messageKey);
-      if (
-        localMessages[uidCount] == null ||
-        localMessages[uidCount].length == 0
-      ) {
-        localMessages[uidCount] = [msg];
-      } else {
-        localMessages[uidCount].push(msg);
-      }
+          const msg = {
+            c,
+            id,
+            _id,
+            createdAt,
+            text,
+            user,
+            image,
+          };
+          if (
+            localMessages[uidCount] == null ||
+            localMessages[uidCount].length == 0
+          ) {
+            localMessages[uidCount] = [msg];
+            global.messages = [msg._id];
+            console.log('LOCALE KAYDEDİLDİ, MESSAGESTA:', localMessages);
+          } else {
+            global.messages.push(msg._id);
+            localMessages[uidCount].push(msg);
+            console.log('PUSHED MSG:', msg);
+            //console.log('LOCALE KAYDEDİLDİ, MESSAGESTA2:', localMessages);
+          }
+          if (noOfNewMsgs == 1) {
+            EncryptedStorage.setItem(
+              auth().currentUser.uid + uidArray[uidCount] + '/messages',
+              JSON.stringify(localMessages[uidCount]),
+            );
+            // Swapped to EncryptedStorage EncryptedStorage.setItem(auth().currentUser.uid + uidArray[uidCount] + '/messages', JSON.stringify(localMessages[uidCount]))
+          }
+          if (p == 't') {
+            var downloadURL;
+            var storageRef = storage().ref(
+              'Photos/' +
+                auth().currentUser.uid +
+                '/MessagePhotos/' +
+                messageKey +
+                '.jpg',
+            );
+            var fileExists = false;
+            while (!fileExists) {
+              await storageRef
+                .getDownloadURL()
+                .then((data) => {
+                  downloadURL = data;
+                  fileExists = true;
+                })
+                .catch(function (error) {
+                  console.log('error');
+                });
+            }
+            const msg2 = {
+              c,
+              id,
+              _id,
+              createdAt,
+              text,
+              user,
+              image,
+            };
 
-      EncryptedStorage.setItem(
-        auth().currentUser.uid + uidArray[uidCount] + '/messages',
-        JSON.stringify(localMessages[uidCount]),
-      );
-
-      if (p == 't') {
-        var downloadURL;
-        var storageRef = storage().ref(
-          'Photos/' +
-            auth().currentUser.uid +
-            '/MessagePhotos/' +
-            messageKey +
-            '.jpg',
-        );
-        var fileExists = false;
-        while (!fileExists) {
-          await storageRef
-            .getDownloadURL()
-            .then((data) => {
-              downloadURL = data;
-              console.log('download URL ready for:', downloadURL);
-              fileExists = true;
+            let dirs = RNFetchBlob.fs.dirs;
+            RNFetchBlob.config({
+              fileCache: true,
+              appendExt: 'jpg',
+              path:
+                RNFS.DocumentDirectoryPath +
+                '/' +
+                auth().currentUser.uid +
+                '/' +
+                messageKey +
+                '.jpg',
             })
-            .catch(function (error) {});
+              .fetch('GET', downloadURL, {
+                //some headers ..
+              })
+              .then((data) => {
+                this.props.updateChat();
+                global.callback(msg2, noOfNewMsgs);
+              });
+          }
         }
-
-        let dirs = RNFetchBlob.fs.dirs;
-        RNFetchBlob.config({
-          fileCache: true,
-          appendExt: 'jpg',
-          path:
-            RNFS.DocumentDirectoryPath +
-            '/' +
-            auth().currentUser.uid +
-            '/' +
-            messageKey +
-            '.jpg',
-        })
-          .fetch('GET', downloadURL, {
-            //some headers ..
-          })
-          .then((data) => {
-            console.log('indirme bitti');
-            this.props.updateChat();
-          });
-        /*if (noOfNewMsgs > 1) {
-          console.log(noOfNewMsgs, ' new message!');
+        if (noOfNewMsgs > 1) {
           localMessages[uidCount].sort(this.sortByInteger('c'));
           console.log('LOCAL MESSAGES:', localMessages[0]);
           await EncryptedStorage.setItem(
@@ -1143,7 +1176,8 @@ class MessagesScreen extends Component<{}> {
             JSON.stringify(localMessages[uidCount]),
           );
         }
-*/
+
+        global.currentProcessUidArray[uidArray[uidCount]] = false;
         var kValue;
         var isRequ = await EncryptedStorage.getItem(
           'IsRequest/' + auth().currentUser.uid + '/' + uidArray[uidCount],
@@ -1154,7 +1188,7 @@ class MessagesScreen extends Component<{}> {
         if (isRequ == 'false') {
           kValue = 1;
         }
-        this.setRequestDB(uidArray[uidCount], kValue);
+        await this.setRequestDB(uidArray[uidCount], kValue);
 
         console.log('IF 0');
         // CREATE DATA ARRAY PART
@@ -1295,6 +1329,7 @@ class MessagesScreen extends Component<{}> {
         }
       }
     }
+    global.currentProcessUidArray[uidArray[uidCount]] = false;
   };
 
   sortByProperty(property) {

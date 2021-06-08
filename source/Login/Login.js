@@ -181,7 +181,6 @@ export default class LoginScreen extends Component<{}> {
       });
   };
   check() {
-    console.log('CHECK');
     if (this.state.isim != '' && this.state.sifre != '') {
       Keyboard.dismiss();
       this.spinAnimation();
