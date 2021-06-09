@@ -2623,26 +2623,15 @@ export default class MainScreen extends Component<{}> {
           onPressClose={() => this.setState({searchOnIsVisible: false})}
         />
 
-        <InfoModal
-          textVerticalAlign={'center'}
-          isVisible={this.state.notifIsVisible}
-          txtAlert={lang.TwinizingProcessInfo}
-          txtGotIt={lang.GotIt}
-          onPressClose={() => {
+        <Snackbar
+          duration={1500}
+          style={{bottom: this.width / 7}}
+          visible={this.state.notifIsVisible}
+          onDismiss={() => {
             this.setState({notifIsVisible: false, disabled: false}),
               interstitial.show();
-          }}
-        />
-
-        <Snackbar
-          style={{
-            bottom: this.state.keyboardOpen
-              ? global.keyboardHeight + this.navBarHeight + this.width / 7
-              : this.width / 7,
-          }}
-          visible={this.state.saveInfoModalVisible}
-          onDismiss={() => this.setState({saveInfoModalVisible: false})}>
-          {lang.YourChangesHaveBeenSaved}
+          }}>
+          {lang.TwinizingProcessInfo}
         </Snackbar>
 
         <ImageUploadModal

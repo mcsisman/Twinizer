@@ -6,6 +6,7 @@ import database from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
 import OneSignal from 'react-native-onesignal';
 import firestore from '@react-native-firebase/firestore';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import AsyncStorage from '@react-native-community/async-storage';
 import language from '../../../Utils/Languages/lang.json';
 import PropTypes from 'prop-types';
@@ -22,6 +23,8 @@ import {
   Dimensions,
   Image,
   StatusBar,
+  Animated,
+  Easing,
 } from 'react-native';
 
 email = '';
@@ -36,6 +39,13 @@ var lang = language[global.lang];
 var screenHeight = Math.round(Dimensions.get('screen').height);
 var screenWidth = Math.round(Dimensions.get('screen').width);
 export default class AuthenticationModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      deleteStarted: false,
+    };
+    this.spinValue = new Animated.Value(0);
+  }
   static propTypes = {
     isVisible: PropTypes.bool,
     onBackdropPress: PropTypes.func,
@@ -46,11 +56,29 @@ export default class AuthenticationModal extends Component {
     onFocus: PropTypes.func,
   };
   static defaultProps = {};
+  spinAnimation() {
+    console.log('SPIN ANIMATION');
+    this.spinValue = new Animated.Value(0);
+    // First set up animation
+    Animated.loop(
+      Animated.timing(this.spinValue, {
+        toValue: 1,
+        duration: 1000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+    ).start();
+  }
   async deletePress(email, password) {
-    console.log('DELETE PRESS');
-    this.setState({authenticationVisible: false});
+    if (email == '' || password == '') {
+      return;
+    }
     try {
-      var autheticated = false;
+      var lang = language[global.lang];
+      console.log('DELETE PRESS');
+      this.spinAnimation();
+      this.setState({authenticationVisible: false, deleteStarted: true});
+      var authenticated = false;
       if (auth().currentUser.email == email) {
         await auth()
           .signInWithEmailAndPassword(email, password)
@@ -63,40 +91,32 @@ export default class AuthenticationModal extends Component {
           await OneSignal.removeEventListener('opened', this.onOpened);
           await OneSignal.removeEventListener('ids', this.onIds);
           // async storage remove
-          await AsyncStorage.removeItem(auth().currentUser.uid + 'userGender');
-          await AsyncStorage.removeItem(auth().currentUser.uid + 'userCountry');
-          await AsyncStorage.removeItem(auth().currentUser.uid + 'userName');
-          await AsyncStorage.removeItem(auth().currentUser.uid + 'userBio');
-          await AsyncStorage.removeItem(
+          EncryptedStorage.removeItem(auth().currentUser.uid + 'userGender');
+          EncryptedStorage.removeItem(auth().currentUser.uid + 'userCountry');
+          EncryptedStorage.removeItem(auth().currentUser.uid + 'userName');
+          EncryptedStorage.removeItem(auth().currentUser.uid + 'userBio');
+          EncryptedStorage.removeItem(
             auth().currentUser.uid + 'userPhotoCount',
           );
-          await AsyncStorage.removeItem(
-            auth().currentUser.uid + 'blockedUsers',
-          );
-          await AsyncStorage.removeItem(
-            auth().currentUser.uid + 'favoriteUsers',
-          );
-          await AsyncStorage.removeItem(auth().currentUser.uid + 'noOfSearch');
-          await AsyncStorage.removeItem(auth().currentUser.uid + 'lastSearch');
-          await AsyncStorage.removeItem(
-            auth().currentUser.uid + 'historyArray',
-          );
-          await AsyncStorage.removeItem(
+          EncryptedStorage.removeItem(auth().currentUser.uid + 'blockedUsers');
+          EncryptedStorage.removeItem(auth().currentUser.uid + 'favoriteUsers');
+          EncryptedStorage.removeItem(auth().currentUser.uid + 'noOfSearch');
+          EncryptedStorage.removeItem(auth().currentUser.uid + 'lastSearch');
+          EncryptedStorage.removeItem(auth().currentUser.uid + 'historyArray');
+          EncryptedStorage.removeItem(
             auth().currentUser.uid + 'favShowThisDialog',
           );
-          await AsyncStorage.removeItem(
+          EncryptedStorage.removeItem(
             auth().currentUser.uid + 'blockShowThisDialog',
           );
-          await AsyncStorage.removeItem(auth().currentUser.uid + 'o');
-          await AsyncStorage.removeItem(auth().currentUser.uid + 'playerId');
-          await AsyncStorage.removeItem(
-            auth().currentUser.uid + 'message_uids',
-          );
-          await AsyncStorage.removeItem(
+          EncryptedStorage.removeItem(auth().currentUser.uid + 'o');
+          EncryptedStorage.removeItem(auth().currentUser.uid + 'playerId');
+          EncryptedStorage.removeItem(auth().currentUser.uid + 'message_uids');
+          EncryptedStorage.removeItem(
             auth().currentUser.uid + 'message_usernames',
           );
-          await AsyncStorage.removeItem(auth().currentUser.uid + 'theme');
-          await AsyncStorage.removeItem(auth().currentUser.uid + 'mode');
+          EncryptedStorage.removeItem(auth().currentUser.uid + 'theme');
+          EncryptedStorage.removeItem(auth().currentUser.uid + 'mode');
           var messageUidsArray = firestore()
             .collection(auth().currentUser.uid)
             .doc('MessageInformation');
@@ -106,24 +126,24 @@ export default class AuthenticationModal extends Component {
             if (doc.exists) {
               var conversationUidArray = await doc.data()['UidArray'];
               for (let i = 0; i < conversationUidArray.length; i++) {
-                await AsyncStorage.removeItem(
+                EncryptedStorage.removeItem(
                   auth().currentUser.uid +
                     conversationUidArray[i] +
                     '/messages',
                 );
-                await AsyncStorage.removeItem(
+                EncryptedStorage.removeItem(
                   'IsRequest/' +
                     auth().currentUser.uid +
                     '/' +
                     conversationUidArray[i],
                 );
-                await AsyncStorage.removeItem(
+                EncryptedStorage.removeItem(
                   'ShowMessageBox/' +
                     auth().currentUser.uid +
                     '/' +
                     conversationUidArray[i],
                 );
-                await AsyncStorage.removeItem(
+                EncryptedStorage.removeItem(
                   auth().currentUser.uid +
                     '' +
                     conversationUidArray[i] +
@@ -261,19 +281,28 @@ export default class AuthenticationModal extends Component {
               console.log('LOGOUT SUCCESSFUL');
               global.popUp();
             });
+        } else {
+          this.setState({authenticationVisible: false, deleteStarted: false});
+          Alert.alert(lang.PlsTryAgain, lang.WrongEmailPassword);
         }
       } else {
-        Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
+        this.setState({authenticationVisible: false, deleteStarted: false});
+        Alert.alert(lang.PlsTryAgain, lang.WrongEmailPassword);
       }
     } catch (error) {
       console.log(error);
-      Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
+      this.setState({authenticationVisible: false, deleteStarted: false});
+      Alert.alert(lang.PlsTryAgain, lang.SomethingWentWrong);
     }
   }
   render() {
     var lang = language[global.lang];
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
+    const spin = this.spinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '360deg'],
+    });
     return (
       <Modal /*BÜYÜTÜLMÜŞ FOTOĞRAF MODALI*/
         style={{
@@ -392,6 +421,16 @@ export default class AuthenticationModal extends Component {
                   onChangeText={(text) => (pw = text)}></TextInput>
 
                 <View style={{height: (this.height * 3) / 100}}></View>
+                {this.state.deleteStarted && (
+                  <Animated.Image
+                    source={{uri: 'loadingwhite'}}
+                    style={{
+                      transform: [{rotate: spin}],
+                      width: this.width * (1 / 15),
+                      height: this.width * (1 / 15),
+                    }}
+                  />
+                )}
                 <TouchableOpacity
                   activeOpacity={1}
                   style={{
