@@ -202,7 +202,7 @@ export default class MainScreen extends Component<{}> {
     global.globalGender = '';
     this.photoRes = 7 / 6;
     this.inSearchDone = false;
-
+    this.swipeable = null;
     this.emptyWidthAnimation = new Animated.Value(global.width * (1.5 / 10));
     this.widthAnimation = new Animated.Value(global.width * (5 / 10));
     this.heightAnimation = new Animated.Value(
@@ -1704,7 +1704,13 @@ export default class MainScreen extends Component<{}> {
     global.deactivateRight = null;
     global.deactivationRightDistance = global.width * (2.5 / 10);
     global.deactivationLeftDistance = global.width * (2.5 / 10);
+    global.activationDistanceLeft = this.width * (2.5 / 10);
+    global.deactivationDistanceLeft = this.width * (2.5 / 10);
+    global.activationDistanceRight = this.width * (2.5 / 10);
+    global.deactivationDistanceRight = this.width * (2.5 / 10);
+    this.swipeable.recenter();
     this.setState({
+      swipeableContentRight: global.width * ((-1 + 2490) / 10),
       messageButtonDisabled: true,
       messageButtonOpacity: 0,
       sadfaceOpacity: 0,
@@ -1824,7 +1830,13 @@ export default class MainScreen extends Component<{}> {
   async searchDone(value) {
     isFav = false;
     isBlock = false;
+    global.activationDistanceLeft = this.width * (2.5 / 10);
+    global.deactivationDistanceLeft = this.width * (2.5 / 10);
+    global.activationDistanceRight = this.width * (2.5 / 10);
+    global.deactivationDistanceRight = this.width * (2.5 / 10);
+    this.swipeable.recenter();
     this.setState({
+      swipeableContentRight: global.width * ((-1 + 2490) / 10),
       filterButtonOpacity: 0.4,
       disabledSearch: true,
       gender: null,
@@ -2352,6 +2364,7 @@ export default class MainScreen extends Component<{}> {
             left: -this.width * 250,
             height: this.width * (5 / 10) * (7 / 6),
           }}
+          ref={(ref) => this.swipeable = ref}
           disabled={this.state.swipeableDisabled}
           rightContent={this.noRight()}
           leftContent={this.noLeft()}
