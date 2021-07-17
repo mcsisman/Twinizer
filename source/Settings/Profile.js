@@ -16,7 +16,6 @@ import RNFetchBlob from 'rn-fetch-blob';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
-import OneSignal from 'react-native-onesignal';
 import firestore from '@react-native-firebase/firestore';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {

@@ -25,6 +25,7 @@ var screenHeight = Math.round(Dimensions.get('screen').height);
 var screenWidth = Math.round(Dimensions.get('screen').width);
 export default class BlockUserButton extends Component {
   static propTypes = {
+    borderWidth: PropTypes.number,
     onPress: PropTypes.func,
     disabled: PropTypes.bool,
     opacity: PropTypes.number,
@@ -36,6 +37,7 @@ export default class BlockUserButton extends Component {
     borderTopRightRadius: PropTypes.number,
   };
   static defaultProps = {
+    borderWidth: 0.7,
     width: screenWidth / 6,
     height: screenWidth / 10,
     image: 'block',
@@ -50,6 +52,7 @@ export default class BlockUserButton extends Component {
       <TouchableOpacity // SEND MESSAGE BUTONU
         activeOpacity={1}
         style={{
+          flex: 1,
           opacity: this.props.opacity,
           justifyContent: 'center',
           backgroundColor: this.props.isSelected

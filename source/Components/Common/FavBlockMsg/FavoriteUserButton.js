@@ -25,6 +25,7 @@ var screenHeight = Math.round(Dimensions.get('screen').height);
 var screenWidth = Math.round(Dimensions.get('screen').width);
 export default class FavoriteUserButton extends Component {
   static propTypes = {
+    borderWidth: PropTypes.number,
     onPress: PropTypes.func,
     disabled: PropTypes.bool,
     opacity: PropTypes.number,
@@ -36,6 +37,7 @@ export default class FavoriteUserButton extends Component {
     borderTopLeftRadius: PropTypes.number,
   };
   static defaultProps = {
+    borderWidth: 0.7,
     width: screenWidth / 6,
     height: screenWidth / 10,
     image: 'star',
@@ -58,8 +60,6 @@ export default class FavoriteUserButton extends Component {
             : 'rgba(0,0,0,0)',
           width: this.props.width,
           height: this.props.height,
-          borderRightWidth: 0.7,
-          borderColor: 'white',
           borderBottomLeftRadius: this.props.borderBottomLeftRadius,
           borderTopLeftRadius: this.props.borderTopLeftRadius,
         }}

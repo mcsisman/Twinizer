@@ -199,7 +199,7 @@ class FirebaseSvc {
 
     for (let i = 0; i < messages.length; i++) {
       const {text, user1} = messages[i];
-      fetch('https://onesignal.com/api/v1/notifications', {
+      /*fetch('https://onesignal.com/api/v1/notifications', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
@@ -211,7 +211,7 @@ class FirebaseSvc {
         }),
       }).then((response) => {
         //console.log(response)
-      });
+      });*/
       const message = {
         text,
         c: this.timestamp,

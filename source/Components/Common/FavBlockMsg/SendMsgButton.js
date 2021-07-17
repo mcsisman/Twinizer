@@ -25,6 +25,7 @@ var screenHeight = Math.round(Dimensions.get('screen').height);
 var screenWidth = Math.round(Dimensions.get('screen').width);
 export default class SendMsgButton extends Component {
   static propTypes = {
+    borderWidth: PropTypes.number,
     onPress: PropTypes.func,
     disabled: PropTypes.bool,
     opacity: PropTypes.number,
@@ -33,6 +34,7 @@ export default class SendMsgButton extends Component {
     height: PropTypes.number,
   };
   static defaultProps = {
+    borderWidth: 0.7,
     width: screenWidth / 6,
     height: screenWidth / 10,
     image: 'msgblue',
@@ -49,8 +51,6 @@ export default class SendMsgButton extends Component {
           alignItems: 'center',
           width: this.props.width,
           height: this.props.height,
-          borderRightWidth: 0.7,
-          borderColor: 'white',
         }}
         onPress={this.props.onPress}
         disabled={this.props.disabled}>

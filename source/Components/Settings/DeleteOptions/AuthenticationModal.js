@@ -4,7 +4,7 @@ import Modal from 'react-native-modal';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
-import OneSignal from 'react-native-onesignal';
+//import OneSignal from 'react-native-onesignal';
 import firestore from '@react-native-firebase/firestore';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -87,9 +87,9 @@ export default class AuthenticationModal extends Component {
             console.log('authenticated');
           });
         if (authenticated) {
-          await OneSignal.removeEventListener('received', this.onReceived);
-          await OneSignal.removeEventListener('opened', this.onOpened);
-          await OneSignal.removeEventListener('ids', this.onIds);
+          //await OneSignal.removeEventListener('received', this.onReceived);
+          //await OneSignal.removeEventListener('opened', this.onOpened);
+          //await OneSignal.removeEventListener('ids', this.onIds);
           // async storage remove
           EncryptedStorage.removeItem(auth().currentUser.uid + 'userGender');
           EncryptedStorage.removeItem(auth().currentUser.uid + 'userCountry');

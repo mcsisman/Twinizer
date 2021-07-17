@@ -9,16 +9,17 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import Carousel from 'react-native-snap-carousel';
 import messaging from '@react-native-firebase/messaging';
-import OneSignal from 'react-native-onesignal';
+//import OneSignal from 'react-native-onesignal';
 import Modal from 'react-native-modal';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ImagePicker from 'react-native-image-crop-picker';
-import Swipeable from 'react-native-swipeable';
 import RNFetchBlob from 'rn-fetch-blob';
 import AsyncStorage from '@react-native-community/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {FAB, Snackbar, Button} from 'react-native-paper';
+import LottieView from 'lottie-react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -66,12 +67,11 @@ import ImageUploader from '../Components/Common/ImageUpload/ImageUploader';
 import SearchButton from '../Components/Common/SearchButton/SearchButton';
 import InfoModal from '../Components/Common/Info/InfoModal';
 
+import CarouselItem from '../Components/Main/Carousel/CarouselItem';
+
 import FavBlockModal from '../Components/Main/FavBlock/FavBlockModal';
 import FilterModal from '../Components/Main/Filter/FilterModal';
 import PhotoPopUpModal from '../Components/Main/Swipeable/PhotoPopUpModal';
-import BigImgInfo from '../Components/Main/Swipeable/BigImgInfo';
-import SwipeableSmallImg from '../Components/Main/Swipeable/SwipeableSmallImg';
-import SwipeableBigImg from '../Components/Main/Swipeable/SwipeableBigImg';
 import language from '../Utils/Languages/lang.json';
 if (Platform.OS === 'android') {
   var headerHeight = Header.HEIGHT;
@@ -132,12 +132,14 @@ export default class MainScreen extends Component<{}> {
     this.windowHeight = Math.round(Dimensions.get('window').height);
     global.navBarHeight = this.height - this.windowHeight;
     this.width = Math.round(Dimensions.get('screen').width);
-    global.activationDistanceLeft = this.width * (2.5 / 10);
-    global.deactivationDistanceLeft = this.width * (2.5 / 10);
-    global.activationDistanceRight = this.width * (2.5 / 10);
-    global.deactivationDistanceRight = this.width * (2.5 / 10);
+
+    this.lastDownloadedIndex = 9;
+    this.searchResultArray = [];
     var lang = language[global.lang];
     this.state = {
+      isFavArray: [],
+      currentCarouselIndex: 0,
+      carouselArray: [],
       showAd: false,
       imageViewerVisible: false,
       favTickVisible: false,
@@ -168,41 +170,20 @@ export default class MainScreen extends Component<{}> {
       imagePath: null,
       backgroundOpacity: 0.2,
       swipeableDisabled: true,
-      swipeableContentRight: global.width * ((-1 + 2490) / 10),
-      uri0: null,
-      uri1: null,
-      uri2: null,
-      uri3: null,
-      uri4: null,
-      uri5: null,
-      uri2_username: '',
-      uri2_country: '',
-      uri2_gender: '',
-      uri2_bio: '',
-      swipeable: -global.width,
       openProfileIsVisible: false,
       messageButtonOpacity: 0,
       sadfaceOpacity: 0,
       messageButtonDisabled: true,
-      loadingOpacity: 0,
+      loadingAnimation: true,
       photo: null,
     };
-    (global.swipeCount = 0),
-      (this.activationCount = 0),
-      (this.deactivate = null),
-      (this.complete = false),
-      (this.releasedAfterRightD2 = false),
-      (this.releasedAfterLeftD2 = false),
-      (this.rightActionCount = 0),
-      (this.leftActionCount = 0),
-      (this.probabilityDoneCheck = false);
+    this.probabilityDoneCheck = false;
     this.downloadURL = '';
     (this.url = ''), (this.countries = countries.countries);
     this.welcome = {uri: 'welcome'};
     global.globalGender = '';
     this.photoRes = 7 / 6;
     this.inSearchDone = false;
-    this.swipeable = null;
     this.emptyWidthAnimation = new Animated.Value(global.width * (1.5 / 10));
     this.widthAnimation = new Animated.Value(global.width * (5 / 10));
     this.heightAnimation = new Animated.Value(
@@ -275,7 +256,7 @@ export default class MainScreen extends Component<{}> {
       }
     });
     // WHOLE ONESIGNAL THINGS
-    OneSignal.setLogLevel(6, 0);
+    /*OneSignal.setLogLevel(6, 0);
     OneSignal.init('7af3b2d1-d4fe-418d-a096-4f57f2c384c8', {
       kOSSettingsKeyAutoPrompt: false,
       kOSSettingsKeyInAppLaunchURL: false,
@@ -289,8 +270,7 @@ export default class MainScreen extends Component<{}> {
     });
     OneSignal.addEventListener('received', this.onReceived);
     OneSignal.addEventListener('opened', this.onOpened);
-    OneSignal.addEventListener('ids', await this.onIds);
-    global.swipeCount = 0;
+    OneSignal.addEventListener('ids', await this.onIds);*/
     // this.checkIfAlreadySearching()
     this.welcome = {uri: 'twinizermain'};
   }
@@ -439,7 +419,7 @@ export default class MainScreen extends Component<{}> {
     if (
       favoriteUsers != null &&
       favoriteUsers.length != 0 &&
-      favoriteUsersSet.has(emailArray[global.swipeCount])
+      favoriteUsersSet.has(emailArray[this.state.currentCarouselIndex])
     ) {
       isFav = true;
       isBlock = false;
@@ -448,7 +428,7 @@ export default class MainScreen extends Component<{}> {
       if (
         blockedUsers != null &&
         blockedUsers.length != 0 &&
-        blockedUsersSet.has(emailArray[global.swipeCount])
+        blockedUsersSet.has(emailArray[this.state.currentCarouselIndex])
       ) {
         isBlock = true;
       } else {
@@ -514,530 +494,15 @@ export default class MainScreen extends Component<{}> {
     console.log('URI: ', uri);
     global.fromHistorySearch = false;
   }
-  swipeStart() {
-    this.setState({showAd: false});
-    if (!this.state.swipeableDisabled) {
-      this.widthAnimation.setValue(global.width * (5 / 10));
-      this.emptyWidthAnimation.setValue(global.width * (1.5 / 10));
-      this.heightAnimation.setValue(global.width * (5 / 10) * (7 / 6));
-      Animated.parallel([
-        Animated.timing(this.widthAnimation, {
-          duration: 200,
-          toValue: global.width * (2 / 10),
-          easing: Easing.elastic(0.5),
-          useNativeDriver: false,
-        }),
-        Animated.timing(this.heightAnimation, {
-          duration: 200,
-          toValue: global.width * (2 / 10) * (7 / 6),
-          easing: Easing.elastic(0.5),
-          useNativeDriver: false,
-        }),
-        Animated.timing(this.emptyWidthAnimation, {
-          duration: 200,
-          toValue: global.width * (3 / 10),
-          easing: Easing.elastic(0.5),
-          useNativeDriver: false,
-        }),
-      ]).start(),
-        this.setState({
-          messageButtonDisabled: true,
-          messageButtonOpacity: 0,
-        });
-    }
-  }
-  swipeRelease() {
-    //this.checkUri2FavOrBlocked()
-    if (!this.state.swipeableDisabled) {
-      if (!this.complete || this.activationCount == 0) {
-        if (!this.releasedAfterRightD2 || !this.releasedAfterLeftD2) {
-          console.log('OnSwipeRelease');
-          global.flag1 = true; //Left A1
-          global.flag2 = false; //Left A2
-          global.flag3 = false; //Left D1
-          global.flag4 = false; //Left D2
-          global.flag5 = true; //Right A1
-          global.flag6 = false; //Right A2
-          global.flag7 = false; //Right D1
-          global.flag8 = false; //Right D2
-          this.setState({
-            messageButtonDisabled: false,
-            messageButtonOpacity: 1,
-          });
 
-          this.widthAnimation.setValue(global.width * (2 / 10));
-          this.emptyWidthAnimation.setValue(global.width * (3 / 10));
-          this.heightAnimation.setValue(global.width * (2 / 10) * (7 / 6));
-          Animated.parallel([
-            Animated.timing(this.widthAnimation, {
-              duration: 300,
-              toValue: global.width * (5 / 10),
-              easing: Easing.elastic(0.5),
-              useNativeDriver: false,
-            }),
-            Animated.timing(this.heightAnimation, {
-              duration: 300,
-              toValue: global.width * (5 / 10) * (7 / 6),
-              easing: Easing.elastic(0.5),
-              useNativeDriver: false,
-            }),
-            Animated.timing(this.emptyWidthAnimation, {
-              duration: 300,
-              toValue: global.width * (1.5 / 10),
-              easing: Easing.elastic(0.5),
-              useNativeDriver: false,
-            }),
-          ]).start();
-          console.log(this.state.uri2);
-          this.setState({showAd: true});
-          if (emailArray.length == 0 || emailArray[0] == null) {
-            this.setState({messageButtonOpacity: 0, sadfaceOpacity: 1});
-          }
-        }
-      }
+  async sendFirstMessage(index) {
+    if (this.state.currentCarouselIndex != index) {
+      return;
     }
-  }
-  // ACTIVATE - DEACTIVATE FUNCTIONS
-  leftActionActivate() {
-    console.log('left activate1');
-    this.activationCount = this.activationCount + 1;
-    this.releasedAfterLeftD2 = false;
-    this.releasedAfterRightD2 = false;
-    this.leftActionCount = this.leftActionCount + 1;
-    this.deactivate = false;
-    this.complete = true;
-    global.swipeCount = global.swipeCount - 1;
-  }
-  leftActionActivate2() {
-    this.activationCount = this.activationCount + 1;
-    this.releasedAfterLeftD2 = false;
-    this.releasedAfterRightD2 = false;
-    this.leftActionCount = this.leftActionCount + 1;
-    this.deactivate = false;
-    this.complete = true;
-    global.swipeCount = global.swipeCount - 1;
-    console.log('left activate2');
-  }
-  rightActionActivate() {
-    this.activationCount = this.activationCount + 1;
-    this.releasedAfterLeftD2 = false;
-    this.releasedAfterRightD2 = false;
-    this.rightActionCount = this.rightActionCount + 1;
-    this.deactivate = false;
-    this.complete = true;
-    global.swipeCount = global.swipeCount + 1;
-    console.log('right activate1');
-  }
-  rightActionActivate2() {
-    this.activationCount = this.activationCount + 1;
-    this.releasedAfterLeftD2 = false;
-    this.releasedAfterRightD2 = false;
-    this.rightActionCount = this.rightActionCount + 1;
-    this.deactivate = false;
-    this.complete = true;
-    global.swipeCount = global.swipeCount + 1;
-    console.log('right activate2');
-  }
-  leftActionDeactivate() {
-    this.activationCount = this.activationCount - 1;
-    this.releasedAfterLeftD2 = false;
-    this.releasedAfterRightD2 = false;
-    this.leftActionCount = this.leftActionCount - 1;
-    this.deactivate = true;
-    global.swipeCount = global.swipeCount + 1;
-    console.log('left deactivate1');
-  }
-  leftActionDeactivate2() {
-    this.activationCount = this.activationCount - 1;
-    this.releasedAfterLeftD2 = true;
-    this.releasedAfterRightD2 = false;
-    this.leftActionCount = this.leftActionCount - 1;
-    this.deactivate = true;
-    global.swipeCount = global.swipeCount + 1;
-    console.log('left deactivate2');
-  }
-  rightActionDeactivate() {
-    this.activationCount = this.activationCount - 1;
-    this.releasedAfterLeftD2 = false;
-    this.releasedAfterRightD2 = false;
-    this.rightActionCount = this.rightActionCount - 1;
-    this.deactivate = true;
-    global.swipeCount = global.swipeCount - 1;
-    console.log('right deactivate1');
-  }
-  rightActionDeactivate2() {
-    this.activationCount = this.activationCount - 1;
-    this.releasedAfterLeftD2 = false;
-    this.releasedAfterRightD2 = true;
-    this.rightActionCount = this.rightActionCount - 1;
-    this.deactivate = true;
-    global.swipeCount = global.swipeCount - 1;
-    console.log('right deactivate2');
-  }
-
-  leftActionComplete() {
-    global.flag1 = true; //Left A1
-    global.flag2 = false; //Left A2
-    global.flag3 = false; //Left D1
-    global.flag4 = false; //Left D2
-    global.flag5 = true; //Right A1
-    global.flag6 = false; //Right A2
-    global.flag7 = false; //Right D1
-    global.flag8 = false; //Right D2
-    global.leftD2beforeA1 = 0;
-    this.widthAnimation.setValue(global.width * (2 / 10));
-    this.emptyWidthAnimation.setValue(global.width * (3 / 10));
-    this.heightAnimation.setValue(global.width * (2 / 10) * (7 / 6));
-    Animated.parallel([
-      Animated.timing(this.widthAnimation, {
-        duration: 200,
-        toValue: global.width * (5 / 10),
-        easing: Easing.elastic(0.5),
-        useNativeDriver: false,
-      }),
-      Animated.timing(this.heightAnimation, {
-        duration: 200,
-        toValue: global.width * (5 / 10) * (7 / 6),
-        easing: Easing.elastic(0.5),
-        useNativeDriver: false,
-      }),
-      Animated.timing(this.emptyWidthAnimation, {
-        duration: 200,
-        toValue: global.width * (1.5 / 10),
-        easing: Easing.elastic(0.5),
-        useNativeDriver: false,
-      }),
-    ]).start();
-    this.setState({showAd: true});
-    console.log('Swipe Count:', global.swipeCount);
-    if (this.leftActionCount == 2) {
-      this.activationCount = 0;
-      this.complete = false;
-      this.leftActionCount = 0;
-      this.releasedAfterLeftD2 = false;
-      this.releasedAfterRightD2 = false;
-      this.setState({
-        swipeableContentRight:
-          this.state.swipeableContentRight + this.width * (10 / 10),
-        uri5: this.state.uri3,
-        uri4: this.state.uri2,
-        uri3: this.state.uri1,
-        uri2: this.state.uri0,
-        uri1: photoArray[emailArray[global.swipeCount - 1]],
-        uri0: photoArray[emailArray[global.swipeCount - 2]],
-        uri2_username: usernameArray[global.swipeCount],
-        uri2_country: countryArray[global.swipeCount],
-        uri2_gender: genderArray[global.swipeCount],
-        uri2_bio: bioDict[emailArray[global.swipeCount]],
-        messageButtonDisabled: false,
-        messageButtonOpacity: 1,
-      });
-      global.deactivationDistanceLeft =
-        global.deactivationDistanceLeft + this.width * (5 / 10);
-      global.activationDistanceRight =
-        global.activationDistanceRight - this.width * (10 / 10);
-      global.deactivationDistanceRight =
-        global.deactivationDistanceRight - this.width * (10 / 10);
-      console.log('LeftActionCompleted çift');
-      console.log(this.state.uri2_bio);
-      console.log(this.state.uri2);
-    } else {
-      this.activationCount = 0;
-      this.complete = false;
-      this.leftActionCount = 0;
-      this.releasedAfterLeftD2 = false;
-      this.releasedAfterRightD2 = false;
-      this.setState({
-        swipeableContentRight:
-          this.state.swipeableContentRight + this.width * (5 / 10),
-        uri5: this.state.uri4,
-        uri4: this.state.uri3,
-        uri3: this.state.uri2,
-        uri2: this.state.uri1,
-        uri1: this.state.uri0,
-        uri0: photoArray[emailArray[global.swipeCount - 2]],
-        uri2_username: usernameArray[global.swipeCount],
-        uri2_country: countryArray[global.swipeCount],
-        uri2_gender: genderArray[global.swipeCount],
-        uri2_bio: bioDict[emailArray[global.swipeCount]],
-        messageButtonDisabled: false,
-        messageButtonOpacity: 1,
-      });
-      global.deactivationDistanceLeft =
-        global.deactivationDistanceLeft + this.width * (5 / 10);
-      global.activationDistanceRight =
-        global.activationDistanceRight - this.width * (5 / 10);
-      global.deactivationDistanceRight =
-        global.deactivationDistanceRight - this.width * (5 / 10);
-      console.log('LeftActionCompleted tek');
-      console.log(this.state.uri2_bio);
-      console.log(this.state.uri2);
-    }
-    this.checkUri2FavOrBlocked();
-  }
-  async rightActionComplete() {
-    global.flag1 = true; //Left A1
-    global.flag2 = false; //Left A2
-    global.flag3 = false; //Left D1
-    global.flag4 = false; //Left D2
-    global.flag5 = true; //Right A1
-    global.flag6 = false; //Right A2
-    global.flag7 = false; //Right D1
-    global.flag8 = false; //Right D2
-    console.log('Swipe Count:', global.swipeCount);
-    global.rightD2beforeA1 = 0;
-    this.widthAnimation.setValue(global.width * (2 / 10));
-    this.emptyWidthAnimation.setValue(global.width * (3 / 10));
-    this.heightAnimation.setValue(global.width * (2 / 10) * (7 / 6));
-    Animated.parallel([
-      Animated.timing(this.widthAnimation, {
-        duration: 200,
-        toValue: global.width * (5 / 10),
-        easing: Easing.elastic(0.5),
-        useNativeDriver: false,
-      }),
-      Animated.timing(this.heightAnimation, {
-        duration: 200,
-        toValue: global.width * (5 / 10) * (7 / 6),
-        easing: Easing.elastic(0.5),
-        useNativeDriver: false,
-      }),
-      Animated.timing(this.emptyWidthAnimation, {
-        duration: 200,
-        toValue: global.width * (1.5 / 10),
-        easing: Easing.elastic(0.5),
-        useNativeDriver: false,
-      }),
-    ]).start();
-    this.setState({showAd: true});
-    if (this.rightActionCount == 2) {
-      this.activationCount = 0;
-      this.complete = false;
-      this.rightActionCount = 0;
-      this.releasedAfterLeftD2 = false;
-      this.releasedAfterRightD2 = false;
-      this.setState({
-        swipeableContentRight:
-          this.state.swipeableContentRight - this.width * (10 / 10),
-        uri0: this.state.uri2,
-        uri1: this.state.uri3,
-        uri2: this.state.uri4,
-        uri3: photoArray[emailArray[global.swipeCount + 1]],
-        uri4: photoArray[emailArray[global.swipeCount + 2]],
-        uri5: photoArray[emailArray[global.swipeCount + 3]],
-        uri2_username: usernameArray[global.swipeCount],
-        uri2_country: countryArray[global.swipeCount],
-        uri2_gender: genderArray[global.swipeCount],
-        uri2_bio: bioDict[emailArray[global.swipeCount]],
-        messageButtonDisabled: false,
-        messageButtonOpacity: 1,
-      });
-      if (global.swipeCount + 9 < emailArray.length) {
-        console.log(
-          'İKİLİ SAĞA KAYMANIN İLKİ: ',
-          global.swipeCount + 9,
-          emailArray[global.swipeCount + 9],
-        );
-        this.getImageURL(global.swipeCount + 9);
-        //this.downloadImages(global.swipeCount+9)
-      }
-      if (global.swipeCount + 10 < emailArray.length) {
-        console.log(
-          'İKİLİ SAĞA KAYMANIN İKİNCİSİ: ',
-          global.swipeCount + 10,
-          emailArray[global.swipeCount + 10],
-        );
-        this.getImageURL(global.swipeCount + 10);
-        //this.downloadImages(global.swipeCount+10)
-      }
-      global.deactivationDistanceRight =
-        global.deactivationDistanceRight + this.width * (5 / 10);
-      global.activationDistanceLeft =
-        global.activationDistanceLeft - this.width * (10 / 10);
-      global.deactivationDistanceLeft =
-        global.deactivationDistanceLeft - this.width * (10 / 10);
-      console.log('RightActionCompleted çift');
-      console.log(this.state.uri2_bio);
-    } else {
-      this.activationCount = 0;
-      this.complete = false;
-      this.rightActionCount = 0;
-      this.releasedAfterLeftD2 = false;
-      this.releasedAfterRightD2 = false;
-      this.setState({
-        swipeableContentRight:
-          this.state.swipeableContentRight - this.width * (5 / 10),
-        uri0: this.state.uri1,
-        uri1: this.state.uri2,
-        uri2: this.state.uri3,
-        uri3: this.state.uri4,
-        uri4: photoArray[emailArray[global.swipeCount + 2]],
-        uri5: photoArray[emailArray[global.swipeCount + 3]],
-        uri2_username: usernameArray[global.swipeCount],
-        uri2_country: countryArray[global.swipeCount],
-        uri2_gender: genderArray[global.swipeCount],
-        uri2_bio: bioDict[emailArray[global.swipeCount]],
-        messageButtonDisabled: false,
-        messageButtonOpacity: 1,
-      });
-      if (global.swipeCount + 10 < emailArray.length) {
-        console.log(
-          'İKİLİ SAĞA KAYMANIN İLKİ: ',
-          global.swipeCount + 10,
-          emailArray[global.swipeCount + 10],
-        );
-        this.getImageURL(global.swipeCount + 10);
-        //this.downloadImages(global.swipeCount+9)
-      }
-      global.deactivationDistanceRight =
-        global.deactivationDistanceRight + this.width * (5 / 10);
-      global.activationDistanceLeft =
-        global.activationDistanceLeft - this.width * (5 / 10);
-      global.deactivationDistanceLeft =
-        global.deactivationDistanceLeft - this.width * (5 / 10);
-      console.log('RightActionCompleted tek');
-      console.log(this.state.uri2_bio);
-    }
-    this.checkUri2FavOrBlocked();
-  }
-  leftActionIncomplete() {
-    if (this.releasedAfterLeftD2) {
-      global.flag1 = true; //Left A1
-      global.flag2 = false; //Left A2
-      global.flag3 = false; //Left D1
-      global.flag4 = false; //Left D2
-      global.flag5 = true; //Right A1
-      global.flag6 = false; //Right A2
-      global.flag7 = false; //Right D1
-      global.flag8 = false; //Right D2
-      this.widthAnimation.setValue(global.width * (2 / 10));
-      this.emptyWidthAnimation.setValue(global.width * (3 / 10));
-      this.heightAnimation.setValue(global.width * (2 / 10) * (7 / 6));
-      Animated.parallel([
-        Animated.timing(this.widthAnimation, {
-          duration: 200,
-          toValue: global.width * (5 / 10),
-          easing: Easing.elastic(0.5),
-          useNativeDriver: false,
-        }),
-        Animated.timing(this.heightAnimation, {
-          duration: 200,
-          toValue: global.width * (5 / 10) * (7 / 6),
-          easing: Easing.elastic(0.5),
-          useNativeDriver: false,
-        }),
-        Animated.timing(this.emptyWidthAnimation, {
-          duration: 200,
-          toValue: global.width * (1.5 / 10),
-          easing: Easing.elastic(0.5),
-          useNativeDriver: false,
-        }),
-      ]).start(),
-        this.setState({showAd: true});
-      this.activationCount = 0;
-      this.complete = false;
-      this.leftActionCount = 0;
-      this.releasedAfterLeftD2 = false;
-      this.releasedAfterRightD2 = false;
-      this.setState({
-        swipeableContentRight:
-          this.state.swipeableContentRight + this.width * (5 / 10),
-        uri5: this.state.uri4,
-        uri4: this.state.uri3,
-        uri3: this.state.uri2,
-        uri2: this.state.uri1,
-        uri1: this.state.uri0,
-        uri0: photoArray[emailArray[global.swipeCount - 2]],
-        uri2_username: usernameArray[global.swipeCount],
-        uri2_country: genderArray[global.swipeCount],
-        uri2_gender: genderArray[global.swipeCount],
-        uri2_bio: bioDict[emailArray[global.swipeCount]],
-        messageButtonDisabled: false,
-        messageButtonOpacity: 1,
-      }),
-        (global.deactivationDistanceLeft =
-          global.deactivationDistanceLeft + this.width * (5 / 10));
-      global.activationDistanceRight =
-        global.activationDistanceRight - this.width * (5 / 10);
-      global.deactivationDistanceRight =
-        global.deactivationDistanceRight - this.width * (5 / 10);
-      console.log('LeftActionIncomplete');
-      console.log(this.state.uri2_bio);
-    }
-    this.checkUri2FavOrBlocked();
-  }
-  rightActionIncomplete() {
-    if (this.releasedAfterRightD2) {
-      global.flag1 = true; //Left A1
-      global.flag2 = false; //Left A2
-      global.flag3 = false; //Left D1
-      global.flag4 = false; //Left D2
-      global.flag5 = true; //Right A1
-      global.flag6 = false; //Right A2
-      global.flag7 = false; //Right D1
-      global.flag8 = false; //Right D2
-      this.widthAnimation.setValue(global.width * (2 / 10));
-      this.emptyWidthAnimation.setValue(global.width * (3 / 10));
-      this.heightAnimation.setValue(global.width * (2 / 10) * (7 / 6));
-      Animated.parallel([
-        Animated.timing(this.widthAnimation, {
-          duration: 200,
-          toValue: global.width * (5 / 10),
-          easing: Easing.elastic(0.5),
-          useNativeDriver: false,
-        }),
-        Animated.timing(this.heightAnimation, {
-          duration: 200,
-          toValue: global.width * (5 / 10) * (7 / 6),
-          easing: Easing.elastic(0.5),
-          useNativeDriver: false,
-        }),
-        Animated.timing(this.emptyWidthAnimation, {
-          duration: 200,
-          toValue: global.width * (1.5 / 10),
-          easing: Easing.elastic(0.5),
-          useNativeDriver: false,
-        }),
-      ]).start(),
-        this.setState({showAd: true});
-      this.activationCount = 0;
-      this.complete = false;
-      this.rightActionCount = 0;
-      this.releasedAfterLeftD2 = false;
-      this.releasedAfterRightD2 = false;
-      this.setState({
-        swipeableContentRight:
-          this.state.swipeableContentRight - this.width * (5 / 10),
-        uri0: this.state.uri1,
-        uri1: this.state.uri2,
-        uri2: this.state.uri3,
-        uri3: this.state.uri4,
-        uri4: photoArray[emailArray[global.swipeCount - 2]],
-        uri5: photoArray[emailArray[global.swipeCount - 3]],
-        uri2_username: usernameArray[global.swipeCount],
-        uri2_country: countryArray[global.swipeCount],
-        uri2_gender: genderArray[global.swipeCount],
-        uri2_bio: bioDict[emailArray[global.swipeCount]],
-        messageButtonDisabled: false,
-        messageButtonOpacity: 1,
-      }),
-        (global.deactivationDistanceRight =
-          global.deactivationDistanceRight + this.width * (5 / 10));
-      global.activationDistanceLeft =
-        global.activationDistanceLeft - this.width * (5 / 10);
-      global.deactivationDistanceLeft =
-        global.deactivationDistanceLeft - this.width * (5 / 10);
-      console.log('RightActionIncomplete');
-      console.log(this.state.uri2_bio);
-    }
-    this.checkUri2FavOrBlocked();
-  }
-
-  async sendFirstMessage() {
-    //global.receiverMail = emailArray[global.swipeCount]
-    //global.receiverGender = genderArray[global.swipeCount]
-    //global.receiverCountry = countryArray[global.swipeCount]
-    //global.receiverUsername = usernameArray[global.swipeCount]
+    //global.receiverMail = emailArray[this.state.currentCarouselIndex]
+    //global.receiverGender = genderArray[this.state.currentCarouselIndex]
+    //global.receiverCountry = countryArray[this.state.currentCarouselIndex]
+    //global.receiverUsername = usernameArray[this.state.currentCarouselIndex]
     console.log('sendfirst start');
     global.msgFromMain = true;
     global.enteredChatFromMain = true;
@@ -1076,18 +541,28 @@ export default class MainScreen extends Component<{}> {
     this.props.navigation.navigate('Chat');
   }
 
-  addToFavButtonClicked(fromWhere) {
+  addToFavButtonClicked(fromWhere, index) {
+    if (this.state.currentCarouselIndex != index) {
+      return;
+    }
+    console.log('fav buttona basıldı indexi:', index);
+    console.log('isfav ne aq:', isFav);
     if (isFav) {
-      var index = favoriteUsers.indexOf(emailArray[global.swipeCount]);
-      favoriteUsers.splice(index, 1);
+      console.log('fav');
+      var index = favoriteUsers.indexOf(
+        emailArray[this.state.currentCarouselIndex],
+      );
+      favoriteUsers.splice(this.state.currentCarouselIndex, 1);
+      console.log('set edilen array:', favoriteUsers);
       EncryptedStorage.setItem(
         auth().currentUser.uid + 'favoriteUsers',
         JSON.stringify(favoriteUsers),
       );
-      favoriteUsersSet.delete(emailArray[global.swipeCount]);
+      favoriteUsersSet.delete(emailArray[this.state.currentCarouselIndex]);
       isFav = false;
       this.setState({addToFavVisible: false, addToFavVisibleUpper: false});
     } else {
+      console.log('not fav');
       if (favShowThisDialog == 'true' || favShowThisDialog == null) {
         if (fromWhere == 'onMain') {
           this.setState({addToFavVisible: true});
@@ -1095,20 +570,30 @@ export default class MainScreen extends Component<{}> {
           this.setState({addToFavVisibleUpper: true});
         }
       } else {
-        this.favModalButtonClicked(emailArray[global.swipeCount]);
+        this.favModalButtonClicked(emailArray[this.state.currentCarouselIndex]);
         this.setState({addToFavVisible: false, addToFavVisibleUpper: false});
       }
     }
+    let favArray = this.state.isFavArray;
+    favArray[this.state.currentCarouselIndex] = isFav;
+    console.log(' FONKSİYON İNDEX:', this.state.currentCarouselIndex);
+    console.log('İS FAV:', isFav);
+    this.setState({isFavArray: favArray});
   }
-  addToBlockButtonClicked(fromWhere) {
+  addToBlockButtonClicked(fromWhere, index) {
+    console.log('current', this.state.currentCarouselIndex);
+    console.log('gelen', index);
+    if (this.state.currentCarouselIndex != index) {
+      return;
+    }
     if (isBlock) {
-      var index = blockedUsers.indexOf(emailArray[global.swipeCount]);
+      var index = blockedUsers.indexOf(emailArray[index]);
       blockedUsers.splice(index, 1);
       EncryptedStorage.setItem(
         auth().currentUser.uid + 'blockedUsers',
         JSON.stringify(blockedUsers),
       );
-      blockedUsersSet.delete(emailArray[global.swipeCount]);
+      blockedUsersSet.delete(emailArray[index]);
       isBlock = false;
       this.setState({addToBlockVisible: false, addToBlockVisibleUpper: false});
     } else {
@@ -1119,7 +604,7 @@ export default class MainScreen extends Component<{}> {
           this.setState({addToBlockVisibleUpper: true});
         }
       } else {
-        this.blockModalButtonClicked(emailArray[global.swipeCount]);
+        this.blockModalButtonClicked(emailArray[index]);
         this.setState({
           addToBlockVisible: false,
           addToBlockVisibleUpper: false,
@@ -1164,7 +649,6 @@ export default class MainScreen extends Component<{}> {
   }
 
   addToFavoriteUsers(uid) {
-    console.log('favoriteUsers: ', favoriteUsers);
     if (favoriteUsers == null) {
       if (blockedUsersSet.has(uid)) {
         var index = blockedUsers.indexOf(uid);
@@ -1222,25 +706,6 @@ export default class MainScreen extends Component<{}> {
         auth().currentUser.uid + 'blockedUsers',
         JSON.stringify(blockedUsers),
       );
-    }
-  }
-
-  noLeft() {
-    if (global.swipeCount == 0) {
-      return false;
-    } else {
-      return <Text></Text>;
-    }
-  }
-  noRight() {
-    if (
-      this.state.swipeableDisabled ||
-      global.swipeCount - 5 == usernameArray.length
-    ) {
-      // this.state.swipeableDisabled
-      return false;
-    } else {
-      return <Text></Text>;
     }
   }
 
@@ -1303,6 +768,7 @@ export default class MainScreen extends Component<{}> {
         console.log(length);
         var itemsIndex = 0;
         var ccc = 0;
+        var favArray = [];
         for (let i = 0; i < length; i++) {
           if (
             blockedUsers == null ||
@@ -1316,6 +782,7 @@ export default class MainScreen extends Component<{}> {
               usernameArray.push(lang.Advertisement);
               distanceArray.push('ground');
               itemsIndex++;
+              favArray.push(false);
             } else {
               countryArray.push(
                 usersDict[items[i - itemsIndex][0]].split('_')[1],
@@ -1339,18 +806,22 @@ export default class MainScreen extends Component<{}> {
                 usersDict[items[i - itemsIndex][0]].split('_')[2],
               );
               mainDistanceArray.push(items[i - itemsIndex][1]);
+
+              favArray.push(favoriteUsersSet.has(emailArray[i]));
             }
             ccc++;
           }
         }
-        console.log(items);
-        console.log(emailArray);
-        console.log(distanceArray);
+        this.setState({isFavArray: favArray});
+        console.log('IS FAV ARRAY:', this.state.isFavArray);
+        //console.log(items);
+        //console.log(emailArray);
+        //console.log(distanceArray);
         //console.log(distanceArray);
       } catch (error) {
         var lang = language[global.lang];
-        console.log(error);
-        console.log('HATA4');
+        //console.log(error);
+        //console.log('HATA4');
         Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
       }
     } else if (fn == 'filterDone with all') {
@@ -1561,7 +1032,8 @@ export default class MainScreen extends Component<{}> {
         .then((data) => {
           this.downloadURL = data;
           //photoArray.push(data)
-          this.downloadImages(imageIndex);
+          //this.downloadImages(imageIndex);
+          photoArray[emailArray[imageIndex]] = data;
         })
         .catch(function (error) {
           console.log(error);
@@ -1589,7 +1061,7 @@ export default class MainScreen extends Component<{}> {
             'searchDone',
           );
           ////////////////////////////////////////////////////////////////////////////////
-          for (let i = 0; i <= 10; i++) {
+          for (let i = 0; i <= emailArray.length; i++) {
             // resim indirme KISMI /////////////////////////////////////////////////
             await this.getImageURL(i);
             //await this.downloadImages(i);
@@ -1598,30 +1070,24 @@ export default class MainScreen extends Component<{}> {
             'biyere geldik, mainPhotoArray.length ',
             Object.keys(mainPhotoArray).length,
           );
+          this.createCarouselItemArray();
+          this.animation.pause();
+          this.animation.reset();
           this.setState({
-            uri0: null,
-            uri1: null,
-            uri2: photoArray[emailArray[0]],
-            uri3: photoArray[emailArray[1]],
-            uri4: photoArray[emailArray[2]],
-            uri5: photoArray[emailArray[3]],
-            uri2_username: usernameArray[0],
-            uri2_country: countryArray[0],
-            uri2_gender: genderArray[0],
-            uri2_bio: bioDict[emailArray[0]],
             backgroundOpacity: 0,
             swipeableDisabled: false,
             messageButtonDisabled: false,
             messageButtonOpacity: 1,
             sadfaceOpacity: 0,
             showFilter: true,
-            loadingOpacity: 0,
+            loadingAnimation: false,
           });
           if (emailArray.length == 0 || emailArray[0] == null) {
             this.setState({messageButtonOpacity: 0, sadfaceOpacity: 1});
           }
           this.checkUri2FavOrBlocked();
           this.spinValue = new Animated.Value(0);
+
           console.log(photoArray);
           console.log(emailArray);
           console.log(genderArray);
@@ -1629,7 +1095,6 @@ export default class MainScreen extends Component<{}> {
           console.log(distanceArray);
           console.log(bioDict);
         }
-        console.log(this.state.uri2);
       })
       .catch((error) => {
         console.log(error);
@@ -1662,10 +1127,12 @@ export default class MainScreen extends Component<{}> {
             }
           } else {
             this.setState({
-              loadingOpacity: 0,
+              loadingAnimation: false,
             });
             var lang = language[global.lang];
             this.spinValue = new Animated.Value(0);
+            this.animation.pause();
+            this.animation.reset();
             Alert.alert(lang.Error, lang.MainNoFace);
           }
         } else {
@@ -1680,7 +1147,18 @@ export default class MainScreen extends Component<{}> {
   }
 
   async filterDone() {
-    this.setState({loadingOpacity: 1});
+    var emptyArr = [];
+    this.animation.play();
+    this.setState({
+      loadingAnimation: true,
+      currentCarouselIndex: 0,
+
+      carouselArray: emptyArr,
+    });
+    if (this._carousel != undefined) {
+      this._carousel.snapToItem(0, false, false);
+    }
+
     this.spinAnimation();
     this.inSearchDone = false;
     isFav = false;
@@ -1690,44 +1168,17 @@ export default class MainScreen extends Component<{}> {
     countryArray = [];
     genderArray = [];
     distanceArray = [];
-    photoArray = {};
     this.downloadURL = '';
     this.url = '';
     this.complete = false;
-    global.swipeCount = 0;
-    this.releasedAfterRightD2 = false;
-    this.releasedAfterLeftD2 = false;
-    this.rightActionCount = 0;
-    this.leftActionCount = 0;
-    this.deactivate = null;
-    global.deactivateLeft = null;
-    global.deactivateRight = null;
-    global.deactivationRightDistance = global.width * (2.5 / 10);
-    global.deactivationLeftDistance = global.width * (2.5 / 10);
-    global.activationDistanceLeft = this.width * (2.5 / 10);
-    global.deactivationDistanceLeft = this.width * (2.5 / 10);
-    global.activationDistanceRight = this.width * (2.5 / 10);
-    global.deactivationDistanceRight = this.width * (2.5 / 10);
-    this.swipeable.recenter();
     this.setState({
-      swipeableContentRight: global.width * ((-1 + 2490) / 10),
       messageButtonDisabled: true,
       messageButtonOpacity: 0,
       sadfaceOpacity: 0,
       backgroundOpacity: 0.2,
       isVisible2: false,
-      uri0: null,
-      uri1: null,
-      uri2: null,
-      uri3: null,
-      uri4: null,
-      uri5: null,
       imagePath: null,
       swipeableDisabled: true,
-      uri2_username: '',
-      uri2_country: '',
-      uri2_bio: '',
-      uri2_gender: '',
     });
     console.log(
       'photoArray.length filterdone = ',
@@ -1777,25 +1228,8 @@ export default class MainScreen extends Component<{}> {
       'photoArray.length filterdone end = ',
       Object.keys(photoArray).length,
     );
-    if (Object.keys(photoArray).length <= 10) {
-      for (let i = Object.keys(photoArray).length; i <= 10; i++) {
-        // resim indirme KISMI /////////////////////////////////////////////////
-        await this.getImageURL(i);
-        //this.downloadImages(i);
-      }
-    }
     if (emailArray.length == 0 || emailArray[0] == null) {
       this.setState({
-        uri0: null,
-        uri1: null,
-        uri2: photoArray[emailArray[0]],
-        uri3: photoArray[emailArray[1]],
-        uri4: photoArray[emailArray[2]],
-        uri5: photoArray[emailArray[3]],
-        uri2_username: usernameArray[0],
-        uri2_country: countryArray[0],
-        uri2_gender: genderArray[0],
-        uri2_bio: bioDict[emailArray[0]],
         backgroundOpacity: 0,
         swipeableDisabled: true,
         messageButtonDisabled: false,
@@ -1804,16 +1238,6 @@ export default class MainScreen extends Component<{}> {
       });
     } else {
       this.setState({
-        uri0: null,
-        uri1: null,
-        uri2: photoArray[emailArray[0]],
-        uri3: photoArray[emailArray[1]],
-        uri4: photoArray[emailArray[2]],
-        uri5: photoArray[emailArray[3]],
-        uri2_username: usernameArray[0],
-        uri2_country: countryArray[0],
-        uri2_gender: genderArray[0],
-        uri2_bio: bioDict[emailArray[0]],
         backgroundOpacity: 0,
         swipeableDisabled: false,
         messageButtonDisabled: false,
@@ -1824,19 +1248,21 @@ export default class MainScreen extends Component<{}> {
     this.checkUri2FavOrBlocked();
     console.log(this.state.uri2_bio);
     console.log(this.state.uri2);
-    this.setState({loadingOpacity: 0});
+    this.createCarouselItemArray();
+    this.animation.pause();
+    this.animation.reset();
+    this.setState({loadingAnimation: false});
   }
 
   async searchDone(value) {
+    this.animation.play();
+    var emptyArr = [];
     isFav = false;
     isBlock = false;
-    global.activationDistanceLeft = this.width * (2.5 / 10);
-    global.deactivationDistanceLeft = this.width * (2.5 / 10);
-    global.activationDistanceRight = this.width * (2.5 / 10);
-    global.deactivationDistanceRight = this.width * (2.5 / 10);
-    this.swipeable.recenter();
     this.setState({
-      swipeableContentRight: global.width * ((-1 + 2490) / 10),
+      currentCarouselIndex: 0,
+
+      carouselArray: emptyArr,
       filterButtonOpacity: 0.4,
       disabledSearch: true,
       gender: null,
@@ -1844,25 +1270,18 @@ export default class MainScreen extends Component<{}> {
       disabled: true,
       notifIsVisible: true,
       showFilter: false,
-      loadingOpacity: 1,
+      loadingAnimation: true,
       backgroundOpacity: 0.2,
       messageButtonDisabled: true,
       messageButtonOpacity: 0,
       sadfaceOpacity: 0,
       isVisible2: false,
-      uri0: null,
-      uri1: null,
-      uri2: null,
-      uri3: null,
-      uri4: null,
-      uri5: null,
       imagePath: null,
       swipeableDisabled: true,
-      uri2_username: '',
-      uri2_country: '',
-      uri2_bio: '',
-      uri2_gender: '',
     });
+    if (this._carousel != undefined) {
+      this._carousel.snapToItem(0, false, false);
+    }
     this.spinAnimation();
     this.inSearchDone = true;
     //photoArray.splice(0, photoArray.length)
@@ -1903,7 +1322,6 @@ export default class MainScreen extends Component<{}> {
     this.downloadURL = '';
     this.url = '';
     this.complete = false;
-    global.swipeCount = 0;
     this.releasedAfterRightD2 = false;
     this.releasedAfterLeftD2 = false;
     this.rightActionCount = 0;
@@ -2083,18 +1501,8 @@ export default class MainScreen extends Component<{}> {
                             messageButtonOpacity: 0,
                             sadfaceOpacity: 0,
                             isVisible2: false,
-                            uri0: null,
-                            uri1: null,
-                            uri2: null,
-                            uri3: null,
-                            uri4: null,
-                            uri5: null,
                             imagePath: null,
                             swipeableDisabled: true,
-                            uri2_username: '',
-                            uri2_country: '',
-                            uri2_bio: '',
-                            uri2_gender: '',
                           });
                           if (this.probabilityDoneCheck == false) {
                             this.checkFunction();
@@ -2102,7 +1510,9 @@ export default class MainScreen extends Component<{}> {
                         })
                         .catch((error) => {
                           console.log('buraya mı geldi');
-                          this.setState({loadingOpacity: 0});
+                          this.animation.pause();
+                          this.animation.reset();
+                          this.setState({loadingAnimation: false});
                           console.log('buraya mı geldi evet');
                           this.spinValue = new Animated.Value(0);
                           console.log('User2 update olmadı');
@@ -2175,25 +1585,17 @@ export default class MainScreen extends Component<{}> {
                                   sadfaceOpacity: 0,
                                   backgroundOpacity: 0.2,
                                   isVisible2: false,
-                                  uri0: null,
-                                  uri1: null,
-                                  uri2: null,
-                                  uri3: null,
-                                  uri4: null,
-                                  uri5: null,
                                   imagePath: null,
                                   swipeableDisabled: true,
-                                  uri2_username: '',
-                                  uri2_country: '',
-                                  uri2_bio: '',
-                                  uri2_gender: '',
                                 });
                                 if (this.probabilityDoneCheck == false) {
                                   this.checkFunction();
                                 }
                               })
                               .catch((error) => {
-                                this.setState({loadingOpacity: 0});
+                                this.animation.pause();
+                                this.animation.reset();
+                                this.setState({loadingAnimation: false});
                                 this.spinValue = new Animated.Value(0);
                                 console.log('User2 update olmadı');
                                 Alert.alert(
@@ -2222,7 +1624,9 @@ export default class MainScreen extends Component<{}> {
               }
             })
             .catch((error) => {
-              this.setState({loadingOpacity: 0});
+              this.animation.pause();
+              this.animation.reset();
+              this.setState({loadingAnimation: false});
               this.spinValue = new Animated.Value(0);
               console.log('Function number catchi');
               Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
@@ -2230,7 +1634,9 @@ export default class MainScreen extends Component<{}> {
         }
       })
       .catch((error) => {
-        this.setState({loadingOpacity: 0});
+        this.animation.pause();
+        this.animation.reset();
+        this.setState({loadingAnimation: false});
         this.spinValue = new Animated.Value(0);
         console.log('Search fotosu upload olmadı');
         Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
@@ -2291,32 +1697,37 @@ export default class MainScreen extends Component<{}> {
     });
   };
 
+  createCarouselItemArray() {
+    var arr = [];
+    for (let i = 0; i < emailArray.length; i++) {
+      const index = i;
+      arr.push(
+        <CarouselItem
+          index={index}
+          username={usernameArray[index]}
+          country={countryArray[index]}
+          onPressImage={() =>
+            this.setState({
+              openProfileIsVisible: this.state.currentCarouselIndex == index,
+            })
+          }
+          onPressSendMsg={() => this.sendFirstMessage(index)}
+          onPressFav={() => this.addToFavButtonClicked('onMain', index)}
+          onPressBlock={() => this.addToBlockButtonClicked('onMain', index)}
+          isFavorite={this.state.isFavArray}
+          isBlocked={blockedUsersSet.has(emailArray[index])}
+          image={photoArray[emailArray[index]]}
+        />,
+      );
+    }
+    this.setState({carouselArray: arr});
+  }
+
+  _renderCarouselItem = ({item, index}) => {
+    return this.state.carouselArray[index];
+  };
   render() {
     var lang = language[global.lang];
-    if (Platform.OS == 'android') {
-      var emptyScreenHeight =
-        this.height -
-        (getStatusBarHeight() +
-          headerHeight +
-          this.width / 6 +
-          (this.width / 2) * (7 / 6) +
-          this.width / 10 +
-          this.width * (3 / 10) * (7 / 6) +
-          this.width / 10 +
-          this.width / 7);
-    } else {
-      var emptyScreenHeight =
-        this.height -
-        (getStatusBarHeight() +
-          headerHeight +
-          this.width / 6 +
-          (this.width / 2) * (7 / 6) +
-          this.width / 10 +
-          this.width * (3 / 10) * (7 / 6) +
-          this.width / 10 +
-          this.width / 7) -
-        global.insets.bottom;
-    }
 
     const {navigate} = this.props.navigation;
     const spin = this.spinValue.interpolate({
@@ -2352,289 +1763,108 @@ export default class MainScreen extends Component<{}> {
           isFilterVisible={this.state.showFilter}
           title={'Twinizer'}></CustomHeader>
 
-        <BigImgInfo
-          opacity={this.state.messageButtonOpacity}
-          username={this.state.uri2_username}
-          country={this.state.uri2_country}
-        />
-
-        <Swipeable
+        <View
           style={{
-            width: this.width * 501,
-            left: -this.width * 250,
-            height: this.width * (5 / 10) * (7 / 6),
-          }}
-          ref={(ref) => this.swipeable = ref}
-          disabled={this.state.swipeableDisabled}
-          rightContent={this.noRight()}
-          leftContent={this.noLeft()}
-          swipeStartMinDistance={3}
-          onSwipeStart={() => this.swipeStart()}
-          onSwipeRelease={() => this.swipeRelease()}
-          onLeftActionActivate={() => this.leftActionActivate()}
-          onLeftActionActivate2={() => this.leftActionActivate2()}
-          onRightActionActivate={() => this.rightActionActivate()}
-          onRightActionActivate2={() => this.rightActionActivate2()}
-          onLeftActionDeactivate={() => this.leftActionDeactivate()}
-          onLeftActionDeactivate2={() => this.leftActionDeactivate2()}
-          onRightActionDeactivate={() => this.rightActionDeactivate()}
-          onRightActionDeactivate2={() => this.rightActionDeactivate2()}
-          onLeftActionComplete={() => this.leftActionComplete()}
-          onRightActionComplete={async () => this.rightActionComplete()}
-          onLeftActionIncomplete={() => this.leftActionIncomplete()}
-          onRightActionIncomplete={() => this.rightActionIncomplete()}>
-          <View
-            style={{
-              position: 'absolute',
-              flexDirection: 'row',
-              width: (this.width * 27) / 10,
-              right: this.state.swipeableContentRight,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <SwipeableSmallImg
-              index={7}
-              imgSource={this.state.uri0}
-              backgroundOpacity={this.state.backgroundOpacity}
+            height:
+              this.height -
+              this.width / 7 -
+              headerHeight -
+              getStatusBarHeight(),
+            justifyContent: 'space-evenly',
+            alignItems: 'center',
+          }}>
+          {!this.state.loadingAnimation && (
+            <Carousel
+              onSnapToItem={(slideIndex) => {
+                this.setState({currentCarouselIndex: slideIndex});
+              }}
+              enableSnap={true}
+              containerCustomStyle={{
+                flexGrow: 0,
+              }}
+              ref={(c) => {
+                this._carousel = c;
+              }}
+              firstItem={this.state.currentCarouselIndex}
+              inactiveSlideOpacity={0.8}
+              inactiveSlideScale={0.6}
+              data={this.state.carouselArray}
+              renderItem={this._renderCarouselItem}
+              sliderWidth={this.width}
+              itemWidth={this.width / 2}
             />
+          )}
 
+          {this.state.loadingAnimation && (
             <View
               style={{
-                height: ((this.width * 5) / 10) * (7 / 6),
-                width: (this.width * 3) / 10,
-              }}
-            />
-
-            <SwipeableSmallImg
-              index={6}
-              imgSource={this.state.uri1}
-              backgroundOpacity={this.state.backgroundOpacity}
-            />
-
-            <Animated.View
-              style={{
-                height: ((this.width * 5) / 10) * (7 / 6),
-                width: this.emptyWidthAnimation,
-              }}
-            />
-
-            <SwipeableBigImg
-              showAd={this.state.showAd}
-              disabled={this.state.messageButtonOpacity == 0 ? true : false}
-              isFavorite={isFav ? 1 : 0}
-              isBlocked={isBlock ? 1 : 0}
-              imgSource={this.state.uri2}
-              width={this.widthAnimation}
-              height={this.heightAnimation}
-              onPress={() => this.setState({openProfileIsVisible: true})}
-              sadfaceOpacity={this.state.sadfaceOpacity}
-              backgroundOpacity={this.state.backgroundOpacity}
-            />
-
-            <Animated.View
-              style={{
-                height: ((this.width * 5) / 10) * (7 / 6),
-                width: this.emptyWidthAnimation,
-              }}
-            />
-
-            <SwipeableSmallImg
-              index={4}
-              imgSource={this.state.uri3}
-              backgroundOpacity={this.state.backgroundOpacity}
-            />
-
-            <View
-              style={{
-                height: ((this.width * 5) / 10) * (7 / 6),
-                width: (this.width * 3) / 10,
-              }}
-            />
-
-            <SwipeableSmallImg
-              index={3}
-              imgSource={this.state.uri4}
-              backgroundOpacity={this.state.backgroundOpacity}
-            />
-
-            <View
-              style={{
-                height: ((this.width * 5) / 10) * (7 / 6),
-                width: (this.width * 3) / 10,
-              }}
-            />
-
-            <SwipeableSmallImg
-              index={2}
-              imgSource={this.state.uri5}
-              backgroundOpacity={this.state.backgroundOpacity}
-            />
-          </View>
-
-          {this.state.loadingOpacity == 1 && (
-            <View
-              style={{
-                position: 'absolute',
-                top: 0,
-                width: this.width,
-                left: this.width * 250,
-                height: this.width * (5 / 10) * (7 / 6),
-                alignItems: 'center',
-                justifyContent: 'center',
+                aspectRatio: 6 / 10,
+                width: (this.width * 5) / 10,
+                alignSelf: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                marginBottom: 5,
               }}>
-              <Animated.Image
-                source={{uri: 'loading' + global.themeForImages}}
-                style={{
-                  transform: [{rotate: spin}],
-                  width: this.width * (1 / 15),
-                  height: this.width * (1 / 15),
+              <LottieView
+                loop={true}
+                style={{flex: 1}}
+                ref={(animation) => {
+                  this.animation = animation;
+                  console.log('animation:', animation);
                 }}
+                source={require('./facescan.json')}
               />
             </View>
           )}
-        </Swipeable>
 
-        <View
-          style={{
-            opacity:
-              this.state.messageButtonOpacity &&
-              (global.swipeCount % 6 != 0 || global.swipeCount == 0)
-                ? 1
-                : 0,
-            backgroundColor: global.isDarkMode
-              ? global.darkModeColors[2]
-              : 'rgba(181,181,181,0.6)',
-            flexDirection: 'row',
-            width: this.width / 2,
-            height: this.width / 10,
-            left: this.width / 4,
-            borderBottomLeftRadius: 16,
-            borderBottomRightRadius: 16,
-            borderTopLeftRadius: 16,
-            borderTopRightRadius: 16,
-          }}>
-          <FavoriteUserButton
-            disabled={
-              this.state.messageButtonOpacity &&
-              (global.swipeCount % 6 != 0 || global.swipeCount == 0)
-                ? false
-                : true
-            }
-            onPress={() => this.addToFavButtonClicked('onMain')}
-            opacity={
-              this.state.messageButtonOpacity &&
-              (global.swipeCount % 6 != 0 || global.swipeCount == 0)
-                ? 1
-                : 0
-            }
-            borderBottomLeftRadius={16}
-            borderTopLeftRadius={16}
-            isSelected={isFav}
-          />
-          <SendMsgButton
-            disabled={
-              this.state.messageButtonOpacity &&
-              (global.swipeCount % 6 != 0 || global.swipeCount == 0)
-                ? false
-                : true
-            }
-            onPress={() => this.sendFirstMessage()}
-            opacity={
-              this.state.messageButtonOpacity &&
-              (global.swipeCount % 6 != 0 || global.swipeCount == 0)
-                ? 1
-                : 0
-            }
-          />
-          <BlockUserButton
-            disabled={
-              this.state.messageButtonOpacity &&
-              (global.swipeCount % 6 != 0 || global.swipeCount == 0)
-                ? false
-                : true
-            }
-            onPress={() => this.addToBlockButtonClicked('onMain')}
-            borderBottomRightRadius={16}
-            borderTopRightRadius={16}
-            opacity={
-              this.state.messageButtonOpacity &&
-              (global.swipeCount % 6 != 0 || global.swipeCount == 0)
-                ? 1
-                : 0
-            }
-            isSelected={isBlock}
-          />
-        </View>
-
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: emptyScreenHeight / 2,
-          }}
-        />
-
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: (((this.width * 3) / 10) * 7) / 6,
-          }}>
-          <ImageUploader
-            position={'relative'}
-            width={(this.width * 3) / 10}
-            borderRadius={16}
-            borderOpacity={this.state.borderOpacity}
-            onPress={() => this.setState({isVisible1: true})}
-            textOpacity={this.state.opacity}
-            fontSize={14}
-            photo={this.state.photo}
-          />
-        </View>
-
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: emptyScreenHeight / 4,
-          }}
-        />
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: this.width / 10,
-          }}>
-          <FAB
+          <View
             style={{
-              opacity: this.state.btnOpacity,
-              backgroundColor: global.themeColor,
-              width: this.width / 10,
-              height: this.width / 10,
               justifyContent: 'center',
               alignItems: 'center',
-            }}
-            small
-            icon={({size, color}) => (
-              <Image
-                source={{uri: 'search'}}
-                style={{width: '55%', height: '55%'}}
+              height: (((this.width * 3) / 10) * 7) / 6,
+            }}>
+            <ImageUploader
+              position={'relative'}
+              width={(this.width * 3) / 10}
+              borderRadius={16}
+              borderOpacity={this.state.borderOpacity}
+              onPress={() => this.setState({isVisible1: true})}
+              textOpacity={this.state.opacity}
+              fontSize={14}
+              photo={this.state.photo}
+            />
+          </View>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: this.width / 10,
+            }}>
+            {!this.state.isVisible2 && (
+              <FAB
+                zIndex={1}
+                style={{
+                  opacity: this.state.btnOpacity,
+                  backgroundColor: global.themeColor,
+                  width: this.width / 10,
+                  height: this.width / 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                small
+                icon={({size, color}) => (
+                  <Image
+                    source={{uri: 'search'}}
+                    style={{width: '55%', height: '55%'}}
+                  />
+                )}
+                animated={false}
+                onPress={() => this.searchDone()}
+                disabled={this.state.disabled}
               />
             )}
-            animated={false}
-            onPress={() => this.searchDone()}
-            disabled={this.state.disabled}
-          />
+          </View>
         </View>
-
-        <InfoModal
-          isVisible={this.state.searchOnIsVisible}
-          txtAlert={
-            'There is already a Twinizing process going on. You can automatically cancel it and start a new process by uploading a new image.'
-          }
-          txtGotIt={lang.GotIt}
-          onPressClose={() => this.setState({searchOnIsVisible: false})}
-        />
 
         <Snackbar
           duration={1500}
@@ -2687,15 +1917,27 @@ export default class MainScreen extends Component<{}> {
             this.setState({imageViewerVisible: true});
           }}
           onBackdropPress={() => this.setState({openProfileIsVisible: false})}
-          username={this.state.uri2_username}
-          bio={this.state.uri2_bio}
+          username={usernameArray[this.state.currentCarouselIndex]}
+          bio={bioDict[emailArray[this.state.currentCarouselIndex]]}
           onPressCancel={() => this.setState({openProfileIsVisible: false})}
-          imgSource={this.state.uri2}
+          imgSource={photoArray[emailArray[this.state.currentCarouselIndex]]}
           isFavorite={isFav}
           isBlocked={isBlock}
-          onPressFav={() => this.addToFavButtonClicked('onModal')}
-          onPressBlock={() => this.addToBlockButtonClicked('onModal')}
-          onPressSendMsg={() => this.sendFirstMessage()}
+          onPressFav={() =>
+            this.addToFavButtonClicked(
+              'onModal',
+              this.state.currentCarouselIndex,
+            )
+          }
+          onPressBlock={() =>
+            this.addToBlockButtonClicked(
+              'onModal',
+              this.state.currentCarouselIndex,
+            )
+          }
+          onPressSendMsg={() =>
+            this.sendFirstMessage(this.state.currentCarouselIndex)
+          }
           favBcancel={lang.CancelCap}
           favBdialog={lang.DontShowThisDialogAgain}
           favBtickIsVisible={this.state.favTickVisible}
@@ -2705,10 +1947,14 @@ export default class MainScreen extends Component<{}> {
           favBisVisible={this.state.addToFavVisibleUpper}
           favBimage={'star'}
           favBtxtAlert={
-            lang.FavUserInfoPt1 + this.state.uri2_username + lang.FavUserInfoPt2
+            lang.FavUserInfoPt1 +
+            usernameArray[this.state.currentCarouselIndex] +
+            lang.FavUserInfoPt2
           }
           favBonPressAdd={() =>
-            this.favModalButtonClicked(emailArray[global.swipeCount])
+            this.favModalButtonClicked(
+              emailArray[this.state.currentCarouselIndex],
+            )
           }
           favBonPressClose={() =>
             this.setState({
@@ -2729,11 +1975,13 @@ export default class MainScreen extends Component<{}> {
           blockBimage={'block'}
           blockBtxtAlert={
             lang.BlockUserInfoPt1 +
-            this.state.uri2_username +
+            usernameArray[this.state.currentCarouselIndex] +
             lang.BlockUserInfoPt2
           }
           blockBonPressAdd={() =>
-            this.blockModalButtonClicked(emailArray[global.swipeCount])
+            this.blockModalButtonClicked(
+              emailArray[this.state.currentCarouselIndex],
+            )
           }
           blockBonPressClose={() =>
             this.setState({
@@ -2753,10 +2001,14 @@ export default class MainScreen extends Component<{}> {
           isVisible={this.state.addToFavVisible}
           image={'star'}
           txtAlert={
-            lang.FavUserInfoPt1 + this.state.uri2_username + lang.FavUserInfoPt2
+            lang.FavUserInfoPt1 +
+            usernameArray[this.state.currentCarouselIndex] +
+            lang.FavUserInfoPt2
           }
           onPressAdd={() =>
-            this.favModalButtonClicked(emailArray[global.swipeCount])
+            this.favModalButtonClicked(
+              emailArray[this.state.currentCarouselIndex],
+            )
           }
           onPressClose={() =>
             this.setState({
@@ -2780,11 +2032,13 @@ export default class MainScreen extends Component<{}> {
           image={'block'}
           txtAlert={
             lang.BlockUserInfoPt1 +
-            this.state.uri2_username +
+            usernameArray[this.state.currentCarouselIndex] +
             lang.BlockUserInfoPt2
           }
           onPressAdd={() =>
-            this.blockModalButtonClicked(emailArray[global.swipeCount])
+            this.blockModalButtonClicked(
+              emailArray[this.state.currentCarouselIndex],
+            )
           }
           onPressClose={() =>
             this.setState({
@@ -2797,7 +2051,7 @@ export default class MainScreen extends Component<{}> {
 
         <ImageViewerModal
           isVisible={this.state.imageViewerVisible}
-          images={this.state.uri2}
+          images={photoArray[emailArray[this.state.currentCarouselIndex]]}
           whichScreen={'tabs'}
           onCancel={() => {
             this.props.navigation.setOptions({tabBarVisible: true});
