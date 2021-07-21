@@ -41,7 +41,7 @@ export default class CarouselItem extends Component {
     onPressFav: PropTypes.func,
     onPressBlock: PropTypes.func,
     isFavorite: PropTypes.array,
-    isBlocked: PropTypes.bool,
+    isBlocked: PropTypes.array,
     country: PropTypes.string,
     username: PropTypes.string,
     onPressImage: PropTypes.func,
@@ -182,7 +182,7 @@ export default class CarouselItem extends Component {
               disabled={false}
               borderBottomRightRadius={8}
               borderTopRightRadius={0}
-              isSelected={this.props.isBlocked}
+              isSelected={this.props.isBlocked[this.props.index]}
               onPress={this.props.onPressBlock}
               opacity={1}
             />

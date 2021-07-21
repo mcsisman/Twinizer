@@ -138,6 +138,7 @@ export default class MainScreen extends Component<{}> {
     var lang = language[global.lang];
     this.state = {
       isFavArray: [],
+      isBlockArray: [],
       currentCarouselIndex: 0,
       carouselArray: [],
       showAd: false,
@@ -541,172 +542,89 @@ export default class MainScreen extends Component<{}> {
     this.props.navigation.navigate('Chat');
   }
 
-  addToFavButtonClicked(fromWhere, index) {
+  favButton(fromWhere, index){
     if (this.state.currentCarouselIndex != index) {
+      console.log("favButton - is not currentCarouselIndex")
       return;
     }
-    console.log('fav buttona basıldı indexi:', index);
-    console.log('isfav ne aq:', isFav);
-    if (isFav) {
-      console.log('fav');
-      var index = favoriteUsers.indexOf(
-        emailArray[this.state.currentCarouselIndex],
-      );
-      favoriteUsers.splice(this.state.currentCarouselIndex, 1);
-      console.log('set edilen array:', favoriteUsers);
-      EncryptedStorage.setItem(
-        auth().currentUser.uid + 'favoriteUsers',
-        JSON.stringify(favoriteUsers),
-      );
-      favoriteUsersSet.delete(emailArray[this.state.currentCarouselIndex]);
-      isFav = false;
-      this.setState({addToFavVisible: false, addToFavVisibleUpper: false});
-    } else {
-      console.log('not fav');
-      if (favShowThisDialog == 'true' || favShowThisDialog == null) {
-        if (fromWhere == 'onMain') {
-          this.setState({addToFavVisible: true});
-        } else {
-          this.setState({addToFavVisibleUpper: true});
-        }
-      } else {
-        this.favModalButtonClicked(emailArray[this.state.currentCarouselIndex]);
-        this.setState({addToFavVisible: false, addToFavVisibleUpper: false});
+    console.log('favButton - fav buttona basıldı indexi:', index);
+    console.log('favButton - fav buttona basıldı currentCarouselIndex:', this.state.currentCarouselIndex);
+    if (favoriteUsersSet.has(emailArray[this.state.currentCarouselIndex])) {
+      console.log('favButton - is already fav');
+      this.removeFromFav(emailArray[this.state.currentCarouselIndex])
+    }else {
+      console.log('favButton - is not fav');
+      if(blockedUsersSet.has(emailArray[this.state.currentCarouselIndex])){
+        console.log('favButton - removing from block');
+        this.removeFromBlock(emailArray[this.state.currentCarouselIndex])
       }
+      this.addToFav(emailArray[this.state.currentCarouselIndex]);
     }
+  }
+  blockButton(fromWhere, index){
+    if (this.state.currentCarouselIndex != index) {
+      console.log("blockButton - is not currentCarouselIndex")
+      return;
+    }
+    console.log('blockButton - block buttona basıldı indexi:', index);
+    console.log('blockButton - block buttona basıldı currentCarouselIndex:', this.state.currentCarouselIndex);
+    if (blockedUsersSet.has(emailArray[this.state.currentCarouselIndex])) {
+      console.log('blockButton - is already block');
+      this.removeFromBlock(emailArray[this.state.currentCarouselIndex])
+    }else {
+      console.log('blockButton - is not blocked');
+      if(favoriteUsersSet.has(emailArray[this.state.currentCarouselIndex])){
+        console.log('blockButton - removing from fav');
+        this.removeFromFav(emailArray[this.state.currentCarouselIndex])
+      }
+      this.addToBlock(emailArray[this.state.currentCarouselIndex]);
+    }
+  }
+  addToFav(uid){
+    favoriteUsers.push(uid);
+    favoriteUsersSet.add(uid);
+    EncryptedStorage.setItem(
+      auth().currentUser.uid + 'favoriteUsers',
+      JSON.stringify(favoriteUsers),
+    );
     let favArray = this.state.isFavArray;
-    favArray[this.state.currentCarouselIndex] = isFav;
-    console.log(' FONKSİYON İNDEX:', this.state.currentCarouselIndex);
-    console.log('İS FAV:', isFav);
+    favArray[this.state.currentCarouselIndex] = true;
     this.setState({isFavArray: favArray});
   }
-  addToBlockButtonClicked(fromWhere, index) {
-    console.log('current', this.state.currentCarouselIndex);
-    console.log('gelen', index);
-    if (this.state.currentCarouselIndex != index) {
-      return;
-    }
-    if (isBlock) {
-      var index = blockedUsers.indexOf(emailArray[index]);
-      blockedUsers.splice(index, 1);
-      EncryptedStorage.setItem(
-        auth().currentUser.uid + 'blockedUsers',
-        JSON.stringify(blockedUsers),
-      );
-      blockedUsersSet.delete(emailArray[index]);
-      isBlock = false;
-      this.setState({addToBlockVisible: false, addToBlockVisibleUpper: false});
-    } else {
-      if (blockShowThisDialog == 'true' || blockShowThisDialog == null) {
-        if (fromWhere == 'onMain') {
-          this.setState({addToBlockVisible: true});
-        } else {
-          this.setState({addToBlockVisibleUpper: true});
-        }
-      } else {
-        this.blockModalButtonClicked(emailArray[index]);
-        this.setState({
-          addToBlockVisible: false,
-          addToBlockVisibleUpper: false,
-        });
-      }
-    }
+  addToBlock(uid){
+    blockedUsers.push(uid);
+    blockedUsersSet.add(uid);
+    EncryptedStorage.setItem(
+      auth().currentUser.uid + 'blockedUsers',
+      JSON.stringify(blockedUsers),
+    );
+    let blockArray = this.state.isBlockArray;
+    blockArray[this.state.currentCarouselIndex] = true;
+    this.setState({isBlockArray: blockArray});
   }
-
-  favModalButtonClicked(uid) {
-    if (this.state.favTickVisible) {
-      favShowThisDialog = 'false';
-      EncryptedStorage.setItem(
-        auth().currentUser.uid + 'favShowThisDialog',
-        favShowThisDialog,
-      );
-    }
-    this.addToFavoriteUsers(uid);
-    isBlock = false;
-    isFav = true;
-    this.setState({
-      favTickVisible: false,
-      addToFavVisible: false,
-      addToFavVisibleUpper: false,
-    });
+  removeFromFav(uid){
+    var favUsersindex = favoriteUsers.indexOf(uid);
+    favoriteUsers.splice(favUsersindex, 1);
+    EncryptedStorage.setItem(
+      auth().currentUser.uid + 'favoriteUsers',
+      JSON.stringify(favoriteUsers),
+    );
+    favoriteUsersSet.delete(uid);
+    let favArray = this.state.isFavArray;
+    favArray[this.state.currentCarouselIndex] = false;
+    this.setState({isFavArray: favArray, addToFavVisible: false, addToFavVisibleUpper: false});
   }
-  blockModalButtonClicked(uid) {
-    if (this.state.blockTickVisible) {
-      blockShowThisDialog = 'false';
-      EncryptedStorage.setItem(
-        auth().currentUser.uid + 'blockShowThisDialog',
-        blockShowThisDialog,
-      );
-    }
-    this.addToBlockedUsers(uid);
-    isBlock = true;
-    isFav = false;
-    this.setState({
-      blockTickVisible: false,
-      addToBlockVisible: false,
-      addToBlockVisibleUpper: false,
-    });
-  }
-
-  addToFavoriteUsers(uid) {
-    if (favoriteUsers == null) {
-      if (blockedUsersSet.has(uid)) {
-        var index = blockedUsers.indexOf(uid);
-        blockedUsers.splice(index, 1);
-        EncryptedStorage.setItem(
-          auth().currentUser.uid + 'blockedUsers',
-          JSON.stringify(blockedUsers),
-        );
-        blockedUsersSet.delete(uid);
-      }
-      favoriteUsers.push(uid);
-      favoriteUsersSet.add(uid);
-      EncryptedStorage.setItem(
-        auth().currentUser.uid + 'favoriteUsers',
-        JSON.stringify(favoriteUsers),
-      );
-    } else if (favoriteUsers.length == 0 || !favoriteUsersSet.has(uid)) {
-      if (favoriteUsers.length <= 15) {
-        if (blockedUsersSet.has(uid)) {
-          var index = blockedUsers.indexOf(uid);
-          blockedUsers.splice(index, 1);
-          EncryptedStorage.setItem(
-            auth().currentUser.uid + 'blockedUsers',
-            JSON.stringify(blockedUsers),
-          );
-          blockedUsersSet.delete(uid);
-        }
-        favoriteUsers.push(uid);
-        favoriteUsersSet.add(uid);
-        EncryptedStorage.setItem(
-          auth().currentUser.uid + 'favoriteUsers',
-          JSON.stringify(favoriteUsers),
-        );
-      }
-    }
-  }
-  addToBlockedUsers(uid) {
-    if (
-      blockedUsers == null ||
-      blockedUsers.length == 0 ||
-      !blockedUsersSet.has(uid)
-    ) {
-      if (favoriteUsersSet.has(uid)) {
-        var index = favoriteUsers.indexOf(uid);
-        favoriteUsers.splice(index, 1);
-        EncryptedStorage.setItem(
-          auth().currentUser.uid + 'favoriteUsers',
-          JSON.stringify(favoriteUsers),
-        );
-        favoriteUsersSet.delete(uid);
-      }
-      blockedUsers.push(uid);
-      blockedUsersSet.add(uid);
-      EncryptedStorage.setItem(
-        auth().currentUser.uid + 'blockedUsers',
-        JSON.stringify(blockedUsers),
-      );
-    }
+  removeFromBlock(uid){
+    var blockedUsersindex = blockedUsers.indexOf(uid);
+    blockedUsers.splice(blockedUsersindex, 1);
+    EncryptedStorage.setItem(
+      auth().currentUser.uid + 'blockedUsers',
+      JSON.stringify(blockedUsers),
+    );
+    blockedUsersSet.delete(uid);
+    let blockArray = this.state.isBlockArray;
+    blockArray[this.state.currentCarouselIndex] = false;
+    this.setState({isBlockArray: blockArray, addToFavVisible: false, addToFavVisibleUpper: false});
   }
 
   valueChangeCountry(value) {
@@ -769,6 +687,7 @@ export default class MainScreen extends Component<{}> {
         var itemsIndex = 0;
         var ccc = 0;
         var favArray = [];
+        var blockArray = [];
         for (let i = 0; i < length; i++) {
           if (
             blockedUsers == null ||
@@ -783,6 +702,7 @@ export default class MainScreen extends Component<{}> {
               distanceArray.push('ground');
               itemsIndex++;
               favArray.push(false);
+              blockArray.push(false);
             } else {
               countryArray.push(
                 usersDict[items[i - itemsIndex][0]].split('_')[1],
@@ -808,12 +728,13 @@ export default class MainScreen extends Component<{}> {
               mainDistanceArray.push(items[i - itemsIndex][1]);
 
               favArray.push(favoriteUsersSet.has(emailArray[i]));
+              blockArray.push(blockedUsersSet.has(emailArray[i]));
             }
             ccc++;
           }
         }
-        this.setState({isFavArray: favArray});
-        console.log('IS FAV ARRAY:', this.state.isFavArray);
+        this.setState({isFavArray: favArray, isBlockArray: blockArray});
+        //console.log('IS FAV ARRAY:', this.state.isFavArray);
         //console.log(items);
         //console.log(emailArray);
         //console.log(distanceArray);
@@ -1712,10 +1633,10 @@ export default class MainScreen extends Component<{}> {
             })
           }
           onPressSendMsg={() => this.sendFirstMessage(index)}
-          onPressFav={() => this.addToFavButtonClicked('onMain', index)}
-          onPressBlock={() => this.addToBlockButtonClicked('onMain', index)}
+          onPressFav={() => this.favButton('onMain', index)}
+          onPressBlock={() => this.blockButton('onMain', index)}
           isFavorite={this.state.isFavArray}
-          isBlocked={blockedUsersSet.has(emailArray[index])}
+          isBlocked={this.state.isBlockArray}
           image={photoArray[emailArray[index]]}
         />,
       );
@@ -1810,7 +1731,6 @@ export default class MainScreen extends Component<{}> {
                 style={{flex: 1}}
                 ref={(animation) => {
                   this.animation = animation;
-                  console.log('animation:', animation);
                 }}
                 source={require('./facescan.json')}
               />
@@ -1921,16 +1841,16 @@ export default class MainScreen extends Component<{}> {
           bio={bioDict[emailArray[this.state.currentCarouselIndex]]}
           onPressCancel={() => this.setState({openProfileIsVisible: false})}
           imgSource={photoArray[emailArray[this.state.currentCarouselIndex]]}
-          isFavorite={isFav}
-          isBlocked={isBlock}
+          isFavorite={this.state.isFavArray[this.state.currentCarouselIndex]}
+          isBlocked={this.state.isBlockArray[this.state.currentCarouselIndex]}
           onPressFav={() =>
-            this.addToFavButtonClicked(
+            this.favButton(
               'onModal',
               this.state.currentCarouselIndex,
             )
           }
           onPressBlock={() =>
-            this.addToBlockButtonClicked(
+            this.blockButton(
               'onModal',
               this.state.currentCarouselIndex,
             )
