@@ -273,6 +273,7 @@ deleteFavUser(){
     }
   }
   global.removedFromFavList = true
+  global.isFavListUpdated = true;
   colorArray = []
   for( let i = 0; i < noOfFavUsers; i++){
     colorArray[i] = "trashgray"

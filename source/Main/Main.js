@@ -237,15 +237,38 @@ export default class MainScreen extends Component<{}> {
       console.log('distanceArray: ', distanceArray);
       this.setState({reRender: 'ok'});
       global.fromChat = false;
-      if (global.removedFromFavList) {
+      if (global.isFavListUpdated) {
+        console.log("componentdidmount - fav list updated")
         await this.getFavoriteUsers();
-        global.removedFromFavList = false;
+        global.isFavListUpdated = false;
+        if(emailArray.length != 0){
+          let favArray = this.state.isFavArray;
+          for(let i = 0; i < favArray.length; i++){
+            favArray[i] = false;
+            if(favoriteUsersSet.has(emailArray[i])){
+              favArray[i] = true;
+            }
+          }
+          this.setState({isFavArray: favArray});
+        }
       }
-      if (global.removedFromBlockedList) {
+      if (global.isBlockListUpdated) {
+        console.log("componentdidmount - block list updated")
         await this.getBlockedUsers();
-        global.removedFromBlockedList = false;
+        global.isBlockListUpdated = false;
+        if(emailArray.length != 0){
+          let blockArray = this.state.isBlockArray;
+          for(let i = 0; i < blockArray.length; i++){
+            blockArray[i] = false;
+            if(blockedUsersSet.has(emailArray[i])){
+              blockArray[i] = true;
+            }
+          }
+          this.setState({isBlockArray: blockArray});
+        }
       }
       if (global.fromHistorySearch) {
+        console.log("componentdidmount - from history search")
         await this.setSearchPhotoFromHistory(global.historyPhotoUri);
       }
       if (

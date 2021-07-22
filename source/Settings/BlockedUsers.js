@@ -243,7 +243,8 @@ deleteBlockedUser(){
       noOfBlockedUsers = noOfBlockedUsers - 1
     }
   }
-  global.removedFromBlockedList = true
+  global.removedFromBlockedList = true;
+  global.isBlockListUpdated = true;
   colorArray = []
   for( let i = 0; i < noOfBlockedUsers; i++){
     colorArray[i] = "trashgray"

@@ -166,11 +166,14 @@ export default class ProfileBlockedUserScreen extends Component<{}> {
     listener.off();
     global.removeFromBlockedUser = true;
     global.removedFromBlockedList = true;
+    global.isBlockListUpdated = true;
     this.props.navigation.navigate('BlockedUsers');
   }
   async fav() {
     listener.off();
     global.removeFromBlockedUser = true;
+    global.isFavListUpdated = true;
+    global.isBlockListUpdated = true;
     await EncryptedStorage.getItem(auth().currentUser.uid + 'favoriteUsers')
       .then((req) => {
         if (req) {

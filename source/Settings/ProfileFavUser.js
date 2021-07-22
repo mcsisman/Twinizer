@@ -138,11 +138,14 @@ export default class ProfileFavUserScreen extends Component<{}> {
     listener.off();
     global.removeFromFavUser = true;
     global.removedFromFavList = true;
+    global.isFavListUpdated = true;
     this.props.navigation.navigate('FavoriteUsers');
   }
   async block() {
     listener.off();
     global.removeFromFavUser = true;
+    global.isBlockListUpdated = true;
+    global.isFavListUpdated = true;
     await EncryptedStorage.getItem(auth().currentUser.uid + 'blockedUsers')
       .then((req) => {
         if (req) {

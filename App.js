@@ -116,6 +116,8 @@ class Appp extends React.Component {
     console.log('LOCAL:');
   }
   initializeGlobalVariables() {
+    global.isFavListUpdated = false;
+    global.isBlockListUpdated = false;
     global.imageSizeLimit = 20000000;
     global.fromChat = false;
     global.emailArrayLength = 0;
