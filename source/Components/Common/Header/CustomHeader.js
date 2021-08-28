@@ -62,7 +62,7 @@ export default class CustomHeader extends Component {
         return (
           <View
             style={{
-              position: this.props.isProfile ? 'absolute' : 'absolute',
+              position: this.props.isProfile ? 'absolute' : 'relative',
               top: this.props.isProfile ? getStatusBarHeight() : 0,
               backgroundColor: global.isDarkMode
                 ? global.darkModeColors[1]

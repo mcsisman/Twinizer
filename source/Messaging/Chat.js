@@ -160,7 +160,10 @@ export default class ChatScreen extends React.Component<Props> {
           tempArr.push(localMessages[i]);
         }
       }
-      localMessages.reverse();
+      if (localMessages) {
+        localMessages.reverse();
+      }
+
       this.setState({
         messages: tempArr,
       });
@@ -255,7 +258,9 @@ export default class ChatScreen extends React.Component<Props> {
                             }
                           })
                           .then((json) => (localMessages = json));
-                      localMessages.reverse();
+                      if (localMessages) {
+                        localMessages.reverse();
+                      }
                       console.log('TEST 3');
 
                       var number;

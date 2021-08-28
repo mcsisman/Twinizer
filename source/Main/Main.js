@@ -238,14 +238,14 @@ export default class MainScreen extends Component<{}> {
       this.setState({reRender: 'ok'});
       global.fromChat = false;
       if (global.isFavListUpdated) {
-        console.log("componentdidmount - fav list updated")
+        console.log('componentdidmount - fav list updated');
         await this.getFavoriteUsers();
         global.isFavListUpdated = false;
-        if(emailArray.length != 0){
+        if (emailArray.length != 0) {
           let favArray = this.state.isFavArray;
-          for(let i = 0; i < favArray.length; i++){
+          for (let i = 0; i < favArray.length; i++) {
             favArray[i] = false;
-            if(favoriteUsersSet.has(emailArray[i])){
+            if (favoriteUsersSet.has(emailArray[i])) {
               favArray[i] = true;
             }
           }
@@ -253,14 +253,14 @@ export default class MainScreen extends Component<{}> {
         }
       }
       if (global.isBlockListUpdated) {
-        console.log("componentdidmount - block list updated")
+        console.log('componentdidmount - block list updated');
         await this.getBlockedUsers();
         global.isBlockListUpdated = false;
-        if(emailArray.length != 0){
+        if (emailArray.length != 0) {
           let blockArray = this.state.isBlockArray;
-          for(let i = 0; i < blockArray.length; i++){
+          for (let i = 0; i < blockArray.length; i++) {
             blockArray[i] = false;
-            if(blockedUsersSet.has(emailArray[i])){
+            if (blockedUsersSet.has(emailArray[i])) {
               blockArray[i] = true;
             }
           }
@@ -268,7 +268,7 @@ export default class MainScreen extends Component<{}> {
         }
       }
       if (global.fromHistorySearch) {
-        console.log("componentdidmount - from history search")
+        console.log('componentdidmount - from history search');
         await this.setSearchPhotoFromHistory(global.historyPhotoUri);
       }
       if (
@@ -565,45 +565,51 @@ export default class MainScreen extends Component<{}> {
     this.props.navigation.navigate('Chat');
   }
 
-  favButton(fromWhere, index){
+  favButton(fromWhere, index) {
     if (this.state.currentCarouselIndex != index) {
-      console.log("favButton - is not currentCarouselIndex")
+      console.log('favButton - is not currentCarouselIndex');
       return;
     }
     console.log('favButton - fav buttona basıldı indexi:', index);
-    console.log('favButton - fav buttona basıldı currentCarouselIndex:', this.state.currentCarouselIndex);
+    console.log(
+      'favButton - fav buttona basıldı currentCarouselIndex:',
+      this.state.currentCarouselIndex,
+    );
     if (favoriteUsersSet.has(emailArray[this.state.currentCarouselIndex])) {
       console.log('favButton - is already fav');
-      this.removeFromFav(emailArray[this.state.currentCarouselIndex])
-    }else {
+      this.removeFromFav(emailArray[this.state.currentCarouselIndex]);
+    } else {
       console.log('favButton - is not fav');
-      if(blockedUsersSet.has(emailArray[this.state.currentCarouselIndex])){
+      if (blockedUsersSet.has(emailArray[this.state.currentCarouselIndex])) {
         console.log('favButton - removing from block');
-        this.removeFromBlock(emailArray[this.state.currentCarouselIndex])
+        this.removeFromBlock(emailArray[this.state.currentCarouselIndex]);
       }
       this.addToFav(emailArray[this.state.currentCarouselIndex]);
     }
   }
-  blockButton(fromWhere, index){
+  blockButton(fromWhere, index) {
     if (this.state.currentCarouselIndex != index) {
-      console.log("blockButton - is not currentCarouselIndex")
+      console.log('blockButton - is not currentCarouselIndex');
       return;
     }
     console.log('blockButton - block buttona basıldı indexi:', index);
-    console.log('blockButton - block buttona basıldı currentCarouselIndex:', this.state.currentCarouselIndex);
+    console.log(
+      'blockButton - block buttona basıldı currentCarouselIndex:',
+      this.state.currentCarouselIndex,
+    );
     if (blockedUsersSet.has(emailArray[this.state.currentCarouselIndex])) {
       console.log('blockButton - is already block');
-      this.removeFromBlock(emailArray[this.state.currentCarouselIndex])
-    }else {
+      this.removeFromBlock(emailArray[this.state.currentCarouselIndex]);
+    } else {
       console.log('blockButton - is not blocked');
-      if(favoriteUsersSet.has(emailArray[this.state.currentCarouselIndex])){
+      if (favoriteUsersSet.has(emailArray[this.state.currentCarouselIndex])) {
         console.log('blockButton - removing from fav');
-        this.removeFromFav(emailArray[this.state.currentCarouselIndex])
+        this.removeFromFav(emailArray[this.state.currentCarouselIndex]);
       }
       this.addToBlock(emailArray[this.state.currentCarouselIndex]);
     }
   }
-  addToFav(uid){
+  addToFav(uid) {
     favoriteUsers.push(uid);
     favoriteUsersSet.add(uid);
     EncryptedStorage.setItem(
@@ -614,7 +620,7 @@ export default class MainScreen extends Component<{}> {
     favArray[this.state.currentCarouselIndex] = true;
     this.setState({isFavArray: favArray});
   }
-  addToBlock(uid){
+  addToBlock(uid) {
     blockedUsers.push(uid);
     blockedUsersSet.add(uid);
     EncryptedStorage.setItem(
@@ -625,7 +631,7 @@ export default class MainScreen extends Component<{}> {
     blockArray[this.state.currentCarouselIndex] = true;
     this.setState({isBlockArray: blockArray});
   }
-  removeFromFav(uid){
+  removeFromFav(uid) {
     var favUsersindex = favoriteUsers.indexOf(uid);
     favoriteUsers.splice(favUsersindex, 1);
     EncryptedStorage.setItem(
@@ -635,9 +641,13 @@ export default class MainScreen extends Component<{}> {
     favoriteUsersSet.delete(uid);
     let favArray = this.state.isFavArray;
     favArray[this.state.currentCarouselIndex] = false;
-    this.setState({isFavArray: favArray, addToFavVisible: false, addToFavVisibleUpper: false});
+    this.setState({
+      isFavArray: favArray,
+      addToFavVisible: false,
+      addToFavVisibleUpper: false,
+    });
   }
-  removeFromBlock(uid){
+  removeFromBlock(uid) {
     var blockedUsersindex = blockedUsers.indexOf(uid);
     blockedUsers.splice(blockedUsersindex, 1);
     EncryptedStorage.setItem(
@@ -647,7 +657,11 @@ export default class MainScreen extends Component<{}> {
     blockedUsersSet.delete(uid);
     let blockArray = this.state.isBlockArray;
     blockArray[this.state.currentCarouselIndex] = false;
-    this.setState({isBlockArray: blockArray, addToFavVisible: false, addToFavVisibleUpper: false});
+    this.setState({
+      isBlockArray: blockArray,
+      addToFavVisible: false,
+      addToFavVisibleUpper: false,
+    });
   }
 
   valueChangeCountry(value) {
@@ -1015,8 +1029,7 @@ export default class MainScreen extends Component<{}> {
             Object.keys(mainPhotoArray).length,
           );
           this.createCarouselItemArray();
-          this.animation.pause();
-          this.animation.reset();
+
           this.setState({
             backgroundOpacity: 0,
             swipeableDisabled: false,
@@ -1075,8 +1088,7 @@ export default class MainScreen extends Component<{}> {
             });
             var lang = language[global.lang];
             this.spinValue = new Animated.Value(0);
-            this.animation.pause();
-            this.animation.reset();
+
             Alert.alert(lang.Error, lang.MainNoFace);
           }
         } else {
@@ -1193,16 +1205,16 @@ export default class MainScreen extends Component<{}> {
     console.log(this.state.uri2_bio);
     console.log(this.state.uri2);
     this.createCarouselItemArray();
-    this.animation.pause();
-    this.animation.reset();
+
     this.setState({loadingAnimation: false});
   }
 
   async searchDone(value) {
-    this.animation.play();
     var emptyArr = [];
     isFav = false;
     isBlock = false;
+    this.animation.play();
+
     this.setState({
       currentCarouselIndex: 0,
 
@@ -1223,6 +1235,7 @@ export default class MainScreen extends Component<{}> {
       imagePath: null,
       swipeableDisabled: true,
     });
+
     if (this._carousel != undefined) {
       this._carousel.snapToItem(0, false, false);
     }
@@ -1454,8 +1467,7 @@ export default class MainScreen extends Component<{}> {
                         })
                         .catch((error) => {
                           console.log('buraya mı geldi');
-                          this.animation.pause();
-                          this.animation.reset();
+
                           this.setState({loadingAnimation: false});
                           console.log('buraya mı geldi evet');
                           this.spinValue = new Animated.Value(0);
@@ -1537,8 +1549,6 @@ export default class MainScreen extends Component<{}> {
                                 }
                               })
                               .catch((error) => {
-                                this.animation.pause();
-                                this.animation.reset();
                                 this.setState({loadingAnimation: false});
                                 this.spinValue = new Animated.Value(0);
                                 console.log('User2 update olmadı');
@@ -1568,8 +1578,6 @@ export default class MainScreen extends Component<{}> {
               }
             })
             .catch((error) => {
-              this.animation.pause();
-              this.animation.reset();
               this.setState({loadingAnimation: false});
               this.spinValue = new Animated.Value(0);
               console.log('Function number catchi');
@@ -1578,8 +1586,6 @@ export default class MainScreen extends Component<{}> {
         }
       })
       .catch((error) => {
-        this.animation.pause();
-        this.animation.reset();
         this.setState({loadingAnimation: false});
         this.spinValue = new Animated.Value(0);
         console.log('Search fotosu upload olmadı');
@@ -1739,26 +1745,27 @@ export default class MainScreen extends Component<{}> {
             />
           )}
 
-          {this.state.loadingAnimation && (
-            <View
-              style={{
-                aspectRatio: 6 / 10,
-                width: (this.width * 5) / 10,
-                alignSelf: 'center',
-                display: 'flex',
-                flexDirection: 'column',
-                marginBottom: 5,
-              }}>
-              <LottieView
-                loop={true}
-                style={{flex: 1}}
-                ref={(animation) => {
+          <View
+            style={{
+              width:
+                this.state.loadingAnimation == true ? (this.width * 5) / 10 : 0,
+              aspectRatio: 6 / 10,
+              alignSelf: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              marginBottom: 5,
+            }}>
+            <LottieView
+              loop={true}
+              style={{flex: 1}}
+              ref={(animation) => {
+                if (this.animation == null) {
                   this.animation = animation;
-                }}
-                source={require('./facescan.json')}
-              />
-            </View>
-          )}
+                }
+              }}
+              source={require('./facescan.json')}
+            />
+          </View>
 
           <View
             style={{
@@ -1867,16 +1874,10 @@ export default class MainScreen extends Component<{}> {
           isFavorite={this.state.isFavArray[this.state.currentCarouselIndex]}
           isBlocked={this.state.isBlockArray[this.state.currentCarouselIndex]}
           onPressFav={() =>
-            this.favButton(
-              'onModal',
-              this.state.currentCarouselIndex,
-            )
+            this.favButton('onModal', this.state.currentCarouselIndex)
           }
           onPressBlock={() =>
-            this.blockButton(
-              'onModal',
-              this.state.currentCarouselIndex,
-            )
+            this.blockButton('onModal', this.state.currentCarouselIndex)
           }
           onPressSendMsg={() =>
             this.sendFirstMessage(this.state.currentCarouselIndex)
