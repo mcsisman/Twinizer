@@ -1721,6 +1721,7 @@ export default class MainScreen extends Component<{}> {
               getStatusBarHeight(),
             justifyContent: 'space-evenly',
             alignItems: 'center',
+            backgroundColor: 'green',
           }}>
           {!this.state.loadingAnimation && (
             <Carousel
