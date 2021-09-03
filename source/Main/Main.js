@@ -1697,13 +1697,12 @@ export default class MainScreen extends Component<{}> {
     return (
       <SafeAreaView
         style={{
-          width: this.width,
-          height: this.height,
           flex: 1,
           flexDirection: 'column',
           backgroundColor: global.isDarkMode
             ? global.darkModeColors[1]
             : 'rgba(242,242,242,1)',
+          backgroundColor: 'red',
         }}>
         <ModifiedStatusBar />
 
