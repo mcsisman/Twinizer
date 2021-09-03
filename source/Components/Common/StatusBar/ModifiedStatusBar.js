@@ -29,7 +29,7 @@ export default class ModifiedStatusBar extends Component {
       StatusBar.setBackgroundColor('transparent');
     }
 
-    return (
+    /*return (
       <View // Statusbar background
         style={{
           top: 0,
@@ -48,6 +48,15 @@ export default class ModifiedStatusBar extends Component {
           }
         />
       </View>
+    );*/
+    return (
+      <StatusBar
+        barStyle={
+          global.isDarkMode || this.props.isChatImageSender
+            ? 'light-content'
+            : 'dark-content'
+        }
+      />
     );
   }
 }
