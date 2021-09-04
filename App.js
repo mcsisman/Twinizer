@@ -456,7 +456,7 @@ function MyTabBar({state, descriptors, navigation}) {
       }}>
       <View
         style={{
-          height: global.insets.bottom,
+          height: global.insets.bottom * 2,
           width: this.width,
           position: 'absolute',
           bottom: -global.insets.bottom * 2,
