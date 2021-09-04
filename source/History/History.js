@@ -562,11 +562,18 @@ export default class HistoryScreen extends Component<{}> {
           <FlatList
             style={{
               height:
-                this.height -
-                this.width / 7 -
-                this.width / 9 -
-                headerHeight -
-                getStatusBarHeight(),
+                Platform.OS === 'android'
+                  ? this.height -
+                    this.width / 7 -
+                    this.width / 9 -
+                    headerHeight -
+                    getStatusBarHeight()
+                  : this.height -
+                    this.width / 7 -
+                    this.width / 9 -
+                    headerHeight -
+                    getStatusBarHeight() -
+                    global.insets.bottom,
               width: this.width,
               right: 0,
               bottom: 0,
