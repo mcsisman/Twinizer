@@ -1715,11 +1715,7 @@ export default class MainScreen extends Component<{}> {
 
         <View
           style={{
-            height:
-              this.height -
-              this.width / 7 -
-              headerHeight -
-              getStatusBarHeight(),
+            flex: 1,
             justifyContent: 'space-evenly',
             alignItems: 'center',
             backgroundColor: 'green',
