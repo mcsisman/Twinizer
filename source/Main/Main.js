@@ -1719,7 +1719,8 @@ export default class MainScreen extends Component<{}> {
               this.height -
               this.width / 7 -
               headerHeight -
-              getStatusBarHeight(),
+              getStatusBarHeight() -
+              global.insets.bottom,
             justifyContent: 'space-evenly',
             alignItems: 'center',
             backgroundColor: 'green',
