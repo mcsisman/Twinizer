@@ -447,26 +447,13 @@ function MyTabBar({state, descriptors, navigation}) {
   return (
     <View
       style={{
-        bottom:
-          Platform.OS === 'android' ? 0 : global.insets.bottom + this.width / 7,
+        bottom: Platform.OS === 'android' ? 0 : global.insets.bottom,
         flexDirection: 'row',
         backgroundColor: global.isDarkMode
           ? global.darkModeColors[0]
           : 'rgba(188,192,204,0.5)',
         backgroundColor: 'yellow',
       }}>
-      <View
-        style={{
-          height: global.insets.bottom + this.width / 7,
-          width: this.width,
-          position: 'absolute',
-          bottom: -global.insets.bottom - this.width / 7,
-          backgroundColor: global.isDarkMode
-            ? global.darkModeColors[1]
-            : 'rgba(242,242,242,1)',
-          backgroundColor: 'pink',
-        }}
-      />
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
         const label =
