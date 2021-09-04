@@ -1696,6 +1696,7 @@ export default class MainScreen extends Component<{}> {
     });
     return (
       <SafeAreaView
+        edges={['right', 'bottom', 'left', 'top']}
         style={{
           flex: 1,
           flexDirection: 'column',
