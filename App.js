@@ -460,7 +460,7 @@ function MyTabBar({state, descriptors, navigation}) {
           height: global.insets.bottom + this.width / 7,
           width: this.width,
           position: 'absolute',
-          bottom: -global.insets.bottom + this.width / 7,
+          bottom: -global.insets.bottom - this.width / 7,
           backgroundColor: global.isDarkMode
             ? global.darkModeColors[1]
             : 'rgba(242,242,242,1)',
