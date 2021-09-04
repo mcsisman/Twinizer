@@ -1703,7 +1703,7 @@ export default class MainScreen extends Component<{}> {
           backgroundColor: global.isDarkMode
             ? global.darkModeColors[1]
             : 'rgba(242,242,242,1)',
-          backgroundColor: 'red',
+          backgroundColor: 'pink',
         }}>
         <ModifiedStatusBar />
 
