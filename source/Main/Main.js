@@ -1696,14 +1696,13 @@ export default class MainScreen extends Component<{}> {
     });
     return (
       <SafeAreaView
-        edges={['right', 'bottom', 'left', 'top']}
         style={{
           flex: 1,
           flexDirection: 'column',
           backgroundColor: global.isDarkMode
             ? global.darkModeColors[1]
             : 'rgba(242,242,242,1)',
-          backgroundColor: 'pink',
+          backgroundColor: 'red',
         }}>
         <ModifiedStatusBar />
 
@@ -1716,16 +1715,10 @@ export default class MainScreen extends Component<{}> {
         <View
           style={{
             height:
-              Platform.OS === 'android'
-                ? this.height -
-                  this.width / 7 -
-                  headerHeight -
-                  getStatusBarHeight()
-                : this.height -
-                  this.width / 7 -
-                  headerHeight -
-                  getStatusBarHeight() -
-                  global.insets.bottom,
+              this.height -
+              this.width / 7 -
+              headerHeight -
+              getStatusBarHeight(),
             justifyContent: 'space-evenly',
             alignItems: 'center',
             backgroundColor: 'green',

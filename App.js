@@ -65,6 +65,7 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
   SafeAreaView,
+  useSafeAreaFrame,
 } from 'react-native-safe-area-context';
 
 if (!global.btoa) {
@@ -439,6 +440,8 @@ export function forHorizontalModal({
 function MyTabBar({state, descriptors, navigation}) {
   const focusedOptions = descriptors[state.routes[state.index].key].options;
   global.insets = useSafeAreaInsets();
+  global.obj = useSafeAreaFrame();
+  console.log('safe area:', global.obj);
   console.log('INSETS:', global.insets);
   if (focusedOptions.tabBarVisible === false || state.index == 4) {
     return null;
