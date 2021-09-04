@@ -447,7 +447,7 @@ function MyTabBar({state, descriptors, navigation}) {
   return (
     <View
       style={{
-        bottom: Platform.OS === 'android' ? 0 : global.insets.bottom,
+        bottom: Platform.OS === 'android' ? 0 : global.insets.bottom + 15,
         flexDirection: 'row',
         backgroundColor: global.isDarkMode
           ? global.darkModeColors[0]
@@ -548,6 +548,7 @@ function MyTabBar({state, descriptors, navigation}) {
           backgroundColor: global.isDarkMode
             ? global.darkModeColors[0]
             : 'rgba(188,192,204,0.5)',
+          backgroundColor: 'red',
         }}
       />
     </View>
