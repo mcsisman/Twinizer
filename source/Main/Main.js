@@ -1677,6 +1677,7 @@ export default class MainScreen extends Component<{}> {
     return this.state.carouselArray[index];
   };
   render() {
+    console.log('this. h', this.height);
     var lang = language[global.lang];
 
     const {navigate} = this.props.navigation;
