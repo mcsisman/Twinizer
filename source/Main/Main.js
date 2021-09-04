@@ -1722,6 +1722,7 @@ export default class MainScreen extends Component<{}> {
             justifyContent: 'space-evenly',
             alignItems: 'center',
             backgroundColor: 'green',
+            paddingBottom: 20,
           }}>
           {!this.state.loadingAnimation && (
             <Carousel
