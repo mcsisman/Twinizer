@@ -1703,7 +1703,6 @@ export default class MainScreen extends Component<{}> {
           backgroundColor: global.isDarkMode
             ? global.darkModeColors[1]
             : 'rgba(242,242,242,1)',
-          backgroundColor: 'red',
         }}>
         <ModifiedStatusBar />
 
@@ -1728,7 +1727,6 @@ export default class MainScreen extends Component<{}> {
                   global.insets.bottom,
             justifyContent: 'space-evenly',
             alignItems: 'center',
-            backgroundColor: 'green',
           }}>
           {!this.state.loadingAnimation && (
             <Carousel
