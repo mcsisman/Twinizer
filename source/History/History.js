@@ -538,7 +538,6 @@ export default class HistoryScreen extends Component<{}> {
             backgroundColor: global.isDarkMode
               ? global.darkModeColors[1]
               : 'rgba(242,242,242,1)',
-            backgroundColor: 'red',
           }}>
           <ModifiedStatusBar />
 
@@ -583,7 +582,10 @@ export default class HistoryScreen extends Component<{}> {
               opacity: this.state.editPressed || noOfSearch == 0 ? 0 : 1,
               width: this.width / 8.5,
               height: this.width / 8.5,
-              bottom: this.width / 20,
+              bottom:
+                Platform.OS === 'android'
+                  ? this.width / 20
+                  : global.insets.bottom + this.width / 20,
               right: this.width / 20,
               flex: 1,
               alignItems: 'center',
