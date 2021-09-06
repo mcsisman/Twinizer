@@ -1844,7 +1844,7 @@ export default class MainScreen extends Component<{}> {
         />
 
         <FilterModal
-          isVisible={this.state.isVisible2}
+          isVisible={1}
           onBackdropPress={() => this.setState({isVisible2: false})}
           onValueChangeGender={(value) => this.valueChangeGender(value.label)}
           onValueChangeCountry={(value) => this.valueChangeCountry(value.label)}
