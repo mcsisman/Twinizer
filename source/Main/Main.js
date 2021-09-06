@@ -1819,51 +1819,63 @@ export default class MainScreen extends Component<{}> {
               />
             )}
           </View>
+
+          <Snackbar
+            duration={1500}
+            style={{bottom: 0}}
+            visible={this.state.notifIsVisible}
+            onDismiss={() => {
+              this.setState({notifIsVisible: false, disabled: false}),
+                interstitial.show();
+            }}>
+            {lang.TwinizingProcessInfo}
+          </Snackbar>
+
+          <ImageUploadModal
+            isVisible={this.state.isVisible1}
+            txtUploadPhoto={lang.UploadAPhoto}
+            txtCancel={lang.Cancel}
+            txtTakePhoto={lang.Camera}
+            txtOpenLibrary={lang.Library}
+            onPressCancel={() => this.setState({isVisible1: false})}
+            onPressCamera={this.camera}
+            onPressLibrary={this.library}
+          />
+
+          <FilterModal
+            isVisible={this.state.isVisible2}
+            onBackdropPress={() => this.setState({isVisible2: false})}
+            onValueChangeGender={(value) => this.valueChangeGender(value.label)}
+            onValueChangeCountry={(value) =>
+              this.valueChangeCountry(value.label)
+            }
+            genderSelectedValue={
+              lang[
+                this.state.gender == 'All Genders'
+                  ? 'AllGenders'
+                  : this.state.gender + 'Small'
+              ]
+            }
+            countrySelectedValue={this.state.country}
+            placeHolder1={this.state.placeHolder1}
+            placeHolder2={this.state.placeHolder2}
+            onPressSearch={() => this.filterDone()}
+            textSearch={lang.Apply}
+            opacity={this.state.filterButtonOpacity}
+            searchDisabled={this.state.disabledSearch}
+            textFilters={lang.Filter}
+          />
+
+          <ImageViewerModal
+            isVisible={this.state.imageViewerVisible}
+            images={photoArray[emailArray[this.state.currentCarouselIndex]]}
+            whichScreen={'tabs'}
+            onCancel={() => {
+              this.props.navigation.setOptions({tabBarVisible: true});
+              this.setState({imageViewerVisible: false});
+            }}
+          />
         </View>
-
-        <Snackbar
-          duration={1500}
-          style={{bottom: this.width / 7}}
-          visible={this.state.notifIsVisible}
-          onDismiss={() => {
-            this.setState({notifIsVisible: false, disabled: false}),
-              interstitial.show();
-          }}>
-          {lang.TwinizingProcessInfo}
-        </Snackbar>
-
-        <ImageUploadModal
-          isVisible={this.state.isVisible1}
-          txtUploadPhoto={lang.UploadAPhoto}
-          txtCancel={lang.Cancel}
-          txtTakePhoto={lang.Camera}
-          txtOpenLibrary={lang.Library}
-          onPressCancel={() => this.setState({isVisible1: false})}
-          onPressCamera={this.camera}
-          onPressLibrary={this.library}
-        />
-
-        <FilterModal
-          isVisible={1}
-          onBackdropPress={() => this.setState({isVisible2: false})}
-          onValueChangeGender={(value) => this.valueChangeGender(value.label)}
-          onValueChangeCountry={(value) => this.valueChangeCountry(value.label)}
-          genderSelectedValue={
-            lang[
-              this.state.gender == 'All Genders'
-                ? 'AllGenders'
-                : this.state.gender + 'Small'
-            ]
-          }
-          countrySelectedValue={this.state.country}
-          placeHolder1={this.state.placeHolder1}
-          placeHolder2={this.state.placeHolder2}
-          onPressSearch={() => this.filterDone()}
-          textSearch={lang.Apply}
-          opacity={this.state.filterButtonOpacity}
-          searchDisabled={this.state.disabledSearch}
-          textFilters={lang.Filter}
-        />
 
         <PhotoPopUpModal
           isVisible={this.state.openProfileIsVisible}
@@ -1996,16 +2008,6 @@ export default class MainScreen extends Component<{}> {
               addToBlockVisibleUpper: false,
             })
           }
-        />
-
-        <ImageViewerModal
-          isVisible={this.state.imageViewerVisible}
-          images={photoArray[emailArray[this.state.currentCarouselIndex]]}
-          whichScreen={'tabs'}
-          onCancel={() => {
-            this.props.navigation.setOptions({tabBarVisible: true});
-            this.setState({imageViewerVisible: false});
-          }}
         />
       </SafeAreaView>
     );
