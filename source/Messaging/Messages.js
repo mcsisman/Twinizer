@@ -2009,55 +2009,71 @@ class MessagesScreen extends Component<{}> {
               this.state.whichScreen == 'left' ? lang.Messages : lang.Requests
             }
           />
-
-          <EditBox
-            editButtonPressed={() => this.editButtonPressed()}
-            messageSelectAll={() => this.messageSelectAll()}
-            messageDoneDisabled={this.state.messageDoneDisabled}
-            messageDonePress={() => this.messageDonePress()}
-            editText={this.state.editText}
-            allSelected={this.state.allSelected}
-            requestSelectAll={() => this.requestSelectAll()}
-            requestDoneDisabled={this.state.requestDoneDisabled}
-            requestDonePress={() => this.messageDonePress()}
-            messageArray={messageArray}
-            requestArray={requestArray}
-            whichScreen={this.state.whichScreen}
-            editPressed={this.state.editPressed}
-          />
-
-          <FlatList
+          <View
             style={{
-              height: scrollViewHeight,
-              width: this.width,
-              right: 0,
-              bottom: 0,
-              position: 'absolute',
-              flex: 1,
-              flexDirection: 'column',
-            }}
-            renderItem={
-              this.state.whichScreen == 'left'
-                ? () => this.renderMessageBoxes()
-                : () => this.renderRequestBoxes()
-            }
-            data={[{bos: 'boş', key: 'key'}]}></FlatList>
+              height:
+                Platform.OS === 'android'
+                  ? this.height -
+                    this.width / 7 -
+                    headerHeight -
+                    getStatusBarHeight()
+                  : this.height -
+                    this.width / 7 -
+                    headerHeight -
+                    getStatusBarHeight() -
+                    global.insets.bottom,
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+            }}>
+            <EditBox
+              editButtonPressed={() => this.editButtonPressed()}
+              messageSelectAll={() => this.messageSelectAll()}
+              messageDoneDisabled={this.state.messageDoneDisabled}
+              messageDonePress={() => this.messageDonePress()}
+              editText={this.state.editText}
+              allSelected={this.state.allSelected}
+              requestSelectAll={() => this.requestSelectAll()}
+              requestDoneDisabled={this.state.requestDoneDisabled}
+              requestDonePress={() => this.messageDonePress()}
+              messageArray={messageArray}
+              requestArray={requestArray}
+              whichScreen={this.state.whichScreen}
+              editPressed={this.state.editPressed}
+            />
 
-          <DeleteMessageModal
-            onPressClose={() => this.setState({deleteModalVisible: false})}
-            isVisible={this.state.deleteModalVisible}
-            onPressClear={
-              this.state.whichScreen == 'left'
-                ? () => this.clearMessagesPressed()
-                : () => this.clearRequestPressed()
-            }
-            onPressDelete={
-              this.state.whichScreen == 'left'
-                ? () => this.deleteMessagesPressed()
-                : () => this.deleteRequestPressed()
-            }
-            txtAlert={lang.ChooseAnOption}
-          />
+            <FlatList
+              style={{
+                height: scrollViewHeight,
+                width: this.width,
+                right: 0,
+                bottom: 0,
+                position: 'absolute',
+                flex: 1,
+                flexDirection: 'column',
+              }}
+              renderItem={
+                this.state.whichScreen == 'left'
+                  ? () => this.renderMessageBoxes()
+                  : () => this.renderRequestBoxes()
+              }
+              data={[{bos: 'boş', key: 'key'}]}></FlatList>
+
+            <DeleteMessageModal
+              onPressClose={() => this.setState({deleteModalVisible: false})}
+              isVisible={this.state.deleteModalVisible}
+              onPressClear={
+                this.state.whichScreen == 'left'
+                  ? () => this.clearMessagesPressed()
+                  : () => this.clearRequestPressed()
+              }
+              onPressDelete={
+                this.state.whichScreen == 'left'
+                  ? () => this.deleteMessagesPressed()
+                  : () => this.deleteRequestPressed()
+              }
+              txtAlert={lang.ChooseAnOption}
+            />
+          </View>
         </SafeAreaView>
       );
     }
