@@ -45,11 +45,11 @@ if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
 var blockedUserUids = [];
-var blockedUserUsernames = []
+var blockedUserUsernames = {}
 var usernameListener = []
 var noOfBlockedUsers;
 var colorArray = [];
-var imageUrls = [];
+var imageUrls = {};
 var focusedtoThisScreen = false;
 var lang = language[global.lang]
 export default class BlockedUsersScreen extends Component<{}>{
@@ -82,14 +82,14 @@ export default class BlockedUsersScreen extends Component<{}>{
       this.setState({loadingDone: false})
       this.spinAnimation()
       focusedtoThisScreen = true
-      if(global.selectedBlockedUserIndex != null && !global.removeFromBlockedUser){
-        await usernameListener[global.selectedBlockedUserIndex].on('value',
-        async snap => await this.listenerFunc(snap, global.selectedBlockedUserIndex, blockedUserUids[global.selectedBlockedUserIndex]));
+      await this.initializeBlockedUsersScreen()
+      if(global.changedBlockInMain || Object.keys(global.usernameListeners).length == 0){
+        this.updateUsernameListeners();
+        global.changedBlockInMain = false;
       }
       if(global.removeFromBlockedUser){
         this.removeFromUser()
       }
-      await this.initializeBlockedUsersScreen()
       this.leftAnimation = new Animated.Value(-this.width/8)
       this.setState({reRender: "ok"})
     })
@@ -131,11 +131,78 @@ export default class BlockedUsersScreen extends Component<{}>{
     }
   }
 
+  editButtonPressed(){
+    for( let i = 0; i < noOfBlockedUsers; i++){
+      colorArray[i] = "trashgray"
+    }
+    if(this.state.editText == "Edit"){
+      this.setState({blockedBoxDisabled: true, doneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false})
+      this.blockedBoxAnimation()
+    }
+    else{
+      this.setState({blockedBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
+      this.blockedBoxAnimation()
+      }
+  }
+
+  async updateUsernameListeners(){
+    var uidset = new Set(blockedUserUids)
+    console.log("updateUsernameListeners - uidset: ", uidset)
+    for(let i = 0; i < blockedUserUids.length; i++){
+      console.log("updateListeners: ", blockedUserUids[i])
+      if(!global.usernameListeners[blockedUserUids[i]]){
+        global.usernameListeners[blockedUserUids[i]] = await database().ref('Users/' + blockedUserUids[i] + "/i/u").on('value', async snap => await this.newlistener(snap, i, blockedUserUids[i]));
+        console.log("global.usernameListeners[blockedUserUids[i]]: ", global.usernameListeners[blockedUserUids[i]])
+      }
+    }
+    for([key, val] of Object.entries(global.usernameListeners)) {
+      console.log("[key, val]: ", key)
+      if(!uidset.has(key)){
+        console.log("updateUsernameListeners - close listener for: ", key)
+        database().ref('Users/' + key + "/i/u").off()
+        delete global.usernameListeners[key]
+      }
+    }
+  }
+
+  newlistener = async (snap, i, conversationUid) => {
+    console.log("newlistener - conversationUid: ", conversationUid)
+    if(!focusedtoThisScreen){
+      await EncryptedStorage.getItem(auth().currentUser.uid + 'BlockedUsernames')
+        .then((req) => {
+          if (req) {
+            return JSON.parse(req);
+          } else {
+            return {};
+          }
+        })
+        .then(async (json) => {
+          console.log('newlistener - BLOCKED USERNAMES: ', json);
+          blockedUserUsernames = json;
+          blockedUserUsernames[conversationUid] = snap.val();
+          console.log("newlistener - blockedUserUsernames: ", blockedUserUsernames)
+          await EncryptedStorage.setItem(
+            auth().currentUser.uid + 'BlockedUsernames',
+            JSON.stringify(blockedUserUsernames),
+          );
+        });
+    }
+    else{
+      blockedUserUsernames[conversationUid] = snap.val();
+      console.log("newlistener (focusedtoThisScreen) - blockedUserUsernames: ", blockedUserUsernames)
+      await EncryptedStorage.setItem(
+        auth().currentUser.uid + 'BlockedUsernames',
+        JSON.stringify(blockedUserUsernames),
+      );
+      this.setState({reRender: !this.state.reRender})
+    }
+  }
+
 async initializeBlockedUsersScreen(){
   await this.getBlockedUserUids()
-  if(global.blockedUsersListeners < noOfBlockedUsers){
-    await this.createUsernameArray()
-  }
+  console.log("global.blockedUsersListeners: ", global.blockedUsersListeners)
+  console.log("noOfBlockedUsers: ", noOfBlockedUsers)
+  await this.createUsernameArray()
 }
 
   async getBlockedUserUids(){
@@ -161,10 +228,21 @@ async initializeBlockedUsersScreen(){
     this.setState({loadingDone: true})
   }
   async createUsernameArray(){
-    for( let i = global.blockedUsersListeners; i < noOfBlockedUsers; i++){
-      await this.getUsernameOfTheUid(blockedUserUids[i], i)
-    }
-    global.blockedUsersListeners = noOfBlockedUsers
+    console.log("createUsernameArray - entered ")
+    await EncryptedStorage.getItem(auth().currentUser.uid + 'BlockedUsernames')
+      .then((req) => {
+        if (req) {
+          return JSON.parse(req);
+        } else {
+          return {};
+        }
+      })
+      .then((json) => {
+        console.log('createUsernameArray - BLOCKED USERNAMES: ', json);
+        blockedUserUsernames = json;
+        this.setState({reRender: "ok"})
+        global.blockedUsersListeners = noOfBlockedUsers
+      });
   }
 
   async getUsernameOfTheUid(uid, i){
@@ -207,10 +285,10 @@ listenerFunc = async (snap, i, conversationUid, firstTotal) => {
             left = {this.leftAnimation}
             trashImage = {colorArray[temp]}
             trashOnPress = {()=> this.trashButtonPressed(temp)}
-            photoSource = {imageUrls[temp]}
+            photoSource = {imageUrls[blockedUserUids[temp]]}
             disabled = {this.state.blockedBoxDisabled}
-            text = {blockedUserUsernames[temp]}
-            onPress = {()=>this.select(imageUrls[temp], blockedUserUids[temp], usernameListener[temp], temp)}
+            text = {blockedUserUsernames[blockedUserUids[temp]]}
+            onPress = {()=>this.select(imageUrls[blockedUserUids[temp]], blockedUserUids[temp], usernameListener[temp], temp)}
             key={i}/>
           )
         }
@@ -218,41 +296,6 @@ listenerFunc = async (snap, i, conversationUid, firstTotal) => {
       return boxes;
 }
 
-editButtonPressed(){
-  for( let i = 0; i < noOfBlockedUsers; i++){
-    colorArray[i] = "trashgray"
-  }
-  if(this.state.editText == "Edit"){
-    this.setState({blockedBoxDisabled: true, doneDisabled: true, editText: "Cancel", editPressed: true, cancelPressed: false})
-    this.blockedBoxAnimation()
-  }
-  else{
-    this.setState({blockedBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
-    this.blockedBoxAnimation()
-    }
-}
-deleteBlockedUser(){
-  var limit = noOfBlockedUsers
-  for(let i = limit-1; i >= 0; i--){
-    if(colorArray[i] == "trash" + global.themeForImages){
-      imageUrls.splice(i,1)
-      blockedUserUids.splice(i,1)
-      usernameListener[i].off()
-      usernameListener.splice(i,1)
-      blockedUserUsernames.splice(i,1)
-      noOfBlockedUsers = noOfBlockedUsers - 1
-    }
-  }
-  global.removedFromBlockedList = true;
-  global.isBlockListUpdated = true;
-  colorArray = []
-  for( let i = 0; i < noOfBlockedUsers; i++){
-    colorArray[i] = "trashgray"
-  }
-  this.setState({blockedBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
-  this.blockedBoxAnimation("reset")
-  EncryptedStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUserUids))
-}
 donePress(){
   var lang = language[global.lang]
   var alertMsg = lang.BlockedUserDeleteAlert;
@@ -270,6 +313,30 @@ donePress(){
     {cancelable: false},
   );
 
+}
+
+deleteBlockedUser(){
+  var limit = noOfBlockedUsers
+  for(let i = limit-1; i >= 0; i--){
+    if(colorArray[i] == "trash" + global.themeForImages){
+      delete imageUrls[blockedUserUids[i]]
+      delete blockedUserUsernames[blockedUserUids[i]]
+      database().ref('Users/' + blockedUserUids[i] + "/i/u").off();
+      delete global.usernameListeners[blockedUserUids[i]]
+      blockedUserUids.splice(i,1)
+      global.blockedUsersListeners = global.blockedUsersListeners - 1
+      noOfBlockedUsers = noOfBlockedUsers - 1
+    }
+  }
+  global.removedFromBlockedList = true;
+  global.isBlockListUpdated = true;
+  colorArray = []
+  for( let i = 0; i < noOfBlockedUsers; i++){
+    colorArray[i] = "trashgray"
+  }
+  this.setState({blockedBoxDisabled: false, doneDisabled: true, editText: "Edit", editPressed: false, cancelPressed: true})
+  this.blockedBoxAnimation("reset")
+  EncryptedStorage.setItem(auth().currentUser.uid + 'blockedUsers', JSON.stringify(blockedUserUids))
 }
 
 arrangeDoneColor(){
@@ -315,23 +382,6 @@ async trashButtonPressed(i){
   this.arrangeDoneColor()
 }
 
-select(url, uid, listener, index){
-  console.log(url)
-  console.log(uid)
-  console.log(listener)
-  console.log(index)
-  listener.off()
-  global.selectedBlockedUserUid = uid
-  global.selectedBlockedUserUrl = url
-  global.selectedBlockedUserIndex = index
-  this.props.navigation.navigate("ProfileBlockedUser")
-}
-
-goBack(){
-  focusedtoThisScreen = false
-  global.selectedBlockedUserIndex = null
-  this.props.navigation.navigate("Settings")
-}
 selectAll(){
   if(this.state.allSelected){
     for( i = 0; i < colorArray.length; i++){
@@ -345,13 +395,32 @@ selectAll(){
     }
       this.setState({allSelected: !this.state.allSelected, doneDisabled : false})
   }
-
 }
+
+goBack(){
+  focusedtoThisScreen = false
+  global.selectedBlockedUserIndex = null
+  this.props.navigation.navigate("Settings")
+}
+
+select(url, uid, listener, index){
+  console.log(url)
+  console.log(uid)
+  console.log(listener)
+  console.log(index)
+  //listener.off()
+  global.selectedBlockedUserUid = uid
+  global.selectedBlockedUserUrl = url
+  global.selectedBlockedUserIndex = index
+  this.props.navigation.navigate("ProfileBlockedUser")
+}
+
 removeFromUser(){
-  imageUrls.splice(global.selectedBlockedUserIndex,1)
+  delete imageUrls[blockedUserUids[global.selectedBlockedUserIndex]]
+  delete blockedUserUsernames[blockedUserUids[global.selectedBlockedUserIndex]]
+  database().ref('Users/' + blockedUserUids[global.selectedBlockedUserIndex] + "/i/u").off();
+  delete global.usernameListeners[blockedUserUids[global.selectedBlockedUserIndex]]
   blockedUserUids.splice(global.selectedBlockedUserIndex,1)
-  usernameListener.splice(global.selectedBlockedUserIndex,1)
-  blockedUserUsernames.splice(global.selectedBlockedUserIndex,1)
   noOfBlockedUsers = noOfBlockedUsers - 1
   global.removeFromBlockedUser = false
   global.blockedUsersListeners = global.blockedUsersListeners - 1

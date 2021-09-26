@@ -610,6 +610,7 @@ export default class MainScreen extends Component<{}> {
     }
   }
   addToFav(uid) {
+    global.changedFavInMain = true;
     favoriteUsers.push(uid);
     favoriteUsersSet.add(uid);
     EncryptedStorage.setItem(
@@ -621,6 +622,7 @@ export default class MainScreen extends Component<{}> {
     this.setState({isFavArray: favArray});
   }
   addToBlock(uid) {
+    global.changedBlockInMain = true;
     blockedUsers.push(uid);
     blockedUsersSet.add(uid);
     EncryptedStorage.setItem(
@@ -632,6 +634,7 @@ export default class MainScreen extends Component<{}> {
     this.setState({isBlockArray: blockArray});
   }
   removeFromFav(uid) {
+    global.changedFavInMain = true;
     var favUsersindex = favoriteUsers.indexOf(uid);
     favoriteUsers.splice(favUsersindex, 1);
     EncryptedStorage.setItem(
@@ -648,6 +651,7 @@ export default class MainScreen extends Component<{}> {
     });
   }
   removeFromBlock(uid) {
+    global.changedBlockInMain = true;
     var blockedUsersindex = blockedUsers.indexOf(uid);
     blockedUsers.splice(blockedUsersindex, 1);
     EncryptedStorage.setItem(

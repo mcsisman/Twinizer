@@ -43,10 +43,10 @@ if(Platform.OS === 'ios'){
   var headerHeight = Header.HEIGHT
 }
 var favoriteUserUids = [];
-var favoriteUserUsernames = []
+var favoriteUserUsernames = {}
 var usernameListener = []
 var noOfFavUsers;
-var imageUrls = [];
+var imageUrls = {};
 var colorArray = [];
 var focusedtoThisScreen = false;
 var lang = language[global.lang]
@@ -79,14 +79,14 @@ export default class FavoriteUsersScreen extends Component<{}>{
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.spinAnimation()
       focusedtoThisScreen = true
-      if(global.selectedFavUserIndex != null && !global.removeFromFavUser){
-        await usernameListener[global.selectedFavUserIndex].on('value',
-        async snap => await this.listenerFunc(snap, global.selectedFavUserIndex, favoriteUserUids[global.selectedFavUserIndex]));
+      await this.initializeFavoriteUsersScreen()
+      if(global.changedFavInMain || Object.keys(global.usernameListeners).length == 0){
+        this.updateUsernameListeners();
+        global.changedFavInMain = false;
       }
       if(global.removeFromFavUser){
         this.removeFromUser()
       }
-      await this.initializeFavoriteUsersScreen()
       this.leftAnimation = new Animated.Value(-this.width*3/16)
       this.setState({reRender: "ok"})
     })
@@ -142,11 +142,60 @@ export default class FavoriteUsersScreen extends Component<{}>{
       }
     }
 
+updateUsernameListeners(){
+  var uidset = new Set(favoriteUserUids)
+  for(let i = 0; i < favoriteUserUids.length; i++){
+    console.log("updateListeners: ", favoriteUserUids[i])
+    if(!global.usernameListeners[favoriteUserUids[i]]){
+      global.usernameListeners[favoriteUserUids[i]] = database().ref('Users/' + favoriteUserUids[i] + "/i/u").on('value', async snap => await this.newlistener(snap, i, favoriteUserUids[i]));
+      console.log("global.usernameListeners[favoriteUserUids[i]]: ", global.usernameListeners[favoriteUserUids[i]])
+    }
+  }
+  for([key, val] of Object.entries(global.usernameListeners)) {
+    console.log("[key, val]: ", key)
+    if(!uidset.has(key)){
+      database().ref('Users/' + key + "/i/u").off()
+      delete global.usernameListeners[key]
+    }
+  }
+}
+newlistener = async (snap, i, conversationUid) => {
+  if(!focusedtoThisScreen){
+    await EncryptedStorage.getItem(auth().currentUser.uid + 'FavUsernames')
+      .then((req) => {
+        if (req) {
+          return JSON.parse(req);
+        } else {
+          return {};
+        }
+      })
+      .then((json) => {
+        console.log('FAV USERNAMES: ', json);
+        favoriteUserUsernames = json;
+        favoriteUserUsernames[conversationUid] = snap.val();
+        EncryptedStorage.setItem(
+          auth().currentUser.uid + 'FavUsernames',
+          JSON.stringify(favoriteUserUsernames),
+        );
+      });
+  }
+  else{
+    favoriteUserUsernames[conversationUid] = snap.val();
+    console.log("newlistener (focusedtoThisScreen) - favoriteUserUsernames: ", favoriteUserUsernames)
+    await EncryptedStorage.setItem(
+      auth().currentUser.uid + 'FavUsernames',
+      JSON.stringify(favoriteUserUsernames),
+    );
+    this.setState({reRender: !this.state.reRender})
+  }
+}
+
 async initializeFavoriteUsersScreen(){
   await this.getFavoriteUserUids()
   console.log("global.favoriteUsersListeners: ", global.favoriteUsersListeners)
   console.log("noOfFavUsers: ", noOfFavUsers)
   await this.createUsernameArray()
+
 }
 
   async getFavoriteUserUids(){
@@ -172,37 +221,34 @@ async initializeFavoriteUsersScreen(){
   }
   async createUsernameArray(){
     console.log("createUsernameArray - entered ")
-    for(let i = global.favoriteUsersListeners; i < noOfFavUsers; i++){
-      console.log("createUsernameArray: ", i)
-      await this.getImageURL(favoriteUserUids[i], i)
-      await this.getUsernameOfTheUid(favoriteUserUids[i], i)
-    }
-    this.setState({loadingDone: true, reRender: !this.state.reRender})
-    global.favoriteUsersListeners = noOfFavUsers
-  }
-
-  async getUsernameOfTheUid(uid, i){
-    usernameListener[i] = database().ref('Users/' + uid + "/i/u")
-    const firstTotalfavs = noOfFavUsers
-    await usernameListener[i].on('value', async snap => await this.listenerFunc(snap, i, uid, firstTotalfavs));
-  }
-listenerFunc = async (snap, i, conversationUid, firstTotal) => {
-    console.log("LISTENER")
-    var diff = firstTotal - noOfFavUsers
-    favoriteUserUsernames[i - diff] = snap.val()
-    if(focusedtoThisScreen){
-      this.setState({reRender: !this.state.reRender})
-    }
+    await EncryptedStorage.getItem(auth().currentUser.uid + 'FavUsernames')
+      .then((req) => {
+        if (req) {
+          return JSON.parse(req);
+        } else {
+          return {};
+        }
+      })
+      .then((json) => {
+        console.log('FAV USERNAMES: ', json);
+        favoriteUserUsernames = json;
+        this.setState({reRender: "ok"})
+        for(let i = 0; i < noOfFavUsers; i++){
+          console.log("getImageURL: ", i)
+          this.getImageURL(favoriteUserUids[i], i)
+        }
+        global.favoriteUsersListeners = noOfFavUsers
+      });
   }
 
   getImageURL(uid, i){
       var storageRef = storage().ref("Photos/" + uid + "/1.jpg")
       storageRef.getDownloadURL().then(data =>{
-        imageUrls[i] = data
+        imageUrls[uid] = data
         console.log("profil photo: ", data)
         this.setState({loadingDone: true, reRender: !this.state.reRender})
       }).catch(function(error) {
-        // Handle any errors
+        console.log(error)
       });
   }
 
@@ -231,10 +277,10 @@ listenerFunc = async (snap, i, conversationUid, firstTotal) => {
             left = {this.leftAnimation}
             trashImage = {colorArray[temp]}
             trashOnPress = {()=> this.trashButtonPressed(temp)}
-            photoSource = {imageUrls[temp]}
+            photoSource = {imageUrls[favoriteUserUids[temp]]}
             disabled = {this.state.favoriteBoxDisabled}
-            text = {favoriteUserUsernames[temp]}
-            onPress = {()=>this.select(imageUrls[temp], favoriteUserUids[temp], usernameListener[temp], temp)}
+            text = {favoriteUserUsernames[favoriteUserUids[temp]]}
+            onPress = {()=>this.select(imageUrls[favoriteUserUids[temp]], favoriteUserUids[temp], usernameListener[temp], temp)}
             key={i}/>
           )
         }
@@ -263,12 +309,12 @@ deleteFavUser(){
   var limit = noOfFavUsers
   for(let i = limit-1; i >= 0; i--){
     if(colorArray[i] == "trash" + global.themeForImages){
-      imageUrls.splice(i,1)
+      delete imageUrls[favoriteUserUids[i]]
+      delete favoriteUserUsernames[favoriteUserUids[i]]
+      database().ref('Users/' + favoriteUserUids[i] + "/i/u").off();
+      delete global.usernameListeners[favoriteUserUids[i]]
       favoriteUserUids.splice(i,1)
-      usernameListener[i].off()
       global.favoriteUsersListeners = global.favoriteUsersListeners - 1
-      usernameListener.splice(i,1)
-      favoriteUserUsernames.splice(i,1)
       noOfFavUsers = noOfFavUsers - 1
     }
   }
@@ -351,24 +397,22 @@ select(url, uid, listener, index){
   console.log(index)
   var storageRef = storage().ref("Photos/" + uid + "/1.jpg")
   storageRef.getDownloadURL().then(data =>{
-    imageUrls[index] = data
     global.selectedFavUserUrl = data
     console.log("profil photo: ", data)
     this.setState({reRender: !this.state.reRender})
-    listener.off()
     global.selectedFavUserUid = uid
-    //global.selectedFavUserUrl = url
     global.selectedFavUserIndex = index
     this.props.navigation.navigate("ProfileFavUser")
   }).catch(function(error) {
-    // Handle any errors
+    console.log(error)
   });
 }
 removeFromUser(){
-  imageUrls.splice(global.selectedFavUserIndex,1)
+  delete imageUrls[favoriteUserUids[global.selectedFavUserIndex]]
+  delete favoriteUserUsernames[favoriteUserUids[global.selectedFavUserIndex]]
+  database().ref('Users/' + favoriteUserUids[global.selectedFavUserIndex] + "/i/u").off();
+  delete global.usernameListeners[favoriteUserUids[global.selectedFavUserIndex]]
   favoriteUserUids.splice(global.selectedFavUserIndex,1)
-  usernameListener.splice(global.selectedFavUserIndex,1)
-  favoriteUserUsernames.splice(global.selectedFavUserIndex,1)
   noOfFavUsers = noOfFavUsers - 1
   global.removeFromFavUser = false
   global.favoriteUsersListeners = global.favoriteUsersListeners - 1

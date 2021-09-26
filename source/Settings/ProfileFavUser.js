@@ -161,6 +161,7 @@ export default class ProfileFavUserScreen extends Component<{}> {
           auth().currentUser.uid + 'blockedUsers',
           JSON.stringify(blockedUsers),
         );
+        global.changedBlockInMain = true;
         this.props.navigation.navigate('FavoriteUsers');
       });
   }

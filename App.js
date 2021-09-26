@@ -123,6 +123,7 @@ class Appp extends React.Component {
     global.fromChat = false;
     global.emailArrayLength = 0;
     global.addedMsgs = {};
+    global.favUsersListenersOpened = false;
     global.darkModeColors = [
       '#2f3136',
       '#202225',
@@ -131,6 +132,9 @@ class Appp extends React.Component {
     ];
     global.functionNumber = -1;
     global.messages = [];
+    global.usernameListeners = {};
+    global.changedFavInMain = false;
+    global.changedBlockInMain = false;
     global.msgFromMain = false;
     global.playerIdArray = {};
     global.removeFromFavUser = false;
