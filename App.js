@@ -201,7 +201,7 @@ class Appp extends React.Component {
     if (this.state.loading)
       return (
         <ImageBackground
-          source={{uri: 'flare'}}
+          source={{uri: 'splash'}}
           style={{
             width: this.width,
             height: this.height,
@@ -235,7 +235,7 @@ class Appp extends React.Component {
       }
       return (
         <ImageBackground
-          source={{uri: 'flare'}}
+          source={{uri: 'splash'}}
           style={{
             width: this.width,
             height: this.height,
