@@ -166,11 +166,12 @@ export default class ProfileFavUserScreen extends Component<{}> {
       });
   }
   sendMsg() {
-    global.receiverUid = 'pg7bdvxZS0XvAzL4YcU7Tzc3Xpk2';
-    global.receiverMail = 'cemil.sisman@ug.bilkent.edu.tr';
-    global.receiverGender = 'Male';
-    global.receiverCountry = 'Azerbaijan';
-    global.receiverUsername = 'cemil ug';
+    global.receiverUid = global.selectedFavUserUid;
+    global.receiverGender = this.state.userGender;
+    global.receiverCountry = this.state.userCountry;
+    global.receiverUsername = this.state.userUsername;
+    global.receiverPhoto = this.state.profilePhoto;
+    global.receiverBio = this.state.userBio;
     //global.firstMessage = true
     this.props.navigation.navigate('Chat');
   }

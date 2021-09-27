@@ -4,6 +4,7 @@ import {NavigationContainer, navigation} from '@react-navigation/native';
 import {Provider} from 'react-redux';
 import {createStore} from 'redux';
 import reducer from './source/Redux/Reducer';
+import SplashScreen from 'react-native-splash-screen';
 import {
   fromRight,
   zoomIn,

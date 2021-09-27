@@ -523,18 +523,27 @@ export default class MainScreen extends Component<{}> {
     if (this.state.currentCarouselIndex != index) {
       return;
     }
-    //global.receiverMail = emailArray[this.state.currentCarouselIndex]
-    //global.receiverGender = genderArray[this.state.currentCarouselIndex]
-    //global.receiverCountry = countryArray[this.state.currentCarouselIndex]
-    //global.receiverUsername = usernameArray[this.state.currentCarouselIndex]
+    global.receiverUid = emailArray[this.state.currentCarouselIndex];
+    global.receiverGender = genderArray[this.state.currentCarouselIndex];
+    global.receiverCountry = countryArray[this.state.currentCarouselIndex];
+    global.receiverUsername = usernameArray[this.state.currentCarouselIndex];
+    global.receiverBio = bioDict[emailArray[this.state.currentCarouselIndex]];
+    global.receiverPhoto =
+      photoArray[emailArray[this.state.currentCarouselIndex]];
+
+    console.log('receiver uid:', global.receiverUid);
+    console.log('receiver g:', global.receiverGender);
+    console.log('receiver c:', global.receiverCountry);
+    console.log('receiver u:', global.receiverUsername);
     console.log('sendfirst start');
     global.msgFromMain = true;
     global.enteredChatFromMain = true;
-    global.receiverUid = 'p9UY4QQtEnRTWBYDfgG4pyHiyZg2';
-    global.receiverMail = 'cemil.sisman@ug.bilkent.edu.tr';
-    global.receiverGender = 'Male';
-    global.receiverCountry = 'Australia';
-    global.receiverUsername = 'cemil ug';
+
+    //global.receiverUid = 'p9UY4QQtEnRTWBYDfgG4pyHiyZg2';
+    //  global.receiverGender = 'Male';
+    //  global.receiverCountry = 'Australia';
+    //  global.receiverUsername = 'cemil ug';
+
     global.fromChatOfUid = global.receiverUid;
     if (
       global.newMsgListenerArray != undefined &&

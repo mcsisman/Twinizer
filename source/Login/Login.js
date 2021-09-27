@@ -158,8 +158,8 @@ export default class LoginScreen extends Component<{}> {
               console.log('DATA: ', data);
               await this.setTheme(true);
               this.setState({loadingOpacity: 0});
-              //navigate('Tabs', {screen: 'Main'});
-              navigate('UserInfo');
+              navigate('Tabs', {screen: 'Main'});
+              //navigate('UserInfo');
             })
             .catch((error) => {
               console.log('EMBEDDING YOK: ', auth().currentUser.uid);
