@@ -99,7 +99,7 @@ export default class HistoryScreen extends Component<{}> {
         messageBoxDisabled: false,
       });
     });
-    console.log('COMPONENT DID MOUNT');
+    //console.log('COMPONENT DID MOUNT');
     this.setState({reRender: 'ok'});
   }
   static navigationOptions = {
@@ -118,12 +118,12 @@ export default class HistoryScreen extends Component<{}> {
     ).start();
   }
   updateState = () => {
-    console.log('LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG');
+    //console.log('LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG');
     this.setState({reRender: 'ok'});
     return 'TESTTTT';
   };
   initializeVars() {
-    console.log('history initializeVars');
+    //console.log('history initializeVars');
     ourBlue = 'rgba(77,120,204,1)';
     colorArray = [];
     doneColor = 'rgba(128,128,128,1)';
@@ -153,7 +153,7 @@ export default class HistoryScreen extends Component<{}> {
   async deleteHistory(indexArray) {
     var historyArray;
     historyArray = await this.getHistoryImageArray();
-    console.log('SİLMEDEN ÖNCE: ', historyArray);
+    //console.log('SİLMEDEN ÖNCE: ', historyArray);
     for (i = 0; i < indexArray.length; i++) {
       RNFS.unlink(
         'file://' +
@@ -164,26 +164,15 @@ export default class HistoryScreen extends Component<{}> {
           ].toString() +
           '.jpg',
       )
-        .then(() => {
-          console.log(
-            'Silinen path:',
-            'file://' +
-              RNFS.DocumentDirectoryPath +
-              '/search-photos/' +
-              historyArray[noOfSearch - indexArray[i] - 1][
-                'lastSearch'
-              ].toString() +
-              '.jpg',
-          );
-        })
+        .then(() => {})
         // `unlink` will throw an error, if the item to unlink does not exist
         .catch((err) => {
-          console.log(err.message);
+          //console.log(err.message);
         });
       historyArray.splice(noOfSearch - indexArray[i] - 1, 1);
       uriArray.splice(noOfSearch - indexArray[i] - 1, 1);
     }
-    console.log('SİLDİKTEN SONRA: ', historyArray);
+    //console.log('SİLDİKTEN SONRA: ', historyArray);
     noOfSearch = noOfSearch - indexArray.length;
 
     colorArray = [];
@@ -249,7 +238,7 @@ export default class HistoryScreen extends Component<{}> {
     for (i = 0; i < noOfSearch; i++) {
       isSelectedArray[i] = false;
     }
-    console.log('history initializeIsSelectedArray', isSelectedArray);
+    //console.log('history initializeIsSelectedArray', isSelectedArray);
     this.setState({reRender: 'ok'});
   }
   editButtonPressed() {
@@ -345,7 +334,7 @@ export default class HistoryScreen extends Component<{}> {
       noOfSearch = '0';
     }
     noOfSearch = parseInt(noOfSearch);
-    console.log('history getNoOfSearch', noOfSearch);
+    //console.log('history getNoOfSearch', noOfSearch);
     return noOfSearch;
   }
 
@@ -353,14 +342,14 @@ export default class HistoryScreen extends Component<{}> {
     for (i = 0; i < noOfSearch; i++) {
       uriArray[i] = await this.getHistoryPhotoPath(i);
     }
-    console.log('history createUriArray', uriArray);
+    //console.log('history createUriArray', uriArray);
     this.setState({reRender: 'ok'});
   }
   async createDateArray() {
     for (i = 0; i < noOfSearch; i++) {
       dateArray[i] = await this.getHistoryDate(i);
     }
-    console.log('history createDateArray', dateArray);
+    //console.log('history createDateArray', dateArray);
     this.setState({reRender: 'ok'});
   }
 
@@ -389,7 +378,7 @@ export default class HistoryScreen extends Component<{}> {
     if (historyArray == null) {
       historyArray = [];
     }
-    console.log('HISTORY ARRAY:', historyArray);
+    //console.log('HISTORY ARRAY:', historyArray);
     return historyArray;
   }
   async getHistoryPhotoPath(whichBox) {
@@ -465,7 +454,7 @@ export default class HistoryScreen extends Component<{}> {
         </View>
       );
     } else {
-      console.log('resimler:', uriArray);
+      //console.log('resimler:', uriArray);
       for (i = 0; i < noOfSearch; i++) {
         const temp = i;
         boxes.push(
@@ -494,7 +483,7 @@ export default class HistoryScreen extends Component<{}> {
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg'],
     });
-    console.log('RENDER');
+    //console.log('RENDER');
     const {navigate} = this.props.navigation;
     if (!loadingDone) {
       return (

@@ -69,15 +69,15 @@ export default class SettingsScreen extends Component<{}> {
     header: null,
   };
   componentDidMount() {
-    console.log('SETTINGS COMPONENT DID MOUNT');
+    //console.log('SETTINGS COMPONENT DID MOUNT');
     this._subscribe = this.props.navigation.addListener('focus', () => {
-      console.log('subscribe');
+      //console.log('subscribe');
       global.fromChat = false;
       this.setState({reRender: 'ok'});
     });
   }
   updateState = () => {
-    console.log('LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG');
+    //console.log('LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG');
     this.setState({reRender: 'ok'});
     return 'TESTTTT';
   };
@@ -121,17 +121,17 @@ export default class SettingsScreen extends Component<{}> {
           o: randO,
         })
         .then(async () => {
-          console.log('o güncellendi');
+          //console.log('o güncellendi');
           await auth()
             .signOut()
             .then(function () {
-              console.log('LOGOUT SUCCESSFUL');
+              //console.log('LOGOUT SUCCESSFUL');
             });
         });
       this.props.navigation.dispatch(StackActions.popToTop());
       Alert.alert('', lang.LogOutSuccess);
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
     }
   }

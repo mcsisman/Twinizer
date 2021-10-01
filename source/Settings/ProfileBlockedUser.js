@@ -82,11 +82,11 @@ export default class ProfileBlockedUserScreen extends Component<{}> {
   async componentDidMount() {
     this.setState({loadingDone: false});
     this.spinAnimation();
-    console.log('comp did mount');
+    //console.log('comp did mount');
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.setState({loadingDone: false});
       //this.spinAnimation()
-      console.log('subscribe');
+      //console.log('subscribe');
       await this.initializeBlockedUsersScreen();
       await this.getImageURL(global.selectedBlockedUserUid);
       this.setState({reRender: 'ok'});
@@ -126,7 +126,7 @@ export default class ProfileBlockedUserScreen extends Component<{}> {
       userCountry: snap.val().c,
       userBio: snap.val().b,
     });
-    console.log('ProfileBlockedUser Listener');
+    //console.log('ProfileBlockedUser Listener');
   };
 
   goBack() {
@@ -148,16 +148,16 @@ export default class ProfileBlockedUserScreen extends Component<{}> {
   }
 
   async getImageURL(uid) {
-    console.log('getImageURL: ', uid);
+    //console.log('getImageURL: ', uid);
     var storageRef = storage().ref('Photos/' + uid + '/1.jpg');
     await storageRef
       .getDownloadURL()
       .then((data) => {
         this.setState({loadingDone: true, profilePhoto: data});
-        console.log('profil photo: ', data);
+        //console.log('profil photo: ', data);
       })
       .catch(function (error) {
-        console.log(error);
+        //console.log(error);
         // Handle any errors
       });
   }

@@ -128,7 +128,7 @@ export default class ProfileScreen extends Component<{}> {
       });
       this.spinAnimation();
       await this.checkIfUserDataExistsInLocalAndSaveIfNot();
-      console.log('subscribe');
+      //console.log('subscribe');
       this.setState({
         reRender: 'ok',
         profilePhoto: this.state.profilePhoto + '?' + new Date(),
@@ -148,13 +148,13 @@ export default class ProfileScreen extends Component<{}> {
       this.props.navigation.dispatch(StackActions.popToTop());
       Alert.alert('', lang.DeleteAccountSuccess);
     };
-    console.log('PROFİL COMP');
+    //console.log('PROFİL COMP');
     Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
     Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
   }
 
   componentWillUnmount() {
-    console.log('PROFİL COMP UN');
+    //console.log('PROFİL COMP UN');
     Keyboard.removeListener('keyboardDidShow', this._keyboardDidShow);
     Keyboard.removeListener('keyboardDidHide', this._keyboardDidHide);
   }
@@ -180,8 +180,8 @@ export default class ProfileScreen extends Component<{}> {
   _keyboardDidShow = (e) => {
     const {height, screenX, screenY, width} = e.endCoordinates;
     this.setState({keyboardOpenAuth: true});
-    console.log(height);
-    console.log('y:', screenY);
+    //console.log(height);
+    //console.log('y:', screenY);
     if (this.state.whichInput == 'bio') {
       this.setState({keyboardOpen: true});
       if (this.state.bioOpacity == 1) {
@@ -258,7 +258,7 @@ export default class ProfileScreen extends Component<{}> {
   async checkIfUserDataExistsInLocalAndSaveIfNot() {
     // from asyncstorage part
 
-    console.log('current user:', auth().currentUser.uid);
+    //console.log('current user:', auth().currentUser.uid);
     await EncryptedStorage.getItem(auth().currentUser.uid + 'userGender').then(
       (req) => {
         currentUserGender = req;
@@ -290,11 +290,11 @@ export default class ProfileScreen extends Component<{}> {
       .then((json) => {
         currentUserPhotoCount = json;
       });
-    console.log('1:', currentUserCountry);
-    console.log('2:', currentUserGender);
-    console.log('3:', currentUserUsername);
-    console.log('4:', currentUserBio);
-    console.log('5:', currentUserPhotoCount);
+    //console.log('1:', currentUserCountry);
+    //console.log('2:', currentUserGender);
+    //console.log('3:', currentUserUsername);
+    //console.log('4:', currentUserBio);
+    //console.log('5:', currentUserPhotoCount);
 
     if (
       currentUserCountry == null ||
@@ -303,7 +303,7 @@ export default class ProfileScreen extends Component<{}> {
       currentUserBio == null ||
       currentUserPhotoCount == null
     ) {
-      console.log('LOCAL USER DATA IS NULL');
+      //console.log('LOCAL USER DATA IS NULL');
       var infoListener = database().ref(
         'Users/' + auth().currentUser.uid + '/i',
       );
@@ -329,7 +329,7 @@ export default class ProfileScreen extends Component<{}> {
             auth().currentUser.uid + 'userGender',
             this.state.userGender,
           );
-          console.log('this.state.userGender: ', this.state.userGender);
+          //console.log('this.state.userGender: ', this.state.userGender);
           EncryptedStorage.setItem(
             auth().currentUser.uid + 'userCountry',
             this.state.userCountry,
@@ -348,7 +348,7 @@ export default class ProfileScreen extends Component<{}> {
           );
         })
         .catch((error) => {
-          console.log(error);
+          //console.log(error);
         });
     } else {
       this.setState({
@@ -371,12 +371,12 @@ export default class ProfileScreen extends Component<{}> {
           end: currentUserUsername.length,
         },
       });
-      console.log('LOCAL USER DATA IS NOT NULL:', this.state.profilePhoto);
+      //console.log('LOCAL USER DATA IS NOT NULL:', this.state.profilePhoto);
     }
   }
 
   async getImageURL() {
-    console.log('getImageURL');
+    //console.log('getImageURL');
     var storageRef = storage().ref(
       'Photos/' + auth().currentUser.uid + '/1.jpg',
     );
@@ -384,7 +384,7 @@ export default class ProfileScreen extends Component<{}> {
       .getDownloadURL()
       .then((data) => {
         this.downloadURL = data;
-        console.log('profil photo: ', data);
+        //console.log('profil photo: ', data);
       })
       .catch(function (error) {
         // Handle any errors
@@ -392,11 +392,9 @@ export default class ProfileScreen extends Component<{}> {
   }
 
   async downloadImages() {
-    console.log('downloadImages');
+    //console.log('downloadImages');
     let dirs = RNFetchBlob.fs.dirs;
-    console.log(
-      dirs.DocumentDir + '/' + auth().currentUser.uid + 'profile.jpg',
-    );
+
     await RNFetchBlob.config({
       fileCache: true,
       appendExt: 'jpg',
@@ -406,21 +404,21 @@ export default class ProfileScreen extends Component<{}> {
         //some headers ..
       })
       .then((res) => {
-        console.log('The file saved to ', res.path());
+        //console.log('The file saved to ', res.path());
         this.setState({
           profilePhoto: 'file://' + res.path(),
           loadingDonePhoto: true,
         });
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
   }
 
   async onPressSave() {
     var lang = language[global.lang];
     if (this.checkIfUsernameValid(this.state.userUsername)) {
-      console.log('BİO:', this.state.userBio);
+      //console.log('BİO:', this.state.userBio);
       if (this.checkIfBioValid(this.state.userBio)) {
         this.setState({saveBtnDisabled: true});
         try {
@@ -547,7 +545,7 @@ export default class ProfileScreen extends Component<{}> {
     this.setState({bioOpacity: 1});
   }
   onPressGender() {
-    console.log('girdimi');
+    //console.log('girdimi');
     Keyboard.dismiss();
     this.refs.test.blur();
     this.setState({bioOpacity: 1});

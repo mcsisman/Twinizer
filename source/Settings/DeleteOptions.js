@@ -77,7 +77,7 @@ export default class DeleteOptionsScreen extends Component<{}> {
         messageBoxDisabled: false,
       });
     });
-    console.log('COMPONENT DID MOUNT');
+    //console.log('COMPONENT DID MOUNT');
     this.spinAnimation();
     isSelectedArray = [];
     this.initializeIsSelectedArray();
@@ -100,23 +100,23 @@ export default class DeleteOptionsScreen extends Component<{}> {
     ).start();
   }
   updateState = () => {
-    console.log('LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG');
+    //console.log('LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG');
     this.setState({reRender: 'ok'});
     return 'TESTTTT';
   };
   onReceived(notification) {
-    console.log('Notification received: ', notification);
+    //console.log('Notification received: ', notification);
   }
 
   onOpened(openResult) {
-    console.log('Message: ', openResult.notification.payload.body);
-    console.log('Data: ', openResult.notification.payload.additionalData);
-    console.log('isActive: ', openResult.notification.isAppInFocus);
-    console.log('openResult: ', openResult);
+    //console.log('Message: ', openResult.notification.payload.body);
+    //console.log('Data: ', openResult.notification.payload.additionalData);
+    //console.log('isActive: ', openResult.notification.isAppInFocus);
+    //console.log('openResult: ', openResult);
   }
 
   onIds(device) {
-    console.log('Device info: ', device);
+    //console.log('Device info: ', device);
   }
   onPressDelete() {
     Alert.alert(
@@ -142,7 +142,7 @@ export default class DeleteOptionsScreen extends Component<{}> {
         .signInWithEmailAndPassword(email, password)
         .then(async () => {
           authenticated = true;
-          console.log('authenticated');
+          //console.log('authenticated');
         })
         .catch((error) => {
           Alert.alert(global.langPlsTryAgain, global.langWrongEmailPassword);
@@ -179,9 +179,9 @@ export default class DeleteOptionsScreen extends Component<{}> {
         var messageUidsArray = firestore()
           .collection(auth().currentUser.uid)
           .doc('MessageInformation');
-        console.log('messageuidsarray: ', messageUidsArray);
+        //console.log('messageuidsarray: ', messageUidsArray);
         messageUidsArray.get().then(async (doc) => {
-          console.log('firestore içi');
+          //console.log('firestore içi');
           if (doc.exists) {
             var conversationUidArray = await doc.data()['UidArray'];
             for (let i = 0; i < conversationUidArray.length; i++) {
@@ -212,21 +212,21 @@ export default class DeleteOptionsScreen extends Component<{}> {
                 .doc('MessageInformation')
                 .delete()
                 .then(() => {
-                  console.log('MessageInformation deleted!');
+                  //console.log('MessageInformation deleted!');
                 });
               firestore()
                 .collection(auth().currentUser.uid)
                 .doc('Bios')
                 .delete()
                 .then(() => {
-                  console.log('Bİos deleted!');
+                  //console.log('Bİos deleted!');
                 });
               firestore()
                 .collection(auth().currentUser.uid)
                 .doc('Similarity')
                 .delete()
                 .then(() => {
-                  console.log('Similarity deleted!');
+                  //console.log('Similarity deleted!');
                 });
             }
           }
@@ -271,7 +271,7 @@ export default class DeleteOptionsScreen extends Component<{}> {
         auth()
           .currentUser.delete()
           .then(() => {
-            console.log('LOGOUT SUCCESSFUL');
+            //console.log('LOGOUT SUCCESSFUL');
             this.props.navigation.dispatch(StackActions.popToTop());
           });
       }
@@ -326,7 +326,7 @@ export default class DeleteOptionsScreen extends Component<{}> {
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg'],
     });
-    console.log('RENDER');
+    //console.log('RENDER');
     const {navigate} = this.props.navigation;
     if (!loadingDone) {
       return (

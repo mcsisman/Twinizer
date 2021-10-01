@@ -203,11 +203,11 @@ export default class MainScreen extends Component<{}> {
     this.initializeVars();
     interstitial.onAdEvent((type) => {
       if (type === AdEventType.ERROR) {
-        console.log('error geldi tekrar load et');
+        //console.log('error geldi tekrar load et');
         interstitial.load();
       }
       if (type === AdEventType.LOADED) {
-        console.log('ad loaded');
+        //console.log('ad loaded');
       }
       if (type === AdEventType.CLOSED) {
         interstitial.load();
@@ -215,7 +215,7 @@ export default class MainScreen extends Component<{}> {
     });
     interstitial.load();
 
-    //console.log("rwar:", lang.SignUp)
+    ////console.log("rwar:", lang.SignUp)
     favShowThisDialog = await EncryptedStorage.getItem(
       auth().currentUser.uid + 'favShowThisDialog',
     );
@@ -234,11 +234,11 @@ export default class MainScreen extends Component<{}> {
     //this.addToBlockedUsers("rfd2z5DtyCgkdliwRa7Uv6aQQ5i1")
     //this.addToBlockedUsers("JtfxB5eiDvSzOM4dbhgGeU7PXVC2")
     this._subscribe = this.props.navigation.addListener('focus', async () => {
-      console.log('distanceArray: ', distanceArray);
+      //console.log('distanceArray: ', distanceArray);
       this.setState({reRender: 'ok'});
       global.fromChat = false;
       if (global.isFavListUpdated) {
-        console.log('componentdidmount - fav list updated');
+        //console.log('componentdidmount - fav list updated');
         await this.getFavoriteUsers();
         global.isFavListUpdated = false;
         if (emailArray.length != 0) {
@@ -253,7 +253,7 @@ export default class MainScreen extends Component<{}> {
         }
       }
       if (global.isBlockListUpdated) {
-        console.log('componentdidmount - block list updated');
+        //console.log('componentdidmount - block list updated');
         await this.getBlockedUsers();
         global.isBlockListUpdated = false;
         if (emailArray.length != 0) {
@@ -268,7 +268,7 @@ export default class MainScreen extends Component<{}> {
         }
       }
       if (global.fromHistorySearch) {
-        console.log('componentdidmount - from history search');
+        //console.log('componentdidmount - from history search');
         await this.setSearchPhotoFromHistory(global.historyPhotoUri);
       }
       if (
@@ -288,9 +288,9 @@ export default class MainScreen extends Component<{}> {
     });
     OneSignal.inFocusDisplaying(2);
     OneSignal.getPermissionSubscriptionState((status) => {
-      console.log(status);
+      //console.log(status);
       global.playerId = status.userId;
-      console.log(global.playerId);
+      //console.log(global.playerId);
     });
     OneSignal.addEventListener('received', this.onReceived);
     OneSignal.addEventListener('opened', this.onOpened);
@@ -304,20 +304,20 @@ export default class MainScreen extends Component<{}> {
   };
 
   updateState = () => {
-    console.log('LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG');
+    //console.log('LAŞDSKGFLDŞAGKSDŞLKGLSŞDKG');
     this.setState({reRender: 'ok'});
     return 'TESTTTT';
   };
 
   onReceived(notification) {
-    console.log('Notification received: ', notification);
+    //console.log('Notification received: ', notification);
   }
 
   onOpened(openResult) {
-    console.log('Message: ', openResult.notification.payload.body);
-    console.log('Data: ', openResult.notification.payload.additionalData);
-    console.log('isActive: ', openResult.notification.isAppInFocus);
-    console.log('openResult: ', openResult);
+    //console.log('Message: ', openResult.notification.payload.body);
+    //console.log('Data: ', openResult.notification.payload.additionalData);
+    //console.log('isActive: ', openResult.notification.isAppInFocus);
+    //console.log('openResult: ', openResult);
     //const {navigate} = this.props.navigation;
     //navigate("Messages")
   }
@@ -358,8 +358,8 @@ export default class MainScreen extends Component<{}> {
     );
     var lang = language[global.lang];
     global.playerId = device['userId'];
-    console.log('playerId from storage: ', playerId);
-    console.log('playerId from onesignal', global.playerId);
+    //console.log('playerId from storage: ', playerId);
+    //console.log('playerId from onesignal', global.playerId);
     if (playerId != global.playerId) {
       var randO = Math.random();
       database()
@@ -369,7 +369,7 @@ export default class MainScreen extends Component<{}> {
         })
         .catch((error) => {
           var lang = language[global.lang];
-          console.log('HATA2');
+          //console.log('HATA2');
           Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
         });
       database()
@@ -378,7 +378,7 @@ export default class MainScreen extends Component<{}> {
           [auth().currentUser.uid]: global.playerId,
         })
         .catch((error) => {
-          console.log('HATA3');
+          //console.log('HATA3');
           Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
         });
       EncryptedStorage.setItem(
@@ -386,7 +386,7 @@ export default class MainScreen extends Component<{}> {
         global.playerId,
       );
     }
-    console.log('Device info: ', device);
+    //console.log('Device info: ', device);
   }
 
   async checkIfAlreadySearching() {
@@ -402,7 +402,7 @@ export default class MainScreen extends Component<{}> {
   }
 
   initializeVars() {
-    console.log('main initializeVars');
+    //console.log('main initializeVars');
     distanceArray = [];
     usernameArray = [];
     emailArray = [];
@@ -471,7 +471,7 @@ export default class MainScreen extends Component<{}> {
         }
       })
       .then((json) => {
-        console.log('FAVORITE USERS: ', json);
+        //console.log('FAVORITE USERS: ', json);
         favoriteUsers = json;
         favoriteUsersSet = new Set(favoriteUsers);
       });
@@ -486,14 +486,14 @@ export default class MainScreen extends Component<{}> {
         }
       })
       .then((json) => {
-        console.log('BLOCKED USERS: ', json);
+        //console.log('BLOCKED USERS: ', json);
         blockedUsers = json;
         blockedUsersSet = new Set(blockedUsers);
       });
   }
 
   spinAnimation() {
-    console.log('SPIN ANIMATION');
+    //console.log('SPIN ANIMATION');
     this.spinValue = new Animated.Value(0);
     // First set up animation
     Animated.loop(
@@ -515,7 +515,7 @@ export default class MainScreen extends Component<{}> {
       disabled: false,
       btnOpacity: 1,
     });
-    console.log('URI: ', uri);
+    //console.log('URI: ', uri);
     global.fromHistorySearch = false;
   }
 
@@ -531,11 +531,11 @@ export default class MainScreen extends Component<{}> {
     global.receiverPhoto =
       photoArray[emailArray[this.state.currentCarouselIndex]];
 
-    console.log('receiver uid:', global.receiverUid);
-    console.log('receiver g:', global.receiverGender);
-    console.log('receiver c:', global.receiverCountry);
-    console.log('receiver u:', global.receiverUsername);
-    console.log('sendfirst start');
+    //console.log('receiver uid:', global.receiverUid);
+    //console.log('receiver g:', global.receiverGender);
+    //console.log('receiver c:', global.receiverCountry);
+    //console.log('receiver u:', global.receiverUsername);
+    //console.log('sendfirst start');
     global.msgFromMain = true;
     global.enteredChatFromMain = true;
 
@@ -557,40 +557,37 @@ export default class MainScreen extends Component<{}> {
     }
     //global.firstMessage = true
     //global.playerIdArray[global.receiverUid] = await EncryptedStorage.getItem(global.receiverUid + "playerId")
-    console.log('global.playerIdArray: ', global.playerIdArray);
+    //console.log('global.playerIdArray: ', global.playerIdArray);
     //var tempo = await EncryptedStorage.getItem(global.receiverUid + "o")
     //var realtimeo = 0;
-    console.log('sendfirst before database once');
-    console.log('sendfirst before if');
+    //console.log('sendfirst before database once');
+    //console.log('sendfirst before if');
     if (!global.playerIdArray[global.receiverUid]) {
       database()
         .ref('/PlayerIds/' + global.receiverUid)
         .on('child_changed', (snap) => {
-          console.log('PLAYER ID READ EDIYO');
+          //console.log('PLAYER ID READ EDIYO');
           global.playerIdArray[global.receiverUid] = snap.val();
         });
     }
-    console.log('sendfirst end');
+    //console.log('sendfirst end');
     this.props.navigation.navigate('Chat');
   }
 
   favButton(fromWhere, index) {
     if (this.state.currentCarouselIndex != index) {
-      console.log('favButton - is not currentCarouselIndex');
+      //console.log('favButton - is not currentCarouselIndex');
       return;
     }
-    console.log('favButton - fav buttona basıldı indexi:', index);
-    console.log(
-      'favButton - fav buttona basıldı currentCarouselIndex:',
-      this.state.currentCarouselIndex,
-    );
+    //console.log('favButton - fav buttona basıldı indexi:', index);
+
     if (favoriteUsersSet.has(emailArray[this.state.currentCarouselIndex])) {
-      console.log('favButton - is already fav');
+      //console.log('favButton - is already fav');
       this.removeFromFav(emailArray[this.state.currentCarouselIndex]);
     } else {
-      console.log('favButton - is not fav');
+      //console.log('favButton - is not fav');
       if (blockedUsersSet.has(emailArray[this.state.currentCarouselIndex])) {
-        console.log('favButton - removing from block');
+        //console.log('favButton - removing from block');
         this.removeFromBlock(emailArray[this.state.currentCarouselIndex]);
       }
       this.addToFav(emailArray[this.state.currentCarouselIndex]);
@@ -598,21 +595,18 @@ export default class MainScreen extends Component<{}> {
   }
   blockButton(fromWhere, index) {
     if (this.state.currentCarouselIndex != index) {
-      console.log('blockButton - is not currentCarouselIndex');
+      //console.log('blockButton - is not currentCarouselIndex');
       return;
     }
-    console.log('blockButton - block buttona basıldı indexi:', index);
-    console.log(
-      'blockButton - block buttona basıldı currentCarouselIndex:',
-      this.state.currentCarouselIndex,
-    );
+    //console.log('blockButton - block buttona basıldı indexi:', index);
+
     if (blockedUsersSet.has(emailArray[this.state.currentCarouselIndex])) {
-      console.log('blockButton - is already block');
+      //console.log('blockButton - is already block');
       this.removeFromBlock(emailArray[this.state.currentCarouselIndex]);
     } else {
-      console.log('blockButton - is not blocked');
+      //console.log('blockButton - is not blocked');
       if (favoriteUsersSet.has(emailArray[this.state.currentCarouselIndex])) {
-        console.log('blockButton - removing from fav');
+        //console.log('blockButton - removing from fav');
         this.removeFromFav(emailArray[this.state.currentCarouselIndex]);
       }
       this.addToBlock(emailArray[this.state.currentCarouselIndex]);
@@ -704,10 +698,10 @@ export default class MainScreen extends Component<{}> {
   }
 
   async createEmailDistanceArrays(gender, country, fn) {
-    console.log('fn: ', fn);
+    //console.log('fn: ', fn);
     var lang = language[global.lang];
     if (fn == 'searchDone') {
-      console.log('searchDone');
+      //console.log('searchDone');
       try {
         bioDict_ref = firestore()
           .collection(auth().currentUser.uid)
@@ -733,7 +727,7 @@ export default class MainScreen extends Component<{}> {
           return first[1] - second[1];
         });
         var length = Object.keys(dict).length;
-        console.log(length);
+        //console.log(length);
         var itemsIndex = 0;
         var ccc = 0;
         var favArray = [];
@@ -784,19 +778,19 @@ export default class MainScreen extends Component<{}> {
           }
         }
         this.setState({isFavArray: favArray, isBlockArray: blockArray});
-        //console.log('IS FAV ARRAY:', this.state.isFavArray);
-        //console.log(items);
-        //console.log(emailArray);
-        //console.log(distanceArray);
-        //console.log(distanceArray);
+        ////console.log('IS FAV ARRAY:', this.state.isFavArray);
+        ////console.log(items);
+        ////console.log(emailArray);
+        ////console.log(distanceArray);
+        ////console.log(distanceArray);
       } catch (error) {
         var lang = language[global.lang];
-        //console.log(error);
-        //console.log('HATA4');
+        ////console.log(error);
+        ////console.log('HATA4');
         Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
       }
     } else if (fn == 'filterDone with all') {
-      console.log('filterDone with all');
+      //console.log('filterDone with all');
       var itemsIndex = 0;
       var ccc = 0;
       for (let i = 0; i < mainEmailArray.length; i++) {
@@ -819,11 +813,6 @@ export default class MainScreen extends Component<{}> {
             genderArray.push(mainGenderArray[i - itemsIndex]);
             distanceArray.push(mainDistanceArray[i - itemsIndex]);
             if (mainEmailArray[i - itemsIndex] in mainPhotoArray) {
-              console.log(
-                'mainEmailArray[i-itemsIndex] in mainPhotoArray: ',
-                mainEmailArray[i - itemsIndex] in mainPhotoArray,
-                mainEmailArray[i - itemsIndex],
-              );
               photoArray[mainEmailArray[i - itemsIndex]] =
                 mainPhotoArray[mainEmailArray[i - itemsIndex]];
             }
@@ -832,7 +821,7 @@ export default class MainScreen extends Component<{}> {
         }
       }
     } else if (fn == 'filterDone with all genders') {
-      console.log('filterDone with all genders');
+      //console.log('filterDone with all genders');
       var itemsIndex = 0;
       var ccc = 0;
       for (let i = 0; i < mainEmailArray.length; i++) {
@@ -856,11 +845,6 @@ export default class MainScreen extends Component<{}> {
               genderArray.push(mainGenderArray[i - itemsIndex]);
               distanceArray.push(mainDistanceArray[i - itemsIndex]);
               if (mainEmailArray[i - itemsIndex] in mainPhotoArray) {
-                console.log(
-                  'mainEmailArray[i-itemsIndex] in mainPhotoArray: ',
-                  mainEmailArray[i - itemsIndex] in mainPhotoArray,
-                  mainEmailArray[i - itemsIndex],
-                );
                 photoArray[mainEmailArray[i - itemsIndex]] =
                   mainPhotoArray[mainEmailArray[i - itemsIndex]];
               }
@@ -870,7 +854,7 @@ export default class MainScreen extends Component<{}> {
         }
       }
     } else if (fn == 'filterDone with all countries') {
-      console.log('filterDone with all countries');
+      //console.log('filterDone with all countries');
       var itemsIndex = 0;
       var ccc = 0;
       for (let i = 0; i < mainEmailArray.length; i++) {
@@ -894,18 +878,8 @@ export default class MainScreen extends Component<{}> {
               genderArray.push(mainGenderArray[i - itemsIndex]);
               distanceArray.push(mainDistanceArray[i - itemsIndex]);
               if (mainEmailArray[i - itemsIndex] in mainPhotoArray) {
-                console.log(
-                  'mainEmailArray[i-itemsIndex] in mainPhotoArray: ',
-                  mainEmailArray[i - itemsIndex] in mainPhotoArray,
-                  mainEmailArray[i - itemsIndex],
-                );
                 photoArray[mainEmailArray[i - itemsIndex]] =
                   mainPhotoArray[mainEmailArray[i - itemsIndex]];
-                console.log(
-                  'photoArray.length for = ',
-                  i,
-                  Object.keys(photoArray).length,
-                );
               }
             }
             ccc++;
@@ -913,7 +887,7 @@ export default class MainScreen extends Component<{}> {
         }
       }
     } else if (fn == 'filterDone') {
-      console.log('filterDone');
+      //console.log('filterDone');
       var itemsIndex = 0;
       var ccc = 0;
       for (let i = 0; i < mainEmailArray.length; i++) {
@@ -937,11 +911,6 @@ export default class MainScreen extends Component<{}> {
               genderArray.push(mainGenderArray[i - itemsIndex]);
               distanceArray.push(mainDistanceArray[i - itemsIndex]);
               if (mainEmailArray[i - itemsIndex] in mainPhotoArray) {
-                console.log(
-                  'mainEmailArray[i-itemsIndex] in mainPhotoArray: ',
-                  mainEmailArray[i - itemsIndex] in mainPhotoArray,
-                  mainEmailArray[i - itemsIndex],
-                );
                 photoArray[mainEmailArray[i - itemsIndex]] =
                   mainPhotoArray[mainEmailArray[i - itemsIndex]];
               }
@@ -958,13 +927,13 @@ export default class MainScreen extends Component<{}> {
     if (!photoArray['ground']) {
       photoArray['ground'] = 'ground';
     }
-    console.log('image index:', imageIndex);
+    //console.log('image index:', imageIndex);
     if (
       !photoArray[emailArray[imageIndex]] &&
       emailArray[imageIndex] != 'ground' &&
       (imageIndex % 6 != 0 || imageIndex % 6 == 0)
     ) {
-      console.log('qqq:', emailArray[imageIndex]);
+      //console.log('qqq:', emailArray[imageIndex]);
       let dirs = RNFetchBlob.fs.dirs;
       RNFetchBlob.config({
         fileCache: true,
@@ -975,17 +944,17 @@ export default class MainScreen extends Component<{}> {
           //some headers ..
         })
         .then((res) => {
-          console.log('The file saved to ', res.path());
+          //console.log('The file saved to ', res.path());
           photoArray[emailArray[imageIndex]] = 'file://' + res.path();
-          console.log('photoArray.length: ', Object.keys(photoArray).length);
+          //console.log('photoArray.length: ', Object.keys(photoArray).length);
           if (this.inSearchDone) {
             mainPhotoArray[emailArray[imageIndex]] = 'file://' + res.path();
           }
           this.setState({imagePath: 'file://' + res.path()});
-          //console.log("photoArray: ", photoArray)
+          ////console.log("photoArray: ", photoArray)
         })
         .catch(function (error) {
-          console.log(error);
+          //console.log(error);
         });
     }
   }
@@ -1007,7 +976,7 @@ export default class MainScreen extends Component<{}> {
           photoArray[emailArray[imageIndex]] = data;
         })
         .catch(function (error) {
-          console.log(error);
+          //console.log(error);
           // Handle any errors
         });
     }
@@ -1020,12 +989,12 @@ export default class MainScreen extends Component<{}> {
     docRef1
       .get()
       .then(async (doc) => {
-        console.log('allFunctionsCompleted: ', doc.data());
+        //console.log('allFunctionsCompleted: ', doc.data());
         if (doc.exists) {
           // createEmailDistanceArrays KISMI ////////////////////////////////////////
           var tempdict = doc.data();
           dict = Object.assign({}, tempdict, dict);
-          console.log('DICT SONUCU: ', dict);
+          //console.log('DICT SONUCU: ', dict);
           await this.createEmailDistanceArrays(
             'All Genders',
             'All Countries',
@@ -1037,10 +1006,7 @@ export default class MainScreen extends Component<{}> {
             await this.getImageURL(i);
             //await this.downloadImages(i);
           }
-          console.log(
-            'biyere geldik, mainPhotoArray.length ',
-            Object.keys(mainPhotoArray).length,
-          );
+
           this.createCarouselItemArray();
 
           this.setState({
@@ -1058,18 +1024,18 @@ export default class MainScreen extends Component<{}> {
           this.checkUri2FavOrBlocked();
           this.spinValue = new Animated.Value(0);
 
-          console.log(photoArray);
-          console.log(emailArray);
-          console.log(genderArray);
-          console.log(countryArray);
-          console.log(distanceArray);
-          console.log(bioDict);
+          //console.log(photoArray);
+          //console.log(emailArray);
+          //console.log(genderArray);
+          //console.log(countryArray);
+          //console.log(distanceArray);
+          //console.log(bioDict);
         }
       })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
         var lang = language[global.lang];
-        console.log('HATA1');
+        //console.log('HATA1');
         Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
       });
   }
@@ -1079,18 +1045,18 @@ export default class MainScreen extends Component<{}> {
       .collection(auth().currentUser.uid)
       .doc('Funcdone');
     docReffuncdone.onSnapshot(async (doc) => {
-      console.log('CHECK FUNCTION: ', doc.data());
-      console.log('doc.exists: ', doc.exists);
-      console.log('this.probabilityDoneCheck: ', this.probabilityDoneCheck);
+      //console.log('CHECK FUNCTION: ', doc.data());
+      //console.log('doc.exists: ', doc.exists);
+      //console.log('this.probabilityDoneCheck: ', this.probabilityDoneCheck);
       if (doc.exists) {
         if (this.probabilityDoneCheck) {
           var completedfuncs = parseInt(doc.data()['key']);
           var isFace = doc.data()['isface'].split('_')[0];
-          console.log('isFace: ', isFace);
+          //console.log('isFace: ', isFace);
           if (isFace == 'T') {
-            console.log('completedfuncs: ', completedfuncs);
-            console.log('global.functionNumber: ', global.functionNumber);
-            console.log('funcnumval: ', funcnumval);
+            //console.log('completedfuncs: ', completedfuncs);
+            //console.log('global.functionNumber: ', global.functionNumber);
+            //console.log('funcnumval: ', funcnumval);
             if (completedfuncs == funcnumval + global.functionNumber) {
               await this.allFunctionsCompleted();
               funcnumval = completedfuncs;
@@ -1105,7 +1071,7 @@ export default class MainScreen extends Component<{}> {
             Alert.alert(lang.Error, lang.MainNoFace);
           }
         } else {
-          console.log('funcnumval - doc.data[key]: ', doc.data()['key']);
+          //console.log('funcnumval - doc.data[key]: ', doc.data()['key']);
           funcnumval = doc.data()['key'];
         }
       } else {
@@ -1149,10 +1115,7 @@ export default class MainScreen extends Component<{}> {
       imagePath: null,
       swipeableDisabled: true,
     });
-    console.log(
-      'photoArray.length filterdone = ',
-      Object.keys(photoArray).length,
-    );
+
     if (
       this.state.gender == 'All Genders' &&
       this.state.country == 'All Countries'
@@ -1193,10 +1156,7 @@ export default class MainScreen extends Component<{}> {
         'filterDone',
       );
     }
-    console.log(
-      'photoArray.length filterdone end = ',
-      Object.keys(photoArray).length,
-    );
+
     if (emailArray.length == 0 || emailArray[0] == null) {
       this.setState({
         backgroundOpacity: 0,
@@ -1215,8 +1175,8 @@ export default class MainScreen extends Component<{}> {
       });
     }
     this.checkUri2FavOrBlocked();
-    console.log(this.state.uri2_bio);
-    console.log(this.state.uri2);
+    //console.log(this.state.uri2_bio);
+    //console.log(this.state.uri2);
     this.createCarouselItemArray();
 
     this.setState({loadingAnimation: false});
@@ -1283,12 +1243,12 @@ export default class MainScreen extends Component<{}> {
     let dirs = RNFetchBlob.fs.dirs;
     await RNFS.unlink(dirs.DocumentDir + '/results') // photoArray[imageIndex]
       .then(() => {
-        console.log('FILE DELETED');
+        //console.log('FILE DELETED');
       })
       .catch((err) => {
-        console.log('unlink olmadi');
+        //console.log('unlink olmadi');
       });
-    console.log('EMAIL ARRAY LENGTH ', emailArray.length);
+    //console.log('EMAIL ARRAY LENGTH ', emailArray.length);
     this.downloadURL = '';
     this.url = '';
     this.complete = false;
@@ -1385,7 +1345,7 @@ export default class MainScreen extends Component<{}> {
     var year = currentDate.getFullYear();
     var date = day + '.' + month + '.' + year;
     historyArray[noOfSearch - 1] = {lastSearch: lastSearch, searchDate: date};
-    console.log('GET HISTORY ARRAY2: ', historyArray);
+    //console.log('GET HISTORY ARRAY2: ', historyArray);
     await EncryptedStorage.setItem(
       auth().currentUser.uid + 'historyArray',
       JSON.stringify(historyArray),
@@ -1394,9 +1354,9 @@ export default class MainScreen extends Component<{}> {
 
   async saveSearchPhotoLocally(photoPath) {
     var lastSearchNo = await this.increaseLastSearchNo();
-    console.log('LAST SEARCH NO2: ', lastSearchNo);
+    //console.log('LAST SEARCH NO2: ', lastSearchNo);
     var noOfSearch = await this.increaseNoOfSearch();
-    console.log('NO OF SEARCH2: ', noOfSearch);
+    //console.log('NO OF SEARCH2: ', noOfSearch);
     this.arrangeSearchImageArray(lastSearchNo, noOfSearch);
     RNFS.mkdir(RNFS.DocumentDirectoryPath + '/search-photos');
     await RNFS.copyFile(
@@ -1420,17 +1380,17 @@ export default class MainScreen extends Component<{}> {
         '/SearchPhotos/' +
         'search-photo.jpg',
     );
-    console.log('storageref child alındı');
+    //console.log('storageref child alındı');
     ref1
       .put(blob)
       .then((snapshot) => {
-        console.log('global.functionNumber ', global.functionNumber);
+        //console.log('global.functionNumber ', global.functionNumber);
         var lang = language[global.lang];
         if (global.functionNumber != -1) {
           const updateRef = firestore().collection('Functions').doc('Embedder');
           var batch = 1;
           var randFloat = Math.random();
-          console.log(auth().currentUser.uid);
+          //console.log(auth().currentUser.uid);
           const simRef = firestore()
             .collection(auth().currentUser.uid)
             .doc('Similarity');
@@ -1443,15 +1403,15 @@ export default class MainScreen extends Component<{}> {
           simRef
             .set({})
             .then(() => {
-              console.log('Similarity updated');
+              //console.log('Similarity updated');
               bioRef
                 .set({})
                 .then(() => {
-                  console.log('Bios updated');
+                  //console.log('Bios updated');
                   infoRef
                     .set({})
                     .then(() => {
-                      console.log('Users updated');
+                      //console.log('Users updated');
                       updateRef
                         .set({
                           name:
@@ -1464,7 +1424,7 @@ export default class MainScreen extends Component<{}> {
                             global.functionNumber.toString(),
                         })
                         .then(() => {
-                          console.log('Embedder updated');
+                          //console.log('Embedder updated');
                           this.setState({
                             messageButtonDisabled: true,
                             backgroundOpacity: 0.2,
@@ -1479,27 +1439,27 @@ export default class MainScreen extends Component<{}> {
                           }
                         })
                         .catch((error) => {
-                          console.log('buraya mı geldi');
+                          //console.log('buraya mı geldi');
 
                           this.setState({loadingAnimation: false});
-                          console.log('buraya mı geldi evet');
+                          //console.log('buraya mı geldi evet');
                           this.spinValue = new Animated.Value(0);
-                          console.log('User2 update olmadı');
+                          //console.log('User2 update olmadı');
                           Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
                         });
                     })
                     .catch((error) => {
-                      console.log(error);
+                      //console.log(error);
                       Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
                     });
                 })
                 .catch((error) => {
-                  console.log(error);
+                  //console.log(error);
                   Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
                 });
             })
             .catch((error) => {
-              console.log(error);
+              //console.log(error);
               Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
             });
         } else {
@@ -1526,15 +1486,15 @@ export default class MainScreen extends Component<{}> {
                 simRef
                   .set({})
                   .then(() => {
-                    console.log('Similarity updated');
+                    //console.log('Similarity updated');
                     bioRef
                       .set({})
                       .then(() => {
-                        console.log('Bios updated');
+                        //console.log('Bios updated');
                         infoRef
                           .set({})
                           .then(() => {
-                            console.log('Users updated');
+                            //console.log('Users updated');
                             updateRef
                               .set({
                                 name:
@@ -1547,7 +1507,7 @@ export default class MainScreen extends Component<{}> {
                                   global.functionNumber.toString(),
                               })
                               .then(() => {
-                                console.log('Embedder updated');
+                                //console.log('Embedder updated');
                                 this.setState({
                                   messageButtonDisabled: true,
                                   messageButtonOpacity: 0,
@@ -1564,7 +1524,7 @@ export default class MainScreen extends Component<{}> {
                               .catch((error) => {
                                 this.setState({loadingAnimation: false});
                                 this.spinValue = new Animated.Value(0);
-                                console.log('User2 update olmadı');
+                                //console.log('User2 update olmadı');
                                 Alert.alert(
                                   lang.PlsTryAgain,
                                   lang.ConnectionFailed,
@@ -1572,7 +1532,7 @@ export default class MainScreen extends Component<{}> {
                               });
                           })
                           .catch((error) => {
-                            console.log(error);
+                            //console.log(error);
                             Alert.alert(
                               lang.PlsTryAgain,
                               lang.ConnectionFailed,
@@ -1580,12 +1540,12 @@ export default class MainScreen extends Component<{}> {
                           });
                       })
                       .catch((error) => {
-                        console.log(error),
-                          Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
+                        //console.log(error),
+                        Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
                       });
                   })
                   .catch((error) => {
-                    console.log(error);
+                    //console.log(error);
                     Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
                   });
               }
@@ -1593,7 +1553,7 @@ export default class MainScreen extends Component<{}> {
             .catch((error) => {
               this.setState({loadingAnimation: false});
               this.spinValue = new Animated.Value(0);
-              console.log('Function number catchi');
+              //console.log('Function number catchi');
               Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
             });
         }
@@ -1601,7 +1561,7 @@ export default class MainScreen extends Component<{}> {
       .catch((error) => {
         this.setState({loadingAnimation: false});
         this.spinValue = new Animated.Value(0);
-        console.log('Search fotosu upload olmadı');
+        //console.log('Search fotosu upload olmadı');
         Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
       });
   };
@@ -1690,7 +1650,7 @@ export default class MainScreen extends Component<{}> {
     return this.state.carouselArray[index];
   };
   render() {
-    console.log('this. h', this.height);
+    //console.log('this. h', this.height);
     var lang = language[global.lang];
 
     const {navigate} = this.props.navigation;

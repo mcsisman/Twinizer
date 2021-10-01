@@ -95,7 +95,7 @@ export default class CountryScreen extends Component<{}> {
     return day + '/' + month + '/' + year;
   }
   spinAnimation() {
-    console.log('SPIN ANIMATION');
+    //console.log('SPIN ANIMATION');
     this.spinValue = new Animated.Value(0);
     // First set up animation
     Animated.loop(
@@ -122,8 +122,8 @@ export default class CountryScreen extends Component<{}> {
   }
   async writeCountryToDatabase() {
     var strBirthday = this.convertDateToStr(global.globalBirthday);
-    console.log('strbirthday: ', strBirthday);
-    console.log('CHECK');
+    //console.log('strbirthday: ', strBirthday);
+    //console.log('CHECK');
     var lang = language[global.lang];
     if (!this.checkIfBioValid(global.globalBio)) {
       Alert.alert(lang.Warning, lang.InvalidBio);
@@ -135,7 +135,7 @@ export default class CountryScreen extends Component<{}> {
           if (global.globalBio == '') {
             global.globalBio = ' ';
           }
-          console.log(writeDone);
+          //console.log(writeDone);
           const funcdone_Ref = firestore()
             .collection(auth().currentUser.uid)
             .doc('Funcdone');
@@ -144,7 +144,7 @@ export default class CountryScreen extends Component<{}> {
               key: 0,
             })
             .then(() => {
-              console.log('funcdone was initialized');
+              //console.log('funcdone was initialized');
             });
           await database()
             .ref('Users/' + auth().currentUser.uid + '/i')
@@ -185,21 +185,17 @@ export default class CountryScreen extends Component<{}> {
                     auth().currentUser.uid + 'userPhotoCount',
                     JSON.stringify(0),
                   );
-                  console.log(
-                    'bilgiler locale kaydedildi:',
-                    auth().currentUser.uid,
-                  );
                 });
             });
           var result_ref = firestore()
             .collection(auth().currentUser.uid)
             .doc('ModelResult')
             .onSnapshot(async (doc) => {
-              console.log('listenerStarted: ', listenerStarted);
+              //console.log('listenerStarted: ', listenerStarted);
               var lang = language[global.lang];
               if (listenerStarted) {
                 var dict = doc.data();
-                //console.log("dict: ", dict)
+                ////console.log("dict: ", dict)
                 if (dict['result'] < 0) {
                   this.setState({disabled: false});
                   Alert.alert(lang.Error, lang.CheckPhotos);

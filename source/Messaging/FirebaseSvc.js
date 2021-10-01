@@ -22,10 +22,10 @@ class FirebaseSvc {
       try {
         this.login(user);
       } catch ({message}) {
-        console.log('Failed:' + message);
+        //console.log('Failed:' + message);
       }
     } else {
-      console.log('Reusing auth...');
+      //console.log('Reusing auth...');
     }
   };
 
@@ -62,7 +62,7 @@ class FirebaseSvc {
           '/' +
           messageKey +
           '.jpg';
-        console.log('image pathi:', image);
+        //console.log('image pathi:', image);
       }
 
       const message = {
@@ -210,7 +210,7 @@ class FirebaseSvc {
           contents: {en: global.receiverUsername + ': ' + text},
         }),
       }).then((response) => {
-        //console.log(response)
+        ////console.log(response)
       });*/
       const message = {
         text,
@@ -221,10 +221,7 @@ class FirebaseSvc {
       var pushedKey;
 
       pushedKey = this.ref.push(message).key;
-      console.log(
-        'MESSAGE PUSHED----------:----------:----------:----------:----------:----------: ',
-        pushedKey,
-      );
+
       // RESİMLİ MESAJSA
       var image;
       if (p == 't') {
@@ -264,7 +261,7 @@ class FirebaseSvc {
           '/' +
           pushedKey +
           '.jpg';
-        console.log(' RESİM LOCALE KAYDEDİLDİ SENDDE: ', image);
+        //console.log(' RESİM LOCALE KAYDEDİLDİ SENDDE: ', image);
       }
 
       const user = {_id: auth().currentUser.uid, r: global.receiverUid};

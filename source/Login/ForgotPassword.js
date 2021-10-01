@@ -55,11 +55,11 @@ export default class ForgotPasswordScreen extends Component<{}> {
     header: null,
   };
   check() {
-    console.log('CHECK');
+    //console.log('CHECK');
     this.setState({sendEmailDisabled: true});
     var lang = language[global.lang];
     const {navigate} = this.props.navigation;
-    console.log(this.state.email);
+    //console.log(this.state.email);
     if (
       this.state.email == '' ||
       this.state.email == null ||
@@ -76,7 +76,7 @@ export default class ForgotPasswordScreen extends Component<{}> {
         })
         .catch((error) => {
           this.setState({sendEmailDisabled: false});
-          console.log(error);
+          //console.log(error);
           Alert.alert(lang.PlsTryAgain, lang.EmailNotRegistered);
         });
     }

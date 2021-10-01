@@ -93,7 +93,7 @@ export default class LoginScreen extends Component<{}> {
     this.setState({keyboardOpen: false});
   };
   spinAnimation() {
-    console.log('SPIN ANIMATION');
+    //console.log('SPIN ANIMATION');
     this.spinValue = new Animated.Value(0);
     // First set up animation
     Animated.loop(
@@ -150,19 +150,19 @@ export default class LoginScreen extends Component<{}> {
           var storageRef = storage().ref(
             'Embeddings/' + auth().currentUser.uid + '.pickle',
           );
-          console.log('STORAGE REF: ', storageRef);
+          //console.log('STORAGE REF: ', storageRef);
           await storageRef
             .getDownloadURL()
             .then(async (data) => {
-              console.log('EMBEDDING VAR: ', auth().currentUser.uid);
-              console.log('DATA: ', data);
+              //console.log('EMBEDDING VAR: ', auth().currentUser.uid);
+              //console.log('DATA: ', data);
               await this.setTheme(true);
               this.setState({loadingOpacity: 0});
               navigate('Tabs', {screen: 'Main'});
               //navigate('UserInfo');
             })
             .catch((error) => {
-              console.log('EMBEDDING YOK: ', auth().currentUser.uid);
+              //console.log('EMBEDDING YOK: ', auth().currentUser.uid);
               this.setTheme(false);
               this.setState({loadingOpacity: 0});
               navigate('UserInfo');
@@ -175,7 +175,7 @@ export default class LoginScreen extends Component<{}> {
         this.setState({loginDisabled: false});
       })
       .catch((error) => {
-        console.log('error2:', error);
+        //console.log('error2:', error);
         Alert.alert(lang.PlsTryAgain, lang.WrongEmailPassword);
         this.setState({loginDisabled: false, loadingOpacity: 0});
       });

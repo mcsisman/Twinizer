@@ -96,7 +96,7 @@ export default class NewAccountScreen extends Component<{}> {
       this._keyboardDidShow,
     );
     this._subscribe = this.props.navigation.addListener('focus', async () => {
-      console.log('subscribe');
+      //console.log('subscribe');
       this.setState({reRender: !this.state.reRender});
     });
   }
@@ -108,12 +108,12 @@ export default class NewAccountScreen extends Component<{}> {
     header: null,
   };
   _keyboardDidShow = (e) => {
-    console.log('did show');
+    //console.log('did show');
     const {height, screenX, screenY, width} = e.endCoordinates;
     keyboardHeight = height;
     if (global.keyboardHeight == null || global.keyboardHeight == undefined) {
       global.keyboardHeight = keyboardHeight;
-      console.log('global:', global.keyboardHeight);
+      //console.log('global:', global.keyboardHeight);
       EncryptedStorage.setItem(
         'keyboardHeight',
         global.keyboardHeight.toString(),
@@ -124,7 +124,7 @@ export default class NewAccountScreen extends Component<{}> {
   _keyboardDidHide = () => {
     this.setState({keyboardOpen: false});
 
-    console.log('keyboard kapandı');
+    //console.log('keyboard kapandı');
   };
   writeUserData(userId, name, email, imageUrl) {
     database()
@@ -136,14 +136,14 @@ export default class NewAccountScreen extends Component<{}> {
       });
   }
   SignUp = (email, password) => {
-    console.log('SIGNUP');
+    //console.log('SIGNUP');
     this.setState({agreeDisabled: true});
     var lang = language[global.lang];
     const {navigate} = this.props.navigation;
     auth()
       .createUserWithEmailAndPassword(this.state.email, this.state.sifre)
       .then(() => {
-        console.log(database().ref('/Users/' + auth().currentUser.uid + '/i'));
+        //console.log(database().ref('/Users/' + auth().currentUser.uid + '/i'));
 
         database()
           .ref('/Users/' + auth().currentUser.uid + '/i')
@@ -152,7 +152,7 @@ export default class NewAccountScreen extends Component<{}> {
           })
           .catch((error) => {
             this.setState({agreeDisabled: false});
-            console.log("Can't update database");
+            //console.log("Can't update database");
           });
         EncryptedStorage.setItem(
           auth().currentUser.uid + 'userName',
@@ -169,7 +169,7 @@ export default class NewAccountScreen extends Component<{}> {
         Alert.alert('', lang.VerificationSent);
       })
       .catch((error) => {
-        console.log('Create account error: ', error.message);
+        //console.log('Create account error: ', error.message);
         if (
           error.message ==
           '[auth/invalid-email] The email address is badly formatted.'
@@ -226,7 +226,7 @@ export default class NewAccountScreen extends Component<{}> {
     });
   }
   async onPressCreate() {
-    console.log('create');
+    //console.log('create');
     this.flatListRef.scrollToOffset({
       animated: true,
       offset: this.textFieldHeight * 0,
@@ -264,7 +264,7 @@ export default class NewAccountScreen extends Component<{}> {
       .then((r) => r.text())
       .then((text) => {
         return text;
-        console.log(text);
+        //console.log(text);
       });
   };
 
@@ -276,7 +276,7 @@ export default class NewAccountScreen extends Component<{}> {
     } else {
       keyboardAvoidingHeight = global.keyboardHeight + this.navBarHeight;
     }
-    console.log('RENDER SIGN UP');
+    //console.log('RENDER SIGN UP');
     const {navigate} = this.props.navigation;
     return (
       <SafeAreaView
@@ -331,7 +331,7 @@ export default class NewAccountScreen extends Component<{}> {
                     alignItems: 'center',
                   }}
                   onPress={() => {
-                    console.log('touchable pressed');
+                    //console.log('touchable pressed');
                     this.flatListRef.scrollToOffset({
                       animated: true,
                       offset: 0,

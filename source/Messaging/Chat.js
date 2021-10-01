@@ -200,13 +200,7 @@ export default class ChatScreen extends React.Component<Props> {
               })
               .then((json) => (localMessages = json));
             var downloadURL;
-            console.log(
-              'Photos/' +
-                auth().currentUser.uid +
-                '/MessagePhotos/' +
-                message.id +
-                '.jpg',
-            );
+
             var storageRef = storage().ref(
               'Photos/' +
                 auth().currentUser.uid +
@@ -220,7 +214,7 @@ export default class ChatScreen extends React.Component<Props> {
                 .getDownloadURL()
                 .then((data) => {
                   downloadURL = data;
-                  console.log('downloadURL2:', downloadURL);
+                  //console.log('downloadURL2:', downloadURL);
                   fileExists = true;
                   let dirs = RNFetchBlob.fs.dirs;
                   RNFetchBlob.config({
@@ -236,32 +230,23 @@ export default class ChatScreen extends React.Component<Props> {
                   })
                     .fetch('GET', downloadURL, {})
                     .then(async (data) => {
-                      console.log(
-                        'resim indirildi:',
-                        RNFS.DocumentDirectoryPath +
-                          '/' +
-                          auth().currentUser.uid +
-                          '/' +
-                          message.id +
-                          '.jpg',
-                      ),
-                        await EncryptedStorage.getItem(
-                          auth().currentUser.uid +
-                            global.receiverUid +
-                            '/messages',
-                        )
-                          .then((req) => {
-                            if (req) {
-                              return JSON.parse(req);
-                            } else {
-                              return null;
-                            }
-                          })
-                          .then((json) => (localMessages = json));
+                      await EncryptedStorage.getItem(
+                        auth().currentUser.uid +
+                          global.receiverUid +
+                          '/messages',
+                      )
+                        .then((req) => {
+                          if (req) {
+                            return JSON.parse(req);
+                          } else {
+                            return null;
+                          }
+                        })
+                        .then((json) => (localMessages = json));
                       if (localMessages) {
                         localMessages.reverse();
                       }
-                      console.log('TEST 3');
+                      //console.log('TEST 3');
 
                       var number;
                       let tempArr = [];
@@ -285,58 +270,11 @@ export default class ChatScreen extends React.Component<Props> {
                     });
                 })
                 .catch((e) => {
-                  console.log(e);
+                  //console.log(e);
                 });
             }
           }
-        } /*else {
-          await this.getLastLocalMessages();
-          messageArray.reverse();
-          var downloadURL;
-          var storageRef = storage().ref(
-            'Photos/' +
-              auth().currentUser.uid +
-              '/MessagePhotos/' +
-              message.id +
-              '.jpg',
-          );
-          var fileExists = false;
-          while (!fileExists) {
-            await storageRef.getDownloadURL().then((data) => {
-              downloadURL = data;
-              console.log('downloadURL2:', downloadURL);
-              fileExists = true;
-              let dirs = RNFetchBlob.fs.dirs;
-              RNFetchBlob.config({
-                fileCache: true,
-                appendExt: 'jpg',
-                path:
-                  RNFS.DocumentDirectoryPath +
-                  '/' +
-                  auth().currentUser.uid +
-                  '/' +
-                  message.id +
-                  '.jpg',
-              })
-                .fetch('GET', downloadURL, {})
-                .then((data) => {
-                  console.log(
-                    'resim indirildi:',
-                    RNFS.DocumentDirectoryPath +
-                      '/' +
-                      auth().currentUser.uid +
-                      '/' +
-                      message.id +
-                      '.jpg',
-                  ),
-                    this.setState({
-                      messages: messageArray,
-                      loadingOpacity: 0,
-                    });
-                });
-            });
-          }
-        }*/
+        }
         firstTime = false;
       }
     });
@@ -352,11 +290,11 @@ export default class ChatScreen extends React.Component<Props> {
   async loadEarlierMessages() {
     var newLoadedMsgs = [];
     this.setState({isLoadingEarlierMessages: true});
-    console.log('MESSAGE ARRAY:', messageArray.length);
+    //console.log('MESSAGE ARRAY:', messageArray.length);
     messageArray = this.state.messages;
     var number;
-    console.log('LOCAL MESSAGES LENGTH:', constLocalMsgs.length);
-    console.log('noof:', this.state.noOfLoadedMsgs);
+    //console.log('LOCAL MESSAGES LENGTH:', constLocalMsgs.length);
+    //console.log('noof:', this.state.noOfLoadedMsgs);
     if (constLocalMsgs != null) {
       if (constLocalMsgs.length < 20 + this.state.noOfLoadedMsgs) {
         number = constLocalMsgs.length - this.state.noOfLoadedMsgs;
@@ -381,7 +319,7 @@ export default class ChatScreen extends React.Component<Props> {
   }
 
   sendMsg = (messages) => {
-    console.log('gönderilen mesaj: ', messages[0]);
+    //console.log('gönderilen mesaj: ', messages[0]);
     firebaseSvc.send(messages, 'f');
 
     this.setState((previousState) => ({
@@ -708,29 +646,21 @@ export default class ChatScreen extends React.Component<Props> {
         this.state.appState == 'background') &&
       nextAppState === 'active'
     ) {
-      console.log('App has come to the foreground!');
+      //console.log('App has come to the foreground!');
     }
     if (
       (nextAppState == 'inactive' || nextAppState == 'background') &&
       this.state.appState === 'active'
     ) {
       if (Platform.OS === 'ios') {
-        console.log('Chatteki handle');
+        //console.log('Chatteki handle');
         this.props.navigation.navigate('Tabs', {screen: 'Main'});
       }
     }
     this.setState({appState: nextAppState});
   };
   async deleteMessage(message) {
-    console.log('SİLİNECEK MESAJ İD:', message.id, '___', message.text);
-    for (let i = 0; i < messageArray.length; i++) {
-      console.log(
-        'SİLİNMEDEN ÖNCE MESAJLAR:',
-        messageArray[i].id,
-        '___',
-        messageArray[i].text,
-      );
-    }
+    //console.log('SİLİNECEK MESAJ İD:', message.id, '___', message.text);
     var messageId;
     messageId = message.id;
     messageArray = this.state.messages;
@@ -739,14 +669,6 @@ export default class ChatScreen extends React.Component<Props> {
         messageArray.splice(i, 1);
         break;
       }
-    }
-    for (let i = 0; i < messageArray.length; i++) {
-      console.log(
-        'SİLİNDİKTEN SONRA MESAJLAR:',
-        messageArray[i].id,
-        '___',
-        messageArray[i].text,
-      );
     }
 
     this.setState({messages: messageArray});
@@ -814,13 +736,6 @@ export default class ChatScreen extends React.Component<Props> {
       keyboardHeight = 0;
     }
     if (this.state.renderImageChatScreen) {
-      console.log(
-        'HEEY:',
-        this.state.keyboardOpen
-          ? ((this.height - getStatusBarHeight()) * 8) / 12 -
-              global.keyboardHeight
-          : ((this.height - getStatusBarHeight()) * 10) / 12,
-      );
       return (
         <SafeAreaView>
           <View

@@ -92,9 +92,9 @@ export default class UserInfoScreen extends Component<{}> {
   };
   updateDateState(dateSet, date) {
     this.setState({dateSet: dateSet, date: date});
-    console.log('DATE SET Mİ:', dateSet);
+    //console.log('DATE SET Mİ:', dateSet);
     if (dateSet) {
-      console.log('date set:', this.state.date);
+      //console.log('date set:', this.state.date);
       if (
         date == null ||
         global.globalGender == '' ||
@@ -102,14 +102,14 @@ export default class UserInfoScreen extends Component<{}> {
         global.globalCountry == null ||
         global.globalCountry == ''
       ) {
-        console.log('date set if');
+        //console.log('date set if');
         this.setState({
           disabled: true,
           buttonOpacity: global.themeColor,
           opacity: 0.4,
         });
       } else {
-        console.log('date set else');
+        //console.log('date set else');
         this.setState({
           disabled: false,
           buttonOpacity: global.themeColor,
@@ -117,7 +117,7 @@ export default class UserInfoScreen extends Component<{}> {
         });
       }
       global.globalBirthday = date;
-      console.log('global birthday:', global.globalBirthday);
+      //console.log('global birthday:', global.globalBirthday);
     }
   }
   maleSelected() {
@@ -229,8 +229,8 @@ export default class UserInfoScreen extends Component<{}> {
         opacity: 1,
       });
     }
-    console.log('VALUEEEEEEEEE:', this.state.selectedValue);
-    console.log('KEYYYYYYYYYY:', value.key);
+    //console.log('VALUEEEEEEEEE:', this.state.selectedValue);
+    //console.log('KEYYYYYYYYYY:', value.key);
     global.globalCountry = value.label;
   }
 
@@ -239,7 +239,7 @@ export default class UserInfoScreen extends Component<{}> {
     await auth()
       .signOut()
       .then(function () {
-        console.log('LOGOUT SUCCESSFUL');
+        //console.log('LOGOUT SUCCESSFUL');
       })
       .catch((error) => {
         Alert.alert(lang.PlsTryAgain, lang.ConnectionFailed);
@@ -270,7 +270,7 @@ export default class UserInfoScreen extends Component<{}> {
       'December',
     ];
     let monthWritten = lang[months[month]];
-    console.log('AY:', monthWritten);
+    //console.log('AY:', monthWritten);
     if (global.lang == 'langTR') {
       return day + ' ' + monthWritten + ' ' + year;
     } else {
@@ -291,10 +291,10 @@ export default class UserInfoScreen extends Component<{}> {
       todayMonth = '0' + todayMonth;
     }
     var maxDate = todayYear + '-' + todayMonth + '-' + today;
-    console.log('y:', todayYear);
-    console.log('m:', todayMonth);
-    console.log('d:', today);
-    console.log('date:', maxDate);
+    //console.log('y:', todayYear);
+    //console.log('m:', todayMonth);
+    //console.log('d:', today);
+    //console.log('date:', maxDate);
 
     return (
       <SafeAreaView

@@ -64,10 +64,10 @@ export default class ThemeSettingsScreen extends Component<{}> {
     };
   }
   async componentDidMount() {
-    console.log('THEME SETTINGS COMPONENT DID MOUNT');
+    //console.log('THEME SETTINGS COMPONENT DID MOUNT');
     await this.getSelectedTheme();
     this._subscribe = this.props.navigation.addListener('focus', async () => {
-      console.log('subscribe');
+      //console.log('subscribe');
       this.setState({reRender: 'ok'});
     });
   }
@@ -152,7 +152,7 @@ export default class ThemeSettingsScreen extends Component<{}> {
     if (this.state.selected4) {
       themeColor = 'Green';
     }
-    console.log('THEME COLOR:', themeColor);
+    //console.log('THEME COLOR:', themeColor);
     global.themeColor = themes.getTheme(themeColor);
     global.themeForImages = themes.getThemeForImages(themeColor);
     this.setState({reRender: 'ok', themeColor: global.themeColor});

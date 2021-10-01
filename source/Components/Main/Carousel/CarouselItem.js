@@ -145,7 +145,7 @@ export default class CarouselItem extends Component {
                 requestNonPersonalizedAdsOnly: true,
               }}
               onAdLoaded={() => {
-                console.log('Advert loaded');
+                //console.log('Advert loaded');
               }}
               onAdFailedToLoad={(error) => {
                 console.error('Advert failed to load: ', error);

@@ -425,7 +425,7 @@ class MessagesScreen extends Component<{}> {
           conversationUsernameArray[i] = snapshot.val();
           await this.updatePlayerIds(snapshot, i);
         });
-        console.log('conversationusernameArray:', conversationUsernameArray[i]);
+        //console.log('conversationusernameArray:', conversationUsernameArray[i]);
         const index = i;
         usernameListener[i] = database().ref(
           'Users/' + conversationUidArray[i],
@@ -675,10 +675,6 @@ class MessagesScreen extends Component<{}> {
           }
         }
         for (let i = 0; i < differenceArray.length; i++) {
-          console.log(
-            'locale resmi kaydedilen kullanıcı ifte:',
-            conversationUidArray[differenceArrayIndexes[i]],
-          );
           var storageRef = storage().ref(
             'Photos/' +
               conversationUidArray[differenceArrayIndexes[i]] +
@@ -698,7 +694,7 @@ class MessagesScreen extends Component<{}> {
         }
       }
     } else {
-      console.log('localde mesaj yok');
+      //console.log('localde mesaj yok');
       differenceArray = conversationUidArray;
       EncryptedStorage.setItem(
         auth().currentUser.uid + 'message_uids',
@@ -716,10 +712,6 @@ class MessagesScreen extends Component<{}> {
         }
       }
       for (let i = 0; i < differenceArray.length; i++) {
-        console.log(
-          'locale resmi kaydedilen kullanıcı elsete:',
-          conversationUidArray[i],
-        );
         var storageRef = storage().ref(
           'Photos/' + conversationUidArray[i] + '/1.jpg',
         );
@@ -989,7 +981,7 @@ class MessagesScreen extends Component<{}> {
         .endAt('A')
         .startAt('-');
       testVar = 1;
-      console.log('LISTENER CREATED FOR:', uidArray[count]);
+      //console.log('LISTENER CREATED FOR:', uidArray[count]);
       await global.newMsgListenerArray[count].listenerID.on(
         'child_added',
         async (snapshot) => await this.syncLocalMessages(snapshot, uidCount),
@@ -1028,10 +1020,6 @@ class MessagesScreen extends Component<{}> {
     if (snapshot.val() != null) {
       var snapVal = snapshot.val();
 
-      console.log(
-        'SNAPSHOT NE AQ----------:----------:----------:----------:----------:----------:----------::',
-        snapVal,
-      );
       var messageKey = snapshot.key;
       await this.setShowMessageBox(uidArray[uidCount], 'true');
       // REQUEST BOZULMUŞLSA REMOVEDAN MESSAGE KEY SİLİNECEK
@@ -1045,11 +1033,11 @@ class MessagesScreen extends Component<{}> {
             messageKey,
         )
         .remove();
-      console.log('REMOVEA GELDİ MESSAGESTA');
+      //console.log('REMOVEA GELDİ MESSAGESTA');
 
       const user = {_id: uidArray[uidCount], r: auth().currentUser.uid};
-      console.log('SNAP VAL:', snapVal);
-      console.log('SNAP VAL MESSAGE KEY:', 'i:', i, 'key:', messageKey);
+      //console.log('SNAP VAL:', snapVal);
+      //console.log('SNAP VAL MESSAGE KEY:', 'i:', i, 'key:', messageKey);
       const {p: p, c: numberStamp, text} = snapVal;
       const id = messageKey;
       const _id = messageKey; //needed for giftedchat
@@ -1079,7 +1067,7 @@ class MessagesScreen extends Component<{}> {
         user,
         image,
       };
-      console.log('LOCALE KAYDEDİLEN MESAJ KEYİ', messageKey);
+      //console.log('LOCALE KAYDEDİLEN MESAJ KEYİ', messageKey);
       if (
         localMessages[uidCount] == null ||
         localMessages[uidCount].length == 0
@@ -1109,7 +1097,7 @@ class MessagesScreen extends Component<{}> {
             .getDownloadURL()
             .then((data) => {
               downloadURL = data;
-              console.log('download URL ready for:', downloadURL);
+              //console.log('download URL ready for:', downloadURL);
               fileExists = true;
             })
             .catch(function (error) {});
@@ -1131,13 +1119,13 @@ class MessagesScreen extends Component<{}> {
             //some headers ..
           })
           .then((data) => {
-            console.log('indirme bitti');
+            //console.log('indirme bitti');
             this.props.updateChat();
           });
         /*if (noOfNewMsgs > 1) {
-          console.log(noOfNewMsgs, ' new message!');
+          //console.log(noOfNewMsgs, ' new message!');
           localMessages[uidCount].sort(this.sortByInteger('c'));
-          console.log('LOCAL MESSAGES:', localMessages[0]);
+          //console.log('LOCAL MESSAGES:', localMessages[0]);
           await EncryptedStorage.setItem(
             auth().currentUser.uid + uidArray[uidCount] + '/messages',
             JSON.stringify(localMessages[uidCount]),
@@ -1156,20 +1144,20 @@ class MessagesScreen extends Component<{}> {
         }
         this.setRequestDB(uidArray[uidCount], kValue);
 
-        console.log('IF 0');
+        //console.log('IF 0');
         // CREATE DATA ARRAY PART
         messageArray.splice(0, messageArray.length);
         requestArray.splice(0, requestArray.length);
         if (!fromChat) {
-          console.log('IF 2');
+          //console.log('IF 2');
           const data =
             localMessages[uidCount][localMessages[uidCount].length - 1];
           if (dataArray.length < noOfConversations) {
-            console.log('IF 3');
+            //console.log('IF 3');
             dataArray[count] = data;
           }
           if (dataArray.length == noOfConversations) {
-            console.log('IF 4');
+            //console.log('IF 4');
             for (let i = 0; i < noOfConversations; i++) {
               if (
                 (data.user.r == dataArray[i].user.r &&
@@ -1313,7 +1301,7 @@ class MessagesScreen extends Component<{}> {
   }
 
   sortByInteger(property) {
-    console.log('if');
+    //console.log('if');
     return function (a, b) {
       if (a[property] > b[property]) {
         return 1;
@@ -1353,7 +1341,7 @@ class MessagesScreen extends Component<{}> {
     //playerIdListener.off();
   }
   navigateToChat(receiverUid, receiverPhoto, receiverUsername) {
-    console.log('navigated to chat');
+    //console.log('navigated to chat');
     global.fromChat = true;
     global.messageRemoved = false;
     global.check = false;
@@ -1809,7 +1797,7 @@ class MessagesScreen extends Component<{}> {
     );
   }
   async setRequestDB(uid, value) {
-    console.log('set requestDB:', uid);
+    //console.log('set requestDB:', uid);
     await database()
       .ref('Messages/' + auth().currentUser.uid + '/' + uid)
       .update({

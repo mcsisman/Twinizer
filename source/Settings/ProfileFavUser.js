@@ -81,14 +81,14 @@ export default class ProfileFavUserScreen extends Component<{}> {
   async componentDidMount() {
     this.setState({loadingDone: false});
     this.spinAnimation();
-    console.log('comp did mount');
+    //console.log('comp did mount');
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.setState({
         loadingDone: true,
         profilePhoto: global.selectedFavUserUrl,
       });
       //this.spinAnimation()
-      console.log('subscribe');
+      //console.log('subscribe');
       await this.initializeFavoriteUsersScreen();
       this.setState({reRender: 'ok'});
     });
@@ -127,7 +127,7 @@ export default class ProfileFavUserScreen extends Component<{}> {
       userCountry: snap.val().c,
       userBio: snap.val().b,
     });
-    console.log('ProfileFavUser Listener');
+    //console.log('ProfileFavUser Listener');
   };
 
   goBack() {
