@@ -284,10 +284,10 @@ export default class UserInfoScreen extends Component<{}> {
     var todayYear = new Date().getFullYear() - 18;
     var todayMonth = new Date().getMonth() + 1;
     var today = new Date().getDate();
-    if ((today.length = 1)) {
+    if (today < 10) {
       today = '0' + today;
     }
-    if ((todayMonth.length = 1)) {
+    if (todayMonth < 10) {
       todayMonth = '0' + todayMonth;
     }
     var maxDate = todayYear + '-' + todayMonth + '-' + today;
