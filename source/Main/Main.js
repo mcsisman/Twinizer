@@ -1682,7 +1682,7 @@ export default class MainScreen extends Component<{}> {
         <CustomHeader
           whichScreen={'Main'}
           onPress={() => this.setState({isVisible2: true})}
-          isFilterVisible={this.state.showFilter}
+          isFilterVisible={this.state.showFilter && !this.state.imageViewerVisible}
           title={'Twinizer'}></CustomHeader>
 
         <View
@@ -1768,7 +1768,7 @@ export default class MainScreen extends Component<{}> {
               alignItems: 'center',
               height: this.width / 10,
             }}>
-            {!this.state.isVisible2 && (
+            {!this.state.isVisible2 && !this.state.openProfileIsVisible && !this.state.imageViewerVisible && (
               <FAB
                 zIndex={1}
                 style={{
@@ -1839,149 +1839,91 @@ export default class MainScreen extends Component<{}> {
             textFilters={lang.Filter}
           />
 
+          <PhotoPopUpModal
+            isVisible={this.state.openProfileIsVisible}
+            onPressImage={() => {
+              this.props.navigation.setOptions({tabBarVisible: false});
+              this.setState({imageViewerVisible: true});
+            }}
+            onBackdropPress={() => this.setState({openProfileIsVisible: false})}
+            username={usernameArray[this.state.currentCarouselIndex]}
+            bio={bioDict[emailArray[this.state.currentCarouselIndex]]}
+            onPressCancel={() => this.setState({openProfileIsVisible: false})}
+            imgSource={photoArray[emailArray[this.state.currentCarouselIndex]]}
+            isFavorite={this.state.isFavArray[this.state.currentCarouselIndex]}
+            isBlocked={this.state.isBlockArray[this.state.currentCarouselIndex]}
+            onPressFav={() =>
+              this.favButton('onModal', this.state.currentCarouselIndex)
+            }
+            onPressBlock={() =>
+              this.blockButton('onModal', this.state.currentCarouselIndex)
+            }
+            onPressSendMsg={() =>
+              this.sendFirstMessage(this.state.currentCarouselIndex)
+            }
+            favBcancel={lang.CancelCap}
+            favBdialog={lang.DontShowThisDialogAgain}
+            favBtickIsVisible={this.state.favTickVisible}
+            favBonPressTick={() =>
+              this.setState({favTickVisible: this.state.favTickVisible ? 0 : 1})
+            }
+            favBisVisible={this.state.addToFavVisibleUpper}
+            favBimage={'star'}
+            favBtxtAlert={
+              lang.FavUserInfoPt1 +
+              usernameArray[this.state.currentCarouselIndex] +
+              lang.FavUserInfoPt2
+            }
+            favBonPressAdd={() =>
+              this.favModalButtonClicked(
+                emailArray[this.state.currentCarouselIndex],
+              )
+            }
+            favBonPressClose={() =>
+              this.setState({
+                favTickVisible: false,
+                addToFavVisible: false,
+                addToFavVisibleUpper: false,
+              })
+            }
+            blockBcancel={lang.CancelCap}
+            blockBdialog={lang.DontShowThisDialogAgain}
+            blockBtickIsVisible={this.state.blockTickVisible}
+            blockBonPressTick={() =>
+              this.setState({
+                blockTickVisible: this.state.blockTickVisible ? 0 : 1,
+              })
+            }
+            blockBisVisible={this.state.addToBlockVisibleUpper}
+            blockBimage={'block'}
+            blockBtxtAlert={
+              lang.BlockUserInfoPt1 +
+              usernameArray[this.state.currentCarouselIndex] +
+              lang.BlockUserInfoPt2
+            }
+            blockBonPressAdd={() =>
+              this.blockModalButtonClicked(
+                emailArray[this.state.currentCarouselIndex],
+              )
+            }
+            blockBonPressClose={() =>
+              this.setState({
+                blockTickVisible: false,
+                addToBlockVisible: false,
+                addToBlockVisibleUpper: false,
+              })
+            }></PhotoPopUpModal>
+
           <ImageViewerModal
             isVisible={this.state.imageViewerVisible}
             images={photoArray[emailArray[this.state.currentCarouselIndex]]}
-            whichScreen={'tabs'}
             onCancel={() => {
+              console.log("ImageViewerModal - onCancel")
+              this.setState({reRender: !this.state.reRender, imageViewerVisible: false});
               this.props.navigation.setOptions({tabBarVisible: true});
-              this.setState({imageViewerVisible: false});
             }}
           />
         </View>
-
-        <PhotoPopUpModal
-          isVisible={this.state.openProfileIsVisible}
-          onPressImage={() => {
-            this.props.navigation.setOptions({tabBarVisible: false});
-            this.setState({imageViewerVisible: true});
-          }}
-          onBackdropPress={() => this.setState({openProfileIsVisible: false})}
-          username={usernameArray[this.state.currentCarouselIndex]}
-          bio={bioDict[emailArray[this.state.currentCarouselIndex]]}
-          onPressCancel={() => this.setState({openProfileIsVisible: false})}
-          imgSource={photoArray[emailArray[this.state.currentCarouselIndex]]}
-          isFavorite={this.state.isFavArray[this.state.currentCarouselIndex]}
-          isBlocked={this.state.isBlockArray[this.state.currentCarouselIndex]}
-          onPressFav={() =>
-            this.favButton('onModal', this.state.currentCarouselIndex)
-          }
-          onPressBlock={() =>
-            this.blockButton('onModal', this.state.currentCarouselIndex)
-          }
-          onPressSendMsg={() =>
-            this.sendFirstMessage(this.state.currentCarouselIndex)
-          }
-          favBcancel={lang.CancelCap}
-          favBdialog={lang.DontShowThisDialogAgain}
-          favBtickIsVisible={this.state.favTickVisible}
-          favBonPressTick={() =>
-            this.setState({favTickVisible: this.state.favTickVisible ? 0 : 1})
-          }
-          favBisVisible={this.state.addToFavVisibleUpper}
-          favBimage={'star'}
-          favBtxtAlert={
-            lang.FavUserInfoPt1 +
-            usernameArray[this.state.currentCarouselIndex] +
-            lang.FavUserInfoPt2
-          }
-          favBonPressAdd={() =>
-            this.favModalButtonClicked(
-              emailArray[this.state.currentCarouselIndex],
-            )
-          }
-          favBonPressClose={() =>
-            this.setState({
-              favTickVisible: false,
-              addToFavVisible: false,
-              addToFavVisibleUpper: false,
-            })
-          }
-          blockBcancel={lang.CancelCap}
-          blockBdialog={lang.DontShowThisDialogAgain}
-          blockBtickIsVisible={this.state.blockTickVisible}
-          blockBonPressTick={() =>
-            this.setState({
-              blockTickVisible: this.state.blockTickVisible ? 0 : 1,
-            })
-          }
-          blockBisVisible={this.state.addToBlockVisibleUpper}
-          blockBimage={'block'}
-          blockBtxtAlert={
-            lang.BlockUserInfoPt1 +
-            usernameArray[this.state.currentCarouselIndex] +
-            lang.BlockUserInfoPt2
-          }
-          blockBonPressAdd={() =>
-            this.blockModalButtonClicked(
-              emailArray[this.state.currentCarouselIndex],
-            )
-          }
-          blockBonPressClose={() =>
-            this.setState({
-              blockTickVisible: false,
-              addToBlockVisible: false,
-              addToBlockVisibleUpper: false,
-            })
-          }></PhotoPopUpModal>
-
-        <FavBlockModal
-          cancel={lang.CancelCap}
-          dialog={lang.DontShowThisDialogAgain}
-          tickIsVisible={this.state.favTickVisible}
-          onPressTick={() =>
-            this.setState({favTickVisible: this.state.favTickVisible ? 0 : 1})
-          }
-          isVisible={this.state.addToFavVisible}
-          image={'star'}
-          txtAlert={
-            lang.FavUserInfoPt1 +
-            usernameArray[this.state.currentCarouselIndex] +
-            lang.FavUserInfoPt2
-          }
-          onPressAdd={() =>
-            this.favModalButtonClicked(
-              emailArray[this.state.currentCarouselIndex],
-            )
-          }
-          onPressClose={() =>
-            this.setState({
-              favTickVisible: false,
-              addToFavVisible: false,
-              addToFavVisibleUpper: false,
-            })
-          }
-        />
-
-        <FavBlockModal
-          cancel={lang.CancelCap}
-          dialog={lang.DontShowThisDialogAgain}
-          tickIsVisible={this.state.blockTickVisible}
-          onPressTick={() =>
-            this.setState({
-              blockTickVisible: this.state.blockTickVisible ? 0 : 1,
-            })
-          }
-          isVisible={this.state.addToBlockVisible}
-          image={'block'}
-          txtAlert={
-            lang.BlockUserInfoPt1 +
-            usernameArray[this.state.currentCarouselIndex] +
-            lang.BlockUserInfoPt2
-          }
-          onPressAdd={() =>
-            this.blockModalButtonClicked(
-              emailArray[this.state.currentCarouselIndex],
-            )
-          }
-          onPressClose={() =>
-            this.setState({
-              blockTickVisible: false,
-              addToBlockVisible: false,
-              addToBlockVisibleUpper: false,
-            })
-          }
-        />
       </SafeAreaView>
     );
   }
