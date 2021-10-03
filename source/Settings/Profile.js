@@ -837,6 +837,7 @@ export default class ProfileScreen extends Component<{}> {
                     alignItems: 'center',
                   }}>
                   <TextInput
+                    onFocus={() => this.setState({whichInput: 'notbio'})}
                     spellCheck={false}
                     autoCorrect={false}
                     maxLength={15}

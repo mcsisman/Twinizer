@@ -89,15 +89,15 @@ class Appp extends React.Component {
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.initializeGlobalVariables();
       global.keyboardHeight = await EncryptedStorage.getItem('keyboardHeight');
-      console.log('APPJSTE KEYBOARD1:', global.keyboardHeight);
+      //console.log('APPJSTE KEYBOARD1:', global.keyboardHeight);
       if (global.keyboardHeight != undefined && global.keyboardHeight != null) {
-        console.log('APPJSTE KEYBOARD:', global.keyboardHeight);
+        //console.log('APPJSTE KEYBOARD:', global.keyboardHeight);
         global.keyboardHeight = parseInt(global.keyboardHeight);
       }
 
       this.getLocalLang();
 
-      console.log('subscribe');
+      //console.log('subscribe');
 
       const user = auth().currentUser;
       if (user) {
@@ -115,7 +115,7 @@ class Appp extends React.Component {
       global.lang = 'langEN';
     }
 
-    console.log('LOCAL:');
+    //console.log('LOCAL:');
   }
   initializeGlobalVariables() {
     global.isFavListUpdated = false;
@@ -166,7 +166,7 @@ class Appp extends React.Component {
       var themeColor = await EncryptedStorage.getItem(
         auth().currentUser.uid + 'theme',
       );
-      console.log('STORAGEDAN GELEN THEME COLOR:', themeColor);
+      //console.log('STORAGEDAN GELEN THEME COLOR:', themeColor);
       if (themeColor == null || themeColor == undefined) {
         themeColor = 'Original';
       }
@@ -215,17 +215,17 @@ class Appp extends React.Component {
         var storageRef = storage().ref(
           'Embeddings/' + auth().currentUser.uid + '.pickle',
         );
-        //console.log("STORAGE REF: ", storageRef)
+        ////console.log("STORAGE REF: ", storageRef)
         storageRef
           .getDownloadURL()
           .then(async (data) => {
-            console.log('EMBEDDING VAR: ', auth().currentUser.uid);
-            console.log('DATA: ', data);
+            //console.log('EMBEDDING VAR: ', auth().currentUser.uid);
+            //console.log('DATA: ', data);
             await this.setTheme(true);
             navigate('Tabs');
           })
           .catch(async (error) => {
-            console.log('EMBEDDING YOK: ', auth().currentUser.uid);
+            //console.log('EMBEDDING YOK: ', auth().currentUser.uid);
             await this.setTheme(true);
             navigate('UserInfo');
           });
@@ -446,12 +446,12 @@ function MyTabBar({state, descriptors, navigation}) {
   const focusedOptions = descriptors[state.routes[state.index].key].options;
   global.insets = useSafeAreaInsets();
   global.obj = useSafeAreaFrame();
-  console.log('safe area:', global.obj);
-  console.log('INSETS:', global.insets);
+  //console.log('safe area:', global.obj);
+  //console.log('INSETS:', global.insets);
   if (focusedOptions.tabBarVisible === false || state.index == 4) {
     return null;
   }
-  console.log('GLOBAL INSET:', global.insets);
+  //console.log('GLOBAL INSET:', global.insets);
   return (
     <View
       style={{
