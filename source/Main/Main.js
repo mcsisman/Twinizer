@@ -733,10 +733,10 @@ export default class MainScreen extends Component<{}> {
         var favArray = [];
         var blockArray = [];
         for (let i = 0; i < length; i++) {
-          if (
+          if ( auth().currentUser.uid != items[i][0] && (
             blockedUsers == null ||
             blockedUsers.length == 0 ||
-            blockedUsersSet.has(items[i][0]) == false
+            blockedUsersSet.has(items[i][0]) == false)
           ) {
             if (ccc % 6 == 0 && ccc != 0) {
               emailArray.push('ground');

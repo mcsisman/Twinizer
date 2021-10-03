@@ -117,11 +117,9 @@ export default class AuthenticationModal extends Component {
           );
           EncryptedStorage.removeItem(auth().currentUser.uid + 'theme');
           EncryptedStorage.removeItem(auth().currentUser.uid + 'mode');
-          var messageUidsArray = firestore()
+          await firestore()
             .collection(auth().currentUser.uid)
-            .doc('MessageInformation');
-          //console.log('messageuidsarray: ', messageUidsArray);
-          await messageUidsArray.get().then(async (doc) => {
+            .doc('MessageInformation').get().then(async (doc) => {
             //console.log('firestore içi');
             if (doc.exists) {
               var conversationUidArray = await doc.data()['UidArray'];
@@ -163,6 +161,16 @@ export default class AuthenticationModal extends Component {
             .catch((error) => {
               //console.log(error);
             });
+            await firestore()
+              .collection(auth().currentUser.uid)
+              .doc('Users')
+              .delete()
+              .then(() => {
+                //console.log('ModelResult deleted!');
+              })
+              .catch((error) => {
+                //console.log(error);
+              });
           await firestore()
             .collection(auth().currentUser.uid)
             .doc('Bios')
@@ -199,6 +207,8 @@ export default class AuthenticationModal extends Component {
             .delete()
             .then(() => {
               //console.log('Funcdone deleted!');
+            }).catch((error) => {
+              //console.log(error);
             });
           // storage delete
           await storage()
@@ -236,30 +246,40 @@ export default class AuthenticationModal extends Component {
             .delete()
             .then(() => {
               //console.log('3 deleted!');
+            }).catch((error) => {
+              //console.log(error);
             });
           await storage()
             .ref('Photos/' + auth().currentUser.uid + '/4.jpg')
             .delete()
             .then(() => {
               //console.log('4 deleted!');
+            }).catch((error) => {
+              //console.log(error);
             });
           await storage()
             .ref('Photos/' + auth().currentUser.uid + '/5.jpg')
             .delete()
             .then(() => {
               //console.log('5 deleted!');
+            }).catch((error) => {
+              //console.log(error);
             });
           await storage()
             .ref('Embeddings/' + auth().currentUser.uid + '.pickle')
             .delete()
             .then(() => {
               //console.log('embeddings deleted!');
+            }).catch((error) => {
+              //console.log(error);
             });
           await storage()
             .ref('Photos/' + auth().currentUser.uid + '/1.jpg')
             .delete()
             .then(() => {
               //console.log('1 deleted!');
+            }).catch((error) => {
+              //console.log(error);
             });
           // realtime remove
           await database()
@@ -267,13 +287,25 @@ export default class AuthenticationModal extends Component {
             .remove()
             .then(() => {
               //console.log('playerId deleted!');
+            }).catch((error) => {
+              //console.log(error);
             });
           await database()
             .ref('/Users/' + auth().currentUser.uid)
             .remove()
             .then(() => {
               //console.log('user info deleted!');
+            }).catch((error) => {
+              //console.log(error);
             });
+            await database()
+              .ref('/Messages/' + auth().currentUser.uid)
+              .remove()
+              .then(() => {
+                //console.log('user info deleted!');
+              }).catch((error) => {
+                //console.log(error);
+              });
           // delete account from authentication
           await auth()
             .currentUser.delete()
