@@ -159,6 +159,7 @@ class MessagesScreen extends Component<{}> {
         getStatusBarHeight();
       newRequest = false;
       if (global.messagesFirstTime) {
+        //console.log('girdi ha buraya');
         this.initializeMessageScreen();
       } else {
         if (global.fromChat || global.enteredChatFromMain) {
@@ -423,6 +424,7 @@ class MessagesScreen extends Component<{}> {
         );
         await usernameOnceListener.once('value').then(async (snapshot) => {
           conversationUsernameArray[i] = snapshot.val();
+          //console.log('c1:', conversationUsernameArray);
           await this.updatePlayerIds(snapshot, i);
         });
         //console.log('conversationusernameArray:', conversationUsernameArray[i]);
@@ -482,6 +484,7 @@ class MessagesScreen extends Component<{}> {
           })
           .then((json) => (localUsernames = json));
         conversationUsernameArray = localUsernames;
+        //console.log('c2:', conversationUsernameArray);
 
         if (conversationUsernameArray == null) {
           conversationUsernameArray = [];
@@ -504,8 +507,10 @@ class MessagesScreen extends Component<{}> {
         await usernameOnceListener.once('value').then(async (snapshot) => {
           if (conversationUsernameArray.length == 0) {
             conversationUsernameArray[0] = snapshot.val();
+            //console.log('c3:', conversationUsernameArray);
           } else {
             conversationUsernameArray.push(snapshot.val());
+            //console.log('c4:', conversationUsernameArray);
           }
           await this.updatePlayerIds(
             snapshot,
@@ -535,6 +540,7 @@ class MessagesScreen extends Component<{}> {
           })
           .then((json) => (localUsernames = json));
         conversationUsernameArray = localUsernames;
+        //console.log('c5:', conversationUsernameArray);
         newRequest = true;
       }
     }
@@ -551,6 +557,7 @@ class MessagesScreen extends Component<{}> {
       })
       .then((json) => (localUsernames = json));
     conversationUsernameArray = localUsernames;
+    //console.log('c6:', conversationUsernameArray);
 
     if (conversationUsernameArray[i].p != snap.val().p) {
       var downloadURL;
@@ -569,6 +576,7 @@ class MessagesScreen extends Component<{}> {
     }
     await this.updatePlayerIds(snap, i);
     conversationUsernameArray[i] = snap.val();
+    //console.log('c7:', conversationUsernameArray);
 
     EncryptedStorage.setItem(
       auth().currentUser.uid + 'message_usernames',
@@ -944,6 +952,7 @@ class MessagesScreen extends Component<{}> {
               ) {
                 messagePhotoArray[i] = photoArray[j];
                 messageUsernameArray[i] = conversationUsernameArray[j];
+                //console.log('giriş 1:', messageUsernameArray);
               }
             }
           }
@@ -1019,7 +1028,7 @@ class MessagesScreen extends Component<{}> {
     // remove k from snapshot data
     if (snapshot.val() != null) {
       var snapVal = snapshot.val();
-      console.log('mesaj geldi');
+      //console.log('mesaj geldi');
       var messageKey = snapshot.key;
       await this.setShowMessageBox(uidArray[uidCount], 'true');
       // REQUEST BOZULMUŞLSA REMOVEDAN MESSAGE KEY SİLİNECEK
@@ -1036,7 +1045,7 @@ class MessagesScreen extends Component<{}> {
       //console.log('REMOVEA GELDİ MESSAGESTA');
 
       const user = {_id: uidArray[uidCount], r: auth().currentUser.uid};
-      console.log('SNAP VAL:', snapVal);
+      //console.log('SNAP VAL:', snapVal);
       //console.log('SNAP VAL MESSAGE KEY:', 'i:', i, 'key:', messageKey);
       const {p: p, c: numberStamp, text} = snapVal;
       const id = messageKey;
@@ -1145,20 +1154,20 @@ class MessagesScreen extends Component<{}> {
       }
       this.setRequestDB(uidArray[uidCount], kValue);
 
-      console.log('IF 0');
+      //console.log('IF 0');
       // CREATE DATA ARRAY PART
       messageArray.splice(0, messageArray.length);
       requestArray.splice(0, requestArray.length);
       if (!fromChat) {
-        console.log('IF 2');
+        //console.log('IF 2');
         const data =
           localMessages[uidCount][localMessages[uidCount].length - 1];
         if (dataArray.length < noOfConversations) {
-          console.log('IF 3');
+          //console.log('IF 3');
           dataArray[count] = data;
         }
         if (dataArray.length == noOfConversations) {
-          console.log('IF 4');
+          //console.log('IF 4');
           for (let i = 0; i < noOfConversations; i++) {
             if (
               (data.user.r == dataArray[i].user.r &&
@@ -1263,11 +1272,12 @@ class MessagesScreen extends Component<{}> {
               ) {
                 messagePhotoArray[i] = photoArray[j];
                 messageUsernameArray[i] = conversationUsernameArray[j];
+                //console.log('giriş 2:', messageUsernameArray);
               }
             }
           }
           newRequest = true;
-          console.log('set state');
+          //console.log('set state');
           this.setState({
             loadingDone: true,
             test: '1',
@@ -1457,6 +1467,10 @@ class MessagesScreen extends Component<{}> {
         </View>
       );
     } else {
+      if (messageUsernameArray.includes(undefined)) {
+        //console.log('includes undefined');
+        return;
+      }
       var timeArray = [];
       timeArray.splice(0, timeArray.length);
       var receiverArray = [];

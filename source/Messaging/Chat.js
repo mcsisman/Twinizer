@@ -735,6 +735,13 @@ export default class ChatScreen extends React.Component<Props> {
     if (keyboardHeight == undefined) {
       keyboardHeight = 0;
     }
+    var giftedCMessages;
+    if (this.state.messages != null && this.state.messages != undefined) {
+      giftedCMessages = this.state.messages;
+    } else {
+      giftedCMessages = [];
+    }
+
     if (this.state.renderImageChatScreen) {
       return (
         <SafeAreaView>
@@ -882,7 +889,10 @@ export default class ChatScreen extends React.Component<Props> {
               <GiftedChat
                 renderActions={this.renderActions}
                 locale={'tr-TR'}
-                loadEarlier={constLocalMsgs.length > this.state.noOfLoadedMsgs}
+                loadEarlier={
+                  constLocalMsgs.length > this.state.noOfLoadedMsgs &&
+                  giftedCMessages.length > 0
+                }
                 onLoadEarlier={() => this.loadEarlierMessages()}
                 isLoadingEarlier={this.state.isLoadingEarlierMessages}
                 isKeyboardInternallyHandled={

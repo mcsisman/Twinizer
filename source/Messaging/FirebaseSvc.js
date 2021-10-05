@@ -156,13 +156,14 @@ class FirebaseSvc {
         }
       });
       if (!kExists) {
+        console.log('buramı');
         database()
           .ref('Messages/' + global.receiverUid + '/' + auth().currentUser.uid)
           .update({
             k: 0,
           });
         global.firstMessage = false;
-
+        global.messagesFirstTime = true;
         var senderRef = firestore()
           .collection(auth().currentUser.uid)
           .doc('MessageInformation');
