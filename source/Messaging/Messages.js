@@ -1019,7 +1019,7 @@ class MessagesScreen extends Component<{}> {
     // remove k from snapshot data
     if (snapshot.val() != null) {
       var snapVal = snapshot.val();
-
+      console.log('mesaj geldi');
       var messageKey = snapshot.key;
       await this.setShowMessageBox(uidArray[uidCount], 'true');
       // REQUEST BOZULMUŞLSA REMOVEDAN MESSAGE KEY SİLİNECEK
@@ -1036,7 +1036,7 @@ class MessagesScreen extends Component<{}> {
       //console.log('REMOVEA GELDİ MESSAGESTA');
 
       const user = {_id: uidArray[uidCount], r: auth().currentUser.uid};
-      //console.log('SNAP VAL:', snapVal);
+      console.log('SNAP VAL:', snapVal);
       //console.log('SNAP VAL MESSAGE KEY:', 'i:', i, 'key:', messageKey);
       const {p: p, c: numberStamp, text} = snapVal;
       const id = messageKey;
@@ -1122,7 +1122,8 @@ class MessagesScreen extends Component<{}> {
             //console.log('indirme bitti');
             this.props.updateChat();
           });
-        /*if (noOfNewMsgs > 1) {
+      }
+      /*if (noOfNewMsgs > 1) {
           //console.log(noOfNewMsgs, ' new message!');
           localMessages[uidCount].sort(this.sortByInteger('c'));
           //console.log('LOCAL MESSAGES:', localMessages[0]);
@@ -1132,154 +1133,150 @@ class MessagesScreen extends Component<{}> {
           );
         }
 */
-        var kValue;
-        var isRequ = await EncryptedStorage.getItem(
-          'IsRequest/' + auth().currentUser.uid + '/' + uidArray[uidCount],
-        );
-        if (isRequ == undefined || isRequ == null || isRequ == 'true') {
-          kValue = 0;
-        }
-        if (isRequ == 'false') {
-          kValue = 1;
-        }
-        this.setRequestDB(uidArray[uidCount], kValue);
+      var kValue;
+      var isRequ = await EncryptedStorage.getItem(
+        'IsRequest/' + auth().currentUser.uid + '/' + uidArray[uidCount],
+      );
+      if (isRequ == undefined || isRequ == null || isRequ == 'true') {
+        kValue = 0;
+      }
+      if (isRequ == 'false') {
+        kValue = 1;
+      }
+      this.setRequestDB(uidArray[uidCount], kValue);
 
-        //console.log('IF 0');
-        // CREATE DATA ARRAY PART
-        messageArray.splice(0, messageArray.length);
-        requestArray.splice(0, requestArray.length);
-        if (!fromChat) {
-          //console.log('IF 2');
-          const data =
-            localMessages[uidCount][localMessages[uidCount].length - 1];
-          if (dataArray.length < noOfConversations) {
-            //console.log('IF 3');
-            dataArray[count] = data;
+      console.log('IF 0');
+      // CREATE DATA ARRAY PART
+      messageArray.splice(0, messageArray.length);
+      requestArray.splice(0, requestArray.length);
+      if (!fromChat) {
+        console.log('IF 2');
+        const data =
+          localMessages[uidCount][localMessages[uidCount].length - 1];
+        if (dataArray.length < noOfConversations) {
+          console.log('IF 3');
+          dataArray[count] = data;
+        }
+        if (dataArray.length == noOfConversations) {
+          console.log('IF 4');
+          for (let i = 0; i < noOfConversations; i++) {
+            if (
+              (data.user.r == dataArray[i].user.r &&
+                data.user._id == dataArray[i].user._id) ||
+              (data.user.r == dataArray[i].user._id &&
+                data.user._id == dataArray[i].user.r)
+            ) {
+              dataArray[i] = data;
+              break;
+            }
           }
-          if (dataArray.length == noOfConversations) {
-            //console.log('IF 4');
-            for (let i = 0; i < noOfConversations; i++) {
-              if (
-                (data.user.r == dataArray[i].user.r &&
-                  data.user._id == dataArray[i].user._id) ||
-                (data.user.r == dataArray[i].user._id &&
-                  data.user._id == dataArray[i].user.r)
-              ) {
-                dataArray[i] = data;
-                break;
-              }
-            }
-            for (let i = 0; i < noOfConversations; i++) {
-              var isReq = await EncryptedStorage.getItem(
-                'IsRequest/' + auth().currentUser.uid + '/' + uidArray[i],
+          for (let i = 0; i < noOfConversations; i++) {
+            var isReq = await EncryptedStorage.getItem(
+              'IsRequest/' + auth().currentUser.uid + '/' + uidArray[i],
+            );
+            if (isReq == undefined || isReq == null || isReq == '') {
+              var kVal;
+              var kListener = database().ref(
+                'Messages/' + auth().currentUser.uid + '/' + uidArray[i] + '/k',
               );
-              if (isReq == undefined || isReq == null || isReq == '') {
-                var kVal;
-                var kListener = database().ref(
-                  'Messages/' +
-                    auth().currentUser.uid +
-                    '/' +
-                    uidArray[i] +
-                    '/k',
-                );
-                await kListener.once('value').then(async (snapshot) => {
-                  if (snapshot.val() != null) {
-                    kVal = snapshot.val();
-                  }
-                });
-
-                if (kVal == 0) {
-                  isReq = 'true';
-                } else {
-                  isReq = 'false';
+              await kListener.once('value').then(async (snapshot) => {
+                if (snapshot.val() != null) {
+                  kVal = snapshot.val();
                 }
-                this.setLocalIsRequest(uidArray[i], isReq);
-              }
-              if (isReq == 'false') {
-                messageArray.push(dataArray[i]);
-                noOfNonRequests++;
-              } else {
-                requestArray.push(dataArray[i]);
-              }
-            }
-            requestArray.sort(this.sortByProperty('c'));
-            requestArray.reverse();
-            messageArray.sort(this.sortByProperty('c'));
-            messageArray.reverse();
+              });
 
-            // CHECKING FOR LAST SEEN
-            for (let i = 0; i < requestArray.length; i++) {
-              requestColorArray[i] = 'trashgray';
-              var key;
-              var time;
-              if (requestArray[i].user._id == auth().currentUser.uid) {
+              if (kVal == 0) {
+                isReq = 'true';
+              } else {
+                isReq = 'false';
+              }
+              this.setLocalIsRequest(uidArray[i], isReq);
+            }
+            if (isReq == 'false') {
+              messageArray.push(dataArray[i]);
+              noOfNonRequests++;
+            } else {
+              requestArray.push(dataArray[i]);
+            }
+          }
+          requestArray.sort(this.sortByProperty('c'));
+          requestArray.reverse();
+          messageArray.sort(this.sortByProperty('c'));
+          messageArray.reverse();
+
+          // CHECKING FOR LAST SEEN
+          for (let i = 0; i < requestArray.length; i++) {
+            requestColorArray[i] = 'trashgray';
+            var key;
+            var time;
+            if (requestArray[i].user._id == auth().currentUser.uid) {
+              requestLastSeenArray[i] = 0;
+            } else {
+              key = auth().currentUser.uid + '' + requestArray[i].user._id;
+              time = await EncryptedStorage.getItem(key + 'lastSeen');
+              if (requestArray[i].c == 'notime') {
                 requestLastSeenArray[i] = 0;
               } else {
-                key = auth().currentUser.uid + '' + requestArray[i].user._id;
-                time = await EncryptedStorage.getItem(key + 'lastSeen');
-                if (requestArray[i].c == 'notime') {
-                  requestLastSeenArray[i] = 0;
+                if (requestArray[i].c > time) {
+                  requestLastSeenArray[i] = 1;
                 } else {
-                  if (requestArray[i].c > time) {
-                    requestLastSeenArray[i] = 1;
-                  } else {
-                    requestLastSeenArray[i] = 0;
-                  }
+                  requestLastSeenArray[i] = 0;
                 }
               }
             }
-            for (let i = 0; i < messageArray.length; i++) {
-              messageColorArray[i] = 'trashgray';
-              var key;
-              var time;
+          }
+          for (let i = 0; i < messageArray.length; i++) {
+            messageColorArray[i] = 'trashgray';
+            var key;
+            var time;
 
-              if (messageArray[i].user._id == auth().currentUser.uid) {
+            if (messageArray[i].user._id == auth().currentUser.uid) {
+              messageLastSeenArray[i] = 0;
+            } else {
+              key = auth().currentUser.uid + '' + messageArray[i].user._id;
+              time = await EncryptedStorage.getItem(key + 'lastSeen');
+              if (messageArray[i].c == 'notime') {
                 messageLastSeenArray[i] = 0;
               } else {
-                key = auth().currentUser.uid + '' + messageArray[i].user._id;
-                time = await EncryptedStorage.getItem(key + 'lastSeen');
-                if (messageArray[i].c == 'notime') {
-                  messageLastSeenArray[i] = 0;
+                if (messageArray[i].c > time) {
+                  messageLastSeenArray[i] = 1;
                 } else {
-                  if (messageArray[i].c > time) {
-                    messageLastSeenArray[i] = 1;
-                  } else {
-                    messageLastSeenArray[i] = 0;
-                  }
+                  messageLastSeenArray[i] = 0;
                 }
               }
             }
-
-            for (let i = 0; i < requestArray.length; i++) {
-              for (let j = 0; j < photoArray.length; j++) {
-                if (requestArray[i].user._id == conversationUidArray[j]) {
-                  requestPhotoArray[i] = photoArray[j];
-                  requestUsernameArray[i] = conversationUsernameArray[j];
-                }
-              }
-            }
-            for (let i = 0; i < messageArray.length; i++) {
-              for (let j = 0; j < photoArray.length; j++) {
-                if (
-                  messageArray[i].user._id == conversationUidArray[j] ||
-                  messageArray[i].user.r == conversationUidArray[j]
-                ) {
-                  messagePhotoArray[i] = photoArray[j];
-                  messageUsernameArray[i] = conversationUsernameArray[j];
-                }
-              }
-            }
-            newRequest = true;
-            this.setState({
-              loadingDone: true,
-              test: '1',
-              loadingOpacity: 0,
-              backgroundColor: 'white',
-              editPressed: false,
-              cancelPressed: false,
-              reRender: 'oke',
-            });
           }
+
+          for (let i = 0; i < requestArray.length; i++) {
+            for (let j = 0; j < photoArray.length; j++) {
+              if (requestArray[i].user._id == conversationUidArray[j]) {
+                requestPhotoArray[i] = photoArray[j];
+                requestUsernameArray[i] = conversationUsernameArray[j];
+              }
+            }
+          }
+          for (let i = 0; i < messageArray.length; i++) {
+            for (let j = 0; j < photoArray.length; j++) {
+              if (
+                messageArray[i].user._id == conversationUidArray[j] ||
+                messageArray[i].user.r == conversationUidArray[j]
+              ) {
+                messagePhotoArray[i] = photoArray[j];
+                messageUsernameArray[i] = conversationUsernameArray[j];
+              }
+            }
+          }
+          newRequest = true;
+          console.log('set state');
+          this.setState({
+            loadingDone: true,
+            test: '1',
+            loadingOpacity: 0,
+            backgroundColor: 'white',
+            editPressed: false,
+            cancelPressed: false,
+            reRender: 'oke',
+          });
         }
       }
     }
