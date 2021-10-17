@@ -141,6 +141,7 @@ export default class ForgotPasswordScreen extends Component<{}> {
                 }
                 placeholder={lang.Email}
                 style={{
+                  fontFamily: global.fontFam,
                   color: global.isDarkMode
                     ? global.darkModeColors[3]
                     : 'rgba(0,0,0,0.4)',

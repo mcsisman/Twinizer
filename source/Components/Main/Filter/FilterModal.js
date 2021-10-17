@@ -70,6 +70,7 @@ export default class FilterModal extends Component {
           }}>
           <Text
             style={{
+              fontFamily: global.fontFam,
               height: this.width * (1 / 10),
               width: this.width * (6 / 10),
               textAlign: 'center',
@@ -114,7 +115,12 @@ export default class FilterModal extends Component {
                 component: (
                   <View style={{}}>
                     <Text
-                      style={{color: 'red', fontSize: 16, textAlign: 'center'}}>
+                      style={{
+                        fontFamily: global.fontFam,
+                        color: 'red',
+                        fontSize: 16,
+                        textAlign: 'center',
+                      }}>
                       {lang.AllGenders}
                     </Text>
                   </View>
@@ -154,6 +160,7 @@ export default class FilterModal extends Component {
             onPress={this.props.onPressSearch}>
             <Text
               style={{
+                fontFamily: global.fontFam,
                 textAlign: 'center',
                 color: global.themeColor,
                 fontSize: 17 * (this.width / 360),

@@ -396,6 +396,7 @@ export default class DeleteOptionsScreen extends Component<{}> {
             }}>
             <Text
               style={{
+                fontFamily: global.fontFam,
                 fontSize: 22,
                 color: global.isDarkMode
                   ? global.darkModeColors[3]

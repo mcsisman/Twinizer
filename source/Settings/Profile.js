@@ -819,6 +819,7 @@ export default class ProfileScreen extends Component<{}> {
                       }}>
                       <Text
                         style={{
+                          fontFamily: global.fontFam,
                           fontSize: 18 * (this.width / 360),
                           color: global.themeColor,
                         }}>
@@ -847,6 +848,7 @@ export default class ProfileScreen extends Component<{}> {
                     selection={this.state.selection}
                     numberOfLines={1}
                     style={{
+                      fontFamily: global.fontFam,
                       color: global.isDarkMode
                         ? global.darkModeColors[3]
                         : 'rgba(0,0,0,1)',
@@ -974,6 +976,7 @@ export default class ProfileScreen extends Component<{}> {
                   onPress={() => this.onPressSave()}>
                   <Text
                     style={{
+                      fontFamily: global.fontFam,
                       color: global.themeColor,
                       fontSize: 15 * (this.width / 360),
                     }}>

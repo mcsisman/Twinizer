@@ -66,6 +66,7 @@ export default class ProfileBioButton extends Component {
           multiline={true}
           maxLength={100}
           style={{
+            fontFamily: global.fontFam,
             paddingBottom: 0,
             color: global.isDarkMode
               ? global.darkModeColors[3]
@@ -87,6 +88,7 @@ export default class ProfileBioButton extends Component {
           }}>
           <Text
             style={{
+              fontFamily: global.fontFam,
               fontSize: 13 * (this.width / 360),
               opacity: 0.8,
               color: global.themeColor,

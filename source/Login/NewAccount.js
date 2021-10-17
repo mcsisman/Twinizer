@@ -365,6 +365,7 @@ export default class NewAccountScreen extends Component<{}> {
                         }}>
                         <TextField
                           style={{
+                            fontFamily: global.fontFam,
                             fontSize: 17 * (this.width / 360),
                             width: this.width * (6 / 10),
                           }}
@@ -402,6 +403,7 @@ export default class NewAccountScreen extends Component<{}> {
                         }}>
                         <TextField
                           style={{
+                            fontFamily: global.fontFam,
                             fontSize: 17 * (this.width / 360),
                             width: this.width * (6 / 10),
                           }}
@@ -440,6 +442,7 @@ export default class NewAccountScreen extends Component<{}> {
                         }}>
                         <TextField
                           style={{
+                            fontFamily: global.fontFam,
                             fontSize: 17 * (this.width / 360),
                             width: this.width * (6 / 10),
                           }}
@@ -481,6 +484,7 @@ export default class NewAccountScreen extends Component<{}> {
                         }}>
                         <TextField
                           style={{
+                            fontFamily: global.fontFam,
                             fontSize: 17 * (this.width / 360),
                             width: this.width * (6 / 10),
                           }}

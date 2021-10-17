@@ -109,6 +109,7 @@ export default class DisplayPrivacyScreen extends Component<{}> {
 
           <Text
             style={{
+              fontFamily: global.fontFam,
               paddingLeft: 10,
               paddingRight: 10,
               fontSize: 15,

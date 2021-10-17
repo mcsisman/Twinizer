@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
   View,
@@ -10,25 +10,23 @@ import {
   Dimensions,
   Image,
   Animated,
-  Easing
+  Easing,
 } from 'react-native';
 
 export default class BottomBar extends Component {
-
-  componentDidMount(){
-  }
+  componentDidMount() {}
   static navigationOptions = {
-      header: null,
+    header: null,
   };
-   static propTypes = {
+  static propTypes = {
     homeOnPress: PropTypes.func,
     msgOnPress: PropTypes.func,
     historyOnPress: PropTypes.func,
     settingsOnPress: PropTypes.func,
-    whichScreen: PropTypes.string
-  }
+    whichScreen: PropTypes.string,
+  };
 
-  render(){
+  render() {
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
     var homeColor;
@@ -43,11 +41,11 @@ export default class BottomBar extends Component {
     var msgTextColor;
     var historyTextColor;
     var settingsTextColor;
-    if(this.props.whichScreen == "Main"){
-      homeColor = "homered";
-      msgColor = "msggray";
-      historyColor = "historygray";
-      settingsColor = "settingsgray";
+    if (this.props.whichScreen == 'Main') {
+      homeColor = 'homered';
+      msgColor = 'msggray';
+      historyColor = 'historygray';
+      settingsColor = 'settingsgray';
       homeDisabled = true;
       msgDisabled = false;
       historyDisabled = false;
@@ -57,11 +55,11 @@ export default class BottomBar extends Component {
       historyTextColor = 'rgba(128,128,128,1)';
       settingsTextColor = 'rgba(128,128,128,1)';
     }
-    if(this.props.whichScreen == "Messages"){
-      homeColor = "homegray";
-      msgColor = "msgred";
-      historyColor = "historygray";
-      settingsColor = "settingsgray";
+    if (this.props.whichScreen == 'Messages') {
+      homeColor = 'homegray';
+      msgColor = 'msgred';
+      historyColor = 'historygray';
+      settingsColor = 'settingsgray';
       homeDisabled = false;
       msgDisabled = true;
       historyDisabled = false;
@@ -71,11 +69,11 @@ export default class BottomBar extends Component {
       historyTextColor = 'rgba(128,128,128,1)';
       settingsTextColor = 'rgba(128,128,128,1)';
     }
-    if(this.props.whichScreen == "History"){
-      homeColor = "homegray";
-      msgColor = "msggray";
-      historyColor = "historyred";
-      settingsColor = "settingsgray";
+    if (this.props.whichScreen == 'History') {
+      homeColor = 'homegray';
+      msgColor = 'msggray';
+      historyColor = 'historyred';
+      settingsColor = 'settingsgray';
       homeDisabled = false;
       msgDisabled = false;
       historyDisabled = true;
@@ -85,11 +83,11 @@ export default class BottomBar extends Component {
       historyTextColor = 'rgba(211,126,63,1)';
       settingsTextColor = 'rgba(128,128,128,1)';
     }
-    if(this.props.whichScreen == "Settings"){
-      homeColor = "homegray";
-      msgColor = "msggray";
-      historyColor = "historygray";
-      settingsColor = "settingsred";
+    if (this.props.whichScreen == 'Settings') {
+      homeColor = 'homegray';
+      msgColor = 'msggray';
+      historyColor = 'historygray';
+      settingsColor = 'settingsred';
       homeDisabled = false;
       msgDisabled = false;
       historyDisabled = false;
@@ -99,11 +97,11 @@ export default class BottomBar extends Component {
       historyTextColor = 'rgba(128,128,128,1)';
       settingsTextColor = 'rgba(211,126,63,1)';
     }
-    if(this.props.whichScreen == "Profile"){
-      homeColor = "homegray";
-      msgColor = "msggray";
-      historyColor = "historygray";
-      settingsColor = "settingsred";
+    if (this.props.whichScreen == 'Profile') {
+      homeColor = 'homegray';
+      msgColor = 'msggray';
+      historyColor = 'historygray';
+      settingsColor = 'settingsred';
       homeDisabled = false;
       msgDisabled = false;
       historyDisabled = false;
@@ -114,73 +112,141 @@ export default class BottomBar extends Component {
       settingsTextColor = 'rgba(211,126,63,1)';
     }
 
-    return(
+    return (
       <View
-        style = {{height: this.width/7, width:this.width, position: "absolute", bottom: 0, left: 0, flexDirection: "row",
-        flex: 1, borderColor: 'rgba(188,188,188,0.6)', borderTopWidth: 1, backgroundColor: 'rgba(188,192,204,0.5)'}}>
-
+        style={{
+          height: this.width / 7,
+          width: this.width,
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          flexDirection: 'row',
+          flex: 1,
+          borderColor: 'rgba(188,188,188,0.6)',
+          borderTopWidth: 1,
+          backgroundColor: 'rgba(188,192,204,0.5)',
+        }}>
         <TouchableOpacity
-        style = {{alignItems: 'center', justifyContent: 'center', width: this.width/4, height: this.width/7}}
-        activeOpacity = {1}
-        disabled = {homeDisabled}
-        onPress = {this.props.homeOnPress}>
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: this.width / 4,
+            height: this.width / 7,
+          }}
+          activeOpacity={1}
+          disabled={homeDisabled}
+          onPress={this.props.homeOnPress}>
           <Image
-          style={{top: '5%', position: 'absolute', width: "40%", height: "70%"}}
-          source = {{uri: homeColor}}>
-          </Image>
+            style={{
+              top: '5%',
+              position: 'absolute',
+              width: '40%',
+              height: '70%',
+            }}
+            source={{uri: homeColor}}></Image>
           <Text
-          style = {{bottom: '5%', position: 'absolute', color: homeTextColor, fontSize: 12*(this.width/360) }}>
-          Home
+            style={{
+              fontFamily: global.fontFam,
+              bottom: '5%',
+              position: 'absolute',
+              color: homeTextColor,
+              fontSize: 12 * (this.width / 360),
+            }}>
+            Home
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-        style = {{alignItems: 'center', justifyContent: 'center', width: this.width/4, height: this.width/7}}
-        activeOpacity = {1}
-        disabled = {msgDisabled}
-        onPress = {this.props.msgOnPress}>
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: this.width / 4,
+            height: this.width / 7,
+          }}
+          activeOpacity={1}
+          disabled={msgDisabled}
+          onPress={this.props.msgOnPress}>
           <Image
-          style={{top: '5%', position: 'absolute', width: "32%", height: "56%"}}
-          source = {{uri: msgColor}}>
-          </Image>
+            style={{
+              top: '5%',
+              position: 'absolute',
+              width: '32%',
+              height: '56%',
+            }}
+            source={{uri: msgColor}}></Image>
           <Text
-          style = {{bottom: '5%', position: 'absolute', color: msgTextColor, fontSize: 12*(this.width/360) }}>
-          Messages
+            style={{
+              fontFamily: global.fontFam,
+              bottom: '5%',
+              position: 'absolute',
+              color: msgTextColor,
+              fontSize: 12 * (this.width / 360),
+            }}>
+            Messages
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-        style = {{alignItems: 'center', justifyContent: 'center', width: this.width/4, height: this.width/7}}
-        activeOpacity = {1}
-        disabled = {historyDisabled}
-        onPress = {this.props.historyOnPress}>
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: this.width / 4,
+            height: this.width / 7,
+          }}
+          activeOpacity={1}
+          disabled={historyDisabled}
+          onPress={this.props.historyOnPress}>
           <Image
-          style={{top: '5%', position: 'absolute', width: "40%", height: "56%"}}
-          source = {{uri: historyColor}}>
-          </Image>
+            style={{
+              top: '5%',
+              position: 'absolute',
+              width: '40%',
+              height: '56%',
+            }}
+            source={{uri: historyColor}}></Image>
           <Text
-          style = {{bottom: '5%', position: 'absolute', color: historyTextColor, fontSize: 12*(this.width/360) }}>
-          History
+            style={{
+              fontFamily: global.fontFam,
+              bottom: '5%',
+              position: 'absolute',
+              color: historyTextColor,
+              fontSize: 12 * (this.width / 360),
+            }}>
+            History
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-        style = {{alignItems: 'center', justifyContent: 'center', width: this.width/4, height: this.width/7}}
-        activeOpacity = {1}
-        disabled = {settingsDisabled}
-        onPress = {this.props.settingsOnPress}>
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: this.width / 4,
+            height: this.width / 7,
+          }}
+          activeOpacity={1}
+          disabled={settingsDisabled}
+          onPress={this.props.settingsOnPress}>
           <Image
-          style={{top: '10%', position: 'absolute', width: "28%", height: "49%"}}
-          source = {{uri: settingsColor}}>
-          </Image>
+            style={{
+              top: '10%',
+              position: 'absolute',
+              width: '28%',
+              height: '49%',
+            }}
+            source={{uri: settingsColor}}></Image>
           <Text
-          style = {{bottom: '5%', position: 'absolute', color: settingsTextColor, fontSize: 12*(this.width/360) }}>
-          Settings
+            style={{
+              fontFamily: global.fontFam,
+              bottom: '5%',
+              position: 'absolute',
+              color: settingsTextColor,
+              fontSize: 12 * (this.width / 360),
+            }}>
+            Settings
           </Text>
         </TouchableOpacity>
-
       </View>
-    )
+    );
   }
 }
 

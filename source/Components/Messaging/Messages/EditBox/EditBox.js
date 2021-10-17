@@ -75,6 +75,7 @@ export default class EditBox extends Component {
               disabled={false}>
               <Text
                 style={{
+                  fontFamily: global.fontFam,
                   fontSize: (17 * this.width) / 360,
                   color: global.isDarkMode
                     ? 'rgba(211,211,211,1)'
@@ -94,6 +95,7 @@ export default class EditBox extends Component {
               onPress={this.props.messageSelectAll}>
               <Text
                 style={{
+                  fontFamily: global.fontFam,
                   fontSize: (17 * this.width) / 360,
                   color: global.isDarkMode
                     ? 'rgba(211,211,211,1)'
@@ -115,6 +117,7 @@ export default class EditBox extends Component {
               onPress={this.props.messageDonePress}>
               <Text
                 style={{
+                  fontFamily: global.fontFam,
                   fontSize: (17 * this.width) / 360,
                   color: global.isDarkMode
                     ? 'rgba(211,211,211,1)'
@@ -147,6 +150,7 @@ export default class EditBox extends Component {
               disabled={false}>
               <Text
                 style={{
+                  fontFamily: global.fontFam,
                   fontSize: (17 * this.width) / 360,
                   color: global.isDarkMode
                     ? 'rgba(211,211,211,1)'
@@ -166,6 +170,7 @@ export default class EditBox extends Component {
               onPress={this.props.requestSelectAll}>
               <Text
                 style={{
+                  fontFamily: global.fontFam,
                   fontSize: (17 * this.width) / 360,
                   color: global.isDarkMode
                     ? 'rgba(211,211,211,1)'
@@ -187,6 +192,7 @@ export default class EditBox extends Component {
               onPress={this.props.requestDonePress}>
               <Text
                 style={{
+                  fontFamily: global.fontFam,
                   fontSize: (17 * this.width) / 360,
                   color: global.isDarkMode
                     ? 'rgba(211,211,211,1)'
@@ -224,6 +230,7 @@ export default class EditBox extends Component {
               disabled={this.props.messageArray.length == 0 ? true : false}>
               <Text
                 style={{
+                  fontFamily: global.fontFam,
                   fontSize: (17 * this.width) / 360,
                   color: global.isDarkMode
                     ? 'rgba(211,211,211,1)'
@@ -259,6 +266,7 @@ export default class EditBox extends Component {
               disabled={this.props.requestArray.length == 0 ? true : false}>
               <Text
                 style={{
+                  fontFamily: global.fontFam,
                   fontSize: (17 * this.width) / 360,
                   color: global.isDarkMode
                     ? 'rgba(211,211,211,1)'

@@ -86,6 +86,9 @@ class Appp extends React.Component {
   }
 
   async componentDidMount() {
+    if (Platform.OS == 'android') {
+      global.fontFam = '';
+    }
     this._subscribe = this.props.navigation.addListener('focus', async () => {
       this.initializeGlobalVariables();
       global.keyboardHeight = await EncryptedStorage.getItem('keyboardHeight');
@@ -247,136 +250,6 @@ class Appp extends React.Component {
   }
 }
 console.disableYellowBox = true;
-
-if (global.language == 'tr_TR') {
-  global.countries = [];
-  //Splash
-  global.langLogin = 'Giriş Yap';
-  global.langForgotPassword = 'Şifremi Unuttum';
-  global.langSignUp = 'Kaydol';
-  global.langEmail = 'e-posta';
-  global.langPassword = 'şifre';
-  //Sign Up
-  global.langUsername = 'Kullanıcı Adı';
-  global.langConfirmPassword = 'Şifreni Doğrula';
-  global.langCreate = 'ÜYE OL';
-  //Forgot Password
-  global.langSendEmail = 'E-POSTA GÖNDER';
-  //Country
-  global.langCompleteYourProfile = 'Profilini Tamamla';
-  global.langSelectCountry = 'Lütfen Ülkeni Seç.';
-  global.langCountry = 'Ülke';
-  global.langNext = 'İLERİ';
-  //Gender
-  global.langSelectGender = 'Lütfen Bilgilerini Gir.';
-  global.langMale = 'ERKEK';
-  global.langFemale = 'KADIN';
-  //ProfileUpload
-  global.langProfileScreen = 'Lütfen bir Profil Fotoğrafı Yükleyin.';
-  global.langProfileAlert =
-    'Lütfen sadece sizin yüzünüzün olduğu bir fotoğraf yükleyin. Bu profil fotoğrafı diğer kullanıcılar tarafından görülebilir.';
-  global.langBioAlert =
-    'Lütfen buraya bir mesaj girin. Bu mesaj, sizi görüntüleyen insanlar tarafından görüntülenebilir.';
-  global.langGotIt = 'ANLADIM!';
-  global.langTapHere = 'Buraya Dokun';
-  global.langUploadPhoto = 'Bir Fotoğraf Yükle';
-  global.langTakePhoto = 'Fotoğraf Çek...';
-  global.langLibrary = 'Kütüphaneden Seç...';
-  global.langCancel = 'İptal';
-  //ImageUpload
-  global.langImageUploadScreen = 'Lütfen Dört Fotoğraf Yükleyin.';
-  global.langImageAlert =
-    'Lütfen sadece sizin yüzünüzün olduğu bir fotoğraf yükleyin. Bu fotoğraflar diğer kullanıcılar tarafından görüntülenemez.\nFotoğraflarınız profilinizin modelini oluşturmak için kullanılacaktır. Bu model, profilinizin diğer kullanıcıların yaptığı aramalarda görülmesini sağlar.';
-  global.langDone = 'BİTİR';
-  //Main
-  global.langSearchPhoto = 'Bir fotoğraf ile arayın';
-  global.langGender = 'Cinsiyet';
-  global.langFilters = 'Filtreler';
-  global.langSearch = 'ARA';
-  global.langAllGenders = 'Tüm Cinsiyetler';
-  global.langFilterMale = 'Erkek';
-  global.langFilterFemale = 'Kadın';
-  //Alerts
-  global.langEmailNotVerified = 'Bu e-posta henüz doğrulanmamış.';
-  global.langPlsTryAgain = 'Lütfen Tekrar Deneyin.';
-  global.langWrongEmailPassword = 'Yanlış e-posta veya şifre!';
-  global.langVerificationSent = 'Doğrulama maili gönderildi.';
-  global.langInvalidEmail = 'E-posta adresi geçerli değil.';
-  global.langEmailAlready = 'Bu e-posta adresi zaten kullanılıyor.';
-  global.langPlsEnterEmailUsername = 'Lütfen e-posta ve kullanıcı adı giriniz.';
-  global.langPlsEnterUsername = 'Lütfen kullanıcı adınızı giriniz.';
-  global.langPlsEnterEmail = 'Lütfen e-posta adresinizi giriniz.';
-  global.langPasswordCharacter = 'Şifre en az 6 karakter barındırmalı.';
-  global.langPasswordMatch = 'Şifreniz ve doğrulama şifreniz eşleşmiyor.';
-  global.langPlsCheckEmail = 'Lütfen e-posta adresinizi kontrol edin.';
-  global.langEmailNotRegistered = 'Bu e-posta adresi kayıtlı değil.';
-  //Welcome photo
-  global.welcomePhoto = 'hosgeldin';
-} else {
-  //Splash
-  global.langLogin = 'Login';
-  global.langForgotPassword = 'Forgot Password?';
-  global.langSignUp = 'Sign Up';
-  global.langEmail = 'email';
-  global.langPassword = 'password';
-  //Sign Up
-  global.langUsername = 'username';
-  global.langConfirmPassword = 'confirm password';
-  global.langCreate = 'CREATE';
-  //Forgot Password
-  global.langSendEmail = 'SEND EMAIL';
-  //Country
-  global.langCompleteYourProfile = 'Complete Your Profile';
-  global.langSelectCountry = 'Please Select Your Country';
-  global.langCountry = 'Country';
-  global.langNext = 'NEXT';
-  //Gender
-  global.langSelectGender = 'Please Enter Your Information.';
-  global.langMale = 'MALE';
-  global.langFemale = 'FEMALE';
-  //ProfileUpload
-  global.langProfileScreen = 'Please Upload a Profile Photo.';
-  global.langProfileAlert =
-    'Please make sure to choose a photo that includes your face only. Your profile photo can be seen by other users.';
-  global.langBioAlert =
-    'Please write your message here. This message can be seen by people displaying you.';
-  global.langGotIt = 'GOT IT!';
-  global.langTapHere = 'Tap Here';
-  global.langUploadPhoto = 'Upload a Photo';
-  global.langTakePhoto = 'Camera';
-  global.langLibrary = 'Library';
-  global.langCancel = 'Cancel';
-  //ImageUpload
-  global.langImageUploadScreen = 'Please Upload Four Photos.';
-  global.langImageAlert =
-    "Please make sure to choose photos that include your face only. These photos will not be visible to any user.\nYour photos will be used to create a model of your profile. This model will allow your profile to appear in other users' search results.";
-  global.langDone = 'DONE';
-  //Main
-  global.langSearchPhoto = 'Search with a photo';
-  global.langGender = 'Gender';
-  global.langFilters = 'Filters';
-  global.langSearch = 'SEARCH';
-  global.langAllGenders = 'All Genders';
-  global.langFilterMale = 'Male';
-  global.langFilterFemale = 'Female';
-  //Alerts
-  global.langEmailNotVerified = 'This email is not verified.';
-  global.langPlsTryAgain = 'Please Try Again.';
-  global.langWrongEmailPassword = 'Wrong email or password!';
-  global.langVerificationSent = 'Verification email sent.';
-  global.langInvalidEmail = 'The email address is invalid.';
-  global.langEmailAlready = 'This email has already been registered.';
-  global.langPlsEnterEmailUsername = 'Please enter your email and username.';
-  global.langPlsEnterUsername = 'Please enter your username.';
-  global.langPlsEnterEmail = 'Please enter your email.';
-  global.langPasswordCharacter = 'Password must be at least 6 characters.';
-  global.langPasswordMatch =
-    'Your password and confirmation password does not match.';
-  global.langPlsCheckEmail = 'Please check your email...';
-  global.langEmailNotRegistered = 'This email is not registered.';
-  //Welcome photo
-  global.welcomePhoto = 'welcome';
-}
 
 const config = {
   animation: 'timing',
@@ -547,6 +420,7 @@ function MyTabBar({state, descriptors, navigation}) {
 
             <Text
               style={{
+                fontFamily: global.fontFam,
                 bottom: '5%',
                 position: 'absolute',
                 color: isFocused ? global.themeColor : 'rgba(128,128,128,1)',

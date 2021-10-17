@@ -198,10 +198,7 @@ export default class LoginScreen extends Component<{}> {
       inputRange: [0, 1],
       outputRange: ['0deg', '360deg'],
     });
-    var fontFam;
-    if (Platform.OS == 'android') {
-      fontFam = '';
-    }
+
     const {navigate} = this.props.navigation;
     var lang = language[global.lang];
     var keyboardAvoidingHeight;
@@ -321,7 +318,7 @@ export default class LoginScreen extends Component<{}> {
                       this.setState({keyboardOpen: true});
                     }}
                     style={{
-                      fontFamily: fontFam,
+                      fontFamily: global.fontFam,
                       paddingLeft: 0,
                       paddingBottom: this.width / 50,
                       fontSize: 17 * (this.width / 360),
@@ -352,7 +349,7 @@ export default class LoginScreen extends Component<{}> {
                       this.setState({keyboardOpen: true});
                     }}
                     style={{
-                      fontFamily: fontFam,
+                      fontFamily: global.fontFam,
                       paddingLeft: 0,
                       paddingBottom: this.width / 50,
                       fontSize: 17 * (this.width / 360),
@@ -389,7 +386,7 @@ export default class LoginScreen extends Component<{}> {
                     onPress={() => this.check()}>
                     <Text
                       style={{
-                        fontFamily: fontFam,
+                        fontFamily: global.fontFam,
                         textAlign: 'center',
                         color: 'white',
                         fontSize: 17 * (this.width / 360),
@@ -420,7 +417,7 @@ export default class LoginScreen extends Component<{}> {
                 onPress={() => navigate('NewAccount')}>
                 <Text
                   style={{
-                    fontFamily: fontFam,
+                    fontFamily: global.fontFam,
                     textAlign: 'right',
                     color: 'white',
                     fontSize: 18 * (this.width / 360),
@@ -440,7 +437,7 @@ export default class LoginScreen extends Component<{}> {
                 onPress={() => navigate('ForgotPassword')}>
                 <Text
                   style={{
-                    fontFamily: fontFam,
+                    fontFamily: global.fontFam,
                     textAlign: 'left',
                     color: 'white',
                     fontSize: 18 * (this.width / 360),

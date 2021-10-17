@@ -77,6 +77,7 @@ export default class CustomHeader extends Component {
             }}>
             <Text
               style={{
+                fontFamily: global.fontFam,
                 fontSize: (24 * this.width) / 360,
                 color: global.themeColor,
                 fontWeight: 'bold',
@@ -143,6 +144,7 @@ export default class CustomHeader extends Component {
               }}>
               <Text
                 style={{
+                  fontFamily: global.fontFam,
                   fontSize: (24 * this.width) / 360,
                   color: global.themeColor,
                   fontWeight: 'bold',
@@ -214,6 +216,7 @@ export default class CustomHeader extends Component {
               }}>
               <Text
                 style={{
+                  fontFamily: global.fontFam,
                   fontSize: (24 * this.width) / 360,
                   color: global.themeColor,
                   fontWeight: 'bold',
@@ -279,6 +282,7 @@ export default class CustomHeader extends Component {
               }}>
               <Text
                 style={{
+                  fontFamily: global.fontFam,
                   fontSize: (24 * this.width) / 360,
                   color: global.themeColor,
                   fontWeight: 'bold',
@@ -336,6 +340,7 @@ export default class CustomHeader extends Component {
 
               <Text
                 style={{
+                  fontFamily: global.fontFam,
                   fontSize: (24 * this.width) / 360,
                   color: global.themeColor,
                   fontWeight: 'bold',

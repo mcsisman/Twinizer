@@ -451,6 +451,7 @@ export default class UserInfoScreen extends Component<{}> {
                 }>
                 <Text
                   style={{
+                    fontFamily: global.fontFam,
                     fontSize: 18 * (this.width / 360),
                     color: this.state.dateSet ? global.themeColor : 'gray',
                   }}>

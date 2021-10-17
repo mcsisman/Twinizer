@@ -119,37 +119,39 @@ export default class AuthenticationModal extends Component {
           EncryptedStorage.removeItem(auth().currentUser.uid + 'mode');
           await firestore()
             .collection(auth().currentUser.uid)
-            .doc('MessageInformation').get().then(async (doc) => {
-            //console.log('firestore içi');
-            if (doc.exists) {
-              var conversationUidArray = await doc.data()['UidArray'];
-              for (let i = 0; i < conversationUidArray.length; i++) {
-                EncryptedStorage.removeItem(
-                  auth().currentUser.uid +
-                    conversationUidArray[i] +
-                    '/messages',
-                );
-                EncryptedStorage.removeItem(
-                  'IsRequest/' +
+            .doc('MessageInformation')
+            .get()
+            .then(async (doc) => {
+              //console.log('firestore içi');
+              if (doc.exists) {
+                var conversationUidArray = await doc.data()['UidArray'];
+                for (let i = 0; i < conversationUidArray.length; i++) {
+                  EncryptedStorage.removeItem(
                     auth().currentUser.uid +
-                    '/' +
-                    conversationUidArray[i],
-                );
-                EncryptedStorage.removeItem(
-                  'ShowMessageBox/' +
+                      conversationUidArray[i] +
+                      '/messages',
+                  );
+                  EncryptedStorage.removeItem(
+                    'IsRequest/' +
+                      auth().currentUser.uid +
+                      '/' +
+                      conversationUidArray[i],
+                  );
+                  EncryptedStorage.removeItem(
+                    'ShowMessageBox/' +
+                      auth().currentUser.uid +
+                      '/' +
+                      conversationUidArray[i],
+                  );
+                  EncryptedStorage.removeItem(
                     auth().currentUser.uid +
-                    '/' +
-                    conversationUidArray[i],
-                );
-                EncryptedStorage.removeItem(
-                  auth().currentUser.uid +
-                    '' +
-                    conversationUidArray[i] +
-                    'lastSeen',
-                );
+                      '' +
+                      conversationUidArray[i] +
+                      'lastSeen',
+                  );
+                }
               }
-            }
-          });
+            });
           // firestore delete
           await firestore()
             .collection(auth().currentUser.uid)
@@ -161,16 +163,16 @@ export default class AuthenticationModal extends Component {
             .catch((error) => {
               //console.log(error);
             });
-            await firestore()
-              .collection(auth().currentUser.uid)
-              .doc('Users')
-              .delete()
-              .then(() => {
-                //console.log('ModelResult deleted!');
-              })
-              .catch((error) => {
-                //console.log(error);
-              });
+          await firestore()
+            .collection(auth().currentUser.uid)
+            .doc('Users')
+            .delete()
+            .then(() => {
+              //console.log('ModelResult deleted!');
+            })
+            .catch((error) => {
+              //console.log(error);
+            });
           await firestore()
             .collection(auth().currentUser.uid)
             .doc('Bios')
@@ -207,7 +209,8 @@ export default class AuthenticationModal extends Component {
             .delete()
             .then(() => {
               //console.log('Funcdone deleted!');
-            }).catch((error) => {
+            })
+            .catch((error) => {
               //console.log(error);
             });
           // storage delete
@@ -246,7 +249,8 @@ export default class AuthenticationModal extends Component {
             .delete()
             .then(() => {
               //console.log('3 deleted!');
-            }).catch((error) => {
+            })
+            .catch((error) => {
               //console.log(error);
             });
           await storage()
@@ -254,7 +258,8 @@ export default class AuthenticationModal extends Component {
             .delete()
             .then(() => {
               //console.log('4 deleted!');
-            }).catch((error) => {
+            })
+            .catch((error) => {
               //console.log(error);
             });
           await storage()
@@ -262,7 +267,8 @@ export default class AuthenticationModal extends Component {
             .delete()
             .then(() => {
               //console.log('5 deleted!');
-            }).catch((error) => {
+            })
+            .catch((error) => {
               //console.log(error);
             });
           await storage()
@@ -270,7 +276,8 @@ export default class AuthenticationModal extends Component {
             .delete()
             .then(() => {
               //console.log('embeddings deleted!');
-            }).catch((error) => {
+            })
+            .catch((error) => {
               //console.log(error);
             });
           await storage()
@@ -278,7 +285,8 @@ export default class AuthenticationModal extends Component {
             .delete()
             .then(() => {
               //console.log('1 deleted!');
-            }).catch((error) => {
+            })
+            .catch((error) => {
               //console.log(error);
             });
           // realtime remove
@@ -287,7 +295,8 @@ export default class AuthenticationModal extends Component {
             .remove()
             .then(() => {
               //console.log('playerId deleted!');
-            }).catch((error) => {
+            })
+            .catch((error) => {
               //console.log(error);
             });
           await database()
@@ -295,17 +304,19 @@ export default class AuthenticationModal extends Component {
             .remove()
             .then(() => {
               //console.log('user info deleted!');
-            }).catch((error) => {
+            })
+            .catch((error) => {
               //console.log(error);
             });
-            await database()
-              .ref('/Messages/' + auth().currentUser.uid)
-              .remove()
-              .then(() => {
-                //console.log('user info deleted!');
-              }).catch((error) => {
-                //console.log(error);
-              });
+          await database()
+            .ref('/Messages/' + auth().currentUser.uid)
+            .remove()
+            .then(() => {
+              //console.log('user info deleted!');
+            })
+            .catch((error) => {
+              //console.log(error);
+            });
           // delete account from authentication
           await auth()
             .currentUser.delete()
@@ -400,7 +411,11 @@ export default class AuthenticationModal extends Component {
                 <Text
                   numberOfLines={3}
                   adjustsFontSizeToFit={true}
-                  style={{fontSize: 17 * (this.width / 360), color: 'white'}}>
+                  style={{
+                    fontFamily: global.fontFam,
+                    fontSize: 17 * (this.width / 360),
+                    color: 'white',
+                  }}>
                   {lang.VerifyEmailPW}
                 </Text>
               </View>
@@ -424,6 +439,7 @@ export default class AuthenticationModal extends Component {
                   onFocus={this.props.onFocus}
                   keyboardType="email-address"
                   style={{
+                    fontFamily: global.fontFam,
                     fontSize: 16 * (this.width / 360),
                     width: this.width * (6 / 10),
                     height: (this.height * 6) / 100,
@@ -443,6 +459,7 @@ export default class AuthenticationModal extends Component {
                   onFocus={this.props.onFocus}
                   secureTextEntry
                   style={{
+                    fontFamily: global.fontFam,
                     fontSize: 16 * (this.width / 360),
                     width: this.width * (6 / 10),
                     height: (this.height * 6) / 100,
@@ -476,6 +493,7 @@ export default class AuthenticationModal extends Component {
                   }}>
                   <Text
                     style={{
+                      fontFamily: global.fontFam,
                       textAlign: 'center',
                       color: 'white',
                       fontSize: 18 * (this.width / 360),

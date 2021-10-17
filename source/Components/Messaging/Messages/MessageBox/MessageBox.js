@@ -129,6 +129,7 @@ export default class MessageBox extends Component {
               }}>
               <Text
                 style={{
+                  fontFamily: global.fontFam,
                   fontSize: (18 * this.width) / 360,
                   color: global.isDarkMode ? 'white' : 'rgba(0,0,0,1)',
                 }}>
@@ -165,6 +166,7 @@ export default class MessageBox extends Component {
               <Text
                 numberOfLines={2}
                 style={{
+                  fontFamily: global.fontFam,
                   fontStyle:
                     messageText == lang.NoMessage ? 'italic' : 'normal',
                   fontSize: (16 * this.width) / 360,
@@ -191,6 +193,7 @@ export default class MessageBox extends Component {
               adjustsFontSizeToFit={true}
               numberOfLines={1}
               style={{
+                fontFamily: global.fontFam,
                 marginRight: 5,
                 fontSize: (14 * this.width) / 360,
                 top: (this.width * 2) / 100,

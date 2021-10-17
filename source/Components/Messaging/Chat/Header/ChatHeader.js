@@ -100,6 +100,7 @@ export default class ChatHeader extends Component {
             }}>
             <Text
               style={{
+                fontFamily: global.fontFam,
                 fontSize: (21 * this.width) / 360,
                 position: 'absolute',
                 color: global.isDarkMode

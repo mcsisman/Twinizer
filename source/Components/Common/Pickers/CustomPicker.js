@@ -110,6 +110,7 @@ export default class CustomPicker extends Component {
               spellCheck={false}
               autoCorrect={false}
               style={{
+                fontFamily: global.fontFam,
                 paddingBottom: 0,
                 paddingLeft: 0,
                 fontSize: 18 * (this.width / 360),
@@ -187,6 +188,7 @@ export default class CustomPicker extends Component {
               spellCheck={false}
               autoCorrect={false}
               style={{
+                fontFamily: global.fontFam,
                 height: 40,
                 borderRadius: this.props.borderRadius,
                 fontSize: 14 * (this.width / 360),

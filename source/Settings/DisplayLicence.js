@@ -111,6 +111,7 @@ export default class DisplayLicenceScreen extends Component<{}> {
           <View style={{alignItems: 'center', height: this.width / 12}}>
             <Text
               style={{
+                fontFamily: global.fontFam,
                 fontSize: 15,
                 color: global.isDarkMode
                   ? global.darkModeColors[3]
@@ -122,6 +123,7 @@ export default class DisplayLicenceScreen extends Component<{}> {
 
           <Text
             style={{
+              fontFamily: global.fontFam,
               fontSize: 15,
               color: global.isDarkMode
                 ? global.darkModeColors[3]

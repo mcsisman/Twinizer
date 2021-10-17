@@ -306,6 +306,7 @@ export default class ThemeSettingsScreen extends Component<{}> {
               }}>
               <Text
                 style={{
+                  fontFamily: global.fontFam,
                   color: global.isDarkMode
                     ? global.darkModeColors[3]
                     : 'rgba(88,88,88,1)',

@@ -69,6 +69,7 @@ export default class ImageUploader extends Component {
         />
         <Text
           style={{
+            fontFamily: global.fontFam,
             color: global.themeColor,
             bottom: '60%',
             opacity: this.props.textOpacity,

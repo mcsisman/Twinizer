@@ -95,6 +95,7 @@ export default class CarouselItem extends Component {
             }}>
             <Text
               style={{
+                fontFamily: global.fontFam,
                 color: global.isDarkMode ? 'white' : '#333333',
                 fontSize: (this.width / 360) * 15,
               }}>
@@ -110,6 +111,7 @@ export default class CarouselItem extends Component {
             }}>
             <Text
               style={{
+                fontFamily: global.fontFam,
                 color: global.isDarkMode ? 'white' : '#333333',
                 fontSize: (this.width / 360) * 13,
               }}>

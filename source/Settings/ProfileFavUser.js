@@ -330,6 +330,7 @@ export default class ProfileFavUserScreen extends Component<{}> {
                   adjustsFontSizeToFit={true}
                   numberOfLines={1}
                   style={{
+                    fontFamily: global.fontFam,
                     marginHorizontal: 5,
                     color: global.isDarkMode
                       ? global.darkModeColors[3]
@@ -365,6 +366,7 @@ export default class ProfileFavUserScreen extends Component<{}> {
                   adjustsFontSizeToFit={true}
                   numberOfLines={1}
                   style={{
+                    fontFamily: global.fontFam,
                     marginHorizontal: 5,
                     color: global.isDarkMode
                       ? global.darkModeColors[3]
@@ -398,6 +400,7 @@ export default class ProfileFavUserScreen extends Component<{}> {
                 }}>
                 <Text
                   style={{
+                    fontFamily: global.fontFam,
                     color: global.isDarkMode
                       ? global.darkModeColors[3]
                       : 'rgba(0,0,0,1)',
@@ -434,6 +437,7 @@ export default class ProfileFavUserScreen extends Component<{}> {
               }}>
               <Text
                 style={{
+                  fontFamily: global.fontFam,
                   color: global.isDarkMode
                     ? global.darkModeColors[3]
                     : 'rgba(0,0,0,1)',

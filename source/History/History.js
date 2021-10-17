@@ -443,6 +443,7 @@ export default class HistoryScreen extends Component<{}> {
             }}>
             <Text
               style={{
+                fontFamily: global.fontFam,
                 fontSize: (20 * this.width) / 360,
                 color: global.isDarkMode
                   ? global.darkModeColors[3]

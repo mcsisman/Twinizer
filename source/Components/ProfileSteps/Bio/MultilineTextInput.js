@@ -54,6 +54,7 @@ export default class MultilineTextInput extends Component {
           }
           placeholder={this.props.placeHolder}
           style={{
+            fontFamily: global.fontFam,
             paddingLeft: 0,
             paddingBottom: 0,
             color: global.isDarkMode
@@ -77,6 +78,7 @@ export default class MultilineTextInput extends Component {
           }}>
           <Text
             style={{
+              fontFamily: global.fontFam,
               color: global.themeColor,
               fontSize: 18 * (this.width / 360),
               opacity: 0.4,

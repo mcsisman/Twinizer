@@ -114,6 +114,7 @@ export default class ChatSendImgBottomBar extends Component {
               spellCheck={false}
               autoCorrect={false}
               style={{
+                fontFamily: global.fontFam,
                 height: (this.width * 0.87) / 10,
                 paddingLeft: 10,
                 paddingRight: 10,
@@ -158,6 +159,7 @@ export default class ChatSendImgBottomBar extends Component {
                 adjustsFontSizeToFit={true}
                 numberOfLines={1}
                 style={{
+                  fontFamily: global.fontFam,
                   fontSize: 14 * (this.width / 360),
                   fontWeight: 'bold',
                   color: 'white',
