@@ -463,9 +463,17 @@ class MessagesScreen extends Component<{}> {
               appendExt: 'jpg',
               path:
                 dirs.DocumentDir + '/' + conversationUidArray[i] + 'y' + '.jpg',
-            }).fetch('GET', downloadURL, {
-              //some headers ..
-            });
+            })
+              .fetch('GET', downloadURL, {
+                //some headers ..
+              })
+              .then((res) => {
+                console.log('download oldu 4');
+              })
+              .catch((errorMessage, statusCode) => {
+                console.log('error 3');
+                console.log(errorMessage);
+              });
           }
         }
       }
@@ -570,9 +578,17 @@ class MessagesScreen extends Component<{}> {
         fileCache: true,
         appendExt: 'jpg',
         path: dirs.DocumentDir + '/' + conversationUid + 'y' + '.jpg',
-      }).fetch('GET', downloadURL, {
-        //some headers ..
-      });
+      })
+        .fetch('GET', downloadURL, {
+          //some headers ..
+        })
+        .then((res) => {
+          console.log('download oldu 1');
+        })
+        .catch((errorMessage, statusCode) => {
+          console.log('error 4');
+          console.log(errorMessage);
+        });
     }
     await this.updatePlayerIds(snap, i);
     conversationUsernameArray[i] = snap.val();
@@ -696,9 +712,17 @@ class MessagesScreen extends Component<{}> {
             fileCache: true,
             appendExt: 'jpg',
             path: dirs.DocumentDir + '/' + differenceArray[i] + 'y' + '.jpg',
-          }).fetch('GET', urlArray[i], {
-            //some headers ..
-          });
+          })
+            .fetch('GET', urlArray[i], {
+              //some headers ..
+            })
+            .then((res) => {
+              console.log('download oldu 2');
+            })
+            .catch((errorMessage, statusCode) => {
+              console.log('error 1');
+              console.log(errorMessage);
+            });
         }
       }
     } else {
@@ -731,9 +755,17 @@ class MessagesScreen extends Component<{}> {
           fileCache: true,
           appendExt: 'jpg',
           path: dirs.DocumentDir + '/' + differenceArray[i] + 'y' + '.jpg',
-        }).fetch('GET', urlArray[i], {
-          //some headers ..
-        });
+        })
+          .fetch('GET', urlArray[i], {
+            //some headers ..
+          })
+          .then((res) => {
+            console.log('download oldu 3');
+          })
+          .catch((errorMessage, statusCode) => {
+            console.log('error 2');
+            console.log(errorMessage);
+          });
       }
     }
     for (let i = 0; i < conversationUidArray.length; i++) {

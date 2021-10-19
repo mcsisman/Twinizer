@@ -104,14 +104,12 @@ export default class UserInfoScreen extends Component<{}> {
       ) {
         //console.log('date set if');
         this.setState({
-          disabled: true,
           buttonOpacity: global.themeColor,
           opacity: 0.4,
         });
       } else {
         //console.log('date set else');
         this.setState({
-          disabled: false,
           buttonOpacity: global.themeColor,
           opacity: 1,
         });
@@ -121,29 +119,19 @@ export default class UserInfoScreen extends Component<{}> {
     }
   }
   maleSelected() {
-    if (
-      global.globalCountry == null ||
-      global.globalCountry == '' ||
-      global.globalBirthday == null ||
-      global.globalBirthday == ''
-    ) {
-      // MALE IS SELECTED, COUNTRY IS NOT SELECTED
+    if (global.globalGender == 'Male') {
+      console.log('if');
       this.setState({
-        maleBG: global.themeColor,
-        maleText: global.isDarkMode
+        maleBG: global.isDarkMode
           ? global.darkModeColors[1]
           : 'rgba(255,255,255,1)',
-        femaleBG: global.isDarkMode
-          ? global.darkModeColors[1]
-          : 'rgba(255,255,255,1)',
-        femaleText: global.themeColor,
-        disabled: true,
+        maleText: global.themeColor,
         buttonOpacity: global.themeColor,
-        gender: 'Male',
-        opacity: 0.4,
+        gender: '',
       });
+      global.globalGender = '';
     } else {
-      // MALE IS SELECTED, COUNTRY IS SELECTED
+      console.log('testelse');
       this.setState({
         maleBG: global.themeColor,
         maleText: global.isDarkMode
@@ -153,38 +141,24 @@ export default class UserInfoScreen extends Component<{}> {
           ? global.darkModeColors[1]
           : 'rgba(255,255,255,1)',
         femaleText: global.themeColor,
-        disabled: false,
         buttonOpacity: global.themeColor,
         gender: 'Male',
-        opacity: 1,
       });
+      global.globalGender = 'Male';
     }
-    global.globalGender = 'Male';
   }
   femaleSelected() {
-    // FEMALE IS SELECTED, COUNTRY IS NOT SELECTED
-    if (
-      global.globalCountry == null ||
-      global.globalCountry == '' ||
-      global.globalBirthday == null ||
-      global.globalBirthday == ''
-    ) {
+    if (global.globalGender == 'Female') {
       this.setState({
-        femaleBG: global.themeColor,
-        femaleText: global.isDarkMode
+        femaleBG: global.isDarkMode
           ? global.darkModeColors[1]
           : 'rgba(255,255,255,1)',
-        maleBG: global.isDarkMode
-          ? global.darkModeColors[1]
-          : 'rgba(255,255,255,1)',
-        maleText: global.themeColor,
-        disabled: true,
+        femaleText: global.themeColor,
         buttonOpacity: global.themeColor,
-        gender: 'Female',
-        opacity: 0.4,
+        gender: '',
       });
+      global.globalGender = '';
     } else {
-      // FEMALE IS SELECTED, COUNTRY IS ELECTED
       this.setState({
         femaleBG: global.themeColor,
         femaleText: global.isDarkMode
@@ -194,23 +168,17 @@ export default class UserInfoScreen extends Component<{}> {
           ? global.darkModeColors[1]
           : 'rgba(255,255,255,1)',
         maleText: global.themeColor,
-        disabled: false,
         buttonOpacity: global.themeColor,
         gender: 'Female',
-        opacity: 1,
       });
+      global.globalGender = 'Female';
     }
-    global.globalGender = 'Female';
   }
 
   valueChange(value) {
+    console.log('value.label:', value.label);
     this.setState({selectedValue: value.label});
-    if (
-      value == null ||
-      global.globalGender == '' ||
-      global.globalBirthday == null ||
-      global.globalBirthday == ''
-    ) {
+    if (value == null) {
       // IF COUNTRY OR GENDER IS NOT SELECTED, DISABLE THE NEXT BUTTON
       this.setState({
         country: 'Country',
@@ -479,7 +447,6 @@ export default class UserInfoScreen extends Component<{}> {
                     this.setState({
                       dateSet: true,
                       showDatePicker: false,
-                      disabled: true,
                       date: date,
                       buttonOpacity: global.themeColor,
                       opacity: 0.4,
@@ -488,7 +455,6 @@ export default class UserInfoScreen extends Component<{}> {
                     this.setState({
                       dateSet: true,
                       showDatePicker: false,
-                      disabled: false,
                       date: date,
                       buttonOpacity: global.themeColor,
                       opacity: 1,

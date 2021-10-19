@@ -203,7 +203,16 @@ export default class ProfileBlockedUserScreen extends Component<{}> {
     }
     this.setState({removeModalVisible: false, favModalVisible: false});
   }
-
+  getGenderPickerSelectedValue() {
+    var lang = language[global.lang];
+    if (this.state.userGender == 'Male') {
+      return lang.MaleSmall;
+    } else if (this.state.userGender == 'Female') {
+      return lang.FemaleSmall;
+    } else {
+      return lang.Unknown;
+    }
+  }
   render() {
     var totalEmptyHeight =
       this.height -
@@ -448,9 +457,7 @@ export default class ProfileBlockedUserScreen extends Component<{}> {
                       : 'rgba(0,0,0,1)',
                     fontSize: 15 * (this.width / 360),
                   }}>
-                  {this.state.userGender == 'Male'
-                    ? lang.MaleSmall
-                    : lang.FemaleSmall}
+                  {this.getGenderPickerSelectedValue()}
                 </Text>
               </View>
             </View>

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {createStackNavigator, Header} from 'react-navigation-stack';
 import Modal from 'react-native-modal';
 import PropTypes from 'prop-types';
+import language from '../../../../Utils/Languages/lang.json';
 import {
   View,
   Platform,
@@ -44,6 +45,16 @@ export default class ChatterInfo extends Component {
     backdropOpacity: 0.4,
     onPressImage: null,
   };
+  getGenderPickerSelectedValue() {
+    var lang = language[global.lang];
+    if (this.props.gender == 'Male') {
+      return lang.MaleSmall;
+    } else if (this.props.gender == 'Female') {
+      return lang.FemaleSmall;
+    } else {
+      return lang.Unknown;
+    }
+  }
   render() {
     this.height = Math.round(Dimensions.get('screen').height);
     this.width = Math.round(Dimensions.get('screen').width);
@@ -159,16 +170,17 @@ export default class ChatterInfo extends Component {
                 color: global.themeColor,
                 fontSize: this.width * (1 / 25),
               }}>
-              {this.props.gender}
+              {this.getGenderPickerSelectedValue()}
             </Text>
             <Text
               style={{
+                fontStyle: 'italic',
                 fontFamily: global.fontFam,
                 textAlign: 'left',
                 color: global.themeColor,
                 fontSize: this.width * (1 / 25),
               }}>
-              {this.props.bio}
+              "{this.props.bio}"
             </Text>
           </View>
         </View>

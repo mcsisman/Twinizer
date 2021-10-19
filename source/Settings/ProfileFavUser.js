@@ -101,7 +101,16 @@ export default class ProfileFavUserScreen extends Component<{}> {
   static navigationOptions = {
     header: null,
   };
-
+  getGenderPickerSelectedValue() {
+    var lang = language[global.lang];
+    if (this.state.userGender == 'Male') {
+      return lang.MaleSmall;
+    } else if (this.state.userGender == 'Female') {
+      return lang.FemaleSmall;
+    } else {
+      return lang.Unknown;
+    }
+  }
   spinAnimation() {
     this.spinValue = new Animated.Value(0);
     // First set up animation
@@ -406,9 +415,7 @@ export default class ProfileFavUserScreen extends Component<{}> {
                       : 'rgba(0,0,0,1)',
                     fontSize: 15 * (this.width / 360),
                   }}>
-                  {this.state.userGender == 'Male'
-                    ? lang.MaleSmall
-                    : lang.FemaleSmall}
+                  {this.getGenderPickerSelectedValue()}
                 </Text>
               </View>
             </View>

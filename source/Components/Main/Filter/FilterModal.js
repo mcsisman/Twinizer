@@ -95,12 +95,12 @@ export default class FilterModal extends Component {
             items={countries.newMainItems}
             label={this.props.placeHolder1}
             bottom={(this.height * 10) / 100}
-            right={this.width * (2.5 / 100)}
+            right={this.width * (2.75 / 10)}
             height={this.height * (5 / 100)}
             width={this.width * (45 / 100)}
           />
 
-          <CustomPicker
+          {/*<CustomPicker
             selectedValue={
               this.props.genderSelectedValue == null
                 ? lang.SelectAGender
@@ -134,7 +134,7 @@ export default class FilterModal extends Component {
             right={this.width * (52.5 / 100)}
             height={this.height * (5 / 100)}
             width={this.width * (45 / 100)}
-          />
+          />*/}
 
           <TouchableOpacity
             activeOpacity={1}

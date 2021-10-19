@@ -82,6 +82,9 @@ export default class CountryScreen extends Component<{}> {
     header: null,
   };
   convertDateToStr(date) {
+    if (date == null || date == '' || date == undefined) {
+      return 'u';
+    }
     let month = date.getMonth() + 1;
     let day = date.getDate();
     let year = date.getFullYear();
@@ -135,6 +138,14 @@ export default class CountryScreen extends Component<{}> {
           if (global.globalBio == '') {
             global.globalBio = ' ';
           }
+          if (
+            global.globalGender == '' ||
+            global.globalGender == null ||
+            global.globalGender == undefined
+          ) {
+            global.globalGender = 'Not Disclosed';
+          }
+
           //console.log(writeDone);
           const funcdone_Ref = firestore()
             .collection(auth().currentUser.uid)
@@ -351,7 +362,7 @@ export default class CountryScreen extends Component<{}> {
                       : 'rgba(255,255,255,1)'
                   }
                   width={(this.width * 3) / 10}
-                  title={lang.Done}
+                  title={lang.DoneCap}
                   textColor={this.state.buttonOpacity}
                   onPress={() => this.writeCountryToDatabase()}
                   disabled={this.state.disabled}

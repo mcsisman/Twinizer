@@ -1,5 +1,6 @@
 {
   "langEN": {
+    "Unknown": "Not Disclosed",
     "ThisFieldIsRequired": "This field is required.",
     "ChooseAnOption": "Please choose an option.",
     "January": "January",
@@ -79,7 +80,7 @@
     "PasswordMatch": "Passwords must be identical.",
 
     "CompleteYourProfile": "Complete Your Profile",
-    "PleaseEnterYourInformation": "Please fill the information below",
+    "PleaseEnterYourInformation": "Gender and Date of Birth are optional",
     "Male": "MALE",
     "Female": "FEMALE",
     "Country": "Country",
@@ -124,6 +125,7 @@
     "SelectAll": "Select All",
     "DeselectAll": "Deselect All",
     "Done": "Done",
+    "DoneCap": "DONE",
     "MessagesDeleteInfo": "Warning: If you proceed to remove a chat box, the next message you receive from this user will appear on Requests section. You won't be able to send a message to this user unless you find them via Twinizer.",
     "ClearMessageHistory": "Clear Messages",
     "RemoveChat": "Remove the Chat",
@@ -174,6 +176,7 @@
     "ConnectionFailed": "Connection Failed."
   },
   "langTR": {
+    "Unknown": "Belirtilmemiş",
     "ThisFieldIsRequired": "Bu alan boş bırakılamaz.",
     "ChooseAnOption": "Lütfen birini seçin.",
     "January": "Ocak",
@@ -251,7 +254,7 @@
     "PasswordMatch": "Şifreleriniz aynı olmalı. ",
 
     "CompleteYourProfile": "Profilini Tamamla",
-    "PleaseEnterYourInformation": "Lütfen aşağıdaki alanları doldurun",
+    "PleaseEnterYourInformation": "Cinsiyet ve Doğum Tarihi isteğe bağlıdır",
     "Male": "ERKEK",
     "Female": "KADIN",
     "Country": "Ülke",
@@ -296,6 +299,7 @@
     "SelectAll": "Hepsini Seç",
     "DeselectAll": "Hiçbirini Seçme",
     "Done": "Onayla",
+    "DoneCap": "ONAYLA",
     "MessagesDeleteInfo": "Uyarı: Eğer bu mesaj kutusunu silerseniz, bu kullanıcıdan alacağınız bir sonraki mesaj İstekler kısmında görünecek. Aramada tekrar karşınıza çıkana kadar veya bu kişiden mesaj alana kadar bu kullanıcıya mesaj yollayamazsınız.",
     "ClearMessageHistory": "Sohbeti Temizle",
     "RemoveChat": "Sohbeti Kaldır",

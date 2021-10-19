@@ -160,6 +160,7 @@ export default class PhotoPopUpModal extends Component {
             }}>
             <Text
               style={{
+                fontStyle: 'italic',
                 fontFamily: global.fontFam,
                 textAlign: 'left',
                 color: global.themeColor,

@@ -225,6 +225,16 @@ export default class ProfileScreen extends Component<{}> {
       }
     }
   }
+  getGenderPickerSelectedValue() {
+    var lang = language[global.lang];
+    if (this.state.userGender == 'Male') {
+      return lang.MaleSmall;
+    } else if (this.state.userGender == 'Female') {
+      return lang.FemaleSmall;
+    } else {
+      return lang.Unknown;
+    }
+  }
   spinAnimation() {
     this.spinValue = new Animated.Value(0);
     // First set up animation
@@ -503,6 +513,7 @@ export default class ProfileScreen extends Component<{}> {
     this.setState({userCountry: value.label});
   }
   onValueChangeGender(value) {
+    console.log('value:', value);
     var g;
     if (value.label == 'Erkek') {
       g = 'Male';
@@ -920,11 +931,7 @@ export default class ProfileScreen extends Component<{}> {
                     borderBottomWidth={0.4}
                     borderColor={'gray'}
                     borderBottomColor={'gray'}
-                    selectedValue={
-                      this.state.userGender == 'Male'
-                        ? lang.MaleSmall
-                        : lang.FemaleSmall
-                    }
+                    selectedValue={this.getGenderPickerSelectedValue()}
                     disabled={this.state.upperComponentsDisabled}
                     opacity={this.state.upperComponentsOpacity}
                     onOpen={() => this.onPressGender()}
@@ -932,6 +939,7 @@ export default class ProfileScreen extends Component<{}> {
                     items={[
                       {label: lang.MaleSmall, key: 1},
                       {label: lang.FemaleSmall, key: 2},
+                      {label: lang.Unknown, key: 3},
                     ]}
                     label={'label'}
                     height={((this.width / 2) * (8 / 10) * (7 / 6)) / 5}
