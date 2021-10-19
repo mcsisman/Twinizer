@@ -74,6 +74,7 @@ export default class ThemeSample extends Component {
         onPress={this.props.onPress}>
         <Text
           style={{
+            fontFamily: global.fontFam,
             marginTop: 5,
             color: this.props.selected ? 'white' : 'rgba(133,133,133,1)',
             fontSize: (18 * this.width) / 360,
