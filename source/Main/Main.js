@@ -733,10 +733,11 @@ export default class MainScreen extends Component<{}> {
         var favArray = [];
         var blockArray = [];
         for (let i = 0; i < length; i++) {
-          if ( auth().currentUser.uid != items[i][0] && (
-            blockedUsers == null ||
-            blockedUsers.length == 0 ||
-            blockedUsersSet.has(items[i][0]) == false)
+          if (
+            auth().currentUser.uid != items[i][0] &&
+            (blockedUsers == null ||
+              blockedUsers.length == 0 ||
+              blockedUsersSet.has(items[i][0]) == false)
           ) {
             if (ccc % 6 == 0 && ccc != 0) {
               emailArray.push('ground');
@@ -1682,7 +1683,9 @@ export default class MainScreen extends Component<{}> {
         <CustomHeader
           whichScreen={'Main'}
           onPress={() => this.setState({isVisible2: true})}
-          isFilterVisible={this.state.showFilter && !this.state.imageViewerVisible}
+          isFilterVisible={
+            this.state.showFilter && !this.state.imageViewerVisible
+          }
           title={'Twinizer'}></CustomHeader>
 
         <View
@@ -1768,29 +1771,31 @@ export default class MainScreen extends Component<{}> {
               alignItems: 'center',
               height: this.width / 10,
             }}>
-            {!this.state.isVisible2 && !this.state.openProfileIsVisible && !this.state.imageViewerVisible && (
-              <FAB
-                zIndex={1}
-                style={{
-                  opacity: this.state.btnOpacity,
-                  backgroundColor: global.themeColor,
-                  width: this.width / 10,
-                  height: this.width / 10,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                small
-                icon={({size, color}) => (
-                  <Image
-                    source={{uri: 'search'}}
-                    style={{width: '55%', height: '55%'}}
-                  />
-                )}
-                animated={false}
-                onPress={() => this.searchDone()}
-                disabled={this.state.disabled}
-              />
-            )}
+            {!this.state.isVisible2 &&
+              !this.state.openProfileIsVisible &&
+              !this.state.imageViewerVisible && (
+                <FAB
+                  zIndex={1}
+                  style={{
+                    opacity: this.state.btnOpacity,
+                    backgroundColor: global.themeColor,
+                    width: this.width / 10,
+                    height: this.width / 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  small
+                  icon={({size, color}) => (
+                    <Image
+                      source={{uri: 'search'}}
+                      style={{width: '55%', height: '55%'}}
+                    />
+                  )}
+                  animated={false}
+                  onPress={() => this.searchDone()}
+                  disabled={this.state.disabled}
+                />
+              )}
           </View>
 
           <Snackbar
@@ -1918,8 +1923,11 @@ export default class MainScreen extends Component<{}> {
             isVisible={this.state.imageViewerVisible}
             images={photoArray[emailArray[this.state.currentCarouselIndex]]}
             onCancel={() => {
-              console.log("ImageViewerModal - onCancel")
-              this.setState({reRender: !this.state.reRender, imageViewerVisible: false});
+              console.log('ImageViewerModal - onCancel');
+              this.setState({
+                reRender: !this.state.reRender,
+                imageViewerVisible: false,
+              });
               this.props.navigation.setOptions({tabBarVisible: true});
             }}
           />
