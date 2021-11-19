@@ -42,8 +42,8 @@ export default class CarouselItem extends Component {
     onPressBlock: PropTypes.func,
     isFavorite: PropTypes.array,
     isBlocked: PropTypes.array,
-    country: PropTypes.string,
-    username: PropTypes.string,
+    country: PropTypes.array,
+    username: PropTypes.array,
     onPressImage: PropTypes.func,
   };
   static defaultProps = {};
@@ -99,7 +99,7 @@ export default class CarouselItem extends Component {
                 color: global.isDarkMode ? 'white' : '#333333',
                 fontSize: (this.width / 360) * 15,
               }}>
-              {this.props.username}
+              {this.props.username[this.props.index]}
             </Text>
           </View>
           <View
@@ -115,11 +115,11 @@ export default class CarouselItem extends Component {
                 color: global.isDarkMode ? 'white' : '#333333',
                 fontSize: (this.width / 360) * 13,
               }}>
-              {this.props.country}
+              {this.props.country[this.props.index]}
             </Text>
           </View>
         </View>
-        {this.props.username != lang.Advertisement && (
+        {this.props.username[this.props.index] != lang.Advertisement && (
           <TouchableOpacity
             activeOpacity={1}
             onPress={this.props.onPressImage}
@@ -130,7 +130,7 @@ export default class CarouselItem extends Component {
           </TouchableOpacity>
         )}
 
-        {this.props.username == lang.Advertisement && (
+        {this.props.username[this.props.index] == lang.Advertisement && (
           <View
             style={{
               opacity:
@@ -162,7 +162,7 @@ export default class CarouselItem extends Component {
             borderBottomLeftRadius: 12,
             borderBottomRightRadius: 12,
           }}>
-          {this.props.username != lang.Advertisement && (
+          {this.props.username[this.props.index] != lang.Advertisement && (
             <FavoriteUserButton
               disabled={false}
               borderBottomLeftRadius={8}
@@ -172,14 +172,14 @@ export default class CarouselItem extends Component {
               opacity={1}
             />
           )}
-          {this.props.username != lang.Advertisement && (
+          {this.props.username[this.props.index] != lang.Advertisement && (
             <SendMsgButton
               disabled={false}
               onPress={this.props.onPressSendMsg}
               opacity={1}
             />
           )}
-          {this.props.username != lang.Advertisement && (
+          {this.props.username[this.props.index] != lang.Advertisement && (
             <BlockUserButton
               disabled={false}
               borderBottomRightRadius={8}
