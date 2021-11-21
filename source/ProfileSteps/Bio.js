@@ -116,7 +116,7 @@ export default class CountryScreen extends Component<{}> {
     navigate('MyTabs');
   }
   checkIfBioValid(text) {
-    var regex = /^[A-Za-z0-9. ]+$/;
+    var regex = /^[A-Za-z0-9.,! ]+$/;
     if (regex.test(text)) {
       return true;
     } else {
@@ -377,7 +377,7 @@ export default class CountryScreen extends Component<{}> {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                <PageDots pageNo={4} />
+                <PageDots pageNo={3} />
               </View>
             </View>
           </View>

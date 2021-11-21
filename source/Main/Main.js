@@ -675,7 +675,7 @@ export default class MainScreen extends Component<{}> {
 
   valueChangeCountry(value) {
     this.setState({country: value, placeHolder1: value});
-    if (this.state.gender != null && value != null) {
+    if (value != null) {
       this.setState({disabledSearch: false, filterButtonOpacity: 1});
     }
   }
@@ -735,15 +735,15 @@ export default class MainScreen extends Component<{}> {
               favArray.push(false);
               blockArray.push(false);
             } else {
-              countryArray.push("");
-              genderArray.push("");
+              countryArray.push('');
+              genderArray.push('');
               emailArray.push(items[i - itemsIndex][0]);
-              usernameArray.push("");
+              usernameArray.push('');
               distanceArray.push(items[i - itemsIndex][1]);
-              mainCountryArray.push("");
-              mainGenderArray.push("");
+              mainCountryArray.push('');
+              mainGenderArray.push('');
               mainEmailArray.push(items[i - itemsIndex][0]);
-              mainUsernameArray.push("");
+              mainUsernameArray.push('');
               mainDistanceArray.push(items[i - itemsIndex][1]);
 
               favArray.push(favoriteUsersSet.has(emailArray[i]));
@@ -752,31 +752,53 @@ export default class MainScreen extends Component<{}> {
             ccc++;
           }
         }
-        for(let i = 0; i < 12 && i < emailArray.length; i++){
-          if(emailArray[i] != "ground"){
-            console.log("createEmailDistanceArrays - lol: ", emailArray[i])
-            await database().ref('Users/' + emailArray[i] + '/i')
-            .once('value').then(async (snapshot) => {
-              console.log("createEmailDistanceArrays - info of user: ", snapshot.val())
-              usernameArray[i] = snapshot.val()["u"]
-              console.log("createEmailDistanceArrays - snapshot.val()[u]: ", snapshot.val()["u"])
-              genderArray[i] = snapshot.val()["g"]
-              countryArray[i] = snapshot.val()["c"]
-              mainUsernameArray[i] = snapshot.val()["u"]
-              mainGenderArray[i] = snapshot.val()["g"]
-              mainCountryArray[i] = snapshot.val()["c"]
-              this.getImageURL(i)
-              this.setState({usernameArray: usernameArray, countryArray: countryArray});
-              console.log("createEmailDistanceArrays - var usernameArray: ", usernameArray)
-              console.log("createEmailDistanceArrays - this.state.usernameArray: ", this.state.usernameArray)
-            }).catch(function (error) {
-              //console.log(error);
-              // Handle any errors
-            });
+        for (let i = 0; i < 12 && i < emailArray.length; i++) {
+          if (emailArray[i] != 'ground') {
+            console.log('createEmailDistanceArrays - lol: ', emailArray[i]);
+            await database()
+              .ref('Users/' + emailArray[i] + '/i')
+              .once('value')
+              .then(async (snapshot) => {
+                console.log(
+                  'createEmailDistanceArrays - info of user: ',
+                  snapshot.val(),
+                );
+                usernameArray[i] = snapshot.val()['u'];
+                console.log(
+                  'createEmailDistanceArrays - snapshot.val()[u]: ',
+                  snapshot.val()['u'],
+                );
+                genderArray[i] = snapshot.val()['g'];
+                countryArray[i] = snapshot.val()['c'];
+                mainUsernameArray[i] = snapshot.val()['u'];
+                mainGenderArray[i] = snapshot.val()['g'];
+                mainCountryArray[i] = snapshot.val()['c'];
+                this.getImageURL(i);
+                this.setState({
+                  usernameArray: usernameArray,
+                  countryArray: countryArray,
+                });
+                console.log(
+                  'createEmailDistanceArrays - var usernameArray: ',
+                  usernameArray,
+                );
+                console.log(
+                  'createEmailDistanceArrays - this.state.usernameArray: ',
+                  this.state.usernameArray,
+                );
+              })
+              .catch(function (error) {
+                //console.log(error);
+                // Handle any errors
+              });
           }
         }
-        this.setState({isFavArray: favArray, isBlockArray: blockArray,
-          usernameArray: usernameArray, countryArray: countryArray});
+        this.setState({
+          isFavArray: favArray,
+          isBlockArray: blockArray,
+          usernameArray: usernameArray,
+          countryArray: countryArray,
+        });
       } catch (error) {
         var lang = language[global.lang];
         console.log(error);
@@ -1700,25 +1722,34 @@ export default class MainScreen extends Component<{}> {
           {!this.state.loadingAnimation && (
             <Carousel
               onSnapToItem={(slideIndex) => {
-                console.log("slideIndex dalgası:", slideIndex);
-                if(emailArray.length > slideIndex+10 && emailArray[slideIndex+10] != "ground"){
-                  database().ref('Users/' + emailArray[slideIndex+10] + '/i')
-                  .once('value').then(async (snapshot) => {
-                    console.log("info of user: ", snapshot.val())
-                    usernameArray[slideIndex+10] = snapshot.val()["u"]
-                    genderArray[slideIndex+10] = snapshot.val()["g"]
-                    countryArray[slideIndex+10] = snapshot.val()["c"]
-                    mainUsernameArray[slideIndex+10] = snapshot.val()["u"]
-                    mainGenderArray[slideIndex+10] = snapshot.val()["g"]
-                    mainCountryArray[slideIndex+10] = snapshot.val()["c"]
-                    this.setState({usernameArray: usernameArray, countryArray: countryArray});
-                  }).catch(function (error) {
-                    //console.log(error);
-                    // Handle any errors
-                  });
-                  this.getImageURL(slideIndex)
+                console.log('slideIndex dalgası:', slideIndex);
+                if (
+                  emailArray.length > slideIndex + 10 &&
+                  emailArray[slideIndex + 10] != 'ground'
+                ) {
+                  database()
+                    .ref('Users/' + emailArray[slideIndex + 10] + '/i')
+                    .once('value')
+                    .then(async (snapshot) => {
+                      console.log('info of user: ', snapshot.val());
+                      usernameArray[slideIndex + 10] = snapshot.val()['u'];
+                      genderArray[slideIndex + 10] = snapshot.val()['g'];
+                      countryArray[slideIndex + 10] = snapshot.val()['c'];
+                      mainUsernameArray[slideIndex + 10] = snapshot.val()['u'];
+                      mainGenderArray[slideIndex + 10] = snapshot.val()['g'];
+                      mainCountryArray[slideIndex + 10] = snapshot.val()['c'];
+                      this.setState({
+                        usernameArray: usernameArray,
+                        countryArray: countryArray,
+                      });
+                    })
+                    .catch(function (error) {
+                      //console.log(error);
+                      // Handle any errors
+                    });
+                  this.getImageURL(slideIndex);
                 }
-                this.setState({currentCarouselIndex: slideIndex})
+                this.setState({currentCarouselIndex: slideIndex});
               }}
               enableSnap={true}
               containerCustomStyle={{

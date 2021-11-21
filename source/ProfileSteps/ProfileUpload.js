@@ -132,7 +132,7 @@ export default class ProfileUploadScreen extends React.Component {
       );
       //console.log("LOCALE KAYDEDİLDİ:", RNFS.DocumentDirectoryPath + auth().currentUser.uid + "profile.jpg")
       const {navigate} = this.props.navigation;
-      navigate('ImageUpload');
+      navigate('Bio');
     }
     this.setState({loadingOpacity: 0, disabled: false});
   };
