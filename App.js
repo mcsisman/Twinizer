@@ -229,8 +229,14 @@ class Appp extends React.Component {
           })
           .catch(async (error) => {
             //console.log('EMBEDDING YOK: ', auth().currentUser.uid);
-            await this.setTheme(true);
-            navigate('UserInfo');
+            if (auth().currentUser.emailVerified && error.message == "[storage/object-not-found] No object exists at the desired reference.") {
+              await this.setTheme(true);
+              navigate('UserInfo');
+            }
+            else{
+              await this.setTheme(false);
+              navigate('Login');
+            }
           });
       } else {
         this.setTheme(false);
