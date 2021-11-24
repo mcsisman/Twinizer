@@ -754,20 +754,17 @@ export default class MainScreen extends Component<{}> {
         }
         for (let i = 0; i < 12 && i < emailArray.length; i++) {
           if (emailArray[i] != 'ground') {
-            console.log('createEmailDistanceArrays - lol: ', emailArray[i]);
+            //console.log('createEmailDistanceArrays - lol: ', emailArray[i]);
             await database()
               .ref('Users/' + emailArray[i] + '/i')
               .once('value')
               .then(async (snapshot) => {
-                console.log(
+                /*console.log(
                   'createEmailDistanceArrays - info of user: ',
                   snapshot.val(),
-                );
+                );*/
                 usernameArray[i] = snapshot.val()['u'];
-                console.log(
-                  'createEmailDistanceArrays - snapshot.val()[u]: ',
-                  snapshot.val()['u'],
-                );
+
                 genderArray[i] = snapshot.val()['g'];
                 countryArray[i] = snapshot.val()['c'];
                 mainUsernameArray[i] = snapshot.val()['u'];
@@ -778,14 +775,6 @@ export default class MainScreen extends Component<{}> {
                   usernameArray: usernameArray,
                   countryArray: countryArray,
                 });
-                console.log(
-                  'createEmailDistanceArrays - var usernameArray: ',
-                  usernameArray,
-                );
-                console.log(
-                  'createEmailDistanceArrays - this.state.usernameArray: ',
-                  this.state.usernameArray,
-                );
               })
               .catch(function (error) {
                 //console.log(error);
@@ -1698,9 +1687,7 @@ export default class MainScreen extends Component<{}> {
         <CustomHeader
           whichScreen={'Main'}
           onPress={() => this.setState({isVisible2: true})}
-          isFilterVisible={
-            this.state.showFilter && !this.state.imageViewerVisible
-          }
+          isFilterVisible={false}
           title={'Twinizer'}></CustomHeader>
 
         <View
@@ -1722,7 +1709,7 @@ export default class MainScreen extends Component<{}> {
           {!this.state.loadingAnimation && (
             <Carousel
               onSnapToItem={(slideIndex) => {
-                console.log('slideIndex dalgası:', slideIndex);
+                //console.log('slideIndex dalgası:', slideIndex);
                 if (
                   emailArray.length > slideIndex + 10 &&
                   emailArray[slideIndex + 10] != 'ground'
@@ -1731,7 +1718,7 @@ export default class MainScreen extends Component<{}> {
                     .ref('Users/' + emailArray[slideIndex + 10] + '/i')
                     .once('value')
                     .then(async (snapshot) => {
-                      console.log('info of user: ', snapshot.val());
+                      //console.log('info of user: ', snapshot.val());
                       usernameArray[slideIndex + 10] = snapshot.val()['u'];
                       genderArray[slideIndex + 10] = snapshot.val()['g'];
                       countryArray[slideIndex + 10] = snapshot.val()['c'];
@@ -1862,7 +1849,7 @@ export default class MainScreen extends Component<{}> {
             onPressLibrary={this.library}
           />
 
-          <FilterModal
+          {/*<FilterModal
             isVisible={this.state.isVisible2}
             onBackdropPress={() => this.setState({isVisible2: false})}
             onValueChangeGender={(value) => this.valueChangeGender(value.label)}
@@ -1884,7 +1871,7 @@ export default class MainScreen extends Component<{}> {
             opacity={this.state.filterButtonOpacity}
             searchDisabled={this.state.disabledSearch}
             textFilters={lang.Filter}
-          />
+          />*/}
 
           <PhotoPopUpModal
             isVisible={this.state.openProfileIsVisible}
@@ -1965,7 +1952,7 @@ export default class MainScreen extends Component<{}> {
             isVisible={this.state.imageViewerVisible}
             images={photoArray[emailArray[this.state.currentCarouselIndex]]}
             onCancel={() => {
-              console.log('ImageViewerModal - onCancel');
+              //console.log('ImageViewerModal - onCancel');
               this.setState({
                 reRender: !this.state.reRender,
                 imageViewerVisible: false,
